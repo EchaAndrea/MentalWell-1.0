@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MentalWell  1.0</title>
+  <link rel="icon" href="/src/public/logo/logoicon.png" type="image/x-icon">
+  <link rel="stylesheet" href="/src/styles/aturkonseling.css" />
+  <script type="module" src="/src/scripts/components/navbar-user.js" defer></script>
+  <script type="module" src="/src/scripts/components/navbar-psikolog.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+  <!-- navbar components -->
+  <navbar-psikolog></navbar-psikolog>
+
+  <main>
+    </br> </br>
+    <div class="main-content">
+      <div class="data-konseling">
+        <div class="foto-pasien">
+          <img src="/src/public/beranda/man.png" alt="Foto Pasien" id="patientProfile" />
+        </div>
+
+        <div class="biodata-pasien">
+          <h2>Nama Lengkap</h2>
+          <p>Nama Panggilan: </p>
+          <p>Tanggal Lahir: </p>
+          <p>Jenis Kelamin: </p>
+          <p>Nomor Telepon: </p>
+          </div>
+          <div class="tanggal-konseling">
+            <p>Tanggal Konseling</p>
+          <p>Waktu Konseling</p>
+          <p>Jenis Konseling</p>
+        </div>
+      </div>
+      <div class="deskripsi-konseling">
+        <div id="loading-indicator" class="spinner" style="display: none"></div>
+
+        <!-- <h3>Deskripsi Masalah</h3>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus vel
+          tortor augue. Vestibulum et purus quis enim ultricies consequat in
+          vel odio. Etiam placerat ultricies commodo. Interdum et malesuada
+          fames ac ante ipsum primis in faucibus. Phasellus turpis turpis,
+          hendrerit eget feugiat ut, rutrum sed nisi.
+        </p> -->
+      </div>
+      <div class="harapan-pasien">
+        <!-- <h3>Harapan Setelah Konseling</h3>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus vel
+          tortor augue. Vestibulum et purus quis enim ultricies consequat in
+          vel odio. Etiam placerat ultricies commodo. Interdum et malesuada
+          fames ac ante ipsum primis in faucibus. Phasellus turpis turpis,
+          hendrerit eget feugiat ut, rutrum sed nisi.
+        </p> -->
+      </div>
+      <div class="status-konseling">
+        <h2>Status</h2>
+        <select id="statusDropdown" class="baru">
+          <option value="belum_selesai">Belum Selesai</option>
+          <option value="selesai">Selesai</option>
+        </select>
+      </div>
+    </div>
+    <div class="button-simpan">
+      <button type="button" id="btnSimpan">Kembali</button>
+    </div>
+  </main>
+
+  <footer>
+    <span> &copy; 2025 MentalWell, Hak Cipta Dilindungi. </span>
+  </footer>
+</body>
+
+</html>
+<script src="/src/scripts/views/pages/aturkonseling.js"></script>

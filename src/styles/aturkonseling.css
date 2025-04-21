@@ -1,0 +1,249 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700&display=swap');
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #fafafa;
+  min-height: 100vh;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+Header
+*/
+
+.navbar {
+  background-color: white;
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr 1fr;
+  gap: 2 rem;
+  height: 90px;
+  position: sticky;
+  width: 100%;
+  top: 0;
+  z-index: 99;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+}
+
+.navbar .navbar-brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 1rem;
+}
+
+.navbar .navbar-brand h1 {
+  color: #02bbdd;
+  text-transform: uppercase;
+}
+
+.navbar .navbar-list {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.navbar .navbar-list .button-user {
+  display: flex;
+  align-items: center;
+}
+
+.navbar .navbar-list .button-user button {
+  width: 95px;
+  height: 40px;
+  background-color: white;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.navbar .navbar-list .navbar-list-item {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.navbar .navbar-list .list-item {
+  list-style: none;
+}
+
+.navbar .navbar-list .navbar-list-item .list-item a {
+  text-decoration: none;
+  list-style: none;
+  color: black;
+  font-size: 20px;
+  font-weight: 500px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+#photoUser {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+}
+
+/*
+Content Atur Konseling
+*/
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  margin: 98px 100px 80px 100px;
+  border: 1px solid black;
+  border-radius: 20px;
+}
+
+#patientProfile {
+  position: relative;
+  width: 170px;
+  height: 170px;
+}
+
+.data-konseling {
+  display: flex;
+  flex-direction: row;
+  margin: 30px 0 0 40px;
+}
+
+.biodata-pasien {
+  margin-left: 30px;
+}
+
+.biodata-pasien h2 {
+  margin: 10px 0;
+}
+
+.biodata-pasien p {
+  line-height: 1.8;
+}
+
+.tanggal-konseling {
+  margin-left: auto;
+  margin-right: 50px;
+  line-height: 2;
+}
+
+.deskripsi-konseling {
+  border: 1px solid black;
+  border-radius: 20px;
+  margin: 30px 50px;
+  height: 100px;
+  padding: 30px;
+}
+
+.deskripsi-konseling h3 {
+  margin-bottom: 20px;
+}
+
+.harapan-pasien {
+  border: 1px solid black;
+  border-radius: 20px;
+  margin: 0 50px 30px 50px;
+  height: 100px;
+  padding: 30px;
+}
+
+.baru {
+  padding: 10px 0px 10px 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  list-style: none;
+  text-decoration: none;
+  background-color: #044b77;
+  color: white;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+.baru:hover {
+  background-color: #02bbdd;
+}
+
+.harapan-pasien h3 {
+  margin-bottom: 20px;
+}
+
+.status-konseling {
+  width: 130px;
+  min-height: 130px;
+  margin-left: 50px;
+  margin-bottom: 30px;
+  padding: 10px;
+  line-height: 1.5;
+}
+
+.status-konseling h2 {
+  margin-top: 10px;
+  color: #000;
+  font-size: 20px;
+}
+
+.button-simpan {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+#btnSimpan {
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  color: white;
+  font-weight: bold;
+  background-color: #044b77;
+  width: 230px;
+  height: 44px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+#btnSimpan:hover {
+  background-color: #3ad0ea;
+  color: #ffffff;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #3498db;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/*
+Footer
+*/
+
+footer {
+  font-size: 18px;
+  padding: 1.5em;
+  height: 18px;
+  background-color: #02bbdd;
+  color: #fff;
+  margin-top: 2rem;
+  text-align: center;
+}

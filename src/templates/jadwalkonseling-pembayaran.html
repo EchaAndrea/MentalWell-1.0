@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembayaran - MentalWell</title>
+    <link rel="stylesheet" href="/src/styles/style.css">
+    <link rel="stylesheet" href="/src/styles/pembayaran.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <navbar-masuk id="masuk"></navbar-masuk>
+
+    <div class="container">
+        <div class="flow d-flex justify-content-center my-5">
+        <div class="isi-data text-center">
+            <svg width="100" height="100">
+            <circle cx="50" cy="50" r="40" stroke="#044B77" stroke-width="4" fill="#044B77" />
+            <text x="40" y="60" fill="#fff" font-size="2em">1</text>
+            Sorry, your browser does not support inline SVG.
+            </svg>
+            <br />
+            Isi Data
+        </div>
+        <div class="permasalahan text-center">
+            <svg width="100" height="100">
+            <circle cx="50" cy="50" r="40" stroke="#044B77" stroke-width="4" fill="#044B77" />
+            <text x="40" y="60" fill="#fff" font-size="2em">2</text>
+            Sorry, your browser does not support inline SVG.
+            </svg>
+            <br />
+            Permasalahan
+        </div>
+        <div class="pembayaran text-center">
+            <svg width="100" height="100">
+            <circle cx="50" cy="50" r="40" stroke="#044B77" stroke-width="4" fill="#044B77" />
+            <text x="40" y="60" fill="#fff" font-size="2em">3</text>
+            Sorry, your browser does not support inline SVG.
+            </svg>
+            <br />
+            Pembayaran
+        </div>
+        <div class="selesai text-center">
+            <svg width="100" height="100">
+            <circle cx="50" cy="50" r="40" stroke="#044B77" stroke-width="4" fill="#fff" />
+            <text x="40" y="60" fill="#044B77" font-size="2em">4</text>
+            Sorry, your browser does not support inline SVG.
+            </svg>
+            <br />
+            Selesai
+        </div>
+        </div>
+
+    <div class="card p-4 shadow-sm">
+    <h5>Detail Pembayaran</h5>
+    <div class="d-flex justify-content-between border-bottom py-2">
+        <span>Paket Konseling</span><span>Rp. 245.000</span>
+    </div>
+    <div class="d-flex justify-content-between border-bottom py-2">
+        <span>Biaya Aplikasi</span><span>Rp. 15.000</span>
+    </div>
+    <div class="d-flex justify-content-between fw-bold py-2">
+        <span>Total</span><span>Rp. 260.000</span>
+    </div>
+
+    <div class="card mt-4 p-3">
+        <img src="/src/public/logo/mandiri.png" alt="Mandiri" width="100" class="mb-2">
+        <p class="mb-1">Nomor Virtual Account</p>
+        <h5 class="fw-bold">123 456 789 1011</h5>
+        <p>Total Pembayaran</p>
+        <h5 class="fw-bold">Rp. 260.000</h5>
+    </div>
+
+    <div class="mt-4">
+        <label for="buktiBayar" class="form-label fw-bold">Bukti Pembayaran</label>
+        <input type="file" class="form-control" id="buktiBayar">
+    </div>
+
+    <div class="text-center mt-4">
+        <button class="rounded py-2 px-5 my-4 mb-4 d-flex mx-auto" class="btn btn-primary" onclick="confirmPayment()">Konfirmasi Pembayaran</button>
+    </div>    
+    </div>
+</main>
+<footer>
+    <span> &copy; 2025 MentalWell, Hak Cipta Dilindungi. </span>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+crossorigin="anonymous"></script>
+</body>
+
+</html>
+<script src="/src/scripts/views/pages/jadwalkonseling.js"></script>

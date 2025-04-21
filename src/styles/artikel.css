@@ -1,0 +1,487 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700&display=swap');
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #fafafa;
+  min-height: 100vh;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+Header
+*/
+
+.navbar {
+  background-color: white;
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr 1fr;
+  gap: 2 rem;
+  height: 90px;
+  position: sticky;
+  width: 100%;
+  top: 0;
+  z-index: 99;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+}
+
+.navbar .navbar-brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 1rem;
+}
+
+.navbar .navbar-brand h1 {
+  color: #02bbdd;
+  text-transform: uppercase;
+}
+
+.navbar .navbar-list {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.navbar .navbar-list .button-user {
+  display: flex;
+  align-items: center;
+}
+
+.navbar .navbar-list .button-user button {
+  width: 95px;
+  height: 40px;
+  background-color: white;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.navbar .navbar-list .navbar-list-item {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.navbar .navbar-list .list-item {
+  list-style: none;
+}
+
+.navbar .navbar-list .navbar-list-item .list-item a {
+  text-decoration: none;
+  list-style: none;
+  color: black;
+  font-size: 20px;
+  font-weight: 500px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.navbar .navbar-list .button {
+  display: flex;
+  align-items: center;
+}
+
+.navbar .navbar-list .button button {
+  width: 95px;
+  height: 40px;
+  border-radius: 30px;
+  background-color: #044b77;
+  color: #ffffff;
+}
+
+#photoUser {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+}
+
+/*
+main 
+*/
+
+main {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  flex: 1;
+}
+
+main .articel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 112px;
+}
+
+.articel .search-articel {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  margin-top: 1rem;
+  justify-content: center;
+}
+
+.articel .search-articel input {
+  width: 764px;
+  height: 48px;
+  border-radius: 10px;
+  font-size: 20px;
+  padding-left: 10px;
+  font-weight: 700px;
+  outline: none;
+  border: 1px solid#044b77;
+}
+
+.articel .search-articel .button-search {
+  display: flex;
+  flex-direction: row;
+}
+
+.articel .search-articel .button-search button {
+  padding: 0 15px;
+  border-radius: 10px;
+  font-size: 20px;
+  background-color: #044b77;
+  color: white;
+  font-weight: 700px;
+  border: none;
+}
+
+.articel .search-articel .button-search button:hover {
+  background-color: #3ad0ea;
+  color: #ffffff;
+}
+
+.articel .search-articel .button-search i {
+  margin-right: 10px;
+}
+
+main .content-articel {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.content-articel article {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  min-height: 500px;
+  /* border: 1px solid #808080; */
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+  border-radius: 20px;
+  position: relative;
+}
+
+.content-articel article img {
+  width: 100%;
+  height: 200px;
+  border-radius: 20px;
+}
+
+.content-articel article .isi-articel {
+  width: 100%;
+  max-height: 200px;
+}
+
+.content-articel article .isi-articel .content {
+  max-height: 100px;
+  overflow: hidden;
+}
+
+.content-articel article h2,
+p {
+  margin-right: 20px;
+  margin-left: 20px;
+  text-align: justify;
+  margin-top: 1rem;
+}
+
+.content-articel .button-articel {
+  display: flex;
+  justify-content: flex-end;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+}
+
+.content-articel .button-articel button {
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 15px;
+  background-color: #044b77;
+  color: white;
+  font-weight: 700px;
+  border: none;
+  top: 0;
+  left: 50;
+  right: 0;
+}
+
+.content-articel .button-articel button:hover {
+  background-color: #3ad0ea;
+  color: #ffffff;
+}
+
+/*
+login 
+*/
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.login-container {
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 400px;
+  height: 400px;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 20%;
+  left: 38%;
+  z-index: 1;
+}
+
+.login-container .login-title {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.login-container .login-title h2 {
+  margin-top: -1rem;
+}
+
+.login-container .login-title p {
+  font-size: 16px;
+}
+
+.login-container .login-title p a {
+  text-decoration: none;
+}
+
+.login-container .login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-container .login-form .form-control {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.login-container .login-form .form-control .form-input {
+  display: flex;
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  font-size: 16px;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 320px;
+  align-items: center;
+  height: 44px;
+}
+
+.login-container .login-form .form-control .eye {
+  position: absolute;
+  margin-left: 300px;
+  margin-top: 15px;
+}
+
+.login-container .login-form .form-input {
+  border: none;
+}
+
+.login-container .login-form p {
+  text-align: end;
+  margin-right: 3px;
+  margin-top: -8px;
+}
+
+.login-container .login-form p a {
+  text-decoration: none;
+  color: grey;
+}
+
+.login-container .login-form p a:hover {
+  text-decoration: none;
+  color: blue;
+}
+
+.login-container .login-form .submit-btn {
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  font-size: 20px;
+  margin-top: 4rem;
+  color: white;
+  font-weight: bold;
+  background-color: #044b77;
+  width: 360px;
+  height: 44px;
+}
+
+.login-container .login-form .submit-btn:hover {
+  background-color: #3ad0ea;
+  color: #ffffff;
+}
+
+/*
+daftar
+*/
+.overly {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.daftar-container {
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 400px;
+  height: 490px;
+  display: none;
+  position: fixed;
+  top: 20%;
+  left: 38%;
+  z-index: 1;
+  flex-direction: column;
+  align-items: center;
+}
+
+.daftar-container .daftar-title {
+  margin-bottom: 20px;
+  color: #333;
+  margin-top: 2.5rem;
+}
+
+.daftar-container .daftar-title p a {
+  text-decoration: none;
+}
+
+.daftar-container .daftar-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.daftar-container .daftar-form .form-control {
+  margin-bottom: 1rem;
+  display: flex;
+}
+
+.daftar-container .daftar-form .form-control .form-input {
+  display: flex;
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  font-size: 16px;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 310px;
+  align-items: center;
+  height: 44px;
+}
+
+.daftar-container .daftar-form .form-control .eye {
+  position: absolute;
+  margin-left: 300px;
+  margin-top: 15px;
+}
+
+.daftar-container .daftar-form .form-input {
+  border: none;
+}
+
+.daftar-container .daftar-form p {
+  text-align: end;
+  margin-right: 3px;
+  margin-top: -8px;
+}
+
+.daftar-container .daftar-form p a {
+  text-decoration: none;
+  color: black;
+}
+
+.daftar-container .daftar-form .submit-btn {
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  font-size: 20px;
+  margin-top: 2rem;
+  color: white;
+  font-weight: bold;
+  background-color: #044b77;
+  width: 350px;
+  height: 44px;
+}
+
+.daftar-container .daftar-form .submit-btn:hover {
+  background-color: #3ad0ea;
+  color: #ffffff;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #3498db;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/*
+footer 
+*/
+
+footer {
+  font-size: 18px;
+  padding: 1.5em;
+  height: 18px;
+  background-color: #02bbdd;
+  color: #fff;
+  margin-top: 2rem;
+  text-align: center;
+}

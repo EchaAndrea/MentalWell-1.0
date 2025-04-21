@@ -1,0 +1,60 @@
+body {
+  display: flex;
+}
+
+main {
+  flex: 1;
+}
+
+.container {
+  margin-top: 98px;
+}
+
+button {
+  background-color: #044b77;
+  border: none;
+  color: #fff;
+}
+
+button:hover {
+  background-color: #02bbdd;
+}
+
+.time.disabled {
+  background-color: #ccc !important;
+  color: #999 !important;
+  /* Add any additional styling for the disabled state */
+}
+
+.data-diri .lengkapi {
+  padding-top: 20px;
+}
+
+.jadwal .atur-jadwal {
+  padding-top: 20px;
+}
+
+.card.waktu,
+.card.metode {
+  cursor: pointer;
+}
+
+.card.selected {
+  background-color: #02bbdd;
+  color: white;
+}
+
+/*
+Footer
+*/
+
+footer {
+  font-size: 18px;
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+  height: 18px;
+  background-color: #02bbdd;
+  color: #fff;
+  margin-top: 2rem;
+  text-align: center;
+}
