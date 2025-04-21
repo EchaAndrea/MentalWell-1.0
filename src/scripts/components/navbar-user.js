@@ -155,7 +155,7 @@ class NavBar extends HTMLElement {
                 <div class="navbar">
                     <div class="navbar-brand">
                     <img src="/src/public/logo/logo-mentalwell.jpg" alt="imagelogo" width="50px" height="50px">
-                        <h1>MentalWell</h1>
+                        <h1>MentalWell 1.0</h1>
                     </div>
                     <div class="navbar-list">
                         <ul class="navbar-list-item">
