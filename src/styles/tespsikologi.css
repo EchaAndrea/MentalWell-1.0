@@ -1,40 +1,184 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700&display=swap");
 
 * {
-  padding: 0;
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    background-color: #f9f9f9;
-    font-family: 'Arial', sans-serif;
+  font-family: "Inter", "Poppins", sans-serif;
+  background-color: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
+navbar-masuk {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.container {
+  flex: 1;
+  padding: 2rem;
+  padding-top: 7rem; /* Supaya tidak ketutup navbar */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* CARD */
 .card {
-    border-radius: 12px;
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 800px;
 }
 
+/* FORM ISI DATA */
+.form-section {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.form-info {
+  flex: 1;
+}
+
+.form-info h2 {
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  text-align: center;
+}
+
+.form-info p {
+  margin-bottom: 1.5rem;
+}
+
+form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+form input {
+  width: 100%;
+  padding: 0.7rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+/* GAMBAR DI FORM */
+.illustration {
+  max-width: 300px;
+  height: auto;
+}
+
+/* PERTANYAAN */
+.question {
+  margin-bottom: 1.5rem;
+}
+
+.question p {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-align: justify;
+}
+
+/* OPTIONS */
+.options {
+  display: flex;
+  flex-direction: column;
+}
+
+.options label {
+  display: flex;
+  align-items: flex-start; /* dari center jadi flex-start */
+  gap: 0.625rem; /* tetap ada jarak */
+  margin-bottom: 0.75rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+  text-align: left; /* jaga teks tetap kiri */
+}
+
+.options label:hover {
+  background-color: #f0f0f0;
+}
+
+/* BUTTON */
 .btn-primary {
-    background-color: #004b7c;
-    border: none;
-    border-radius: 1.5rem;
+  background-color: #044b77;
+  color: #ffffff;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease;
+  width: 100%;
 }
 
 .btn-primary:hover {
-    background-color: #003456;
+  background-color: #02bbdd;
 }
 
-/*
-Footer
-*/
-
+/* FOOTER */
 footer {
-    font-size: 18px;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    height: 20px;
-    width: 100%;
-    background-color: #02bbdd;
-    color: #fff;
+  font-size: 1rem;
+  padding: 1rem;
+  background-color: #02bbdd;
+  color: #ffffff;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+/* HASIL TES */
+.hasil-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.illustration-hasil {
+  width: 250px;
+  height: auto;
+  margin-bottom: 1.5rem;
+}
+
+.hasil-info p {
+  margin: 0.5rem 0;
+}
+
+.hasil-info h3 {
+  margin: 0.5rem 0;
+  font-size: 2rem;
+  color: #02bbdd;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .form-section {
+    flex-direction: column;
+    align-items: center;
     text-align: center;
+  }
+
+  .illustration {
+    max-width: 200px;
+  }
 }

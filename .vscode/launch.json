@@ -1,11 +1,13 @@
 {
     "version": "0.2.0",
     "configurations": [
-    {
-        "type": "msedge",
-        "request": "launch",
-        "name": "Open index.html",
-        "file": "${workspaceFolder}/src/templates/index.html"
-    }
+        {
+            "name": "Launch MentalWell",
+            "type": "msedge",
+            "request": "launch",
+            "url": "http://localhost:5500/src/templates/editprofilpasien.html",
+            "preLaunchTask": "Start Live Server",
+            "webRoot": "${workspaceFolder}"
+        }
     ]
 }

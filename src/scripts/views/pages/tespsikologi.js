@@ -1,37 +1,46 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const formStart = document.getElementById('form-start');
-    const formQuestions = document.getElementById('form-questions');
-    const formResult = document.getElementById('form-result');
-    const btnStart = document.getElementById('btn-start');
-    const btnCheckResult = document.getElementById('btn-check-result');
-    const resultText = document.getElementById('result-text');
+function hitungHasil() {
+    const q1 = document.querySelector('input[name="q1"]:checked');
+    const q2 = document.querySelector('input[name="q2"]:checked');
+    const q3 = document.querySelector('input[name="q3"]:checked');
 
-    if (btnStart) {
-        btnStart.addEventListener('click', () => {
-        formStart.style.display = 'none';
-        formQuestions.style.display = 'block';
-    });
+    if (!q1 || !q2 || !q3) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Oops...',
+            text: 'Semua pertanyaan harus dijawab!'
+        });
+        return;
     }
 
-    if (btnCheckResult) {
-        btnCheckResult.addEventListener('click', () => {
-        // Hitung skor berdasarkan input radio yang dipilih
-        let score = 0;
-        const radios = document.querySelectorAll('input[type="radio"]:checked');
-        radios.forEach(radio => {
-        score += parseInt(radio.value);
-        });
+    const total = parseInt(q1.value) + parseInt(q2.value) + parseInt(q3.value);
 
-        // Tentukan level berdasarkan skor
+    localStorage.setItem('score', total);
+    window.location.href = "hasil.html";
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    const score = localStorage.getItem('score');
+    const levelHasil = document.getElementById('levelHasil');
+    const deskripsiHasil = document.getElementById('deskripsiHasil');
+
+    if (score !== null && levelHasil && deskripsiHasil) {
         let level = '';
-        if (score <= 15) level = 'Rendah';
-        else if (score <= 30) level = 'Sedang';
-        else level = 'Tinggi';
+        let deskripsi = '';
 
-        resultText.innerText = `"${level}"`;
+        const totalScore = parseInt(score);
 
-        formQuestions.style.display = 'none';
-        formResult.style.display = 'block';
-        });
+        if (totalScore <= 5) {
+            level = "Rendah";
+            deskripsi = "Berdasarkan hasil screening kesehatan mental, saat ini kondisimu tergolong stabil. Jaga terus kesehatan mental kamu ya.";
+        } else if (totalScore <= 10) {
+            level = "Sedang";
+            deskripsi = "Kamu mengalami tingkat stres yang sedang. Perlu memperhatikan kesehatan mental dan menjaga keseimbangan hidup.";
+        } else {
+            level = "Tinggi";
+            deskripsi = "Kamu mengalami tingkat stres yang tinggi. Disarankan untuk mencari bantuan profesional.";
+        }
+
+        levelHasil.innerText = `"${level}"`;
+        deskripsiHasil.innerText = deskripsi;
     }
 });

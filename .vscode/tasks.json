@@ -1,0 +1,12 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start Live Server",
+            "type": "shell",
+            "command": "live-server --port=5500 --open=src/templates/index.html",
+            "problemMatcher": [],
+            "isBackground": true
+        }
+    ]
+}

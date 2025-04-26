@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MentalWell 1.0</title>
+  <link rel="icon" href="/src/public/logo/logoicon.png" type="image/x-icon">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="/src/styles/sesikonseling.css" />
+  <script type="module" src="/src/scripts/components/navbar-user.js" defer></script>
+  <script type="module" src="/src/scripts/components/navbar-masuk.js"></script>
+</head>
+
+<body>
+  <navbar-masuk id="masuk"></navbar-masuk>
+  <main>
+    <div id="overlay" class="overlay" onclick="closeChatPopup()"></div>
+    <div class="container-chat" id="container-chat">
+      <form class="content-chat">
+        <div class="isi-chat">
+          <h2>Berikan Chat</h2>
+          <textarea name="chat" id="chat" cols="55" rows="15" placeholder="Tuliskan chatmu disini"></textarea>
+        </div>
+        <div class="btn-detail">
+          <button type="submit">Kirim</button>
+        </div>
+      </form>
+    </div>
+    <h2>Sesi Konseling</h2>
+    <div class="content-sesi">
+    </div>
+  </main>
+  <footer>
+    <span> &copy; 2025 MentalWell, Hak Cipta Dilindungi. </span>
+  </footer>
+  <script src="/src/scripts/views/pages/chat.js"></script>
+  <script src="/src/scripts/views/pages/sesikonseling.js"></script>
+</body>
+
+</html>

@@ -15,12 +15,42 @@
 </head>
 
 <body>
-    
-</body>
-
-<footer>
-    <span> &copy; 2025 MentalWell, Hak Cipta Dilindungi. </span>
-</footer>
+    <main>
+        <div class="chat-container">
+            <!-- Sidebar -->
+            <div class="chat-sidebar">
+            <div class="sidebar-header">
+                    <button class="submit-btn" id="closeBtn" title="Tutup">
+                        <img src="/src/public/chat/close.png" alt="Gambar tutup" />
+                    </button>
+            </div>
+            <ul class="chat-users" id="userList">
+                <!-- Users will be rendered here -->
+            </ul>
+            </div>
+        
+            <!-- Chat Area -->
+            <div class="chat-main">
+            <div class="chat-header" id="chatHeader">
+                <i class="fas fa-user-circle"></i>
+                <span id="chatUserName">Pilih pengguna</span>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <!-- Messages will appear here -->
+            </div>
+            <div class="chat-footer">
+                <button class="submit-btn" id="attachBtn" title="Lampirkan">
+                    <img src="/src/public/chat/add.png" alt="Gambar lampirkan" />
+                    <div class="hero-image">
+                </button>
+                <input type="text" id="msgInput" placeholder="Ketik pesan...">
+                <button class="submit-btn" id="sendBtn" title="Kirim">
+                    <img src="/src/public/chat/send.png" alt="Gambar kirim" />
+                </button>
+            </div>
+            </div>
+        </div>
+</main>
 </body>
 </html>
 <script src="/src/scripts/views/pages/chat.js"></script>

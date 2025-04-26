@@ -16,77 +16,43 @@
 
 <body>
     <navbar-masuk id="masuk"></navbar-masuk>
-    <div id="overlay" class="overlay" onclick="closeLoginPopup()"></div>
-    <div class="login-container" id="login-container">
-    <div class="login-title">
-        <h2>Masuk</h2>
-        <p>Belum punya akun? <a href="#" id="popupDaftar" onclick="openDaftarPopup()">Daftar</a></p>
-    </div>
-    <form class="login-form" id="login-form">
-        <div class="form-control">
-        <input class="form-input" type="email" id="emaillogin" name="emaillogin" placeholder="Masukkan Email" required />
-        </div>
-        <div class="form-control">
-            <i class="far fa-eye eye" onclick="togglePasswordLoginVisibility()"></i>
-            <input class="form-input" type="text" id="loginpassword" name="loginpassword" placeholder="Masukkan Kata Sandi" required />
-            <a href="/src/scripts/views/pages/"></a>
-        </div>
-        <p><a href="/src/templates/lupasandi.html">Lupa kata sandi</a></p>
-        <button class="submit-btn" type="submit">Masuk</button>
-    </form>
-    </div>
-    <div id="overly" class="overly" onclick="closeDaftarPopup()"></div>
-    <div class="daftar-container" id="daftar-container">
-    <div class="daftar-title">
-        <h2>Daftar</h2>
-        <p>Sudah punya akun? <a href="#" onclick="openLoginPopup()">Masuk</a></p>
-    </div>
-    <form class="daftar-form" id="daftar-form">
-        <div class="form-control">
-            <input class="form-input" type="email" id="email" name="email" placeholder="Email" required />
-        </div>
-        <div class="form-control">
-            <input class="form-input" type="notelp" id="notelp" name="notelp" placeholder="Nomor Whatsapp" required />
-        </div>
-        <div class="form-control">
-            <i class="far fa-eye eye" onclick="togglePasswordVisibility()"></i>
-            <input class="form-input" type="password" id="passworddaftar" name="passworddaftar" placeholder="Kata Sandi"
-            required />
-        </div>
-        <div class="form-control">
-            <i class="far fa-eye eye confpassword" onclick="toggleConfirmasiPasswordVisibility()"></i>
-            <input class="form-input" type="password" id="confpassword" name="password" placeholder="Konfirmasi Kata Sandi" required />
-        </div>
-        <button class="submit-btn" type="submit">Daftar</button>
-    </form>
-    </div>
 
-<main>
-    <section class="container">
-    <div class="image-section">
-        <img src="https://undraw.co/api/illustrations/f6c2cdd1-3ff5-4dc0-bfb3-c6db2d85e1a5" alt="Meditasi" />
-    </div>
-    <div class="form-section">
-        <h2>Tes Psikologi</h2>
-        <p>Tes psikologi dapat digunakan untuk menilai kondisi emosional dan mental seseorang, termasuk seberapa tinggi tingkat stres yang dialami. 
-        Memahami tingkat stres dapat membantumu menemukan cara yang lebih efektif untuk mengatasinya. Yuk, coba tes ini dan pahami lebih dalam keadaan psikologismu!
-        </p>
-
-        <form id="tesForm">
-        <label for="nama">Nama Lengkap</label>
-        <input type="text" id="nama" placeholder="Nama Lengkap" required />
-
-        <label for="usia">Usia</label>
-        <input type="number" id="usia" placeholder="Usia" required />
-
-        <label for="jenisKelamin">Jenis Kelamin</label>
-        <input type="text" id="jenisKelamin" placeholder="Jenis Kelamin" required />
-
-        <button type="submit">Selanjutnya</button>
-        </form>
-    </div>
-    </section>
-</main>
+    <main class="container">
+      <div class="card form-section">
+        <img src="/src/public/tespsikologi/mediasi.png" alt="Meditasi" class="illustration">
+        
+        <div class="form-info">
+          <h2>Tes Psikologi</h2>
+          <p>
+            Tes psikologi dapat digunakan untuk menilai kondisi emosional dan mental seseorang, termasuk seberapa tinggi tingkat stres yang dialami. Memahami tingkat stres dapat membantumu menemukan cara yang lebih efektif untuk mengatasinya.
+          </p>
+  
+          <form id="formData" action="pertanyaan.html">
+            <div class="form-group">
+              <label for="nama">Nama Lengkap</label>
+              <input type="text" id="nama" name="nama" placeholder="Nama Lengkap" required />
+            </div>
+  
+            <div class="form-group">
+              <label for="usia">Usia</label>
+              <input type="number" id="usia" name="usia" placeholder="Usia" required />
+            </div>
+  
+            <div class="form-group">
+              <label for="jenis_kelamin">Jenis Kelamin</label>
+              <select id="jenis_kelamin" name="jenis_kelamin" required>
+                <option value="">-- Pilih Jenis Kelamin --</option>
+                <option value="Pria">Pria</option>
+                <option value="Wanita">Wanita</option>
+                <option value="Lainnya">Lainnya</option>
+              </select>
+            </div>
+  
+            <button type="submit" class="btn-primary full-width">Selanjutnya</button>
+          </form>
+        </div>
+      </div>
+    </main>
 <footer>
     <span> &copy; 2025 MentalWell, Hak Cipta Dilindungi. </span>
 </footer>

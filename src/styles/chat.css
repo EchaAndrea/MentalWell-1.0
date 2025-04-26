@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700&display=swap');
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.chat-container {
+  display: flex;
+  height: 100vh;
+}
+
+.chat-sidebar {
+  width: 250px;
+  background-color: #fff;
+  border-right: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 10px;
+  background-color: #00bcd4;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.chat-users {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.chat-users li {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chat-users li:hover {
+  background-color: #f0f0f0;
+}
+
+.chat-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-header {
+  background-color: #00bcd4;
+  color: #000;
+  padding: 15px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #fff;
+}
+
+.chat-footer {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #00bcd4;
+}
+
+.chat-footer input {
+  flex: 1;
+  padding: 10px 15px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+}
+
+/* Tombol submit berbentuk ikon */
+.submit-btn {
+  background-color: transparent;
+  border: none;
+  padding: 6px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hover effect */
+.submit-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Gambar di dalam tombol */
+.submit-btn img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
+}
+
+.message-bubble {
+  max-width: 60%;
+  margin-bottom: 10px;
+  padding: 10px 14px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.message-bubble.right {
+  margin-left: auto;
+  background-color: #e0f7fa;
+}
