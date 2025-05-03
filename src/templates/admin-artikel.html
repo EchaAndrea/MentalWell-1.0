@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MentalWell  1.0</title>
+  <link rel="icon" href="/src/public/logo/logoicon.png" type="image/x-icon">
+  <link rel="stylesheet" href="/src/styles/admin-artikel.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <script type="module" src="/src/scripts/components/navbar-admin.js" defer></script>
+</head>
+
+<main>
+  <navbar-admin id="admin"></navbar-admin>
+    <main> 
+  <section class="container">
+    <div class="header">
+      <h2>Artikel</h2>
+      <button id="btnTambah" onclick="navigateToDetail()">+ Tambah Baru</button>
+    </div>
+
+    <div class="controls">
+      <select id="filterKategori" onchange="ubahJumlahBaris()">
+  <option value="10">10 baris</option>
+  <option value="25">25 baris</option>
+  <option value="50">50 baris</option>
+  <option value="100">100 baris</option>
+  <option value="semua">Semua</option>
+</select>
+
+      <div class="search-refresh">
+        <input type="text" id="searchInput" placeholder="Pencarian..." />
+        <button onclick="searchArtikel()">
+          <img src="/src/public/admin/cari.png" alt="Cari" />
+        </button>
+        <button onclick="refreshArtikel()">
+          <img src="/src/public/admin/refresh.png" alt="Refresh" />
+        </button>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()" /></th>
+          <th>ID</th>
+          <th>Kategori</th>
+          <th>Judul</th>
+          <th>Tanggal</th>
+          <th>Dibuat Oleh</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="artikelTbody">
+        <!-- Data otomatis dimuat lewat JS -->
+      </tbody>
+    </table>
+
+    <button class="btn-delete" onclick="hapusDipilih()">
+      <img src="/src/public/admin/hapus.png" alt="Hapus" /> Hapus Yang Dipilih
+    </button>
+
+    <div class="pagination" id="pagination"></div>
+  </section>
+
+</main>
+  <footer>
+    <span> &copy; 2025 MentalWell, Hak Cipta Dilindungi. </span>
+  </footer>
+</body>
+
+</html>
+<script src="/src/scripts/views/pages/admin-artikel.js"></script>

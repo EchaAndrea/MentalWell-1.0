@@ -1,0 +1,101 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .container {
+    padding: 20px;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 0;
+  }
+  
+  .search-refresh {
+    display: flex;
+    gap: 8px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  thead {
+    background-color: #00bcd4;
+    color: white;
+  }
+  
+  th, td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+  }
+  
+  .btn-delete {
+    background-color: #D21111;
+    color: white;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .pagination {
+    display: flex;
+    gap: 5px;
+    margin-top: 20px;
+  }
+  
+/*
+Footer
+*/
+
+footer {
+    font-size: 18px;
+    padding: 1.5em;
+    height: 18px;
+    background-color: #02bbdd;
+    color: #fff;
+    margin-top: 2rem;
+    text-align: center;
+  }
+
+  .btn-action {
+    border: none;
+    padding: 8px;
+    margin: 2px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .btn-action img {
+    width: 10px;
+    height: 10px;
+  }
+  
+  /* Warna khusus */
+  .btn-action.view {
+    background-color: #B6B6B6
+  }
+  
+  .btn-action.edit {
+    background-color: #013658
+  }
+  
+  .btn-action.delete {
+    background-color: #D21111
+  }
+  
