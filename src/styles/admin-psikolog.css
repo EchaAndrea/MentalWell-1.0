@@ -1,72 +1,203 @@
-body {
-    font-family: sans-serif;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .container {
-    padding: 20px;
-  }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .controls {
-    display: flex;
-    justify-content: space-between;
-    margin: 15px 0;
-  }
-  
-  .search-refresh {
-    display: flex;
-    gap: 8px;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  thead {
-    background-color: #00bcd4;
-    color: white;
-  }
-  
-  th, td {
-    padding: 10px;
-    border: 1px solid #ccc;
-    text-align: center;
-  }
-  
-  .btn-delete {
-    background-color: red;
-    color: white;
-    padding: 10px;
-    margin-top: 10px;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .pagination {
-    display: flex;
-    gap: 5px;
-    margin-top: 20px;
-  }
-  
-/*
-Footer
-*/
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
+/* Body & Font */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #fafafa;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Judul */
+h5 strong {
+  color: #343a40;
+}
+
+/* Tombol Tambah */
+.btn-primary {
+  background-color: #044B77;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #02BBDD;
+}
+
+/* Tombol Cari */
+.cari-btn {
+  background-color: #044B77;
+  border: 1px solid #a5a7aa;
+}
+
+.cari-btn:hover {
+  background-color: #02BBDD;
+}
+
+/* Tombol Refresh */
+.refresh-btn {
+  background-color: #02BBDD;
+  border: 1px solid #a5a7aa;
+}
+
+.refresh-btn:hover {
+  background-color: #044B77;
+}
+
+/* Tabel */
+.table th {
+  background-color: #02BBDD;
+  color: #ffffff;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+/* Table wrapper */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Checkbox */
+#selectAll {
+  cursor: pointer;
+}
+
+/* Tombol Aksi */
+.btn-secondary {
+  background-color: #6c757d;
+  border: none;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.btn-info {
+  background-color: #044B77;
+  border: none;
+}
+
+.btn-info:hover {
+  background-color: #02BBDD;
+}
+
+.btn-danger {
+  background-color: #D21111;
+  border: none;
+}
+
+.btn-danger:hover {
+  background-color: #920c0c;
+}
+
+/* Pagination */
+.pagination {
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.pagination .page-link {
+  color: #000000; 
+  border: 1px solid #dee2e6; 
+  background-color: transparent;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.pagination .page-link:hover {
+  background-color: #02BBDD;
+  color: #ffffff;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #044B77;
+  color: #ffffff;
+  border: 1px solid #044B77;
+}
+
+.pagination .page-item.active .page-link:hover {
+  background-color: #02BBDD;
+  color: #ffffff;
+  border: 1px solid #02BBDD;
+}
+
+.pagination .page-item.disabled .page-link {
+  background-color: #e9ecef;
+  color: #000000;
+  border: 1px solid #dee2e6;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+
+/* Dropdown & Form control */
+.form-select,
+.form-control {
+  max-width: 100%;
+}
+
+/* Footer */
 footer {
-    font-size: 18px;
-    padding: 1.5em;
-    height: 18px;
-    background-color: #02bbdd;
-    color: #fff;
-    margin-top: 2rem;
-    text-align: center;
+  font-size: 16px;
+  padding: 1.5em;
+  background-color: #02bbdd;
+  color: #fff;
+  text-align: center;
+  margin-top: auto;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .d-flex.justify-content-between {
+    flex-direction: column !important;
+    gap: 1rem;
   }
-  
+
+  .input-group {
+    width: 100% !important;
+  }
+
+  .form-select,
+  .form-control,
+  .btn {
+    width: 100% !important;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .table th,
+  .table td {
+    font-size: 14px;
+  }
+
+  footer {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+  .d-flex.justify-content-between {
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .input-group {
+    flex-grow: 1;
+  }
+
+  .pagination {
+    justify-content: center;
+  }
+}

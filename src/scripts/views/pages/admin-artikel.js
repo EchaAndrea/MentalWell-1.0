@@ -1,76 +1,147 @@
-let artikelList = [
-    { id: 1, kategori: "Psikologi", judul: "Tips Mengelola Stres", tanggal: "2023-12-01", dibuatOleh: "Admin" },
-    { id: 2, kategori: "Kesehatan", judul: "Pola Tidur Sehat", tanggal: "2023-12-02", dibuatOleh: "Admin" },
-  ];
-  
-  function renderArtikel(data = artikelList) {
-    const tbody = document.getElementById("artikelTbody");
-    tbody.innerHTML = "";
-    data.forEach((item) => {
-      tbody.innerHTML += `
-        <tr>
-          <td><input type="checkbox" class="row-check" data-id="${item.id}" /></td>
-          <td>${item.id}</td>
-          <td>${item.kategori}</td>
-          <td>${item.judul}</td>
-          <td>${item.tanggal}</td>
-          <td>${item.dibuatOleh}</td>
-          <td>
-            <button class="btn-action view" onclick="viewArtikel(${item.id})">
-                <img src="/src/public/admin/lihat.png" alt="Lihat" />
-            </button>
-            <button class="btn-action edit" onclick="editArtikel(${item.id})">
-                <img src="/src/public/admin/edit.png" alt="Edit" />
-            </button>
-            <button class="btn-action delete" onclick="hapusArtikel(${item.id})">
-                <img src="/src/public/admin/hapus.png" alt="Hapus" />
-            </button>
-          </td>
-        </tr>
-      `;
-    });
+const psikologData = [
+  { id: "01", kategori: "Kesehatan Mental", judul: "Kesehatan Mental Anak", tanggal: "06 Juni 2025", dibuatoleh: "Admin" },
+  { id: "02", kategori: "Psikologi", judul: "Psikolog Remaja", tanggal: "08 Juni 2025", dibuatoleh: "Admin" },
+  // Tambahkan data lain sesuai kebutuhan
+];
+
+let filteredData = [...psikologData];
+let rowsPerPage = 10;
+let currentPage = 1;
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("filterKategori").addEventListener("change", handleFilter);
+  document.getElementById("selectAll").addEventListener("change", function () {
+    document.querySelectorAll(".row-checkbox").forEach(cb => cb.checked = this.checked);
+  });
+  document.getElementById("rowsPerPage").addEventListener("change", updateRowsPerPage);
+  renderTable();
+});
+
+function handleFilter() {
+  const kategori = document.getElementById("filterKategori").value;
+  filteredData = kategori === "semua"
+    ? [...psikologData]
+    : psikologData.filter(item => item.kategori === kategori);
+  currentPage = 1;
+  renderTable();
+}
+
+function handleSearch() {
+  const keyword = document.getElementById("searchInput").value.toLowerCase();
+  filteredData = psikologData.filter(p =>
+    p.kategori.toLowerCase().includes(keyword) ||
+    p.judul.toLowerCase().includes(keyword) ||
+    p.dibuatoleh.toLowerCase().includes(keyword)
+  );
+  currentPage = 1;
+  renderTable();
+}
+
+function resetTable() {
+  document.getElementById("searchInput").value = "";
+  document.getElementById("filterKategori").value = "semua";
+  filteredData = [...psikologData];
+  currentPage = 1;
+  renderTable();
+}
+
+function updateRowsPerPage() {
+  const value = document.getElementById("rowsPerPage").value;
+  rowsPerPage = value === "all" ? filteredData.length : parseInt(value);
+  currentPage = 1;
+  renderTable();
+}
+
+function changePage(page) {
+  currentPage = page;
+  renderTable();
+}
+
+function renderTable() {
+  const tbody = document.getElementById("psikologTableBody");
+  tbody.innerHTML = "";
+
+  const start = (currentPage - 1) * rowsPerPage;
+  const end = start + rowsPerPage;
+  const pageData = filteredData.slice(start, end);
+
+  for (const p of pageData) {
+    tbody.innerHTML += `
+      <tr>
+        <td><input type="checkbox" class="row-checkbox" data-id="${p.id}"></td>
+        <td>${p.id}</td>
+        <td>${p.kategori}</td>
+        <td>${p.judul}</td>
+        <td>${p.tanggal}</td>
+        <td>${p.dibuatoleh}</td>
+        <td>
+          <a href="/admin/artikel/lihat.html?id=${p.id}" class="btn btn-sm btn-secondary">
+            <img src="/src/public/admin/lihat.png" width="13">
+          </a>
+          <a href="/admin/artikel/edit.html?id=${p.id}" class="btn btn-sm btn-info">
+            <img src="/src/public/admin/edit.png" width="13">
+          </a>
+          <button class="btn btn-sm btn-danger" onclick="hapusItem('${p.id}')">
+            <img src="/src/public/admin/hapus.png" width="13">
+          </button>
+        </td>
+      </tr>`;
   }
-  
-  function toggleSelectAll() {
-    const isChecked = document.getElementById("selectAll").checked;
-    document.querySelectorAll(".row-check").forEach((checkbox) => {
-      checkbox.checked = isChecked;
-    });
+
+  renderPagination();
+}
+
+function renderPagination() {
+  const pagination = document.getElementById("pagination");
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+  pagination.innerHTML = "";
+
+  if (totalPages <= 1) return;
+
+  const createButton = (label, page, disabled = false, active = false) => {
+    return `<button 
+      ${disabled ? "disabled" : `onclick="changePage(${page})"`}
+      class="${active ? "active" : ""}">
+      ${label}
+    </button>`;
+  };
+
+  pagination.innerHTML += createButton("sebelumnya", currentPage - 1, currentPage === 1);
+
+  for (let i = 1; i <= totalPages; i++) {
+    pagination.innerHTML += createButton(i, i, false, i === currentPage);
   }
-  
-  function searchArtikel() {
-    const query = document.getElementById("searchInput").value.toLowerCase();
-    const filtered = artikelList.filter(a => a.judul.toLowerCase().includes(query));
-    renderArtikel(filtered);
+
+  pagination.innerHTML += createButton("selanjutnya", currentPage + 1, currentPage === totalPages);
+}
+
+function hapusItem(id) {
+  const index = psikologData.findIndex(p => p.id === id);
+  if (index !== -1) {
+    psikologData.splice(index, 1);
+    filteredData = [...psikologData];
+    renderTable();
   }
-  
-  function refreshArtikel() {
-    renderArtikel();
-    document.getElementById("searchInput").value = "";
-  }
-  
-  function hapusArtikel(id) {
-    artikelList = artikelList.filter(item => item.id !== id);
-    renderArtikel();
-  }
-  
-  function hapusDipilih() {
-    const selected = Array.from(document.querySelectorAll(".row-check:checked")).map(cb => parseInt(cb.dataset.id));
-    artikelList = artikelList.filter(item => !selected.includes(item.id));
-    renderArtikel();
-  }
-  
-  function viewArtikel(id) {
-    alert("Lihat artikel ID: " + id);
-  }
-  
-  function editArtikel(id) {
-    window.location.href = `artikel-detail.html?id=${id}`;
-  }
-  
-  function navigateToDetail() {
-    window.location.href = `artikel-detail.html`;
-  }
-  
-  window.onload = () => renderArtikel();
-  
+}
+
+function hapusYangDipilih() {
+  const checkboxes = document.querySelectorAll(".row-checkbox:checked");
+  if (checkboxes.length === 0) return alert("Pilih data terlebih dahulu.");
+
+  checkboxes.forEach(cb => {
+    const id = cb.getAttribute("data-id");
+    const index = psikologData.findIndex(p => p.id === id);
+    if (index !== -1) psikologData.splice(index, 1);
+  });
+
+  filteredData = [...psikologData];
+  renderTable();
+}
+
+// Agar bisa dipanggil dari HTML
+window.handleSearch = handleSearch;
+window.resetTable = resetTable;
+window.updateRowsPerPage = updateRowsPerPage;
+window.changePage = changePage;
+window.hapusItem = hapusItem;
+window.hapusYangDipilih = hapusYangDipilih;

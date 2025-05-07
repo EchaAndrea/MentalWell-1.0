@@ -1,11 +1,11 @@
 class NavbarAdmin extends HTMLElement {
-    constructor() {
-      super();
-      this.attachShadow({ mode: 'open' });
-    }
-  
-    connectedCallback() {
-      this.shadowRoot.innerHTML = `
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
+  }
+
+  connectedCallback() {
+    this.shadowRoot.innerHTML = `
         <style>
           * {
             box-sizing: border-box;
@@ -142,7 +142,7 @@ class NavbarAdmin extends HTMLElement {
               </ul>
               <div class="button-user" id="userDropdown">
                 <img id="photoUser" src="/src/public/beranda/man.png" alt="Foto User"  id="photoUser" />
-                <h4 id="nicknameTag">User</h4>
+                <h4 id="nicknameTag"></h4>
                 <img src="/src/public/dropdown/dropdown.png" alt="Foto User" id="dropdown-" >
                 <div class="dropdown-content">
                   <a id="profilLink" href="/editprofiladmin">
@@ -159,41 +159,46 @@ class NavbarAdmin extends HTMLElement {
           </div>
         </nav>
       `;
-  
-      this.fetchUserData();
-      this.shadowRoot.querySelector('#logoutBtn').addEventListener('click', (e) => {
+
+    this.fetchUserData();
+    this.shadowRoot
+      .querySelector("#logoutBtn")
+      .addEventListener("click", (e) => {
         e.preventDefault();
-        sessionStorage.removeItem('authToken');
-        window.location.href = '/login';
+        sessionStorage.removeItem("authToken");
+        window.location.href = "/login";
       });
-    }
-  
-    async fetchUserData() {
-      const token = sessionStorage.getItem('authToken');
-      if (!token) return;
-  
-      try {
-        const response = await fetch('https://mentalwellbackend-production.up.railway.app/currentPsychologist', {
+  }
+
+  async fetchUserData() {
+    const token = sessionStorage.getItem("authToken");
+    if (!token) return;
+
+    try {
+      const response = await fetch(
+        "https://mentalwellbackend-production.up.railway.app/currentPsychologist",
+        {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-  
-        if (!response.ok) throw new Error('Gagal memuat data pengguna');
-  
-        const data = await response.json();
-        const nickname = data.psychologist.name;
-        const photo = data.psychologist.profilePicture;
-  
-        this.shadowRoot.querySelector('#nicknameTag').textContent = nickname || 'User';
-        if (photo) {
-          this.shadowRoot.querySelector('#photoUser').src = photo;
+            Authorization: `Bearer ${token}`,
+          },
         }
-      } catch (error) {
-        console.error('Error:', error);
+      );
+
+      if (!response.ok) throw new Error("Gagal memuat data pengguna");
+
+      const data = await response.json();
+      const nickname = data.psychologist.name;
+      const photo = data.psychologist.profilePicture;
+
+      this.shadowRoot.querySelector("#nicknameTag").textContent =
+        nickname || "User";
+      if (photo) {
+        this.shadowRoot.querySelector("#photoUser").src = photo;
       }
+    } catch (error) {
+      console.error("Error:", error);
     }
   }
-  
-  customElements.define('navbar-admin', NavbarAdmin);
-  
+}
+
+customElements.define("navbar-admin", NavbarAdmin);

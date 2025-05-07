@@ -1,101 +1,199 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body & Font */
 body {
-    font-family: sans-serif;
-    margin: 0;
-    padding: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #fafafa;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Judul */
+h5 strong {
+  color: #343a40;
+}
+
+/* Tombol Tambah */
+.btn-primary {
+  background-color: #044B77;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #02BBDD;
+}
+
+/* Tombol Cari */
+.cari-btn {
+  background-color: #044B77;
+  border: none;
+}
+
+.cari-btn:hover {
+  background-color: #02BBDD;
+}
+
+/* Tombol Refresh */
+.refresh-btn {
+  background-color: #02BBDD;
+  border: none;
+}
+
+.refresh-btn:hover {
+  background-color: #044B77;
+}
+
+/* Tabel */
+.table th {
+  background-color: #02BBDD;
+  color: #ffffff;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+/* Table wrapper */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Checkbox */
+#selectAll {
+  cursor: pointer;
+}
+
+/* Tombol Aksi */
+.btn-secondary {
+  background-color: #6c757d;
+  border: none;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.btn-info {
+  background-color: #044B77;
+  border: none;
+}
+
+.btn-info:hover {
+  background-color: #02BBDD;
+}
+
+.btn-danger {
+  background-color: #D21111;
+  border: none;
+}
+
+.btn-danger:hover {
+  background-color: #920c0c;
+}
+
+/* Pagination */
+.pagination {
+  justify-content: center;
+}
+
+.pagination .page-link {
+  color: #044B77;
+  border: none;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #044B77;
+  color: white;
+}
+
+/* Dropdown & Form control */
+.form-select,
+.form-control {
+  max-width: 100%;
+}
+
+/* Footer */
+footer {
+  font-size: 16px;
+  padding: 1.5em;
+  background-color: #02bbdd;
+  color: #fff;
+  text-align: center;
+  margin-top: auto;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .d-flex.justify-content-between {
+    flex-direction: column;
+    gap: 1rem;
   }
-  
-  .container {
-    padding: 20px;
+
+  .btn,
+  .form-select,
+  .form-control {
+    width: 100% !important;
   }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .controls {
-    display: flex;
-    justify-content: space-between;
-    margin: 15px 0;
-  }
-  
-  .search-refresh {
-    display: flex;
-    gap: 8px;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  thead {
-    background-color: #00bcd4;
-    color: white;
-  }
-  
-  th, td {
-    padding: 10px;
-    border: 1px solid #ccc;
-    text-align: center;
-  }
-  
-  .btn-delete {
-    background-color: #D21111;
-    color: white;
-    padding: 10px;
-    margin-top: 10px;
-    border: none;
-    cursor: pointer;
-  }
-  
+
   .pagination {
-    display: flex;
-    gap: 5px;
-    margin-top: 20px;
+    justify-content: center;
   }
-  
+
+  .table th,
+  .table td {
+    font-size: 14px;
+  }
+
+  footer {
+    font-size: 14px;
+  }
+}
+
+
+/* Pagination */
+.pagination {
+  display: flex;
+  gap: 5px;
+}
+
+.pagination button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #ccc;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background-color: #013658;
+  color: white;
+}
+
+.pagination button:disabled {
+  background-color: #eee;
+  color: #888;
+  cursor: not-allowed;
+}
+
 /*
 Footer
 */
 
 footer {
-    font-size: 18px;
-    padding: 1.5em;
-    height: 18px;
-    background-color: #02bbdd;
-    color: #fff;
-    margin-top: 2rem;
-    text-align: center;
-  }
-
-  .btn-action {
-    border: none;
-    padding: 8px;
-    margin: 2px;
-    border-radius: 6px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .btn-action img {
-    width: 10px;
-    height: 10px;
-  }
-  
-  /* Warna khusus */
-  .btn-action.view {
-    background-color: #B6B6B6
-  }
-  
-  .btn-action.edit {
-    background-color: #013658
-  }
-  
-  .btn-action.delete {
-    background-color: #D21111
-  }
-  
+  font-size: 18px;
+  padding: 1.5em;
+  height: 18px;
+  background-color: #02bbdd;
+  color: #fff;
+  margin-top: 2rem;
+  text-align: center;
+}

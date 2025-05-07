@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MentalWell  1.0</title>
+    <link rel="icon" href="/src/public/logo/logoicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/src/styles/admin-editartikel.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <script type="module" src="/src/scripts/components/navbar-admin.js" defer></script>
+  </head>
+
+<body>
+    <navbar-admin id="admin"></navbar-admin>
+
+  <main class="container">
+    <div class="kembali-wrapper">
+        <button class="btn-kembali">← Kembali</button>
+      </div>
+      
+    <form id="formArtikel">
+      <label>Judul Artikel</label>
+      <input type="text" name="judul" required>
+
+      <label>Kategori</label>
+      <input type="text" name="kategori" required>
+
+      <label>Tanggal</label>
+      <input type="date" name="tanggal" required>
+
+      <label>Konten</label>
+      <textarea name="konten" id="konten" rows="10"></textarea>
+
+      <label>Gambar</label>
+      <input type="file" name="gambar" accept="image/*" />
+
+      <button type="submit" class="btn-simpan">Simpan</button>
+    </form>
+</main>
+<footer>
+  <span> &copy; 2025 MentalWell, Hak Cipta Dilindungi. </span>
+</footer>
+</body>
+
+</html>
+<script src="/src/scripts/views/pages/admin-editartikel.js"></script>
