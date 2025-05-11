@@ -18,18 +18,45 @@
     <!-- Navbar -->
     <navbar-masuk id="masuk"></navbar-masuk>
 
-    <!-- Main Content -->
-    <h2>Sesi Konseling</h2>
-    <div class="content-sesi" id="session-list">
-      <!-- Data session akan dimasukkan di sini oleh JavaScript -->
-    </div>
+    <main>
+      <h2>Sesi Konseling</h2>
+      <div id="session-list" class="content-sesi">
+        <!-- Kontainer ini akan diisi lewat JS -->
+      </div>
 
-    <!-- Footer -->
-    <footer>
-      @MentalWell 2023, SEMUA HAK DILINDUNGI
-    </footer>
+      <!-- Footer -->
+      <footer>
+        @MentalWell 2023, SEMUA HAK DILINDUNGI
+      </footer>
 
-    <!-- Scripts -->
+      <!-- Chat Popup -->
+      <div id="chatPopup" style="display: none" class="chat-popup">
+        <div class="chat-header">
+          <span>John Doe M.Si., M.Psi., Psikolog</span>
+          <!-- Close button with icon -->
+          <button class="btn-icon" onclick="toggleChat()">
+            <img src="/src/public/chat/close.png" alt="Close" class="icon">
+          </button>
+        </div>
+        <div id="chatBody" class="chat-body">
+          <!-- chat bubbles will appear here -->
+        </div>
+        <div class="chat-footer">
+          <!-- Add button for file upload -->
+          <label for="fileUpload" class="upload-label">
+            <img src="/src/public/chat/add.png" alt="Add" class="icon">
+          </label>
+          <input type="file" id="fileUpload" style="display: none" />
+          <!-- Text input for chat -->
+          <input type="text" id="chatInput" placeholder="Tulis pesan..." />
+          <!-- Send button -->
+          <button class="btn-icon" onclick="sendMessage()">
+            <img src="/src/public/chat/send.png" alt="Send" class="icon">
+          </button>
+        </div>
+      </div>
+    </main>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/src/scripts/views/pages/sesikonseling.js"></script>
   </body>
