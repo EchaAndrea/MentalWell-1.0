@@ -8,129 +8,83 @@
 
 body {
   font-family: 'Inter', sans-serif;
-  background-color: #f5f5f5;
-  color: #333;
-}
-
-.chat-container {
+  background-color: #ffffff; 
+  min-height: 100vh;
   display: flex;
-  height: 100vh;
-}
-
-.chat-sidebar {
-  width: 250px;
-  background-color: #fff;
-  border-right: 1px solid #ccc;
-  display: flex;
-  flex-direction: column;
-}
-
-.sidebar-header {
-  padding: 10px;
-  background-color: #00bcd4;
-  display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
 }
 
-.chat-users {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  flex-grow: 1;
-  overflow-y: auto;
-}
-
-.chat-users li {
-  padding: 15px;
-  border-bottom: 1px solid #eee;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.chat-users li:hover {
-  background-color: #f0f0f0;
-}
-
-.chat-main {
-  flex: 1;
+.chat-popup {
+  width: 1000px;
+  height: 700px;
+  background-color: white;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
+  z-index: 9999;
+  overflow: hidden;
 }
 
 .chat-header {
   background-color: #00bcd4;
-  color: #000;
+  color: black;
   padding: 15px;
-  font-weight: bold;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 10px;
 }
 
-.chat-messages {
+.btn-icon {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: black;
+  cursor: pointer;
+}
+
+.chat-body {
   flex: 1;
   padding: 20px;
+  background-color: white;
+  border: 1px solid #ccc;
   overflow-y: auto;
-  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.chat-bubble {
+  background-color: #f8f9fa;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 12px 16px;
+  max-width: 70%;
+}
+
+.chat-bubble.left {
+  align-self: flex-start;
+}
+
+.chat-bubble.right {
+  align-self: flex-end;
 }
 
 .chat-footer {
+  background-color: #00bcd4;
   padding: 10px;
   display: flex;
   align-items: center;
   gap: 10px;
-  background-color: #00bcd4;
 }
 
-.chat-footer input {
+.chat-footer input[type="text"] {
   flex: 1;
-  padding: 10px 15px;
-  border-radius: 20px;
-  border: none;
-  outline: none;
-}
-
-/* Tombol submit berbentuk ikon */
-.submit-btn {
-  background-color: transparent;
-  border: none;
-  padding: 6px;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Hover effect */
-.submit-btn:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-/* Gambar di dalam tombol */
-.submit-btn img {
-  width: 24px;
-  height: 24px;
-  object-fit: contain;
-  display: block;
-}
-
-.message-bubble {
-  max-width: 60%;
-  margin-bottom: 10px;
-  padding: 10px 14px;
-  background-color: #f9f9f9;
   border-radius: 10px;
-  border: 1px solid #ccc;
+  border: none;
+  padding: 10px;
 }
 
-.message-bubble.right {
-  margin-left: auto;
-  background-color: #e0f7fa;
+.chat-footer input[type="text"]:focus {
+  outline: none;
 }

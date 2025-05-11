@@ -1,44 +1,57 @@
-const users = ["Natasya Alana Putri", "Anindya Kinarya", "Echa Andrea"];
-const messages = {
-  "Natasya Alana Putri": ["Halo!", "Apa kabar?"],
-  "Anindya Kinarya": ["Selamat pagi!", "Ada yang bisa saya bantu?"],
-  "Echa Andrea": ["Tes chat dari Echa."]
-};
-
-const userList = document.getElementById("userList");
-const chatMessages = document.getElementById("chatMessages");
-const chatUserName = document.getElementById("chatUserName");
-const msgInput = document.getElementById("msgInput");
-let currentUser = "";
-
-users.forEach((user) => {
-  const li = document.createElement("li");
-  li.innerHTML = `<i class="fas fa-user-circle"></i> ${user}`;
-  li.onclick = () => loadChat(user);
-  userList.appendChild(li);
-});
-
-function loadChat(user) {
-  currentUser = user;
-  chatUserName.textContent = user;
-  chatMessages.innerHTML = "";
-  messages[user].forEach((msg, index) => {
-    addMessage(msg, index % 2 === 0 ? "left" : "right");
-  });
-}
-
-function addMessage(text, side = "right") {
-  const msg = document.createElement("div");
-  msg.className = `message-bubble ${side}`;
-  msg.textContent = text;
-  chatMessages.appendChild(msg);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-document.getElementById("sendBtn").onclick = () => {
-  const text = msgInput.value.trim();
-  if (text !== "" && currentUser) {
-    addMessage(text, "right");
-    msgInput.value = "";
+function toggleChat() {
+    const popup = document.getElementById("chatPopup");
+    popup.style.display = popup.style.display === "flex" ? "none" : "flex";
+  
+    const chatBody = document.getElementById("chatBody");
+    if (chatBody.children.length === 0) {
+      addChatBubble("Halo, ada yang bisa saya bantu?", "left");
+    }
   }
-};
+  
+  function sendMessage() {
+    const input = document.getElementById("chatInput");
+    const message = input.value.trim();
+    if (message !== "") {
+      addChatBubble(message, "right");
+      input.value = "";
+      scrollToBottom();
+  
+      setTimeout(() => {
+        addChatBubble("Terima kasih sudah berbagi, saya akan bantu semampu saya.", "left");
+        scrollToBottom();
+      }, 800);
+    }
+  }
+  
+  function addChatBubble(text, position) {
+    const chatBody = document.getElementById("chatBody");
+    const bubble = document.createElement("div");
+    bubble.className = `chat-bubble ${position}`;
+    bubble.textContent = text;
+    chatBody.appendChild(bubble);
+  }
+  
+  function scrollToBottom() {
+    const chatBody = document.getElementById("chatBody");
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+  
+  document.addEventListener("DOMContentLoaded", function () {
+    const chatBody = document.getElementById("chatBody");
+    addChatBubble("Halo, ada yang bisa saya bantu?", "left");
+  
+    const input = document.getElementById("chatInput");
+    input.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        sendMessage();
+      }
+    });
+  
+    document.getElementById("fileUpload").addEventListener("change", function () {
+      if (this.files.length > 0) {
+        addChatBubble(`📎 File dikirim: ${this.files[0].name}`, "right");
+        scrollToBottom();
+      }
+    });
+  });
+  

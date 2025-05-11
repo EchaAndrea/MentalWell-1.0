@@ -1,97 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MentalWell 1.0</title>
     <link rel="icon" href="/src/public/logo/logoicon.png" type="image/x-icon" />
     <link rel="stylesheet" href="/src/styles/editprofilpasien.css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-    />
-    <script
-      type="module"
-      src="/src/scripts/components/navbar-user.js"
-      defer
-    ></script>
-    <script
-      type="module"
-      src="/src/scripts/components/navbar-masuk.js"
-      defer
-    ></script>
-  </head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+    <script type="module" src="/src/scripts/components/navbar-user.js" defer></script>
+    <script type="module" src="/src/scripts/components/navbar-masuk.js" defer></script>
+</head>
 
-  <body>
+<body>
     <navbar-masuk id="masuk"></navbar-masuk>
     <div class="editpasien-container">
-      <div class="editpasien-title">
+    <div class="editpasien-title">
         <h2>Profil Pengguna</h2>
-      </div>
-      <form class="editpasien-form">
+    </div>
+    <form class="editpasien-form">
         <div class="profil-container">
-          <div class="profil-image" id="profileimage"></div>
+        <div class="profil-image" id="profileimage"></div>
         </div>
         <div class="form-control">
-          <label for="email">Email </label>
-          <div class="form-input gray-text" id="email">
+            <label for="email">Email </label>
+            <div class="form-input gray-text" id="email">
             <h4></h4>
-          </div>
+        </div>
         </div>
         <div class="form-control">
-          <label for="namalengkap">Nama Lengkap </label>
-          <input
+        <label for="namalengkap">Nama Lengkap </label>
+        <input
             class="form-input"
             type="text"
             id="namalengkap"
             name="namalengkap"
             required
-          />
+        />
         </div>
         <div class="form-control">
-          <label for="namapanggilan">Nama Panggilan </label>
-          <input
+        <label for="namapanggilan">Nama Panggilan </label>
+        <input
             class="form-input"
             type="text"
             id="namapanggilan"
             name="namapanggilan"
             required
-          />
+        />
         </div>
         <div class="form-control">
-          <label for="nowa">Nomor Whatsapp </label>
-          <input
+        <label for="nowa">Nomor Whatsapp </label>
+        <input
             class="form-input"
             type="number"
             id="nowa"
             name="nowa"
             required
-          />
+        />
         </div>
         <div class="form-control">
-          <label for="tgllahir">Tanggal Lahir </label>
-          <input
+        <label for="tgllahir">Tanggal Lahir </label>
+        <input
             class="form-input"
             type="date"
             id="tgllahir"
             name="tgllahir"
             required
-          />
+        />
         </div>
         <div class="form-control">
-          <label for="gender">Jenis Kelamin </label>
-          <select class="form-input" id="gender" name="gender" required>
+        <label for="gender">Jenis Kelamin </label>
+        <select class="form-input" id="gender" name="gender" required>
             <option value="laki_laki">Laki-laki</option>
             <option value="perempuan">Perempuan</option>
-          </select>
+        </select>
         </div>
         <button class="simpan-btn" type="submit">Simpan</button>
-      </form>
+    </form>
     </div>
     <footer>
-      <span> &copy; 2023 MentalWell, Hak Cipta Dilindungi. </span>
+        <span> &copy; 2023 MentalWell, Hak Cipta Dilindungi. </span>
     </footer>
-  </body>
+</body>
 </html>
 <script src="/src/scripts/views/pages/editprofilpasien.js"></script>

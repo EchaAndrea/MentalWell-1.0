@@ -36,10 +36,6 @@ fetch('https://mentalwell-backend.vercel.app/history', {
 
           if (riwayat.type == "chat") {
             formattedType = "Chat"
-          } else if (riwayat.type == "call") {
-            formattedType = "Call"
-          } else if (riwayat.type == "video_call") {
-            formattedType = "Video Call"
           }
 
           let formattedStatus;
