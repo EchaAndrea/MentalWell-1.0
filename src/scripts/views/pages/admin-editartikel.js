@@ -13,3 +13,11 @@ document.getElementById('formArtikel').addEventListener('submit', function(e) {
     alert("Artikel berhasil disimpan (simulasi)");
   });
   
+  document.getElementById('gambar').addEventListener('change', function () {
+    const fileName = this.files[0]?.name || '';
+    document.getElementById('namaFile').value = fileName;
+  });
+
+    document.getElementById('namaFile').addEventListener('click', function () {
+    document.getElementById('gambar').click();
+  });
