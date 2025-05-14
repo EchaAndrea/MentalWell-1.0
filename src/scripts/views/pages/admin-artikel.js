@@ -1,6 +1,16 @@
 const psikologData = [
   { id: "01", kategori: "Kesehatan Mental", judul: "Kesehatan Mental Anak", tanggal: "06 Juni 2025", dibuatoleh: "Admin" },
   { id: "02", kategori: "Psikologi", judul: "Psikolog Remaja", tanggal: "08 Juni 2025", dibuatoleh: "Admin" },
+  { id: "03", kategori: "Kesehatan Mental", judul: "Kesehatan Mental Anak", tanggal: "06 Juni 2025", dibuatoleh: "Admin" },
+  { id: "04", kategori: "Psikologi", judul: "Psikolog Remaja", tanggal: "08 Juni 2025", dibuatoleh: "Admin" },
+    { id: "05", kategori: "Kesehatan Mental", judul: "Kesehatan Mental Anak", tanggal: "06 Juni 2025", dibuatoleh: "Admin" },
+  { id: "06", kategori: "Psikologi", judul: "Psikolog Remaja", tanggal: "08 Juni 2025", dibuatoleh: "Admin" },
+  { id: "07", kategori: "Kesehatan Mental", judul: "Kesehatan Mental Anak", tanggal: "06 Juni 2025", dibuatoleh: "Admin" },
+  { id: "08", kategori: "Psikologi", judul: "Psikolog Remaja", tanggal: "08 Juni 2025", dibuatoleh: "Admin" },
+  { id: "09", kategori: "Kesehatan Mental", judul: "Kesehatan Mental Anak", tanggal: "06 Juni 2025", dibuatoleh: "Admin" },
+    { id: "10", kategori: "Psikologi", judul: "Psikolog Remaja", tanggal: "08 Juni 2025", dibuatoleh: "Admin" },
+  { id: "11", kategori: "Kesehatan Mental", judul: "Kesehatan Mental Anak", tanggal: "06 Juni 2025", dibuatoleh: "Admin" },
+  { id: "12", kategori: "Psikologi", judul: "Psikolog Remaja", tanggal: "08 Juni 2025", dibuatoleh: "Admin" },
   // Tambahkan data lain sesuai kebutuhan
 ];
 
@@ -75,10 +85,10 @@ function renderTable() {
         <td>${p.tanggal}</td>
         <td>${p.dibuatoleh}</td>
         <td>
-          <a href="/admin/artikel/lihat.html?id=${p.id}" class="btn btn-sm btn-secondary">
+          <a href="/src/templates/admin-editartikel.html?id=${p.id}" class="btn btn-sm btn-secondary">
             <img src="/src/public/admin/lihat.png" width="13">
           </a>
-          <a href="/admin/artikel/edit.html?id=${p.id}" class="btn btn-sm btn-info">
+          <a href="/src/templates/admin-editartikel.html?id=${p.id}" class="btn btn-sm btn-info">
             <img src="/src/public/admin/edit.png" width="13">
           </a>
           <button class="btn btn-sm btn-danger" onclick="hapusItem('${p.id}')">
@@ -96,24 +106,33 @@ function renderPagination() {
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
   pagination.innerHTML = "";
 
-  if (totalPages <= 1) return;
+  // Tombol "Sebelumnya"
+  const prevDisabled = currentPage === 1 ? "disabled" : "";
+  pagination.innerHTML += `
+    <li class="page-item ${prevDisabled}">
+      <a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Sebelumnya</a>
+    </li>
+  `;
 
-  const createButton = (label, page, disabled = false, active = false) => {
-    return `<button 
-      ${disabled ? "disabled" : `onclick="changePage(${page})"`}
-      class="${active ? "active" : ""}">
-      ${label}
-    </button>`;
-  };
-
-  pagination.innerHTML += createButton("sebelumnya", currentPage - 1, currentPage === 1);
-
+  // Nomor halaman
   for (let i = 1; i <= totalPages; i++) {
-    pagination.innerHTML += createButton(i, i, false, i === currentPage);
+    const active = currentPage === i ? "active" : "";
+    pagination.innerHTML += `
+      <li class="page-item ${active}">
+        <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+      </li>
+    `;
   }
 
-  pagination.innerHTML += createButton("selanjutnya", currentPage + 1, currentPage === totalPages);
+  // Tombol "Selanjutnya"
+  const nextDisabled = currentPage === totalPages ? "disabled" : "";
+  pagination.innerHTML += `
+    <li class="page-item ${nextDisabled}">
+      <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Selanjutnya</a>
+    </li>
+  `;
 }
+
 
 function hapusItem(id) {
   const index = psikologData.findIndex(p => p.id === id);

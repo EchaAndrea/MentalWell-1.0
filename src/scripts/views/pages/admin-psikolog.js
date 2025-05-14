@@ -1,6 +1,16 @@
 const psikologData = [
     { id: "01", username: "useranak", nama: "Psikolog Anak", email: "anak@example.com", kategori: "anak", aktif: true },
     { id: "02", username: "userremaja", nama: "Psikolog Remaja", email: "remaja@example.com", kategori: "remaja", aktif: true },
+    { id: "03", username: "useranak", nama: "Psikolog Anak", email: "anak@example.com", kategori: "anak", aktif: true },
+    { id: "04", username: "userremaja", nama: "Psikolog Remaja", email: "remaja@example.com", kategori: "remaja", aktif: true },
+      { id: "05", username: "useranak", nama: "Psikolog Anak", email: "anak@example.com", kategori: "anak", aktif: true },
+    { id: "06", username: "userremaja", nama: "Psikolog Remaja", email: "remaja@example.com", kategori: "remaja", aktif: true },
+    { id: "07", username: "useranak", nama: "Psikolog Anak", email: "anak@example.com", kategori: "anak", aktif: true },
+    { id: "08", username: "userremaja", nama: "Psikolog Remaja", email: "remaja@example.com", kategori: "remaja", aktif: true },
+    { id: "09", username: "useranak", nama: "Psikolog Anak", email: "anak@example.com", kategori: "anak", aktif: true },
+      { id: "10", username: "userremaja", nama: "Psikolog Remaja", email: "remaja@example.com", kategori: "remaja", aktif: true },
+    { id: "11", username: "useranak", nama: "Psikolog Anak", email: "anak@example.com", kategori: "anak", aktif: true },
+    { id: "12", username: "userremaja", nama: "Psikolog Remaja", email: "remaja@example.com", kategori: "remaja", aktif: true },
     // Tambah data lainnya sesuai kebutuhan
   ];
   
@@ -81,10 +91,10 @@ const psikologData = [
           <td>${p.email}</td>
           <td>${p.aktif ? "Aktif" : "Nonaktif"}</td>
           <td>
-            <a href="/admin/psikolog/lihat.html?id=${p.id}" class="btn btn-sm btn-secondary">
+            <a href="/src/templates/admin-lihatpsikolog.html?id=${p.id}" class="btn btn-sm btn-secondary">
               <img src="/src/public/admin/lihat.png" width="13">
             </a>
-            <a href="/admin/psikolog/edit.html?id=${p.id}" class="btn btn-sm btn-info">
+            <a href="/src/templates/admin-editpsikolog.html?id=${p.id}" class="btn btn-sm btn-info">
               <img src="/src/public/admin/edit.png" width="13">
             </a>
             <button class="btn btn-sm btn-danger" onclick="hapusItem('${p.id}')">
@@ -98,22 +108,37 @@ const psikologData = [
   }
   
   // Render pagination
-  function renderPagination() {
-    const totalPages = Math.ceil(filteredData.length / rowsPerPage);
-    const pagination = document.getElementById("paginationContainer");
-    pagination.innerHTML = "";
-  
-    pagination.innerHTML += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-      <a class="page-link" href="#" onclick="changePage(${currentPage - 1})">sebelumnya</a></li>`;
-  
-    for (let i = 1; i <= totalPages; i++) {
-      pagination.innerHTML += `<li class="page-item ${i === currentPage ? 'active' : ''}">
-        <a class="page-link" href="#" onclick="changePage(${i})">${i}</a></li>`;
-    }
-  
-    pagination.innerHTML += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-      <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">selanjutnya</a></li>`;
+function renderPagination() {
+  const pagination = document.getElementById("pagination");
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+  pagination.innerHTML = "";
+
+  // Tombol "Sebelumnya"
+  const prevDisabled = currentPage === 1 ? "disabled" : "";
+  pagination.innerHTML += `
+    <li class="page-item ${prevDisabled}">
+      <a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Sebelumnya</a>
+    </li>
+  `;
+
+  // Nomor halaman
+  for (let i = 1; i <= totalPages; i++) {
+    const active = currentPage === i ? "active" : "";
+    pagination.innerHTML += `
+      <li class="page-item ${active}">
+        <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+      </li>
+    `;
   }
+
+  // Tombol "Selanjutnya"
+  const nextDisabled = currentPage === totalPages ? "disabled" : "";
+  pagination.innerHTML += `
+    <li class="page-item ${nextDisabled}">
+      <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Selanjutnya</a>
+    </li>
+  `;
+}
   
   // Hapus satu item (tanpa konfirmasi)
   function hapusItem(id) {
