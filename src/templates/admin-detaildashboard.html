@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MentalWell 1.0</title>
+  <link rel="icon" href="/src/public/logo/logoicon.png" type="image/x-icon">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/src/styles/admin-detaildashboard.css" />
+  <script type="module" src="/src/scripts/components/navbar-admin.js" defer></script>
+</head>
+
+<body>
+  <navbar-admin id="admin"></navbar-admin>
+
+<div class="container my-5 bg-white rounded shadow-sm">
+<div class="card-body pt-4 pb-0 d-flex justify-content-end">
+  <button type="button" class="btn btn-kembali d-flex align-items-center" id="btnKembali">
+    <img src="/src/public/admin/kembali.png" alt="Kembali" style="width: 20px; height: 20px; margin-right: 5px;">
+    Kembali
+  </button>
+</div>
+<h2 class="mb-1 judul-detail">Detail Pembayaran E-Konseling</h2>
+    <div class="card border-0">
+      <div class="card-body">
+        <h5 class="fw-bold border-bottom pb-2">Informasi Pengguna</h5>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <p>Nama: Echa Andrea Gustiar</p>
+            <p>Email: echa.andrea@example.com</p>
+          </div>
+          <div class="col-md-6">
+            <p>Tanggal Konseling: 24 Mei 2025</p>
+            <p>Waktu Konseling: 08.00 - 09.00 WIB</p>
+          </div>
+        </div>
+
+        <h5 class="fw-bold border-bottom pb-2">Detail Pembayaran</h5>
+        <p>Metode: Transfer Bank BRI</p>
+        <p>Tanggal Pembayaran: 11 Mei 2025</p>
+        <p class="mb-1">
+          Status:
+          <a href="#" data-bs-toggle="modal" data-bs-target="#buktiBayarModal" class="text-success text-decoration-none fw-semibold">Terbayar</a>
+        </p>
+      </div>
+
+<div class="card-body pt-0">
+  <h5 class="fw-bold border-bottom pb-2">Rincian Pembayaran</h5>
+  <div class="d-flex justify-content-between border-bottom py-2">
+    <span>Paket Konseling</span><span>Rp. 245.000</span>
+  </div>
+  <div class="d-flex justify-content-between border-bottom py-2">
+    <span>Biaya Aplikasi</span><span>Rp. 15.000</span>
+  </div>
+  <div class="d-flex justify-content-between fw-bold py-2">
+    <span>Total</span><span>Rp. 260.000</span>
+  </div>
+</div>
+
+
+  <!-- Modal Bukti Pembayaran -->
+  <div class="modal fade" id="buktiBayarModal" tabindex="-1" aria-labelledby="buktiBayarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="buktiBayarModalLabel">Bukti Pembayaran</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+        </div>
+        <div class="modal-body text-center">
+          <img src="../../assets/bukti-pembayaran.png" alt="Bukti Pembayaran" class="img-fluid rounded shadow">
+        </div>
+      </div>
+    </div>
+  </div>
+
+        <div class="card-body pt-0 d-flex justify-content-end gap-2">
+          <button class="btn btn-verifikasi" onclick="verifikasi()">Verifikasi Pembayaran</button>
+          <button class="btn btn-outline-secondary" onclick="tolak()">Tolak</button>
+          <button class="btn btn-outline-primary" onclick="kirimEmail()">Kirim Email</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <footer>
+    <span> &copy; 2025 MentalWell, Hak Cipta Dilindungi. </span>
+  </footer>
+</body>
+</html>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/src/scripts/admin-detaildashboard.js"></script>

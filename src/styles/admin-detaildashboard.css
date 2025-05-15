@@ -1,0 +1,51 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.container {
+    padding: 3rem;
+    max-width: 1000px;
+}
+
+.btn-kembali {
+  background-color: #6c757d !important;
+  color: white !important;
+  border: none !important;
+}
+
+.btn-kembali:hover {
+  background-color: #99a4b0 !important;
+  color: white !important;
+    border: none !important;
+}
+
+.judul-detail {
+  font-weight: bold;   
+  padding-left: 30px;
+  font-size: 1.75rem;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.btn-verifikasi {
+    background-color: #044B77;
+    color: white;
+}
+
+.btn-verifikasi:hover {
+    background-color: #02BBDD;
+    color: white;
+}
+
+footer {
+  font-size: 18px;
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+  height: 20px;
+  width: 100%;
+  background-color: #02bbdd;
+  color: #fff;
+  text-align: center;
+}

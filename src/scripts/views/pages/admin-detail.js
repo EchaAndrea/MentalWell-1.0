@@ -1,9 +1,3 @@
-const dummyData = {
-    "01": { judul: "Kesehatan Mental Anak", kategori: "Kesehatan Mental", tanggal: "2025-06-06", konten: "Konten artikel 1", gambar: "gambar1.jpg" },
-    "02": { judul: "Psikolog Remaja", kategori: "Psikologi", tanggal: "2025-06-08", konten: "Konten artikel 2", gambar: "gambar2.jpg" },
-    // Tambahkan data lainnya sesuai kebutuhan
-};
-
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formArtikel");
   const btnSimpan = document.querySelector(".btn-simpan");

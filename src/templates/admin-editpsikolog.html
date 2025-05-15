@@ -18,9 +18,13 @@
 
   <main class="container">
     <div class="card-form">
-      <div class="d-flex justify-content-end mb-3">
-        <button type="button" class="btn btn-kembali" id="btnKembali">← Kembali</button>
-      </div>
+<div class="d-flex justify-content-end mb-3">
+  <button type="button" class="btn btn-kembali d-flex align-items-center" id="btnKembali">
+    <img src="/src/public/admin/kembali.png" alt="Kembali" style="width: 20px; height: 20px; margin-right: 5px;">
+    Kembali
+  </button>
+</div>
+
 
       <form id="formArtikel">
         <div class="mb-3">
@@ -55,11 +59,10 @@
         <div class="mb-3">
           <label class="form-label">Pengalaman Praktik</label>
           <select name="pengalaman" class="form-select" required>
-            <option value="">Pilih Lama Pengalaman</option>
-            <option value="1-2 tahun">1-2 tahun</option>
-            <option value="3-5 tahun">3-5 tahun</option>
-            <option value="6-10 tahun">6-10 tahun</option>
-            <option value=">10 tahun">Lebih dari 10 tahun</option>
+            <option value="">Pilih Pengalaman Praktik</option>
+            <option value="2_tahun">2 Tahun</option>
+            <option value="2-4_tahun">2 - 4 Tahun</option>
+            <option value="4_tahun">4 Tahun</option>
           </select>
         </div>
 
