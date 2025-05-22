@@ -10,7 +10,3 @@
 function tolak() {
   alert("Pembayaran ditolak.");
 }
-
-function kirimEmail() {
-  alert("Email telah dikirim.");
-}
