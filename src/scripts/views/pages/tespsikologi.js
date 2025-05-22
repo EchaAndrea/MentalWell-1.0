@@ -1,56 +1,104 @@
-function hitungHasil() {
-  const q1 = document.querySelector('input[name="q1"]:checked');
-  const q2 = document.querySelector('input[name="q2"]:checked');
-  const q3 = document.querySelector('input[name="q3"]:checked');
-  const q4 = document.querySelector('input[name="q4"]:checked');
-  const q5 = document.querySelector('input[name="q5"]:checked');
-  const q6 = document.querySelector('input[name="q6"]:checked');
-  const q7 = document.querySelector('input[name="q7"]:checked');
-  const q8 = document.querySelector('input[name="q8"]:checked');
-  const q9 = document.querySelector('input[name="q9"]:checked');
-  const q10 = document.querySelector('input[name="q10"]:checked');
+const questions = [
+  "Apakah anda sering menderita sakit kepala?",
+  "Apakah anda tidak nafsu makan?",
+  "Apakah anda sulit tidur?",
+  "Apakah anda mudah takut?",
+  "Apakah anda merasa tegang, cemas atau kuatir?",
+  "Apakah tangan anda gemetar?",
+  "Apakah pencernaan anda terganggu/ buruk?",
+  "Apakah anda sulit untuk berpikir jernih?",
+  "Apakah anda merasa tidak bahagia?",
+  "Apakah anda menangis lebih sering?",
+  "Apakah anda merasa sulit untuk menikmati kegiatan sehari-hari?",
+  "Apakah anda sulit untuk mengambil keputusan?",
+  "Apakah pekerjaan anda sehari-hari terganggu?",
+  "Apakah anda tidak mampu melakukan hal-hal yang bermanfaat dalam hidup?",
+  "Apakah anda kehilangan minat pada berbagai hal?",
+  "Apakah anda merasa tidak berharga?",
+  "Apakah anda mempunyai pikiran untuk mengakhiri hidup?",
+  "Apakah anda merasa lelah sepanjang waktu?",
+  "Apakah anda mengalami rasa tidak enak di perut?",
+  "Apakah anda mudah lelah?",
+  "Apakah anda lebih sering menggunakan alkohol/zat terlarang dari biasanya?",
+  "Apakah anda merasa seseorang bermaksud mencelakai anda?",
+  "Apakah anda merasa ada sesuatu yang mengganggu pikiran anda?",
+  "Apakah anda mendengar suara-suara yang tidak didengar orang lain?",
+  "Apakah anda mengalami mimpi bencana atau seakan bencana itu muncul kembali?",
+  "Apakah anda menghindari berbagai kegiatan, tempat, orang, atau pikiran yang mengingatkan akan bencana tersebut?",
+  "Apakah anda kurang tertarik terhadap teman-teman atau kegiatan sehari-hari?",
+  "Apakah anda merasa sangat sedih apabila berada dalam situasi yang mengingatkan akan bencana tersebut?",
+  "Apakah anda sulit menghayati atau mengeluarkan perasaan?"
+];
 
-  if (!q1 || !q2 || !q3 || !q4 || !q5|| !q6 || !q7 || !q8 || !q9 || !q10) {
-    Swal.fire({
-      icon: "warning",
-      title: "Oops...",
-      text: "Semua pertanyaan harus dijawab!",
+function startTest() {
+  document.getElementById("page1").style.display = "none";
+  document.getElementById("page2").style.display = "block";
+
+  const form = document.getElementById("quiz-form");
+  form.innerHTML = "";
+
+  questions.forEach((q, i) => {
+    const group = document.createElement("div");
+    group.className = "option-container";
+
+    const questionText = document.createElement("p");
+    questionText.style.fontWeight = "bold"; 
+    questionText.style.marginBottom = "0.3rem";
+    questionText.innerText = `${i + 1}. ${q}`;
+    group.appendChild(questionText);
+
+    ["Ya", "Tidak"].forEach((val) => {
+      const label = document.createElement("label");
+      label.className = "option-button";
+
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = `question${i}`;
+      input.value = val;
+      input.style.marginRight = "8px";
+
+      input.addEventListener("change", () => {
+        group.querySelectorAll(".option-button").forEach(lbl => lbl.classList.remove("active"));
+        label.classList.add("active");
+      });
+
+      label.appendChild(input);
+      label.appendChild(document.createTextNode(val));
+      group.appendChild(label);
     });
+
+    form.appendChild(group);
+  });
+}
+
+function showResult() {
+  const answers = [];
+
+  for (let i = 0; i < questions.length; i++) {
+    const selected = document.querySelector(`input[name="question${i}"]:checked`);
+    answers.push(selected ? selected.value : null);
+  }
+
+  if (answers.includes(null)) {
+    Swal.fire("Lengkapi semua jawaban terlebih dahulu.");
     return;
   }
 
-  const total = parseInt(q1.value) + parseInt(q2.value) + parseInt(q3.value);
+  // Hitung jawaban "Ya" untuk 1-20 (index 0 sampai 19)
+  const ya1to20 = answers.slice(0, 20).filter(ans => ans.toLowerCase() === "ya").length;
 
-  localStorage.setItem("score", total);
-  window.location.href = "tespsikologi-hasil.html";
-}
+  // Hitung jawaban "Ya" untuk 21-29 (index 20 sampai 28)
+  const ya21to29 = answers.slice(20, 29).filter(ans => ans.toLowerCase() === "ya").length;
 
-window.addEventListener("DOMContentLoaded", () => {
-  const score = localStorage.getItem("score");
-  const levelHasil = document.getElementById("levelHasil");
-  const deskripsiHasil = document.getElementById("deskripsiHasil");
+  let result = "";
 
-  if (score !== null && levelHasil && deskripsiHasil) {
-    let level = "";
-    let deskripsi = "";
-
-    const totalScore = parseInt(score);
-
-    if (totalScore <= 5) {
-      level = "Rendah";
-      deskripsi =
-        "Berdasarkan hasil screening kesehatan mental, saat ini kondisimu tergolong stabil. Jaga terus kesehatan mental kamu ya.";
-    } else if (totalScore <= 10) {
-      level = "Sedang";
-      deskripsi =
-        "Kamu mengalami tingkat stres yang sedang. Perlu memperhatikan kesehatan mental dan menjaga keseimbangan hidup.";
-    } else {
-      level = "Tinggi";
-      deskripsi =
-        "Kamu mengalami tingkat stres yang tinggi. Disarankan untuk mencari bantuan profesional.";
-    }
-
-    levelHasil.innerText = `"${level}"`;
-    deskripsiHasil.innerText = deskripsi;
+  if (ya1to20 >= 8 || ya21to29 >= 1) {
+    result = "Ditemukan gejala yang memerlukan perhatian lebih lanjut. Disarankan untuk menghubungi profesional kesehatan mental.";
+  } else {
+    result = "Tidak ditemukan indikasi yang signifikan, namun tetap jaga kesehatan mental dan emosional Anda.";
   }
-});
+
+  document.getElementById("page2").style.display = "none";
+  document.getElementById("page3").style.display = "block";
+  document.getElementById("result-text").textContent = result;
+}

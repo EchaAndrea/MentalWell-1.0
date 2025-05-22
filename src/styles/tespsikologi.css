@@ -1,219 +1,99 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700&display=swap");
-
-* {
+html, body {
+  height: 100%;
   margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
-
-body {
-  font-family: "Inter", sans-serif;
-  background-color: #fafafa;
-  min-height: 100vh;
-  flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-navbar-masuk {
-  display: block;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-}
-
-.container {
-  flex: 1;
-  padding: 2rem;
-  padding-top: 7rem; /* Supaya tidak ketutup navbar */
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-}
-
-/* CARD */
-.card {
-  background: #ffffff;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 800px;
-}
-
-/* FORM ISI DATA */
-.form-section {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-}
-
-.form-info {
+main {
   flex: 1;
 }
 
-.form-info h2 {
-  margin-bottom: 1rem;
-  font-size: 2rem;
-  text-align: center;
+body {
+  margin-top: 80px;
+  background-color: #f8f9fa;
 }
 
-.form-info p {
-  margin-bottom: 1.5rem;
+main.container {
+  padding-bottom: 80px;
 }
 
-form label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-}
-
-form input {
+.illustration-hasil,
+img.img-fluid.mb-4 {
   width: 100%;
-  padding: 0.7rem;
-  margin-bottom: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-}
-
-/* GAMBAR DI FORM */
-.illustration {
-  max-width: 300px;
+  max-width: 400px;
   height: auto;
-}
-
-.container {
-  max-width: 800px;
+  display: block;
   margin: 0 auto;
 }
 
-h1 {
-  text-align: center;
-  margin-bottom: 2rem;
-  font-size: 2rem;
+#page2 {
+  max-width: 850px;   
+  margin: 0 auto;     
+  padding: 10px;      
 }
 
-h2 {
-  text-align: center;
-  margin-bottom: 2rem;
-  font-size: 2rem;
+#page2 .card {
+  padding-left: 5rem;
+  padding-right: 2rem;
 }
 
-.question {
-  margin-bottom: 2rem;
+.option-container {
+  padding-left: 2rem;
 }
 
-.question p {
-  margin-bottom: 1rem;
-  font-weight: bold;
-}
-
-.options {
+.option-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.options label {
-  display: flex;
-
-  justify-content: flex-start;
-  text-align: left;
-  width: 180px; /* atau 100% kalau mau ikut kontainer */
+  padding: 10px; 
+  flex-direction: column;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  background-color: #fff;
+  margin-bottom: 1.5rem;
+}
+
+.option-button {
+  background-color: white;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  padding: 8px 12px;
   cursor: pointer;
-  font-weight: 500;
-  white-space: nowrap;
-  transition: all 0.2s ease-in-out;
+  transition: background-color 0.2s;
+  width: 100%;
+  max-width: 200px;
 }
 
-.options input[type="radio"] {
+.option-button:hover {
+  background-color: #e2e6ea;
+}
+
+.option-button.active {
+  background-color: #fff;
+  color: black;
+  border-color: #044b77;
+}
+
+input[type="radio"] {
   accent-color: #044b77;
-  transform: scale(1.2);
-  margin: 0;
+  transform: scale(1.1);
 }
 
-.options label:hover {
-  background-color: #f0f8ff;
-  border-color: #02bbdd;
-}
-
-/* BUTTON */
 .btn-primary {
   background-color: #044b77;
-  color: #ffffff;
   border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-  margin-top: 1rem;
-  transition: background-color 0.3s ease;
-  width: 100%;
+  transition: background-color 0.3s;
 }
 
 .btn-primary:hover {
   background-color: #02bbdd;
 }
 
-/*
-Footer
-*/
-
 footer {
   font-size: 18px;
   padding-top: 2rem;
   padding-bottom: 2rem;
-  height: 20px;
+  height: auto;
   width: 100%;
   background-color: #02bbdd;
   color: #fff;
   text-align: center;
-}
-
-
-/* HASIL TES */
-.hasil-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.illustration-hasil {
-  width: 250px;
-  height: auto;
-  margin-bottom: 1.5rem;
-}
-
-.hasil-info p {
-  margin: 0.5rem 0;
-}
-
-.hasil-info h3 {
-  margin: 0.5rem 0;
-  font-size: 2rem;
-  color: #02bbdd;
-}
-
-/* RESPONSIVE */
-@media (max-width: 768px) {
-  .form-section {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .illustration {
-    max-width: 200px;
-  }
 }

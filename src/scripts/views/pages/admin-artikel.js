@@ -85,7 +85,7 @@ function renderTable() {
         <td>${p.tanggal}</td>
         <td>${p.dibuatoleh}</td>
         <td>
-          <a href="/src/templates/admin-editartikel.html?id=${p.id}" class="btn btn-sm btn-secondary">
+          <a href="/src/templates/admin-lihatartikel.html?id=${p.id}" class="btn btn-sm btn-secondary">
             <img src="/src/public/admin/lihat.png" width="13">
           </a>
           <a href="/src/templates/admin-editartikel.html?id=${p.id}" class="btn btn-sm btn-info">
