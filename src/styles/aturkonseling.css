@@ -178,10 +178,10 @@ Content Atur Konseling
 }
 
 .status-konseling {
-  width: 130px;
+  width: 150px;
   min-height: 130px;
   margin-left: 50px;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   padding: 10px;
   line-height: 1.5;
 }
@@ -190,6 +190,29 @@ Content Atur Konseling
   margin-top: 10px;
   color: #000;
   font-size: 20px;
+}
+
+.status-dan-button {
+  display: flex;
+  justify-content: flex-start; 
+  align-items: center; 
+  gap: 880px; 
+  margin: 10px 10px 0 0;
+}
+
+#btnKonseling {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  background-color: #044B77;
+  width: 150px;
+  height: 44px;
+  cursor: pointer;
+  font-size: 18px;
+  margin-right: 50px;
+  margin-bottom: 10px;
+  justify-content: flex-end;
 }
 
 .button-simpan {

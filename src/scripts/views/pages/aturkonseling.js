@@ -137,3 +137,43 @@ statusDropdown.addEventListener('change', () => {
     });
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+  const btnKonseling = document.getElementById("btnKonseling");
+  const popupContainer = document.getElementById("popup-container");
+  const chatUrl = "/src/templates/popupchat.html"; // URL file chat popup
+
+  btnKonseling.addEventListener("click", () => {
+    fetch(chatUrl)
+      .then((res) => {
+        if (!res.ok) throw new Error("Gagal memuat halaman popup chat");
+        return res.text();
+      })
+      .then((html) => {
+        popupContainer.innerHTML = html;
+        popupContainer.style.display = "flex"; // pastikan tampil
+
+        // Inisialisasi tombol tutup dan input chat
+        initPopup();
+      })
+      .catch((err) => alert(err.message));
+  });
+
+  function initPopup() {
+    const closeBtn = popupContainer.querySelector("button[onclick='toggleChat()']");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => {
+        popupContainer.style.display = "none";
+        popupContainer.innerHTML = "";
+      });
+    }
+
+    const input = popupContainer.querySelector("#chatInput");
+    if (input) {
+      input.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+          sendMessage();
+        }
+      });
+    }
+  }
+});

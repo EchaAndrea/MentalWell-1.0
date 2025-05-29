@@ -75,6 +75,24 @@ async function renderArticleDetails() {
       topikKeahlian.style.display = 'none'; // Hide the container if there are no topics
     }
 
+    fetch('/api/jadwal-psikolog?id=123')
+  .then(res => res.json())
+  .then(data => {
+    data.forEach(time => {
+      const button = document.createElement('button');
+      button.textContent = time;
+      button.classList.add('availability-btn');
+
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.availability-btn').forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        console.log('Jam dipilih:', time);
+      });
+
+      availabilityTimesEl.appendChild(button);
+    });
+  });
+
     const ulasanPengguna = document.getElementById('ulasan-pengguna');
     const userReviewsContainer = document.getElementById('userReviews');
 

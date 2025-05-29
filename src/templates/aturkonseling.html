@@ -60,23 +60,27 @@
           hendrerit eget feugiat ut, rutrum sed nisi.
         </p> -->
       </div>
-      <div class="status-konseling">
-        <h2>Status</h2>
-        <select id="statusDropdown" class="baru">
-          <option value="belum_selesai">Belum Selesai</option>
-          <option value="selesai">Selesai</option>
-        </select>
-      </div>
-    </div>
+<div class="status-dan-button">
+  <div class="status-konseling">
+    <h2>Status</h2>
+    <select id="statusDropdown" class="baru">
+      <option value="belum_selesai">Belum Selesai</option>
+      <option value="selesai">Selesai</option>
+    </select>
+  </div>
+  <button id="btnKonseling" type="button">Konseling</button>
+</div>
+</div>
     <div class="button-simpan">
       <button type="button" id="btnSimpan">Kembali</button>
     </div>
   </main>
-
+  <div id="popup-container"></div>
   <footer>
     <span> &copy; 2025 MentalWell, Hak Cipta Dilindungi. </span>
   </footer>
 </body>
 
 </html>
+<script src="/src/scripts/views/pages/popupchat.js"></script>
 <script src="/src/scripts/views/pages/aturkonseling.js"></script>

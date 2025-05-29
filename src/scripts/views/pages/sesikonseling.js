@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
   const sessions = [
     {
       name: "John Doe M.Si., M.Psi., Psikolog",
@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
       mode: "Via Chat",
       status: "Belum selesai",
       photo: "/src/public/beranda/man.png",
+      chatUrl: "/src/templates/popupchat.html"
     },
     {
       name: "John Doe M.Si., M.Psi., Psikolog",
@@ -15,14 +16,18 @@ document.addEventListener("DOMContentLoaded", function () {
       mode: "Via Chat",
       status: "Selesai",
       photo: "/src/public/beranda/man.png",
+      chatUrl: "/src/templates/popupchat.html"
     },
   ];
 
   const sessionList = document.getElementById("session-list");
+  const popupContainer = document.getElementById("popup-container");
 
   sessions.forEach((session) => {
     const sessionElement = document.createElement("div");
     sessionElement.classList.add("container-sesi");
+
+    const isDisabled = session.status === "Selesai";
 
     sessionElement.innerHTML = `
       <img src="${session.photo}" alt="Foto Pasien" class="session-photo" />
@@ -40,82 +45,51 @@ document.addEventListener("DOMContentLoaded", function () {
         <span class="status">${session.status}</span>
         <button 
           type="button" 
-          class="btn-konseling${session.status === 'Selesai' ? ' disabled' : ''}"
-          ${session.status === 'Selesai' ? 'disabled' : ''}
+          class="btn-konseling${isDisabled ? ' disabled' : ''}"
+          ${isDisabled ? 'disabled' : ''}
         >
-          ${session.status === 'Selesai' ? 'ISI ULASAN' : 'KONSELING'}
+          KONSELING
         </button>
       </div>
     `;
 
     const button = sessionElement.querySelector(".btn-konseling");
-    if (session.status !== "Selesai") {
-      button.addEventListener("click", toggleChat);
+
+    if (!isDisabled && button) {
+      button.addEventListener("click", () => {
+        fetch(session.chatUrl)
+          .then((res) => {
+            if (!res.ok) throw new Error("Gagal memuat popup chat");
+            return res.text();
+          })
+          .then((html) => {
+            popupContainer.innerHTML = html;
+            popupContainer.style.display = "flex";
+            initPopup();
+          })
+          .catch((err) => alert(err.message));
+      });
     }
 
     sessionList.appendChild(sessionElement);
   });
 
-  const input = document.getElementById("chatInput");
-  if (input) {
-    input.addEventListener("keypress", function (e) {
-      if (e.key === "Enter") {
-        sendMessage();
-      }
-    });
-  }
+  function initPopup() {
+    const closeBtn = popupContainer.querySelector("button[onclick='toggleChat()']");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => {
+        popupContainer.style.display = "none";
+        popupContainer.innerHTML = "";
+      });
+    }
 
-  const fileUpload = document.getElementById("fileUpload");
-  if (fileUpload) {
-    fileUpload.addEventListener("change", function () {
-      if (this.files.length > 0) {
-        addChatBubble(`📎 File dikirim: ${this.files[0].name}`, "right");
-        scrollToBottom();
-      }
-    });
-  }
-});
-
-// ✅ Gunakan hanya 1 versi fungsi toggleChat
-function toggleChat() {
-  const popup = document.getElementById("chatPopup");
-  const chatBody = document.getElementById("chatBody");
-
-  if (popup.style.display === "flex") {
-    popup.style.display = "none";
-  } else {
-    popup.style.display = "flex";
-    // Hanya tambahkan pesan default jika belum ada bubble
-    if (chatBody && chatBody.children.length === 0) {
-      addChatBubble("Halo, ada yang bisa saya bantu?", "left");
+    const input = popupContainer.querySelector("#chatInput");
+    if (input) {
+      input.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+          sendMessage();
+        }
+      });
     }
   }
-}
-
-function sendMessage() {
-  const input = document.getElementById("chatInput");
-  const message = input.value.trim();
-  if (message !== "") {
-    addChatBubble(message, "right");
-    input.value = "";
-    scrollToBottom();
-
-    setTimeout(() => {
-      addChatBubble("Terima kasih sudah berbagi, saya akan bantu semampu saya.", "left");
-      scrollToBottom();
-    }, 800);
-  }
-}
-
-function addChatBubble(text, position) {
-  const chatBody = document.getElementById("chatBody");
-  const bubble = document.createElement("div");
-  bubble.className = `chat-bubble ${position}`;
-  bubble.textContent = text;
-  chatBody.appendChild(bubble);
-}
-
-function scrollToBottom() {
-  const chatBody = document.getElementById("chatBody");
-  chatBody.scrollTop = chatBody.scrollHeight;
-}
+});
