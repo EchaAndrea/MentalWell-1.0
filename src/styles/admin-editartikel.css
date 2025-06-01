@@ -34,6 +34,31 @@ body {
     border: none !important;
 }
 
+.form-check {
+  display: flex;
+  align-items: center;
+}
+
+.btn.btn-tambah {
+  background-color: #02BBDD !important;
+  border: none !important;
+  color: white;
+}
+
+.btn.btn-tambah:hover {
+  background-color: #044B77 !important;
+}
+
+.btn.btn-hapus {
+  background-color: #D21111 !important;
+  border: none !important;
+  color: white;
+}
+
+.btn.btn-hapus:hover {
+  background-color: #920c0c !important;
+}
+
 .btn-file {
   background-color: #003b60 !important;
   color: white !important;
