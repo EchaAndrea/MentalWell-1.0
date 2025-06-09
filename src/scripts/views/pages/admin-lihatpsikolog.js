@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const psikologData = {
     nama: "Dr. Budi Santoso",
     email: "budi.santoso@email.com",
+    password: "budi123",
     nohp: "081234567890",
     tanggallahir: "1978-03-15",
     jeniskelamin: "Laki-laki",
@@ -18,21 +19,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('formArtikel');
   if (!form) return;
 
-    // Tombol Kembali tetap aktif dan diarahkan ke halaman admin psikolog
+  // Tombol Kembali aktif
   const btnKembali = document.getElementById('btnKembali');
   if (btnKembali) {
     btnKembali.disabled = false;
-    btnKembali.style.color = '';
-    btnKembali.style.cursor = 'pointer';
-    btnKembali.style.pointerEvents = '';
     btnKembali.addEventListener('click', () => {
       window.location.href = '/src/templates/admin-psikolog.html';
     });
   }
-  
-  // Isi form dengan data
+
+  // Isi form
   form.nama.value = psikologData.nama;
   form.email.value = psikologData.email;
+  form.password.value = psikologData.password;
   form.nohp.value = psikologData.nohp;
   form.tanggallahir.value = psikologData.tanggallahir;
   form.jeniskelamin.value = psikologData.jeniskelamin;
@@ -44,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const semuaCheckbox = form.querySelectorAll('input[type="checkbox"][name="keahlian"]');
   semuaCheckbox.forEach(cb => {
     cb.checked = psikologData.keahlian.includes(cb.value);
+    cb.disabled = true; // hanya disable input-nya, label tetap aktif
   });
 
   // Jadwal
@@ -54,14 +54,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const row = document.createElement('div');
     row.classList.add('row', 'mb-2', 'align-items-center', 'jadwal-row');
 
-    // Hari select
     const colHari = document.createElement('div');
     colHari.classList.add('col-md-4');
     const selectHari = document.createElement('select');
     selectHari.name = "hari[]";
     selectHari.classList.add('form-select');
-    selectHari.required = true;
-
+    selectHari.disabled = true;
     ["", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"].forEach(h => {
       const opt = document.createElement('option');
       opt.value = h;
@@ -71,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     colHari.appendChild(selectHari);
 
-    // Jam mulai dan selesai
     const colJam = document.createElement('div');
     colJam.classList.add('col-md-6');
     const jamDiv = document.createElement('div');
@@ -82,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     inputJamMulai.name = "jamMulai[]";
     inputJamMulai.classList.add('form-control', 'me-2');
     inputJamMulai.value = jadwalItem.jamMulai;
-    inputJamMulai.required = true;
+    inputJamMulai.disabled = true;
 
     const spanPisah = document.createElement('span');
     spanPisah.classList.add('mx-1', 'd-flex', 'align-items-center');
@@ -93,30 +90,27 @@ document.addEventListener('DOMContentLoaded', () => {
     inputJamSelesai.name = "jamSelesai[]";
     inputJamSelesai.classList.add('form-control', 'ms-2');
     inputJamSelesai.value = jadwalItem.jamSelesai;
-    inputJamSelesai.required = true;
+    inputJamSelesai.disabled = true;
 
     jamDiv.appendChild(inputJamMulai);
     jamDiv.appendChild(spanPisah);
     jamDiv.appendChild(inputJamSelesai);
     colJam.appendChild(jamDiv);
 
-    // Tombol tambah dan hapus (biasa saja)
     const colTombol = document.createElement('div');
     colTombol.classList.add('col-md-2', 'd-flex', 'justify-content-start', 'gap-2');
 
     const btnTambah = document.createElement('button');
     btnTambah.type = 'button';
     btnTambah.classList.add('btn', 'btn-tambah', 'tambah-jadwal');
-    btnTambah.setAttribute('aria-label', 'Tambah jadwal');
-    btnTambah.title = 'Tambah jadwal';
+    btnTambah.disabled = true;
     btnTambah.innerHTML = '<i class="fas fa-plus" aria-hidden="true"></i>';
 
     const btnHapus = document.createElement('button');
     btnHapus.type = 'button';
     btnHapus.classList.add('btn', 'btn-danger', 'hapus-jadwal');
-    btnHapus.setAttribute('aria-label', 'Hapus jadwal');
-    btnHapus.title = 'Hapus jadwal';
-    btnHapus.innerHTML = '<i class="fas fa-trash-alt" aria-hidden="true"></i>';
+    btnHapus.disabled = true;
+    btnHapus.innerHTML = '<i class="fas fa-trash-alt"></i>';
 
     colTombol.appendChild(btnTambah);
     colTombol.appendChild(btnHapus);
@@ -124,25 +118,16 @@ document.addEventListener('DOMContentLoaded', () => {
     row.appendChild(colHari);
     row.appendChild(colJam);
     row.appendChild(colTombol);
-
     jadwalContainer.appendChild(row);
   });
 
-  // Disable semua input, select, textarea
+  // Disable semua field form kecuali tombol submit dan kembali
   const semuaElemenForm = form.querySelectorAll('input, select, textarea');
   semuaElemenForm.forEach(el => {
     el.disabled = true;
   });
 
-  // Disable input file dan label gambar
-  const labelFile = form.querySelector('label[for="gambar"]');
-  if (labelFile) {
-    labelFile.style.pointerEvents = 'none';
-    labelFile.setAttribute('aria-disabled', 'true');
-    labelFile.style.opacity = 0.6;
-  }
+  // File input
   const inputFile = form.querySelector('input[type="file"]');
-  if (inputFile) {
-    inputFile.disabled = true;
-  }
+  if (inputFile) inputFile.disabled = true;
 });

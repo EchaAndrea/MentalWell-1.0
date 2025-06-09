@@ -17,32 +17,36 @@
     <div class="card-form">
       <div class="d-flex justify-content-end mb-3">
         <button type="button" class="btn btn-kembali d-flex align-items-center" id="btnKembali">
-          <img src="/src/public/admin/kembali.png" alt="Kembali" style="width: 20px; height: 20px; margin-right: 5px;" />
+          <img src="/src/public/admin/kembali.png" alt="Kembali" style="width: 20px; height: 20px; margin-right: 5px;">
           Kembali
         </button>
       </div>
       <form id="formArtikel">
         <div class="mb-3">
           <label class="form-label fw-bold">Nama Lengkap</label>
-          <input type="text" name="nama" class="form-control" value="Nama Psikolog" required />
+          <input type="text" name="nama" class="form-control" required>
         </div>
         <div class="mb-3">
           <label class="form-label fw-bold">Email</label>
-          <input type="email" name="email" class="form-control" value="email@example.com" required />
+          <input type="email" name="email" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-bold">Kata Sandi</label>
+          <input type="password" name="password" class="form-control" required>
         </div>
         <div class="mb-3">
           <label class="form-label fw-bold">Nomor Handphone</label>
-          <input type="text" name="nohp" class="form-control" value="08123456789" required />
+          <input type="text" name="nohp" class="form-control" required>
         </div>
         <div class="mb-3">
           <label class="form-label fw-bold">Tanggal Lahir</label>
-          <input type="date" name="tanggallahir" class="form-control" value="1980-01-01" required />
+          <input type="date" name="tanggallahir" class="form-control" required>
         </div>
         <div class="mb-3">
           <label class="form-label fw-bold">Jenis Kelamin</label>
           <select name="jeniskelamin" class="form-select" required>
             <option value="">Pilih Jenis Kelamin</option>
-            <option value="Laki-laki" selected>Laki-laki</option>
+            <option value="Laki-laki">Laki-laki</option>
             <option value="Perempuan">Perempuan</option>
           </select>
         </div>
@@ -51,7 +55,7 @@
           <select name="pengalaman" class="form-select" required>
             <option value="">Pilih Pengalaman Praktik</option>
             <option value="2_tahun">2 Tahun</option>
-            <option value="2-4_tahun" selected>2 - 4 Tahun</option>
+            <option value="2-4_tahun">2 - 4 Tahun</option>
             <option value="4_tahun">4 Tahun</option>
           </select>
         </div>
@@ -60,37 +64,37 @@
           <div class="row">
             <div class="col-md-4">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="keahlian" value="Adiksi" id="adiksi" checked />
+                <input class="form-check-input" type="checkbox" name="keahlian" value="Adiksi" id="adiksi">
                 <label class="form-check-label" for="adiksi">Adiksi</label>
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="keahlian" value="Anak remaja" id="anak-remaja" />
+                <input class="form-check-input" type="checkbox" name="keahlian" value="Anak remaja" id="anak-remaja">
                 <label class="form-check-label" for="anak-remaja">Anak remaja</label>
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="keahlian" value="Trauma" id="trauma" checked />
+                <input class="form-check-input" type="checkbox" name="keahlian" value="Trauma" id="trauma">
                 <label class="form-check-label" for="trauma">Trauma</label>
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="keahlian" value="Seksualitas" id="seksualitas" />
+                <input class="form-check-input" type="checkbox" name="keahlian" value="Seksualitas" id="seksualitas">
                 <label class="form-check-label" for="seksualitas">Seksualitas</label>
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="keahlian" value="Fobia" id="fobia" />
+                <input class="form-check-input" type="checkbox" name="keahlian" value="Fobia" id="fobia">
                 <label class="form-check-label" for="fobia">Fobia</label>
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="keahlian" value="Kecenderungan Bunuh Diri" id="bunuh-diri" />
+                <input class="form-check-input" type="checkbox" name="keahlian" value="Kecenderungan Bunuh Diri" id="bunuh-diri">
                 <label class="form-check-label" for="bunuh-diri">Kecenderungan Bunuh Diri</label>
               </div>
             </div>
@@ -103,7 +107,7 @@
               <div class="col-md-4">
                 <select name="hari[]" class="form-select" required>
                   <option value="">Pilih Hari</option>
-                  <option value="Senin" selected>Senin</option>
+                  <option value="Senin">Senin</option>
                   <option value="Selasa">Selasa</option>
                   <option value="Rabu">Rabu</option>
                   <option value="Kamis">Kamis</option>
@@ -114,35 +118,31 @@
               </div>
               <div class="col-md-6">
                 <div class="d-flex">
-                  <input type="time" name="jamMulai[]" class="form-control me-2" value="09:00" required />
+                  <input type="time" name="jamMulai[]" class="form-control me-2" required>
                   <span class="mx-1 d-flex align-items-center">-</span>
-                  <input type="time" name="jamSelesai[]" class="form-control ms-2" value="11:00" required />
+                  <input type="time" name="jamSelesai[]" class="form-control ms-2" required>
                 </div>
               </div>
               <div class="col-md-2 d-flex justify-content-start gap-2">
                 <button type="button" class="btn btn-tambah tambah-jadwal" aria-label="Tambah jadwal" title="Tambah jadwal" disabled>
                   <i class="fas fa-plus" aria-hidden="true"></i>
-                </button>
-                <button type="button" class="btn btn-danger hapus-jadwal" aria-label="Hapus jadwal" title="Hapus jadwal" disabled>
-                  <i class="fas fa-trash-alt" aria-hidden="true"></i>
-                </button>
               </div>
             </div>
           </div>
         </div>
         <div class="mb-3">
           <label class="form-label fw-bold">Bio</label>
-          <textarea name="bio" rows="5" class="form-control" required readonly>Ini adalah bio psikolog.</textarea>
+          <textarea name="bio" rows="5" class="form-control" required></textarea>
         </div>
         <div class="mb-3">
           <label class="form-label fw-bold">Foto Profil</label>
           <div class="input-group">
-            <label class="input-group-text btn btn-file px-3" for="gambar" aria-disabled="true" style="pointer-events:none; opacity:0.6;">
-              <img src="/src/public/admin/gambar.png" alt="gambar" style="width: 18px; height: 18px; margin-right: 5px;" />
+            <label class="input-group-text btn btn-file px-3" for="gambar">
+              <img src="/src/public/admin/gambar.png" alt="gambar" style="width: 18px; height: 18px; margin-right: 5px;">
               Pilih
             </label>
-            <input type="file" class="form-control" id="gambar" name="gambar" accept="image/*" style="display: none;" disabled />
-            <input type="text" class="form-control" id="namaFile" readonly value="profil.jpg" />
+            <input type="file" class="form-control" id="gambar" name="gambar" accept="image/*" style="display: none;">
+            <input type="text" class="form-control" id="namaFile" readonly>
           </div>
         </div>
       </form>

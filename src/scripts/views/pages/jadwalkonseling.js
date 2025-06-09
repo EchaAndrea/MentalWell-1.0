@@ -107,105 +107,31 @@ async function fetchPsychologistSchedule(psychologistId) {
   }
 }
 
-async function selectDate() {
-  const selectedDate = document.getElementById("tanggalInput").value;
+document.addEventListener("DOMContentLoaded", () => {
+  // Ambil data dari localStorage
+  const jadwalData = JSON.parse(localStorage.getItem("jadwal"));
 
-  // Extract psychologist ID from the URL
-  const psychologistId = getPsychologistIdFromUrl();
-
-  const scheduleData = await fetchPsychologistSchedule(psychologistId);
-
-  if (scheduleData) {
-    const conflicts = scheduleData.counselings.filter(
-      (counseling) =>
-        counseling.schedule_date === selectedDate &&
-        counseling.status === "belum_selesai"
-    );
-
-    const timeOptions = document.querySelectorAll(".time");
-
-    timeOptions.forEach((card) => {
-      card.disabled = false;
-      card.classList.remove("disabled"); // Remove the class to reset their color
-    });
-
-    if (conflicts.length > 0) {
-      conflicts.forEach((conflict) => {
-        const normalizedHtmlTime = normalizeTimeFormat(
-          conflict.schedule_time
-        ).trim();
-
-        const timeOptionsArray = Array.from(timeOptions);
-
-        const conflictingButton = timeOptionsArray.find((card) => {
-          const normalizedCardTime = normalizeTimeFormat(card.innerText.trim());
-          return (
-            normalizedCardTime.replace(/\s+/g, " ") === normalizedHtmlTime &&
-            card.classList.contains("time")
-          );
-        });
-
-        if (conflictingButton) {
-          conflictingButton.disabled = true;
-          conflictingButton.classList.add("disabled");
-        } else {
-          console.warn(
-            "Button not found for schedule time:",
-            normalizedHtmlTime
-          );
-        }
-      });
-    }
-  }
-
-  counselingData.schedule_date = selectedDate;
-  saveDataToSessionStorage();
-}
-
-function selectTime(selectedCard) {
-  const timeOptions = document.querySelectorAll(".card");
-
-  timeOptions.forEach((card) => {
-    card.classList.remove("selected");
-  });
-
-  selectedCard.classList.add("selected");
-
-  const selectedTime = selectedCard.innerText.trim();
-
-  if (selectedTime === "13.00 - 14.00") {
-    counselingData.schedule_time = "13:00-14:00";
-  } else if (selectedTime === "16.00 - 17.00") {
-    counselingData.schedule_time = "16:00-17:00";
-  } else if (selectedTime === "19.30 - 20.30") {
-    counselingData.schedule_time = "19:30-20:30";
+  if (jadwalData) {
+    // Tampilkan tanggal dan waktu yang dipilih
+    document.getElementById("selectedDate").textContent = formatTanggalIndo(jadwalData.tanggal);
+    document.getElementById("selectedTime").textContent = jadwalData.waktu;
   } else {
-    counselingData.schedule_time = selectedTime;
+    // Jika tidak ada data, redirect atau beri peringatan
+    alert("Data jadwal tidak ditemukan. Silakan pilih jadwal terlebih dahulu.");
+    window.location.href = "jadwalpsikolog.html";
   }
+});
+
+// Fungsi bantu: format tanggal dari yyyy-mm-dd ke format Indonesia (misal: 2 Juni 2025)
+function formatTanggalIndo(tanggalStr) {
+  const bulanIndo = [
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+  ];
+  const [tahun, bulan, hari] = tanggalStr.split("-");
+  return `${parseInt(hari)} ${bulanIndo[parseInt(bulan) - 1]} ${tahun}`;
 }
 
-function selectMethod(selectedCard) {
-  const methodCards = document.querySelectorAll(".metode .card");
-
-  methodCards.forEach((card) => {
-    card.classList.remove("selected");
-  });
-
-  selectedCard.classList.add("selected");
-
-  const selectedMethod = selectedCard.innerText.trim();
-
-  if (selectedMethod === "Chat") {
-    counselingData.type = "chat";
-  } else if (selectedMethod === "Call") {
-    counselingData.type = "call";
-  } else if (selectedMethod === "Video Call") {
-    counselingData.type = "video_call";
-  } else {
-    // Handle other cases if needed
-    counselingData.type = selectedMethod.toLowerCase();
-  }
-}
 
 // Tahap 1
 async function redirectToCounseling2() {

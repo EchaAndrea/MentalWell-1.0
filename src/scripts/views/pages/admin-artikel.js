@@ -1,17 +1,10 @@
 const psikologData = [
-  { id: "01", kategori: "Kesehatan Mental", judul: "Kesehatan Mental Anak", tanggal: "06 Juni 2025", dibuatoleh: "Admin" },
-  { id: "02", kategori: "Psikologi", judul: "Psikolog Remaja", tanggal: "08 Juni 2025", dibuatoleh: "Admin" },
-  { id: "03", kategori: "Kesehatan Mental", judul: "Kesehatan Mental Anak", tanggal: "06 Juni 2025", dibuatoleh: "Admin" },
-  { id: "04", kategori: "Psikologi", judul: "Psikolog Remaja", tanggal: "08 Juni 2025", dibuatoleh: "Admin" },
-    { id: "05", kategori: "Kesehatan Mental", judul: "Kesehatan Mental Anak", tanggal: "06 Juni 2025", dibuatoleh: "Admin" },
-  { id: "06", kategori: "Psikologi", judul: "Psikolog Remaja", tanggal: "08 Juni 2025", dibuatoleh: "Admin" },
-  { id: "07", kategori: "Kesehatan Mental", judul: "Kesehatan Mental Anak", tanggal: "06 Juni 2025", dibuatoleh: "Admin" },
-  { id: "08", kategori: "Psikologi", judul: "Psikolog Remaja", tanggal: "08 Juni 2025", dibuatoleh: "Admin" },
-  { id: "09", kategori: "Kesehatan Mental", judul: "Kesehatan Mental Anak", tanggal: "06 Juni 2025", dibuatoleh: "Admin" },
-    { id: "10", kategori: "Psikologi", judul: "Psikolog Remaja", tanggal: "08 Juni 2025", dibuatoleh: "Admin" },
-  { id: "11", kategori: "Kesehatan Mental", judul: "Kesehatan Mental Anak", tanggal: "06 Juni 2025", dibuatoleh: "Admin" },
-  { id: "12", kategori: "Psikologi", judul: "Psikolog Remaja", tanggal: "08 Juni 2025", dibuatoleh: "Admin" },
-  // Tambahkan data lain sesuai kebutuhan
+  { judul: "Kesehatan Mental Anak Remaja Saat Ini", kategori: "Kesehatan Mental", tanggal: "06 Juni 2025", dibuatoleh: "Admin" },
+  { judul: "Psikologi Remaja Terhadap Pertumbuhan Anak", kategori: "Psikologi", tanggal: "08 Juni 2025", dibuatoleh: "Admin" },
+  { judul: "Kesehatan Mental Anak Remaja Saat Ini", kategori: "Kesehatan Mental", tanggal: "06 Juni 2025", dibuatoleh: "Admin" },
+  { judul: "Psikologi Remaja Terhadap Pertumbuhan Anak", kategori: "Psikologi", tanggal: "08 Juni 2025", dibuatoleh: "Admin" },
+  { judul: "Kesehatan Mental Anak Remaja Saat Ini", kategori: "Kesehatan Mental", tanggal: "06 Juni 2025", dibuatoleh: "Admin" },
+  { judul: "Psikologi Remaja Terhadap Pertumbuhan Anak", kategori: "Psikologi", tanggal: "08 Juni 2025", dibuatoleh: "Admin" },
 ];
 
 let filteredData = [...psikologData];
@@ -78,20 +71,19 @@ function renderTable() {
   for (const p of pageData) {
     tbody.innerHTML += `
       <tr>
-        <td><input type="checkbox" class="row-checkbox" data-id="${p.id}"></td>
-        <td>${p.id}</td>
-        <td>${p.kategori}</td>
+        <td><input type="checkbox" class="row-checkbox" data-judul="${p.judul}"></td>
         <td>${p.judul}</td>
+        <td>${p.kategori}</td>
         <td>${p.tanggal}</td>
         <td>${p.dibuatoleh}</td>
         <td>
-          <a href="/src/templates/admin-lihatartikel.html?id=${p.id}" class="btn btn-sm btn-secondary">
+          <a href="/src/templates/admin-lihatartikel.html?judul=${encodeURIComponent(p.judul)}" class="btn btn-sm btn-secondary">
             <img src="/src/public/admin/lihat.png" width="13">
           </a>
-          <a href="/src/templates/admin-editartikel.html?id=${p.id}" class="btn btn-sm btn-info">
+          <a href="/src/templates/admin-editartikel.html?judul=${encodeURIComponent(p.judul)}" class="btn btn-sm btn-info">
             <img src="/src/public/admin/edit.png" width="13">
           </a>
-          <button class="btn btn-sm btn-danger" onclick="hapusItem('${p.id}')">
+          <button class="btn btn-sm btn-danger" onclick="hapusItem('${p.judul}')">
             <img src="/src/public/admin/hapus.png" width="13">
           </button>
         </td>
@@ -106,7 +98,6 @@ function renderPagination() {
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
   pagination.innerHTML = "";
 
-  // Tombol "Sebelumnya"
   const prevDisabled = currentPage === 1 ? "disabled" : "";
   pagination.innerHTML += `
     <li class="page-item ${prevDisabled}">
@@ -114,7 +105,6 @@ function renderPagination() {
     </li>
   `;
 
-  // Nomor halaman
   for (let i = 1; i <= totalPages; i++) {
     const active = currentPage === i ? "active" : "";
     pagination.innerHTML += `
@@ -124,7 +114,6 @@ function renderPagination() {
     `;
   }
 
-  // Tombol "Selanjutnya"
   const nextDisabled = currentPage === totalPages ? "disabled" : "";
   pagination.innerHTML += `
     <li class="page-item ${nextDisabled}">
@@ -133,9 +122,8 @@ function renderPagination() {
   `;
 }
 
-
-function hapusItem(id) {
-  const index = psikologData.findIndex(p => p.id === id);
+function hapusItem(judul) {
+  const index = psikologData.findIndex(p => p.judul === judul);
   if (index !== -1) {
     psikologData.splice(index, 1);
     filteredData = [...psikologData];
@@ -148,8 +136,8 @@ function hapusYangDipilih() {
   if (checkboxes.length === 0) return alert("Pilih data terlebih dahulu.");
 
   checkboxes.forEach(cb => {
-    const id = cb.getAttribute("data-id");
-    const index = psikologData.findIndex(p => p.id === id);
+    const judul = cb.getAttribute("data-judul");
+    const index = psikologData.findIndex(p => p.judul === judul);
     if (index !== -1) psikologData.splice(index, 1);
   });
 

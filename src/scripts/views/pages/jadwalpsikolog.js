@@ -8,21 +8,21 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   const waktuDummy = {
-    "2025-05-29": [
+    "2025-06-02": [
       { jam: "08:00-09:00", booked: false },
       { jam: "10:00-11:00", booked: true }, // Sudah dibooking
       { jam: "13:00-14:00", booked: false }
     ],
-    "2025-05-30": [
-      { jam: "09:00-10:00", booked: false },
+    "2025-06-03": [
+      { jam: "09:00-10:00", booked: true },
       { jam: "15:00-16:00", booked: false }
     ],
-    "2025-05-31": [],
-    "2025-06-01": [
+    "2025-06-04": [],
+    "2025-06-05": [
       { jam: "08:00-09:00", booked: true } // Sudah dibooking
     ],
-    "2025-06-02": [
-      { jam: "10:00-11:00", booked: false },
+    "2025-06-06": [
+      { jam: "10:00-11:00", booked: true },
       { jam: "13:00-14:00", booked: false }
     ]
   };

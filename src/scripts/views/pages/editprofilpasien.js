@@ -4,7 +4,7 @@ const form = document.querySelector('.editpasien-form');
 
 document.addEventListener('DOMContentLoaded', async function () {
   // Fetch patient data from the backend with authorization
-  const response = await fetch('https://mentalwell-backend.vercel.app/patient', {
+  const response = await fetch('https://mentalwell-backend.vercel.app/profile', {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -87,7 +87,7 @@ form.addEventListener('submit', async function (event) {
     },
   });
 
-  const response = await fetch('https://mentalwell-backend.vercel.app/patient', {
+  const response = await fetch('https://mentalwell-backend.vercel.app/profile', {
     method: 'PUT',
     headers: {
       Authorization: `Bearer ${token}`,

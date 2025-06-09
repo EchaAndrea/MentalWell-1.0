@@ -80,27 +80,17 @@
           </form>
         </div>
       </div>
-      <div class="jadwal card w-50 mx-3 shadow">
-        <h3 class="atur-jadwal text-center mt-2 mb-">Atur Jadwal</h3>
-        <p class="mx-4">Pilih Tanggal (Hari Kerja)</p>
-        <input type="date" class="border w-50 mx-auto mb-1 focus-ring py-1 px-2 border rounded-2" id="tanggalInput"
-          onchange="selectDate()" />
-        <br />
-        <p class="mx-4">Pilih Waktu (WIB)</p>
-        <div class="waktu d-flex justify-content-center mb-3">
-          <div class="card waktu time text-center w-25 mx-3" onclick="selectTime(this)">13.00 - 14.00</div>
-          <div class="card waktu time text-center w-25 mx-3" onclick="selectTime(this)">16.00 - 17.00</div>
-          <div class="card waktu time text-center w-25 mx-3" onclick="selectTime(this)">19.30 - 20.30</div>
-        </div>
-        <p class="mx-4">Pilih Metode Konseling</p>
-        <div class="metode d-flex justify-content-center">
-          <div class="card metode text-center w-25 mx-3 mb-3" onclick="selectMethod(this)">Chat</div>
-          <div class="card metode text-center w-25 mx-3 mb-3" onclick="selectMethod(this)">Call</div>
-          <div class="card metode text-center w-25 mx-3 mb-3" onclick="selectMethod(this)">Video Call</div>
-        </div>
-        <button class="rounded p-1 mx-3 my-3 mb-4" onclick="redirectToCounseling2()">Selanjutnya</button>
-      </div>
-    </div>
+<div class="jadwal card w-50 mx-3 shadow">
+  <h3 class="atur-jadwal text-center mt-2 mb-3">Jadwal Konseling</h3>
+
+  <p class="mx-4"><strong>Tanggal Konseling</strong></p>
+  <p class="mx-4" id="selectedDate"></p> <!-- Kosong, langsung diisi JS -->
+
+  <p class="mx-4"><strong>Waktu Konseling (WIB)</strong></p>
+  <p class="mx-4" id="selectedTime"></p> <!-- Kosong, langsung diisi JS -->
+
+  <button class="rounded p-1 mx-3 my-3 mb-4" onclick="redirectToCounseling2()">Selanjutnya</button>
+</div>
   </main>
 
   <footer>

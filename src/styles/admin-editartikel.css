@@ -47,6 +47,7 @@ body {
 
 .btn.btn-tambah:hover {
   background-color: #044B77 !important;
+  color: white;
 }
 
 .btn.btn-hapus {

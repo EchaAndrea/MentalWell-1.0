@@ -89,7 +89,7 @@ daftarForm.addEventListener('submit', async (event) => {
   });
 
   try {
-    const response = await fetch('https://mentalwell-backend.vercel.app/users', {
+    const response = await fetch('https://mentalwell-backend.vercel.app/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

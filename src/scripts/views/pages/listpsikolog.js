@@ -1,6 +1,6 @@
 const articleSection = document.getElementById('container-psikolog');
 const loadingIndicator = document.getElementById('loading-indicator');
-const apiUrl = 'https://mentalwell-backend.vercel.app/psychologists';
+const apiUrl = 'https://mentalwell-backend.vercel.app/psychologists/list';
 
 loadingIndicator.style.display = 'block';
 

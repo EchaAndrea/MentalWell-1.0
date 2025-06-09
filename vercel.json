@@ -91,6 +91,46 @@
     {
       "src": "/ubah-sandi",
       "dest": "/src/templates/ubah-sandi.html"
+    },
+    {
+      "src": "/tespsikologi",
+      "dest": "/src/templates/tespsikologi.html"
+    },
+    {
+      "src": "/popupchat",
+      "dest": "/src/templates/popupchat.html"
+    },
+    {
+      "src": "/admin-dashboard",
+      "dest": "/src/templates/admin-dashboard.html"
+    },
+    {
+      "src": "/admin-detaildashboard",
+      "dest": "/src/templates/admin-detaildashboard.html"
+    },
+    {
+      "src": "/admin-artikel",
+      "dest": "/src/templates/admin-artikel.html"
+    },
+    {
+      "src": "/admin-lihatartikel",
+      "dest": "/src/templates/admin-lihatartikel.html"
+    },
+    {
+      "src": "/admin-editartikel",
+      "dest": "/src/templates/admin-editartikel.html"
+    },
+    {
+      "src": "/admin-psikolog",
+      "dest": "/src/templates/admin-psikolog.html"
+    },
+    {
+      "src": "/admin-lihatpsikolog",
+      "dest": "/src/templates/admin-lihatpsikolog.html"
+    },
+    {
+      "src": "/admin-editpsikolog",
+      "dest": "/src/templates/admin-editpsikolog.html"
     }
   ]
 }

@@ -1,7 +1,7 @@
 const dataKonseling = [
-  { nama: "Andi", tanggal: "01-05-2025", jam: "10:00", jenis: "Chat", status: "Lunas" },
-  { nama: "Budi", tanggal: "02-05-2025", jam: "14:00", jenis: "Chat", status: "Belum Lunas" },
-  { nama: "Citra", tanggal: "03-05-2025", jam: "09:00", jenis: "Chat", status: "Lunas" },
+  { nama: "Andi", tanggal: "01-05-2025", waktu: "10:00-11:00", status: "Lunas" },
+  { nama: "Budi", tanggal: "02-05-2025", waktu: "14:00-15:00", status: "Belum Lunas" },
+  { nama: "Citra", tanggal: "03-05-2025", waktu: "09:00-10:00", status: "Lunas" },
   // Tambahkan data lainnya jika perlu
 ];
 
@@ -82,8 +82,7 @@ function renderTable() {
       <tr>
         <td>${item.nama}</td>
         <td>${item.tanggal}</td>
-        <td>${item.jam}</td>
-        <td>${item.jenis}</td>
+        <td>${item.waktu}</td>
         <td>${item.status}</td>
         <td>
           <button class="btn btn-sm btn-secondary" onclick="redirectToDetail('${item.nama}')">
