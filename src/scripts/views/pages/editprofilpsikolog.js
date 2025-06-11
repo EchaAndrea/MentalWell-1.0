@@ -107,7 +107,7 @@ form.addEventListener('submit', async function (event) {
     allowOutsideClick: false,
     showCancelButton: false,
     showConfirmButton: false,
-    onBeforeOpen: () => {
+    didOpen: () => {
       Swal.showLoading();
     },
   });

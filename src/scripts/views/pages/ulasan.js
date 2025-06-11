@@ -34,7 +34,7 @@ function submitUlasan(ulasan) {
     allowOutsideClick: false,
     showCancelButton: false,
     showConfirmButton: false,
-    onBeforeOpen: () => {
+    didOpen: () => {
       Swal.showLoading();
     },
   });

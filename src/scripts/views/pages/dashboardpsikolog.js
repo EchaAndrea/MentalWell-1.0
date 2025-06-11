@@ -41,7 +41,7 @@ statusDropdown.addEventListener("change", () => {
     allowOutsideClick: false,
     showCancelButton: false,
     showConfirmButton: false,
-    onBeforeOpen: () => {
+    didOpen: () => {
       Swal.showLoading();
     },
   });

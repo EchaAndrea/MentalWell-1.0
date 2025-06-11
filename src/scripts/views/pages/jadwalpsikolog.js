@@ -1,32 +1,4 @@
-document.addEventListener('DOMContentLoaded', function () {
-  const selectedPsikolog = {
-    id: 1,
-    nama: "Dr. Mervin Tri Hadianto MSi.Med, Sp.A",
-    spesialis: "Sp. Anak",
-    harga: "Rp75.000",
-    foto: "/src/public/beranda/man.png"
-  };
-
-  const waktuDummy = {
-    "2025-06-02": [
-      { jam: "08:00-09:00", booked: false },
-      { jam: "10:00-11:00", booked: true }, // Sudah dibooking
-      { jam: "13:00-14:00", booked: false }
-    ],
-    "2025-06-03": [
-      { jam: "09:00-10:00", booked: true },
-      { jam: "15:00-16:00", booked: false }
-    ],
-    "2025-06-04": [],
-    "2025-06-05": [
-      { jam: "08:00-09:00", booked: true } // Sudah dibooking
-    ],
-    "2025-06-06": [
-      { jam: "10:00-11:00", booked: true },
-      { jam: "13:00-14:00", booked: false }
-    ]
-  };
-
+document.addEventListener("DOMContentLoaded", async function () {
   const tanggalContainer = document.getElementById("tanggal-container");
   const waktuContainer = document.getElementById("waktu-container");
   const waktuSection = document.getElementById("waktu-section");
@@ -37,115 +9,160 @@ document.addEventListener('DOMContentLoaded', function () {
 
   let selectedTanggal = null;
   let selectedWaktu = null;
+  let waktuJadwal = {};
+  let selectedPsikolog = {};
 
-  // Isi info psikolog
-  document.getElementById("nama").textContent = selectedPsikolog.nama;
-  document.getElementById("spesialis").textContent = selectedPsikolog.spesialis;
-  document.getElementById("harga").textContent = selectedPsikolog.harga;
-  document.querySelector("#psychologist-info img").src = selectedPsikolog.foto;
-
-  // Generate tombol tanggal 5 hari ke depan
-  for (let i = 0; i < 5; i++) {
-    const date = new Date();
-    date.setDate(date.getDate() + i);
-    const tglStr = date.toISOString().split("T")[0]; // yyyy-mm-dd
-    const tglDisplay = date.getDate();
-
-    const btn = document.createElement("button");
-    btn.className = "btn btn-outline-secondary tanggal-item";
-    btn.textContent = tglDisplay;
-    btn.title = tglStr;
-    btn.addEventListener("click", () => selectTanggal(tglStr, btn));
-    tanggalContainer.appendChild(btn);
+  // Fetch data psikolog
+  async function fetchPsikolog() {
+    const res = await fetch(
+      "https://mentalwell10-api-production.up.railway.app/psychologists/1"
+    );
+    if (!res.ok) throw new Error("Gagal fetch data psikolog");
+    return await res.json();
   }
 
-  // Klik icon kalender untuk buka date picker
-  btnCalendar.addEventListener("click", () => {
-    if (tanggalPicker.showPicker) {
-      tanggalPicker.showPicker();
-    } else {
-      tanggalPicker.focus();
-    }
-  });
+  // Fetch jadwal psikolog
+  async function fetchJadwal() {
+    const res = await fetch(
+      "https://mentalwell10-api-production.up.railway.app/psychologists/1/schedules"
+    );
+    if (!res.ok) throw new Error("Gagal fetch jadwal");
+    return await res.json();
+  }
 
-  // Ketika pilih tanggal lewat input date
-  tanggalPicker.addEventListener("change", () => {
-    if (tanggalPicker.value) {
-      selectTanggal(tanggalPicker.value);
-    }
-  });
+  try {
+    // Ambil data psikolog & jadwal
+    selectedPsikolog = await fetchPsikolog();
+    const jadwalArr = await fetchJadwal();
 
-  function selectTanggal(tglStr, btnClicked) {
-    selectedTanggal = tglStr;
-    selectedWaktu = null;
-    jadwalkanContainer.classList.remove("show");
-    jadwalkanContainer.classList.add("d-none");
-    waktuSection.classList.remove("d-none");
+    // Isi info psikolog ke halaman
+    document.getElementById("nama").textContent = selectedPsikolog.name || "-";
+    document.getElementById("spesialis").textContent =
+      selectedPsikolog.specialist || "-";
+    document.getElementById("harga").textContent = selectedPsikolog.price
+      ? `Rp${selectedPsikolog.price}`
+      : "-";
+    document.querySelector("#psychologist-info img").src =
+      selectedPsikolog.photo || "/src/public/beranda/man.png";
 
-    // Reset active di semua tanggal
-    document.querySelectorAll(".tanggal-item").forEach(btn => {
-      btn.classList.remove("active");
+    // Proses jadwal ke format { tanggal: [ {jam, booked}, ... ] }
+    waktuJadwal = {};
+    jadwalArr.forEach((item) => {
+      // Asumsi item: { date: "2025-06-02", time: "08:00-09:00", booked: false }
+      if (!waktuJadwal[item.date]) waktuJadwal[item.date] = [];
+      waktuJadwal[item.date].push({ jam: item.time, booked: item.booked });
     });
 
-    if (btnClicked) btnClicked.classList.add("active");
+    // Generate tombol tanggal 5 hari ke depan
+    for (let i = 0; i < 5; i++) {
+      const date = new Date();
+      date.setDate(date.getDate() + i);
+      const tglStr = date.toISOString().split("T")[0]; // yyyy-mm-dd
+      const tglDisplay = date.getDate();
 
-    if (tanggalPicker.value !== tglStr) {
-      tanggalPicker.value = tglStr;
-    }
-
-    renderWaktu();
-  }
-
-  function renderWaktu() {
-    waktuContainer.innerHTML = "";
-
-    const waktuList = waktuDummy[selectedTanggal] || [];
-
-    if (waktuList.length === 0) {
-      waktuContainer.innerHTML = `<p class="text-muted">Tidak ada jadwal tersedia</p>`;
-      return;
-    }
-
-    waktuList.forEach(({ jam, booked }) => {
       const btn = document.createElement("button");
-      btn.className = "btn btn-outline-primary btn-slot me-2 mb-2";
-      btn.textContent = jam;
+      btn.className = "btn btn-outline-secondary tanggal-item";
+      btn.textContent = tglDisplay;
+      btn.title = tglStr;
+      btn.addEventListener("click", () => selectTanggal(tglStr, btn));
+      tanggalContainer.appendChild(btn);
+    }
 
-      if (booked) {
-        btn.disabled = true;
-        btn.classList.add("btn-secondary");
-        btn.title = "Sudah dibooking";
+    // Klik icon kalender untuk buka date picker
+    btnCalendar.addEventListener("click", () => {
+      if (tanggalPicker.showPicker) {
+        tanggalPicker.showPicker();
       } else {
-        btn.addEventListener("click", () => {
-          document.querySelectorAll(".btn-slot").forEach(el => el.classList.remove("active"));
-          btn.classList.add("active");
-          selectedWaktu = jam;
+        tanggalPicker.focus();
+      }
+    });
 
-          jadwalkanContainer.classList.remove("d-none");
-          requestAnimationFrame(() => {
-            jadwalkanContainer.classList.add("show");
-          });
-        });
+    // Ketika pilih tanggal lewat input date
+    tanggalPicker.addEventListener("change", () => {
+      if (tanggalPicker.value) {
+        selectTanggal(tanggalPicker.value);
+      }
+    });
+
+    function selectTanggal(tglStr, btnClicked) {
+      selectedTanggal = tglStr;
+      selectedWaktu = null;
+      jadwalkanContainer.classList.remove("show");
+      jadwalkanContainer.classList.add("d-none");
+      waktuSection.classList.remove("d-none");
+
+      // Reset active di semua tanggal
+      document.querySelectorAll(".tanggal-item").forEach((btn) => {
+        btn.classList.remove("active");
+      });
+
+      if (btnClicked) btnClicked.classList.add("active");
+
+      if (tanggalPicker.value !== tglStr) {
+        tanggalPicker.value = tglStr;
       }
 
-      waktuContainer.appendChild(btn);
-    });
-  }
-
-  btnJadwalkan.addEventListener("click", () => {
-    if (!selectedTanggal || !selectedWaktu) {
-      alert("Silakan pilih tanggal dan waktu terlebih dahulu.");
-      return;
+      renderWaktu();
     }
 
-    localStorage.setItem("jadwal", JSON.stringify({
-      nama: selectedPsikolog.nama,
-      spesialis: selectedPsikolog.spesialis,
-      harga: selectedPsikolog.harga,
-      tanggal: selectedTanggal,
-      waktu: selectedWaktu
-    }));
+    function renderWaktu() {
+      waktuContainer.innerHTML = "";
 
-    window.location.href = "jadwalkonseling-isidata.html";
-  });
+      const waktuList = waktuJadwal[selectedTanggal] || [];
+
+      if (waktuList.length === 0) {
+        waktuContainer.innerHTML = `<p class="text-muted">Tidak ada jadwal tersedia</p>`;
+        return;
+      }
+
+      waktuList.forEach(({ jam, booked }) => {
+        const btn = document.createElement("button");
+        btn.className = "btn btn-outline-primary btn-slot me-2 mb-2";
+        btn.textContent = jam;
+
+        if (booked) {
+          btn.disabled = true;
+          btn.classList.add("btn-secondary");
+          btn.title = "Sudah dibooking";
+        } else {
+          btn.addEventListener("click", () => {
+            document
+              .querySelectorAll(".btn-slot")
+              .forEach((el) => el.classList.remove("active"));
+            btn.classList.add("active");
+            selectedWaktu = jam;
+
+            jadwalkanContainer.classList.remove("d-none");
+            requestAnimationFrame(() => {
+              jadwalkanContainer.classList.add("show");
+            });
+          });
+        }
+
+        waktuContainer.appendChild(btn);
+      });
+    }
+
+    btnJadwalkan.addEventListener("click", () => {
+      if (!selectedTanggal || !selectedWaktu) {
+        alert("Silakan pilih tanggal dan waktu terlebih dahulu.");
+        return;
+      }
+
+      localStorage.setItem(
+        "jadwal",
+        JSON.stringify({
+          nama: selectedPsikolog.name,
+          spesialis: selectedPsikolog.specialist,
+          harga: selectedPsikolog.price,
+          tanggal: selectedTanggal,
+          waktu: selectedWaktu,
+        })
+      );
+
+      window.location.href = "jadwalkonseling-isidata.html";
+    });
+  } catch (err) {
+    alert("Gagal mengambil data psikolog atau jadwal: " + err.message);
+  }
 });

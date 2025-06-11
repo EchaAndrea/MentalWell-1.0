@@ -121,6 +121,10 @@
       "dest": "/src/templates/admin-editartikel.html"
     },
     {
+      "src": "/admin-tambahartikel",
+      "dest": "/src/templates/admin-tambahartikel.html"
+    },
+    {
       "src": "/admin-psikolog",
       "dest": "/src/templates/admin-psikolog.html"
     },
@@ -131,6 +135,10 @@
     {
       "src": "/admin-editpsikolog",
       "dest": "/src/templates/admin-editpsikolog.html"
+    },
+    {
+      "src": "/admin-tambahpsikolog",
+      "dest": "/src/templates/admin-tambahpsikolog.html"
     }
   ]
 }
