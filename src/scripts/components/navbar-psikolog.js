@@ -256,7 +256,7 @@ class NavBar extends HTMLElement {
       },
     };
 
-    fetch('https://mentalwell-backend.vercel.app/currentPsychologist', requestOptions)
+    fetch('https://mentalwellbackend-production.up.railway.app/psychologist/profile', requestOptions)
     .then((response) => response.json())
     .then((data) => {
       const currentUser = data[0];

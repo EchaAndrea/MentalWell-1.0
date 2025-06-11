@@ -176,7 +176,7 @@ class NavbarAdmin extends HTMLElement {
 
     try {
       const response = await fetch(
-        "https://mentalwellbackend-production.up.railway.app/currentPsychologist",
+        "https://mentalwellbackend-production.up.railway.app/login",
         {
           headers: {
             Authorization: `Bearer ${token}`,

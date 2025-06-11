@@ -399,7 +399,7 @@ class NavBarLogin extends HTMLElement {
       },
     };
 
-    fetch('https://mentalwell-backend.vercel.app/currentUser', requestOptions)
+    fetch('https://mentalwell10-api-production.up.railway.app/profile', requestOptions)
       .then((response) => response.json())
       .then((data) => {
         const currentUser = data[0];
@@ -430,7 +430,7 @@ class NavBarLogin extends HTMLElement {
     profilLink.addEventListener('click', () => {
       const urlParams = new URLSearchParams(window.location.search);
       const articleId = urlParams.get('id');
-      window.location.href = `https://mentalwell.vercel.app/editprofilpasien`;
+      window.location.href = `https://mentalwell-10-frontend.vercel.app/editprofilpasien`;
     });
 
     riwayat.addEventListener('click', () => {
