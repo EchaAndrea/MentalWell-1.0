@@ -16,12 +16,12 @@ searchForm.addEventListener("submit", (event) => {
     fetch(apiUrl)
       .then((response) => response.json())
       .then((data) => {
+        console.log("Hasil fetch:", data); // Tambahkan ini
         contentArticle.innerHTML = "";
 
-        // Perbaikan di sini: akses data.articles
         (data.articles || []).forEach((articleData) => {
+          console.log("Artikel ditemukan:", articleData); // Tambahkan ini
           const articleElement = document.createElement("article");
-
           articleElement.innerHTML = `
           <div class="image-articel">
           <img src="${articleData.image}" alt="articel">
