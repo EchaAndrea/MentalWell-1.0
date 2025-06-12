@@ -127,7 +127,7 @@ loginForm.addEventListener("submit", async (event) => {
             "https://mentalwell-10-frontend.vercel.app/dashboardpsikolog";
         } else if (userRole === "admin") {
           window.location.href =
-            "https://mentalwell-10-frontend.vercel.app/admin";
+            "https://mentalwell-10-frontend.vercel.app/admin-dashboard";
         } else {
           window.location.href = "https://mentalwell-10-frontend.vercel.app/";
         }
