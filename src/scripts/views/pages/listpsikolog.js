@@ -5,7 +5,12 @@ const apiUrl =
 
 loadingIndicator.style.display = "block";
 
-fetch(apiUrl)
+// Ambil token dari localStorage (atau sessionStorage) setelah login
+const token = localStorage.getItem("token");
+
+fetch(apiUrl, {
+  headers: token ? { Authorization: `Bearer ${token}` } : {},
+})
   .then((response) => response.json())
   .then((data) => {
     loadingIndicator.style.display = "none";

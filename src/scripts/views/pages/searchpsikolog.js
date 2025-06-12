@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", function () {
   let searchForm = document.getElementById("searchForm");
   let searchInput = document.getElementById("search-psikolog");
 
+  let token = localStorage.getItem("token");
+
   checkboxes.forEach(function (checkbox) {
     checkbox.addEventListener("click", function () {
       let checkedValues = Array.from(checkboxes)
@@ -30,7 +32,9 @@ document.addEventListener("DOMContentLoaded", function () {
         let queryString = queryParams.join("&");
         let fullURL = `${backendURL}?${queryString}`;
 
-        fetch(fullURL)
+        fetch(fullURL, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        })
           .then((response) => {
             if (!response.ok) {
               throw new Error(`HTTP error! Status: ${response.status}`);
@@ -97,8 +101,15 @@ document.addEventListener("DOMContentLoaded", function () {
         searchValue
       )}`;
 
-      fetch(apiUrl)
-        .then((response) => response.json())
+      fetch(apiUrl, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
         .then((data) => {
           contentArticle.innerHTML = "";
 
@@ -146,31 +157,30 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     } else {
       fetch(
-        "https://mentalwell10-api-production.up.railway.app/psychologists/list"
+        "https://mentalwell10-api-production.up.railway.app/psychologists/list",
+        {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        }
       )
-        .then((response) => response.json())
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
         .then((data) => {
           contentArticle.innerHTML = "";
 
-          data.forEach((articleData) => {
+          // Perbaiki akses array hasil
+          (data.data || []).forEach((articleData) => {
             const articleElement = document.createElement("div");
             articleElement.classList.add("content-psikolog");
 
-            let formattedExperience;
-            if (articleData.experience === "<2_tahun") {
-              formattedExperience = "< 2 tahun";
-            } else if (articleData.experience === "2-4_tahun") {
-              formattedExperience = "2-4 tahun";
-            } else if (articleData.experience === ">4_tahun") {
-              formattedExperience = "> 4 tahun";
-            }
-
-            let formattedketersediaan;
-            if (articleData.availability === "available") {
-              formattedketersediaan = "Tersedia";
-            } else {
-              formattedketersediaan = "Tidak Tersedia";
-            }
+            let formattedExperience = articleData.experience || "-";
+            let formattedketersediaan =
+              articleData.availability === "available"
+                ? "Tersedia"
+                : "Tidak Tersedia";
 
             articleElement.innerHTML = `
               <img class="image-psikolog" src="${
@@ -180,8 +190,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h2>${articleData.name}</h2>
                 <div class="value-psikolog">
                   <p>Pengalaman Kerja ${formattedExperience}</p>
-                  <i class="fa-solid fa-comments"></i>
-                  <p class="ulasan">${articleData.counselings.review.count}</p>
                 </div>
                 <div class="list-button-psikolog">
                   <div class="${
