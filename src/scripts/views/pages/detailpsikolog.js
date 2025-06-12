@@ -19,6 +19,11 @@ async function renderArticleDetails() {
     showLoadingIndicator();
     const urlParams = new URLSearchParams(window.location.search);
     const articleId = urlParams.get("id");
+    if (!articleId) {
+      hideLoadingIndicator();
+      alert("ID psikolog tidak ditemukan di URL.");
+      return;
+    }
     const fotopsikolog = document.querySelector(".foto-psikolog img");
     const datapsikolog = document.querySelector(".data-psikolog h2");
     const biodatapsikolog = document.getElementById("biodata-psikolog");
@@ -80,7 +85,7 @@ async function renderArticleDetails() {
 async function fetchPsychologistAvailability() {
   const urlParams = new URLSearchParams(window.location.search);
   const psychologistId = urlParams.get("id");
-  const url = `https://mentalwell-backend.vercel.app/availability/psychologist/${psychologistId}`;
+  const url = `https://mentalwell10-api-production.up.railway.app/availability/psychologist/${psychologistId}`;
 
   try {
     showLoadingIndicator();
