@@ -1,23 +1,26 @@
-const searchForm = document.getElementById('searchForm');
-const searchInput = document.getElementById('searchInput');
-const contentArticle = document.getElementById('content-articel');
+const searchForm = document.getElementById("searchForm");
+const searchInput = document.getElementById("searchInput");
+const contentArticle = document.getElementById("content-articel");
 
-searchForm.addEventListener('submit', (event) => {
+searchForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
   const searchTerm = searchInput.value.trim();
 
   // Jika input pencarian tidak kosong, ambil data sesuai dengan kata kunci
-  if (searchTerm !== '') {
-    const apiUrl = `https://mentalwell10-api-production.up.railway.app/articles?title=${encodeURIComponent(searchTerm)}`;
+  if (searchTerm !== "") {
+    const apiUrl = `https://mentalwell10-api-production.up.railway.app/articles?title=${encodeURIComponent(
+      searchTerm
+    )}`;
 
     fetch(apiUrl)
       .then((response) => response.json())
       .then((data) => {
-        contentArticle.innerHTML = '';
+        contentArticle.innerHTML = "";
 
-        data.forEach((articleData) => {
-          const articleElement = document.createElement('article');
+        // Perbaikan di sini: akses data.articles
+        (data.articles || []).forEach((articleData) => {
+          const articleElement = document.createElement("article");
 
           articleElement.innerHTML = `
           <div class="image-articel">
@@ -37,16 +40,17 @@ searchForm.addEventListener('submit', (event) => {
         });
       })
       .catch((error) => {
-        console.error('Error fetching search results:', error);
+        console.error("Error fetching search results:", error);
       });
   } else {
-    fetch('https://mentalwell10-api-production.up.railway.app/articles')
+    fetch("https://mentalwell10-api-production.up.railway.app/articles")
       .then((response) => response.json())
       .then((data) => {
-        contentArticle.innerHTML = '';
+        contentArticle.innerHTML = "";
 
-        data.forEach((articleData) => {
-          const articleElement = document.createElement('article');
+        // Perbaikan di sini juga: akses data.articles
+        (data.articles || []).forEach((articleData) => {
+          const articleElement = document.createElement("article");
 
           articleElement.innerHTML = `
           <div class="image-articel">
@@ -66,7 +70,7 @@ searchForm.addEventListener('submit', (event) => {
         });
       })
       .catch((error) => {
-        console.error('Error fetching all content:', error);
+        console.error("Error fetching all content:", error);
       });
   }
 });
