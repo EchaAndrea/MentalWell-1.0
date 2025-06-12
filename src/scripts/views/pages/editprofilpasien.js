@@ -3,10 +3,7 @@ const editIcon = document.getElementById("editIcon");
 const form = document.querySelector(".editpasien-form");
 
 document.addEventListener("DOMContentLoaded", async function () {
-  if (!token) {
-    window.location.href = "/login.html"; // redirect jika tidak ada token
-    return;
-  }
+  // Fetch patient data from the backend with authorization
   const response = await fetch(
     "https://mentalwell10-api-production.up.railway.app/profile",
     {
@@ -15,22 +12,8 @@ document.addEventListener("DOMContentLoaded", async function () {
       },
     }
   );
-  if (!response.ok) {
-    Swal.fire({
-      title: "Sesi Habis",
-      text: "Silakan login kembali.",
-      icon: "warning",
-      confirmButtonText: "OK",
-    }).then(() => {
-      window.location.href = "/login.html";
-    });
-    return;
-  }
+
   const patientData = await response.json();
-  if (!patientData.users) {
-    Swal.fire("Data user tidak ditemukan!");
-    return;
-  }
 
   document.getElementById("profileimage").innerHTML = `
     <div id="imagePreviewContainer">
@@ -90,7 +73,8 @@ form.addEventListener("submit", async function (event) {
   const phone_number = document.getElementById("nowa").value;
   const birthdate = document.getElementById("tgllahir").value;
   const gender = document.getElementById("gender").value;
-  const image = document.getElementById("inputImage").files[0];
+  const imageInput = document.getElementById("inputImage");
+  const image = imageInput ? imageInput.files[0] : null;
   const formData = new FormData();
 
   formData.append("name", name);
@@ -104,7 +88,7 @@ form.addEventListener("submit", async function (event) {
 
   Swal.fire({
     title: "Memuat...",
-    text: "Harap tunggu sejenak. Profil anda akan segera berubah. ",
+    text: "Harap tunggu sejenak. Profil anda akan segera berubah.",
     allowOutsideClick: false,
     showCancelButton: false,
     showConfirmButton: false,
@@ -119,7 +103,7 @@ form.addEventListener("submit", async function (event) {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
-        // Jangan set Content-Type, biarkan browser yang mengatur boundary FormData
+        // Jangan set Content-Type, biarkan browser yang mengatur
       },
       body: formData,
     }
@@ -127,7 +111,6 @@ form.addEventListener("submit", async function (event) {
 
   if (response.ok) {
     Swal.close();
-
     Swal.fire({
       title: "Profil Berhasil Diubah",
       icon: "success",
@@ -139,7 +122,7 @@ form.addEventListener("submit", async function (event) {
     const errorMessage = await response.text();
     Swal.fire({
       title: "Gagal!",
-      text: "Profil Gagal Diubah, Format Gambar Harus .JPG",
+      text: errorMessage,
       icon: "error",
       showConfirmButton: true,
     });

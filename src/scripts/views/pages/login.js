@@ -83,6 +83,8 @@ loginForm.addEventListener("submit", async (event) => {
 
       // Simpan token ke localStorage agar bisa diakses halaman lain
       localStorage.setItem("token", token);
+      // Setelah login berhasil
+      sessionStorage.setItem("authToken", token);
 
       setTimeout(async () => {
         await Swal.fire({
