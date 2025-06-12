@@ -19,8 +19,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   document.getElementById("namapanggilan").value = user.nickname || "";
   document.getElementById("nowa").value = user.phone_number || "";
   document.getElementById("tgllahir").value = user.birthdate || "";
-  document.getElementById("gender").value =
-    user.gender?.toLowerCase() === "perempuan" ? "perempuan" : "laki_laki";
+  document.getElementById("gender").value = user.gender || "";
   document.getElementById("email").innerHTML = `<h4>${user.email || ""}</h4>`;
 });
 
