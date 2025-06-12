@@ -5,9 +5,8 @@ const contentArticle = document.getElementById("content-articel");
 searchForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
-  const searchTerm = searchInput.value.trim();
+  const searchTerm = searchInput.value.trim(); // Ambil di sini!
 
-  // Jika input pencarian tidak kosong, ambil data sesuai dengan kata kunci
   if (searchTerm !== "") {
     const apiUrl = `https://mentalwell10-api-production.up.railway.app/articles?title=${encodeURIComponent(
       searchTerm
@@ -17,6 +16,7 @@ searchForm.addEventListener("submit", (event) => {
       .then((response) => response.json())
       .then((data) => {
         console.log("Hasil fetch:", data); // Tambahkan ini
+        console.log("searchTerm:", searchTerm); // Tambahkan ini
         contentArticle.innerHTML = "";
 
         // Filter judul yang mengandung kata kunci (case-insensitive)
