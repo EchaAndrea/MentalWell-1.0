@@ -1,16 +1,17 @@
-const articleSection = document.getElementById('content-articel');
-const loadingIndicator = document.getElementById('loading-indicator');
-const apiUrl = 'https://mentalwell10-api-production.up.railway.app/articles';
+const articleSection = document.getElementById("content-articel");
+const loadingIndicator = document.getElementById("loading-indicator");
+const apiUrl = "https://mentalwell10-api-production.up.railway.app/articles";
 
-loadingIndicator.style.display = 'block';
+loadingIndicator.style.display = "block";
 
 fetch(apiUrl)
   .then((response) => response.json())
   .then((data) => {
-    loadingIndicator.style.display = 'none';
+    loadingIndicator.style.display = "none";
 
-    data.forEach((articleData) => {
-      const articleElement = document.createElement('article');
+    // Perbaikan di sini: akses data.articles
+    (data.articles || []).forEach((articleData) => {
+      const articleElement = document.createElement("article");
 
       articleElement.innerHTML = `
                     <div class="image-articel">
@@ -31,9 +32,9 @@ fetch(apiUrl)
     });
   })
   .catch((error) => {
-    console.error('Error fetching data from API:', error);
-    loadingIndicator.style.display = 'none';
-  })
+    console.error("Error fetching data from API:", error);
+    loadingIndicator.style.display = "none";
+  });
 
 function redirectToDetail(id) {
   window.location.href = `/detailartikel?id=${id}`;
