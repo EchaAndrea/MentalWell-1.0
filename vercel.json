@@ -77,6 +77,10 @@
       "dest": "/src/templates/konfirmasilogout.html"
     },
     {
+      "src": "/jadwalpsikolog",
+      "dest": "/src/templates/jadwalpsikolog.html"
+    },
+    {
       "src": "/jadwalkonseling-isidata",
       "dest": "/src/templates/jadwalkonseling-isidata.html"
     },
