@@ -12,28 +12,46 @@ document.addEventListener("DOMContentLoaded", async function () {
   let waktuJadwal = {};
   let selectedPsikolog = {};
 
+  // Ambil ID psikolog dari query string (?id=1) atau default 1
+  function getPsikologId() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("id") || "1";
+  }
+
   // Fetch data psikolog
-  async function fetchPsikolog() {
+  async function fetchPsikolog(psikologId) {
+    const token = localStorage.getItem("token"); // pastikan token sudah disimpan saat login
     const res = await fetch(
-      "https://mentalwell10-api-production.up.railway.app/psychologists/1"
+      `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     if (!res.ok) throw new Error("Gagal fetch data psikolog");
     return await res.json();
   }
 
   // Fetch jadwal psikolog
-  async function fetchJadwal() {
+  async function fetchJadwal(psikologId) {
+    const token = localStorage.getItem("token");
     const res = await fetch(
-      "https://mentalwell10-api-production.up.railway.app/psychologists/1/schedules"
+      `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}/schedules`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     if (!res.ok) throw new Error("Gagal fetch jadwal");
     return await res.json();
   }
 
   try {
-    // Ambil data psikolog & jadwal
-    selectedPsikolog = await fetchPsikolog();
-    const jadwalArr = await fetchJadwal();
+    const psikologId = getPsikologId();
+    selectedPsikolog = await fetchPsikolog(psikologId);
+    const jadwalArr = await fetchJadwal(psikologId);
 
     // Isi info psikolog ke halaman
     document.getElementById("nama").textContent = selectedPsikolog.name || "-";
@@ -160,7 +178,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         })
       );
 
-      window.location.href = "jadwalkonseling-isidata.html";
+      window.location.href = "jadwalkonseling-isidata?id=${id}";
     });
   } catch (err) {
     alert("Gagal mengambil data psikolog atau jadwal: " + err.message);
