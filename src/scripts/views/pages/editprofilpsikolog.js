@@ -1,82 +1,94 @@
-const token = sessionStorage.getItem('authToken');
-const editProfileImageIcon = document.getElementById('editProfileImage');
-const form = document.querySelector('.editpsikolog-form');
+const token = sessionStorage.getItem("authToken");
+const editProfileImageIcon = document.getElementById("editProfileImage");
+const form = document.querySelector(".editpsikolog-form");
 
-document.addEventListener('DOMContentLoaded', async function () {
-  // Fetch psychologist data from the backend with authorization
-  const response = await fetch('https://mentalwell10-api-production.up.railway.app/my-data', {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+document.addEventListener("DOMContentLoaded", async function () {
+  const token = sessionStorage.getItem("authToken");
+  const response = await fetch(
+    "https://mentalwell10-api-production.up.railway.app/psychologist/profile",
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 
   const psychologistData = await response.json();
+  const data = psychologistData.data;
 
-  document.getElementById('profileimage').innerHTML = `
-  <div id="imagePreviewContainer">
-    <img src="${psychologistData.profile_image}" id="gambar">
-  </div>
-  <label for="inputImage" class="inputImage">Ubah Gambar</label>
-  <input type="file" id="inputImage" onchange="previewImage(event)">
+  // Isi gambar profil
+  document.getElementById("profileimage").innerHTML = `
+    <div id="imagePreviewContainer">
+      <img src="${data.profile_image || ""}" id="gambar">
+    </div>
+    <label for="inputImage" class="inputImage">Ubah Gambar</label>
+    <input type="file" id="inputImage" onchange="previewImage(event)">
   `;
 
-  document.getElementById('email').innerHTML = `<h4>${psychologistData.email}</h4>`;
-  document.getElementById('namapanggilan').value = psychologistData.name;
-  document.getElementById('nowa').value = psychologistData.phone_number;
-  document.getElementById('tgllahir').value = psychologistData.birthdate;
-  document.getElementById('gender').value = psychologistData.gender;
-  document.getElementById('bio').value = psychologistData.bio;
-  document.getElementById('pengalaman').value = psychologistData.experience;
+  // Isi field lain
+  document.getElementById("email").innerHTML = `<h4>${data.email || ""}</h4>`;
+  document.getElementById("namapanggilan").value = data.nickname || "";
+  document.getElementById("nowa").value = data.phone_number || "";
+  document.getElementById("tgllahir").value = data.birthdate || "";
+  document.getElementById("gender").value = data.gender || "";
+  document.getElementById("bio").value = data.bio || "";
+  document.getElementById("pengalaman").value = data.experience || "";
+
+  // Topik keahlian (checkbox)
   const expertiseCheckboxes = document.querySelectorAll('input[name="topik"]');
-  const expertiseTopics = psychologistData.psychologists_topics || [];
-  // console.log(psychologistData);
+  const expertiseTopics = data.topics || [];
   expertiseCheckboxes.forEach((checkbox) => {
-    // console.log(expertiseTopics.map((row) => row.topic_name));
-    checkbox.checked = expertiseTopics.map((row) => row.topic_name).includes(checkbox.value);
+    checkbox.checked = expertiseTopics
+      .map((row) => row.name)
+      .includes(checkbox.value);
   });
 });
 
 function previewImage(event) {
   const inputImage = event.target;
-  const imagePreview = document.getElementById('gambar');
-  const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+  const imagePreview = document.getElementById("gambar");
+  const imagePreviewContainer = document.getElementById(
+    "imagePreviewContainer"
+  );
 
   if (inputImage.files && inputImage.files[0]) {
     const reader = new FileReader();
 
     reader.onload = function (e) {
       imagePreview.src = e.target.result;
-      imagePreviewContainer.style.display = 'block';
+      imagePreviewContainer.style.display = "block";
     };
 
     reader.readAsDataURL(inputImage.files[0]);
   } else {
-    imagePreview.src = '';
-    imagePreviewContainer.style.display = 'none';
+    imagePreview.src = "";
+    imagePreviewContainer.style.display = "none";
   }
 }
 
-form.addEventListener('submit', async function (event) {
+form.addEventListener("submit", async function (event) {
   event.preventDefault();
 
-  const newName = document.getElementById('namapanggilan').value;
-  const newPhone_number = document.getElementById('nowa').value;
-  const newBirthdate = document.getElementById('tgllahir').value;
-  const newGender = document.getElementById('gender').value;
-  const newBio = document.getElementById('bio').value;
-  const newExperience = document.getElementById('pengalaman').value;
-  const image = document.getElementById('inputImage').files[0];
+  const newName = document.getElementById("namapanggilan").value;
+  const newPhone_number = document.getElementById("nowa").value;
+  const newBirthdate = document.getElementById("tgllahir").value;
+  const newGender = document.getElementById("gender").value;
+  const newBio = document.getElementById("bio").value;
+  const newExperience = document.getElementById("pengalaman").value;
+  const image = document.getElementById("inputImage").files[0];
   const formData = new FormData();
 
-  formData.append('newName', newName);
-  formData.append('newPhone_number', newPhone_number);
-  formData.append('newBirthdate', newBirthdate);
-  formData.append('newGender', newGender);
-  formData.append('newBio', newBio);
-  formData.append('newExperience', newExperience);
-  formData.append('profile_image', image);
+  formData.append("newName", newName);
+  formData.append("newPhone_number", newPhone_number);
+  formData.append("newBirthdate", newBirthdate);
+  formData.append("newGender", newGender);
+  formData.append("newBio", newBio);
+  formData.append("newExperience", newExperience);
+  formData.append("profile_image", image);
 
-  const expertiseCheckboxes = document.querySelectorAll('input[name="topik"]:checked');
+  const expertiseCheckboxes = document.querySelectorAll(
+    'input[name="topik"]:checked'
+  );
 
   expertiseCheckboxes.forEach((checkbox) => {
     let topicId;
@@ -94,7 +106,7 @@ form.addEventListener('submit', async function (event) {
       topicId = 6;
     }
 
-    formData.append('newTopics', topicId);
+    formData.append("newTopics", topicId);
   });
 
   for (const pair of formData.entries()) {
@@ -102,8 +114,8 @@ form.addEventListener('submit', async function (event) {
   }
 
   Swal.fire({
-    title: 'Memuat...',
-    text: 'Harap tunggu sejenak. Profil anda akan segera berubah. ',
+    title: "Memuat...",
+    text: "Harap tunggu sejenak. Profil anda akan segera berubah. ",
     allowOutsideClick: false,
     showCancelButton: false,
     showConfirmButton: false,
@@ -112,15 +124,16 @@ form.addEventListener('submit', async function (event) {
     },
   });
 
-
-
-  const response = await fetch('https://mentalwell10-api-production.up.railway.app/profile', {
-    method: 'PUT',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    body: formData,
-  });
+  const response = await fetch(
+    "https://mentalwell10-api-production.up.railway.app/psychologist/profile",
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    }
+  );
 
   if (response.ok) {
     // console.log(response);
@@ -128,19 +141,18 @@ form.addEventListener('submit', async function (event) {
     Swal.close();
 
     Swal.fire({
-      title: 'Profil Berhasil Diubah',
-      icon: 'success',
+      title: "Profil Berhasil Diubah",
+      icon: "success",
       showConfirmButton: false,
       timer: 2000,
     });
     location.reload();
-
   } else {
     const errorMessage = await response.text();
     Swal.fire({
-      title: 'Gagal!',
-      text: 'Profil Gagal Diubah, Format File Harus .JPG',
-      icon: 'error',
+      title: "Gagal!",
+      text: "Profil Gagal Diubah, Format File Harus .JPG",
+      icon: "error",
       showConfirmButton: true,
     });
   }
