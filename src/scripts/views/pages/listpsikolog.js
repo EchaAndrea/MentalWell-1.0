@@ -32,7 +32,7 @@ fetch(apiUrl, {
           <div class="data-psikolog">
             <h2>${articleData.name}</h2>
             <div class="value-psikolog">
-              <p>Pengalaman Kerja ${formattedExperience}</p>
+              <p>Pengalaman Kerja: ${formattedExperience}</p>
             </div>
             <div class="list-button-psikolog">
               <div class="${
