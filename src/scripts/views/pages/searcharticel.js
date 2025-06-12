@@ -74,3 +74,7 @@ searchForm.addEventListener("submit", (event) => {
       });
   }
 });
+
+function redirectToDetail(id) {
+  window.location.href = `/detailartikel?id=${id}`;
+}
