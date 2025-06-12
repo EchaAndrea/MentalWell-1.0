@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
       let searchValue = searchInput.value.trim();
 
       if (checkedValues.length > 0 || searchValue !== '') {
-        let backendURL = 'https://mentalwell-backend.vercel.app/psychologists';
+        let backendURL = 'https://mentalwell10-api-production.up.railway.app/psychologists/list';
         let queryParams = [];
 
         if (checkedValues.length > 0) {
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let searchValue = searchInput.value.trim();
 
     if (searchValue !== '') {
-      let apiUrl = `https://mentalwell-backend.vercel.app/psychologists?name=${encodeURIComponent(searchValue)}`;
+      let apiUrl = `https://mentalwell10-api-production.up.railway.app/psychologists/list?name=${encodeURIComponent(searchValue)}`;
 
       fetch(apiUrl)
         .then((response) => response.json())
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
           console.error('Error fetching search results:', error);
         });
     } else {
-      fetch('https://mentalwell-backend.vercel.app/psychologists')
+      fetch('https://mentalwell10-api-production.up.railway.app/psychologists/list')
         .then((response) => response.json())
         .then((data) => {
           contentArticle.innerHTML = '';

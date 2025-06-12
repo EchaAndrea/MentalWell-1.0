@@ -9,7 +9,7 @@ searchForm.addEventListener('submit', (event) => {
 
   // Jika input pencarian tidak kosong, ambil data sesuai dengan kata kunci
   if (searchTerm !== '') {
-    const apiUrl = `https://mentalwell-backend.vercel.app/articles?title=${encodeURIComponent(searchTerm)}`;
+    const apiUrl = `https://mentalwell10-api-production.up.railway.app/articles?title=${encodeURIComponent(searchTerm)}`;
 
     fetch(apiUrl)
       .then((response) => response.json())
@@ -40,7 +40,7 @@ searchForm.addEventListener('submit', (event) => {
         console.error('Error fetching search results:', error);
       });
   } else {
-    fetch('https://mentalwell-backend.vercel.app/articles')
+    fetch('https://mentalwell10-api-production.up.railway.app/articles')
       .then((response) => response.json())
       .then((data) => {
         contentArticle.innerHTML = '';

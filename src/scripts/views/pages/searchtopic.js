@@ -1,5 +1,5 @@
 async function fetchPsychologists(topics) {
-  const apiUrl = `https://mentalwell-backend.vercel.app/psychologists?${topics.map((topic) => `topics=${topic}`).join('&')}`;
+  const apiUrl = `https://mentalwell10-api-production.up.railway.app/psychologists/list?${topics.map((topic) => `topics=${topic}`).join('&')}`;
   const response = await fetch(apiUrl);
   const data = await response.json();
   return data;

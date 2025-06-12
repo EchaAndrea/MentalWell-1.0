@@ -1,7 +1,7 @@
 // Function to fetch data from the API based on article ID
 async function fetchArticleById(articleId) {
   try {
-    const response = await fetch(`https://mentalwell-backend.vercel.app/articles/${articleId}`);
+    const response = await fetch(`https://mentalwell10-api-production.up.railway.app/articles/{{article_id}}`);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }

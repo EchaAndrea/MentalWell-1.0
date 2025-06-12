@@ -26,7 +26,7 @@ ubahsandiForm.addEventListener("submit", async (event) => {
 
   try {
     const response = await fetch(
-      `https://mentalwell-backend.vercel.app/reset-password/${token}`,
+      `https://mentalwell10-api-production.up.railway.app/reset-password?token=yl1pf312grwsr8ans5th${token}`,
       {
         method: "PUT",
         headers: {
@@ -44,7 +44,7 @@ ubahsandiForm.addEventListener("submit", async (event) => {
         showConfirmButton: true,
       });
 
-      window.location.href = "https://mentalwell.vercel.app/";
+      window.location.href = "https://mentalwell-10-frontend.vercel.app/";
     } else {
       const responseData = await response.json();
       const errorMessage = responseData.message || "Error occured";

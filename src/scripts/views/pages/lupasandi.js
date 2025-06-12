@@ -10,7 +10,7 @@ lupasandiForm.addEventListener('submit', async (event) => {
   };
 
   try {
-    const response = await fetch('https://mentalwell-backend.vercel.app/forgot-password', {
+    const response = await fetch('https://mentalwell10-api-production.up.railway.app/forgot-password', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

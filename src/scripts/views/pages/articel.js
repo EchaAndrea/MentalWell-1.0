@@ -1,6 +1,6 @@
 const articleSection = document.getElementById('content-articel');
 const loadingIndicator = document.getElementById('loading-indicator');
-const apiUrl = 'https://mentalwell-backend.vercel.app/articles';
+const apiUrl = 'https://mentalwell10-api-production.up.railway.app/articles';
 
 loadingIndicator.style.display = 'block';
 

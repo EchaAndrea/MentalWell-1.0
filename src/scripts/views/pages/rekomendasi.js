@@ -1,6 +1,6 @@
 const articleSection = document.getElementById('container-rekomendasi');
 
-const apiUrl = 'https://mentalwell-backend.vercel.app/psychologists_index';
+const apiUrl = 'https://mentalwell10-api-production.up.railway.app/psychologists/list';
 const loadingIndicator = document.getElementById('loading-indicator');
 
 loadingIndicator.style.display = 'block';
