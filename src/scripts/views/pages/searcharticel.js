@@ -19,7 +19,12 @@ searchForm.addEventListener("submit", (event) => {
         console.log("Hasil fetch:", data); // Tambahkan ini
         contentArticle.innerHTML = "";
 
-        (data.articles || []).forEach((articleData) => {
+        // Filter judul yang mengandung kata kunci (case-insensitive)
+        const filteredArticles = (data.articles || []).filter((articleData) =>
+          articleData.title.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+        filteredArticles.forEach((articleData) => {
           console.log("Artikel ditemukan:", articleData); // Tambahkan ini
           const articleElement = document.createElement("article");
           articleElement.innerHTML = `
@@ -38,6 +43,11 @@ searchForm.addEventListener("submit", (event) => {
           `;
           contentArticle.appendChild(articleElement);
         });
+
+        // Jika tidak ada hasil
+        if (filteredArticles.length === 0) {
+          contentArticle.innerHTML = "<p>Tidak ada artikel ditemukan.</p>";
+        }
       })
       .catch((error) => {
         console.error("Error fetching search results:", error);
