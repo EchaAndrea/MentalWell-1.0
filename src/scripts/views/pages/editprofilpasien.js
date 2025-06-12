@@ -3,45 +3,25 @@ const editIcon = document.getElementById("editIcon");
 const form = document.querySelector(".editpasien-form");
 
 document.addEventListener("DOMContentLoaded", async function () {
-  // Fetch patient data from the backend with authorization
+  const token = sessionStorage.getItem("authToken");
   const response = await fetch(
-    "https://mentalwell10-api-production.up.railway.app/profile",
+    "https://mentalwell10-api-production.up.railway.app/my-data",
     {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     }
   );
+  const data = await response.json();
+  const user = data.result.users;
 
-  const patientData = await response.json();
-
-  document.getElementById("profileimage").innerHTML = `
-    <div id="imagePreviewContainer">
-      <img src="${patientData.users.profile_image}" id="gambar">
-    </div>
-    <label for="inputImage" class="inputImage">Ubah Gambar</label>
-    <input type="file" id="inputImage" onchange="previewImage(event)">
-  `;
-
-  // Update email
-  document.getElementById(
-    "email"
-  ).innerHTML = `<h4>${patientData.users.email}</h4>`;
-
-  // Update name
-  document.getElementById("namalengkap").value = patientData.users.name;
-
-  // Update nickname
-  document.getElementById("namapanggilan").value = patientData.users.nickname;
-
-  // Update phone number
-  document.getElementById("nowa").value = patientData.users.phone_number;
-
-  // Update birthdate
-  document.getElementById("tgllahir").value = patientData.users.birthdate;
-
-  // Update gender
-  document.getElementById("gender").value = patientData.users.gender;
+  document.getElementById("namalengkap").value = user.name || "";
+  document.getElementById("namapanggilan").value = user.nickname || "";
+  document.getElementById("nowa").value = user.phone_number || "";
+  document.getElementById("tgllahir").value = user.birthdate || "";
+  document.getElementById("gender").value =
+    user.gender?.toLowerCase() === "perempuan" ? "perempuan" : "laki_laki";
+  document.getElementById("email").innerHTML = `<h4>${user.email || ""}</h4>`;
 });
 
 function previewImage(event) {
