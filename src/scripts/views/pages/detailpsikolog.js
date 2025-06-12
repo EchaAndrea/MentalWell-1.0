@@ -89,6 +89,9 @@ async function renderArticleDetails() {
           ? "<span class='jadwal-hijau'>Tersedia</span>"
           : "<span class='jadwal-merah'>Tidak Tersedia</span>";
     }
+
+    // Update button state sesuai availability
+    updateButtonState(articleData.availability);
   } catch (error) {
     console.error("Error rendering article details:", error);
   }
