@@ -81,6 +81,7 @@ loginForm.addEventListener("submit", async (event) => {
       const userRole = responseData.role;
       const userName = responseData.name;
 
+      // Simpan token ke localStorage agar bisa diakses halaman lain
       localStorage.setItem("token", token);
 
       setTimeout(async () => {
@@ -118,14 +119,14 @@ loginForm.addEventListener("submit", async (event) => {
               "https://mentalwell-10-frontend.vercel.app/editprofilpsikolog";
           }
         } else if (userRole === "patient") {
-          // window.location.href = 'http://localhost:5501/src/templates/index.html';
           window.location.href = "https://mentalwell-10-frontend.vercel.app/";
         } else if (userRole === "psychologist") {
-          // window.location.href = 'http://localhost:5501/src/templates/dashboardpsikolog.html';
           window.location.href =
             "https://mentalwell-10-frontend.vercel.app/dashboardpsikolog";
+        } else if (userRole === "admin") {
+          window.location.href =
+            "https://mentalwell-10-frontend.vercel.app/admin";
         } else {
-          // Handle other cases
           window.location.href = "https://mentalwell-10-frontend.vercel.app/";
         }
       }, 100);

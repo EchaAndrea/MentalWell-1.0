@@ -5,7 +5,7 @@ const apiUrl =
 
 loadingIndicator.style.display = "block";
 
-const token = localStorage.getItem("token"); // atau dari tempat kamu simpan token
+const token = localStorage.getItem("token"); // Pastikan token sudah disimpan saat login
 
 fetch(apiUrl, {
   headers: {
@@ -13,21 +13,19 @@ fetch(apiUrl, {
   },
 })
   .then((response) => response.json())
-  .then((result) => {
+  .then((response) => {
     loadingIndicator.style.display = "none";
-    const data = result.data; // Ambil array psikolog dari properti 'data'
-    data.forEach((articleData) => {
+    if (!response.data) {
+      articleSection.innerHTML =
+        "<p>Data tidak ditemukan atau Anda belum login.</p>";
+      return;
+    }
+    response.data.forEach((articleData) => {
       const articleElement = document.createElement("div");
       articleElement.classList.add("content-psikolog");
 
-      let formattedExperience;
-      if (articleData.experience == "<2_tahun") {
-        formattedExperience = "< 2 tahun";
-      } else if (articleData.experience == "2-4_tahun") {
-        formattedExperience = "2-4 tahun";
-      } else if (articleData.experience == ">4_tahun") {
-        formattedExperience = "> 4 tahun";
-      }
+      // Langsung pakai articleData.experience dari API
+      let formattedExperience = articleData.experience;
 
       let formattedketersediaan;
       if (articleData.availability === "available") {
