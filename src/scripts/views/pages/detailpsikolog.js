@@ -1,7 +1,11 @@
 async function fetchArticleById(articleId) {
   try {
+    const token = localStorage.getItem("token");
     const response = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/psychologists/${articleId}`
+      `https://mentalwell10-api-production.up.railway.app/psychologists/${articleId}`,
+      {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      }
     );
     if (!response.ok) {
       throw new Error("Network response was not ok");
@@ -16,75 +20,90 @@ async function fetchArticleById(articleId) {
 
 async function renderArticleDetails() {
   try {
-    showLoadingIndicator();
     const urlParams = new URLSearchParams(window.location.search);
     const articleId = urlParams.get("id");
-    if (!articleId) {
-      hideLoadingIndicator();
-      alert("ID psikolog tidak ditemukan di URL.");
-      return;
-    }
-    const fotopsikolog = document.querySelector(".foto-psikolog img");
-    const datapsikolog = document.querySelector(".data-psikolog h2");
-    const biodatapsikolog = document.getElementById("biodata-psikolog");
-    const pengalamanpraktik = document.getElementById("praktik");
-    const topikKeahlian = document.getElementById("topik-keahlian");
-    const topicList = document.getElementById("topiclist");
+    if (!articleId) return;
 
+    // Ambil data dari API
     const articleData = await fetchArticleById(articleId);
 
-    // Menampilkan data artikel pada elemen HTML
-    fotopsikolog.src = `${articleData.profile_image}`;
-    datapsikolog.innerHTML = `${articleData.name}`;
-    biodatapsikolog.innerHTML = `<p>${articleData.bio}</p>`;
-    pengalamanpraktik.innerHTML = `${articleData.experience || "-"}`;
+    // Render foto
+    const fotopsikolog = document.getElementById("psychologProfile");
+    if (fotopsikolog) fotopsikolog.src = articleData.profile_image;
 
-    // Menampilkan topik-topik psikolog
-    if (articleData.topics && articleData.topics.length > 0) {
-      const formattedTopicsList = articleData.topics
-        .map((topic) => `<li>${topic.name}</li>`)
-        .join("");
-      topicList.innerHTML = formattedTopicsList;
-      topikKeahlian.style.display = "block";
-    } else {
-      topicList.innerHTML = "<li>Tidak ada topik.</li>";
-      topikKeahlian.style.display = "none";
+    // Render nama dan bio
+    const datapsikolog = document.querySelector(".data-psikolog h2");
+    if (datapsikolog) datapsikolog.textContent = articleData.name;
+
+    const biodatapsikolog = document.getElementById("biodata-psikolog");
+    if (biodatapsikolog)
+      biodatapsikolog.innerHTML = `<p>${articleData.bio}</p>`;
+
+    // Render pengalaman praktik
+    const pengalamanpraktik = document.getElementById("praktik");
+    if (pengalamanpraktik)
+      pengalamanpraktik.textContent = articleData.experience || "-";
+
+    // Render topik keahlian
+    const topicList = document.getElementById("topiclist");
+    if (topicList) {
+      if (articleData.topics && articleData.topics.length > 0) {
+        topicList.innerHTML = articleData.topics
+          .map((topic) => `<li>${topic.name}</li>`)
+          .join("");
+      } else {
+        topicList.innerHTML = "<li>Tidak ada topik.</li>";
+      }
     }
 
-    // Menampilkan review pengguna
-    const ulasanPengguna = document.getElementById("ulasan-pengguna");
+    // Render ulasan pengguna
     const userReviewsContainer = document.getElementById("userReviews");
-    if (articleData.reviews && articleData.reviews.length > 0) {
-      const userReviews = articleData.reviews
-        .map(
-          (review) => `
-        <div class="isi-ulasan">
-          <img src="/src/public/beranda/man.png" alt="Foto User" id="userReview" />
-          <div class="komentar-user">
-            <h3>${review.patient || "Pengguna Tanpa Nama"}</h3>
-            <p>${review.review}</p>
-          </div>
-        </div>
-      `
-        )
-        .join("");
-      userReviewsContainer.innerHTML = userReviews;
-      ulasanPengguna.style.display = "block";
-    } else {
-      userReviewsContainer.innerHTML = "<p>Tidak ada ulasan pengguna.</p>";
-      ulasanPengguna.style.display = "none";
+    const ulasanPengguna = document.getElementById("ulasan-pengguna");
+    if (userReviewsContainer && ulasanPengguna) {
+      if (articleData.reviews && articleData.reviews.length > 0) {
+        userReviewsContainer.innerHTML = articleData.reviews
+          .map(
+            (review) => `
+            <div class="isi-ulasan">
+              <img src="/src/public/beranda/man.png" alt="Foto User" id="userReview" />
+              <div class="komentar-user">
+                <h3>${review.patient || "Pengguna Tanpa Nama"}</h3>
+                <p>${review.review}</p>
+              </div>
+            </div>
+          `
+          )
+          .join("");
+        ulasanPengguna.style.display = "block";
+      } else {
+        userReviewsContainer.innerHTML = "<p>Tidak ada ulasan pengguna.</p>";
+        ulasanPengguna.style.display = "none";
+      }
     }
 
-    hideLoadingIndicator();
+    // Render ketersediaan (availability)
+    const availabilityTimes = document.getElementById("availabilityTimes");
+    if (availabilityTimes) {
+      availabilityTimes.innerHTML =
+        articleData.availability === "available"
+          ? "<span class='jadwal-hijau'>Tersedia</span>"
+          : "<span class='jadwal-merah'>Tidak Tersedia</span>";
+    }
   } catch (error) {
     console.error("Error rendering article details:", error);
-    hideLoadingIndicator();
   }
 }
+
+// Jalankan saat halaman siap
+document.addEventListener("DOMContentLoaded", renderArticleDetails);
 
 async function fetchPsychologistAvailability() {
   const urlParams = new URLSearchParams(window.location.search);
   const psychologistId = urlParams.get("id");
+  if (!psychologistId) {
+    // Jangan fetch jika id tidak ada
+    return;
+  }
   const url = `https://mentalwell10-api-production.up.railway.app/availability/psychologist/${psychologistId}`;
 
   try {
@@ -160,4 +179,10 @@ scroll2();
 
 // Add an event listener to the Daftar Konseling button
 const daftarKonselingButton = document.getElementById("btnDaftar");
-daftarKonselingButton.addEventListener("click", redirectToCounseling);
+if (daftarKonselingButton) {
+  daftarKonselingButton.addEventListener("click", redirectToCounseling);
+}
+
+function redirectToDetailPsychologist(id) {
+  window.location.href = `/profilpsikolog?id=${id}`;
+}
