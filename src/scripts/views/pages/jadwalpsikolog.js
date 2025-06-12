@@ -20,13 +20,14 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   // Fetch data psikolog
   async function fetchPsikolog(psikologId) {
-    const token = localStorage.getItem("token"); // pastikan token sudah disimpan saat login
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Anda belum login. Silakan login terlebih dahulu.");
+    }
     const res = await fetch(
       `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}`,
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       }
     );
     if (!res.ok) throw new Error("Gagal fetch data psikolog");
@@ -38,20 +39,25 @@ document.addEventListener("DOMContentLoaded", async function () {
     const token = localStorage.getItem("token");
     const res = await fetch(
       `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}/schedules`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+      { headers: { Authorization: `Bearer ${token}` } }
     );
-    if (!res.ok) throw new Error("Gagal fetch jadwal");
-    return await res.json();
+    const data = await res.json();
+    console.log("Jadwal response:", data);
+    if (!res.ok) throw new Error(data.message || "Gagal fetch jadwal");
+    return Array.isArray(data.result) ? data.result : [];
   }
 
   try {
     const psikologId = getPsikologId();
     selectedPsikolog = await fetchPsikolog(psikologId);
     const jadwalArr = await fetchJadwal(psikologId);
+
+    console.log("selectedPsikolog:", selectedPsikolog);
+    console.log("jadwalArr:", jadwalArr);
+    if (!Array.isArray(jadwalArr)) {
+      alert("Jadwal tidak tersedia atau Anda belum login.");
+      return;
+    }
 
     // Isi info psikolog ke halaman
     document.getElementById("nama").textContent = selectedPsikolog.name || "-";
@@ -105,8 +111,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     function selectTanggal(tglStr, btnClicked) {
       selectedTanggal = tglStr;
       selectedWaktu = null;
-      jadwalkanContainer.classList.remove("show");
-      jadwalkanContainer.classList.add("d-none");
+      jadwalkanContainer.classList.remove("show", "d-none");
       waktuSection.classList.remove("d-none");
 
       // Reset active di semua tanggal
@@ -178,9 +183,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         })
       );
 
-      window.location.href = "jadwalkonseling-isidata?id=${id}";
+      window.location.href = `jadwalkonseling-isidata?id=${psikologId}`;
     });
   } catch (err) {
     alert("Gagal mengambil data psikolog atau jadwal: " + err.message);
   }
+  const token = localStorage.getItem("token");
+  console.log("Token:", token);
 });
