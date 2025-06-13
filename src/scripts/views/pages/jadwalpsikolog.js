@@ -119,7 +119,6 @@ document.addEventListener("DOMContentLoaded", async function () {
       if (!waktuJadwal[tanggal]) waktuJadwal[tanggal] = [];
       waktuJadwal[tanggal].push({ jam, booked: false });
     });
-    console.log("waktuJadwal:", waktuJadwal); // Tambahkan log ini
 
     // Generate tombol tanggal 5 hari ke depan
     for (let i = 0; i < 5; i++) {
@@ -235,8 +234,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         selectedWaktu
       );
       if (available) {
-        // Lanjutkan ke proses booking atau halaman berikutnya
-        // window.location.href = "/halaman-booking.html";
+        window.location.href = "/jadwalkonseling-isidata.html";
         alert("Slot tersedia! Silakan lanjutkan booking.");
       } else {
         alert("Slot sudah diambil, silakan pilih waktu lain.");
