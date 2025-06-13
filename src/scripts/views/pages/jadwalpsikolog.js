@@ -42,24 +42,15 @@ document.addEventListener("DOMContentLoaded", async function () {
       { headers: { Authorization: `Bearer ${token}` } }
     );
     const data = await res.json();
+    console.log("Jadwal response:", data);
     if (!res.ok) throw new Error(data.message || "Gagal fetch jadwal");
-    return {
-      schedules: Array.isArray(data.result?.schedules)
-        ? data.result.schedules
-        : [],
-      price: data.result?.price,
-      name: data.result?.name,
-    };
+    return Array.isArray(data.result) ? data.result : [];
   }
 
   try {
     const psikologId = getPsikologId();
     selectedPsikolog = await fetchPsikolog(psikologId);
-    const jadwalData = await fetchJadwal(psikologId);
-    const jadwalArr = jadwalData.schedules;
-    document.getElementById("harga").textContent = jadwalData.price
-      ? `Rp${jadwalData.price}`
-      : "";
+    const jadwalArr = await fetchJadwal(psikologId);
 
     console.log("selectedPsikolog:", selectedPsikolog);
     console.log("jadwalArr:", jadwalArr);
@@ -71,61 +62,19 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Isi info psikolog ke halaman
     document.getElementById("nama").textContent = selectedPsikolog.name || "-";
     document.getElementById("spesialis").textContent =
-      selectedPsikolog.specialist || "";
-    const topicList = document.getElementById("topiclist");
-    if (topicList) {
-      let topics = [];
-      if (
-        Array.isArray(selectedPsikolog.topics) &&
-        selectedPsikolog.topics.length > 0
-      ) {
-        topics = selectedPsikolog.topics.map((topic) => topic.name || topic);
-      }
-      topicList.textContent = topics.length > 0 ? topics.join(", ") : "";
-    }
-    if (jadwalArr.length && jadwalArr[0].price) {
-      document.getElementById("harga").textContent = `Rp${jadwalArr[0].price}`;
-    }
-
-    // Ganti src foto sesuai id baru
-    const fotoEl = document.getElementById("foto-psikolog");
-    if (fotoEl) {
-      fotoEl.src =
-        selectedPsikolog.profile_image ||
-        selectedPsikolog.photo ||
-        "/src/public/beranda/man.png";
-    }
+      selectedPsikolog.specialist || "-";
+    document.getElementById("harga").textContent = selectedPsikolog.price
+      ? `Rp${selectedPsikolog.price}`
+      : "-";
+    document.querySelector("#psychologist-info img").src =
+      selectedPsikolog.photo || "/src/public/beranda/man.png";
 
     // Proses jadwal ke format { tanggal: [ {jam, booked}, ... ] }
     waktuJadwal = {};
     jadwalArr.forEach((item) => {
-      let tanggal = item.date;
-      // Jika tidak ada tanggal, coba mapping dari day ke tanggal terdekat
-      if (!tanggal && item.day) {
-        const hariKeIndex = {
-          Minggu: 0,
-          Senin: 1,
-          Selasa: 2,
-          Rabu: 3,
-          Kamis: 4,
-          Jumat: 5,
-          Sabtu: 6,
-        };
-        const today = new Date();
-        const todayIdx = today.getDay();
-        const targetIdx = hariKeIndex[item.day];
-        let diff = targetIdx - todayIdx;
-        if (diff < 0) diff += 7; // cari hari berikutnya
-        const targetDate = new Date(today);
-        targetDate.setDate(today.getDate() + diff);
-        tanggal = targetDate.toISOString().split("T")[0];
-      }
-      const jam = `${item.start_time?.slice(0, 5)}-${item.end_time?.slice(
-        0,
-        5
-      )}`;
-      if (!waktuJadwal[tanggal]) waktuJadwal[tanggal] = [];
-      waktuJadwal[tanggal].push({ jam, booked: false });
+      // Asumsi item: { date: "2025-06-02", time: "08:00-09:00", booked: false }
+      if (!waktuJadwal[item.date]) waktuJadwal[item.date] = [];
+      waktuJadwal[item.date].push({ jam: item.time, booked: item.booked });
     });
 
     // Generate tombol tanggal 5 hari ke depan
@@ -217,32 +166,24 @@ document.addEventListener("DOMContentLoaded", async function () {
       });
     }
 
-    // Fungsi cek ketersediaan jadwal
-    async function cekKetersediaanJadwal(psikologId, tanggal, jam) {
-      const token = localStorage.getItem("token");
-      const url = `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}/schedules/availability?date=${tanggal}&time=${encodeURIComponent(
-        jam
-      )}`;
-      const res = await fetch(url, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      return data.result?.is_available;
-    }
-
-    // Saat user klik tombol "Jadwalkan"
-    btnJadwalkan.addEventListener("click", async () => {
+    btnJadwalkan.addEventListener("click", () => {
       if (!selectedTanggal || !selectedWaktu) {
+        alert("Silakan pilih tanggal dan waktu terlebih dahulu.");
         return;
       }
-      const available = await cekKetersediaanJadwal(
-        psikologId,
-        selectedTanggal,
-        selectedWaktu
+
+      localStorage.setItem(
+        "jadwal",
+        JSON.stringify({
+          nama: selectedPsikolog.name,
+          spesialis: selectedPsikolog.specialist,
+          harga: selectedPsikolog.price,
+          tanggal: selectedTanggal,
+          waktu: selectedWaktu,
+        })
       );
-      if (available) {
-        window.location.href = "/jadwalkonseling-isidata";
-      }
+
+      window.location.href = `jadwalkonseling-isidata?id=${psikologId}`;
     });
   } catch (err) {
     alert("Gagal mengambil data psikolog atau jadwal: " + err.message);

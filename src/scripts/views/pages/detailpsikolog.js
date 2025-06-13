@@ -187,5 +187,14 @@ if (daftarKonselingButton) {
 }
 
 function redirectToDetailPsychologist(id) {
-  window.location.href = `/profilpsikolog?id=${id}`;
+  window.location.href = `/jadwalpsikolog?id=${psikologId}`;
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  const someElement = document.getElementById("someId");
+  if (someElement) {
+    someElement.addEventListener("click", function () {
+      // aksi
+    });
+  }
+});
