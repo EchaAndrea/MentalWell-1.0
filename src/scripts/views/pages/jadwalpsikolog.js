@@ -42,16 +42,24 @@ document.addEventListener("DOMContentLoaded", async function () {
       { headers: { Authorization: `Bearer ${token}` } }
     );
     const data = await res.json();
-    console.log("Jadwal response:", data);
     if (!res.ok) throw new Error(data.message || "Gagal fetch jadwal");
-    // Perbaikan: ambil schedules dari data.result.schedules
-    return Array.isArray(data.result?.schedules) ? data.result.schedules : [];
+    return {
+      schedules: Array.isArray(data.result?.schedules)
+        ? data.result.schedules
+        : [],
+      price: data.result?.price,
+      name: data.result?.name,
+    };
   }
 
   try {
     const psikologId = getPsikologId();
     selectedPsikolog = await fetchPsikolog(psikologId);
-    const jadwalArr = await fetchJadwal(psikologId);
+    const jadwalData = await fetchJadwal(psikologId);
+    const jadwalArr = jadwalData.schedules;
+    document.getElementById("harga").textContent = jadwalData.price
+      ? `Rp${jadwalData.price}`
+      : "";
 
     console.log("selectedPsikolog:", selectedPsikolog);
     console.log("jadwalArr:", jadwalArr);
@@ -75,9 +83,9 @@ document.addEventListener("DOMContentLoaded", async function () {
       }
       topicList.textContent = topics.length > 0 ? topics.join(", ") : "";
     }
-    document.getElementById("harga").textContent = selectedPsikolog.price
-      ? `Rp${selectedPsikolog.price}`
-      : "";
+    if (jadwalArr.length && jadwalArr[0].price) {
+      document.getElementById("harga").textContent = `Rp${jadwalArr[0].price}`;
+    }
 
     // Ganti src foto sesuai id baru
     const fotoEl = document.getElementById("foto-psikolog");
@@ -233,9 +241,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         selectedWaktu
       );
       if (available) {
-        window.location.href = "/jadwalkonseling-isidata.html";
+        window.location.href = "/jadwalkonseling-isidata";
       }
-      // Tidak perlu alert sama sekali
     });
   } catch (err) {
     alert("Gagal mengambil data psikolog atau jadwal: " + err.message);
