@@ -61,11 +61,11 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Isi info psikolog ke halaman
     document.getElementById("nama").textContent = selectedPsikolog.name || "-";
-    document.getElementById("spesialis").textContent =
-      selectedPsikolog.specialist || "-";
     document.getElementById("harga").textContent = selectedPsikolog.price
       ? `Rp${selectedPsikolog.price}`
       : "-";
+    document.getElementById("spesialis").textContent =
+      selectedPsikolog.specialist || "";
 
     // Ganti src foto sesuai id baru
     const fotoEl = document.getElementById("foto-psikolog");
@@ -76,25 +76,17 @@ document.addEventListener("DOMContentLoaded", async function () {
         "/src/public/beranda/man.png";
     }
 
-    // Topik keahlian
+    // Topik keahlian (satu baris, koma, tanpa judul)
     const topicList = document.getElementById("topiclist");
     if (topicList) {
-      topicList.innerHTML = "";
-      // Cek jika topics adalah array of object (seperti di detailpsikolog.js)
+      let topics = [];
       if (
         Array.isArray(selectedPsikolog.topics) &&
         selectedPsikolog.topics.length > 0
       ) {
-        selectedPsikolog.topics.forEach((topic) => {
-          const li = document.createElement("li");
-          li.textContent = topic.name || topic; // handle jika topic berupa object atau string
-          topicList.appendChild(li);
-        });
-      } else {
-        const li = document.createElement("li");
-        li.textContent = "-";
-        topicList.appendChild(li);
+        topics = selectedPsikolog.topics.map((topic) => topic.name || topic);
       }
+      topicList.textContent = topics.length > 0 ? topics.join(", ") : "";
     }
 
     // Proses jadwal ke format { tanggal: [ {jam, booked}, ... ] }
