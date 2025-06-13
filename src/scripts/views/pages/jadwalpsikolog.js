@@ -44,8 +44,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     const data = await res.json();
     console.log("Jadwal response:", data);
     if (!res.ok) throw new Error(data.message || "Gagal fetch jadwal");
-    // Ambil array schedules dari data.result
-    return Array.isArray(data.result?.schedules) ? data.result.schedules : [];
+    // Ambil seluruh objek result, bukan hanya schedules
+    return data.result;
   }
 
   try {
