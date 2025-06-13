@@ -61,22 +61,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Isi info psikolog ke halaman
     document.getElementById("nama").textContent = selectedPsikolog.name || "-";
-    document.getElementById("harga").textContent = selectedPsikolog.price
-      ? `Rp${selectedPsikolog.price}`
-      : "-";
     document.getElementById("spesialis").textContent =
       selectedPsikolog.specialist || "";
-
-    // Ganti src foto sesuai id baru
-    const fotoEl = document.getElementById("foto-psikolog");
-    if (fotoEl) {
-      fotoEl.src =
-        selectedPsikolog.profile_image ||
-        selectedPsikolog.photo ||
-        "/src/public/beranda/man.png";
-    }
-
-    // Topik keahlian (satu baris, koma, tanpa judul)
     const topicList = document.getElementById("topiclist");
     if (topicList) {
       let topics = [];
@@ -87,6 +73,18 @@ document.addEventListener("DOMContentLoaded", async function () {
         topics = selectedPsikolog.topics.map((topic) => topic.name || topic);
       }
       topicList.textContent = topics.length > 0 ? topics.join(", ") : "";
+    }
+    document.getElementById("harga").textContent = selectedPsikolog.price
+      ? `Rp${selectedPsikolog.price}`
+      : "";
+
+    // Ganti src foto sesuai id baru
+    const fotoEl = document.getElementById("foto-psikolog");
+    if (fotoEl) {
+      fotoEl.src =
+        selectedPsikolog.profile_image ||
+        selectedPsikolog.photo ||
+        "/src/public/beranda/man.png";
     }
 
     // Proses jadwal ke format { tanggal: [ {jam, booked}, ... ] }
@@ -210,24 +208,46 @@ document.addEventListener("DOMContentLoaded", async function () {
       });
     }
 
-    btnJadwalkan.addEventListener("click", () => {
+    async function cekKetersediaanSlot(psikologId, tanggal, jam) {
+      const token = localStorage.getItem("token");
+      const res = await fetch(
+        `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}/schedules/availability?date=${tanggal}&time=${encodeURIComponent(
+          jam
+        )}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const data = await res.json();
+      return data.result?.is_available;
+    }
+
+    // Saat user klik tombol "Jadwalkan"
+    btnJadwalkan.addEventListener("click", async () => {
       if (!selectedTanggal || !selectedWaktu) {
         alert("Silakan pilih tanggal dan waktu terlebih dahulu.");
         return;
       }
 
-      localStorage.setItem(
-        "jadwal",
-        JSON.stringify({
-          nama: selectedPsikolog.name,
-          spesialis: selectedPsikolog.specialist,
-          harga: selectedPsikolog.price,
-          tanggal: selectedTanggal,
-          waktu: selectedWaktu,
-        })
+      const available = await cekKetersediaanSlot(
+        psikologId,
+        selectedTanggal,
+        selectedWaktu
       );
+      if (available) {
+        localStorage.setItem(
+          "jadwal",
+          JSON.stringify({
+            nama: selectedPsikolog.name,
+            spesialis: selectedPsikolog.specialist,
+            harga: selectedPsikolog.price,
+            tanggal: selectedTanggal,
+            waktu: selectedWaktu,
+          })
+        );
 
-      window.location.href = `jadwalkonseling-isidata?id=${psikologId}`;
+        window.location.href = `jadwalkonseling-isidata?id=${psikologId}`;
+      } else {
+        alert("Slot sudah diambil, silakan pilih waktu lain.");
+      }
     });
   } catch (err) {
     alert("Gagal mengambil data psikolog atau jadwal: " + err.message);
