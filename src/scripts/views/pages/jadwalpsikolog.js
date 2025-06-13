@@ -72,17 +72,33 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Proses jadwal ke format { tanggal: [ {jam, booked}, ... ] }
     waktuJadwal = {};
     jadwalArr.forEach((item) => {
-      // Gunakan date jika ada, jika tidak skip (atau bisa mapping day ke tanggal jika perlu)
-      const tanggal = item.date;
-      if (!tanggal) return; // skip jika tidak ada tanggal
-
-      // Gabungkan start_time dan end_time
+      let tanggal = item.date;
+      // Jika tidak ada tanggal, coba mapping dari day ke tanggal terdekat
+      if (!tanggal && item.day) {
+        const hariKeIndex = {
+          Minggu: 0,
+          Senin: 1,
+          Selasa: 2,
+          Rabu: 3,
+          Kamis: 4,
+          Jumat: 5,
+          Sabtu: 6,
+        };
+        const today = new Date();
+        const todayIdx = today.getDay();
+        const targetIdx = hariKeIndex[item.day];
+        let diff = targetIdx - todayIdx;
+        if (diff < 0) diff += 7; // cari hari berikutnya
+        const targetDate = new Date(today);
+        targetDate.setDate(today.getDate() + diff);
+        tanggal = targetDate.toISOString().split("T")[0];
+      }
       const jam = `${item.start_time?.slice(0, 5)}-${item.end_time?.slice(
         0,
         5
       )}`;
       if (!waktuJadwal[tanggal]) waktuJadwal[tanggal] = [];
-      waktuJadwal[tanggal].push({ jam, booked: false }); // booked: false karena tidak ada info
+      waktuJadwal[tanggal].push({ jam, booked: false });
     });
 
     // Generate tombol tanggal 5 hari ke depan
