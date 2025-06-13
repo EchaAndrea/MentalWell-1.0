@@ -70,20 +70,24 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Ganti src foto sesuai id baru
     const fotoEl = document.getElementById("foto-psikolog");
     if (fotoEl) {
-      fotoEl.src = selectedPsikolog.photo || "/src/public/beranda/man.png";
+      fotoEl.src =
+        selectedPsikolog.profile_image ||
+        selectedPsikolog.photo ||
+        "/src/public/beranda/man.png";
     }
 
     // Topik keahlian
     const topicList = document.getElementById("topiclist");
     if (topicList) {
       topicList.innerHTML = "";
+      // Cek jika topics adalah array of object (seperti di detailpsikolog.js)
       if (
         Array.isArray(selectedPsikolog.topics) &&
         selectedPsikolog.topics.length > 0
       ) {
         selectedPsikolog.topics.forEach((topic) => {
           const li = document.createElement("li");
-          li.textContent = topic;
+          li.textContent = topic.name || topic; // handle jika topic berupa object atau string
           topicList.appendChild(li);
         });
       } else {
