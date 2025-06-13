@@ -61,14 +61,26 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     // Isi info psikolog ke halaman
-    document.getElementById("nama").textContent = selectedPsikolog.name || "-";
-    document.getElementById("spesialis").textContent =
-      selectedPsikolog.specialist || "-";
-    document.getElementById("harga").textContent = selectedPsikolog.price
-      ? `Rp${selectedPsikolog.price}`
-      : "-";
-    document.querySelector("#psychologist-info img").src =
-      selectedPsikolog.photo || "/src/public/beranda/man.png";
+    const namaEl = document.getElementById("nama");
+    if (namaEl) namaEl.textContent = selectedPsikolog.name || "-";
+
+    const topicEl = document.getElementById("topiclist");
+    if (topicEl)
+      topicEl.textContent = selectedPsikolog.topics
+        ? Array.isArray(selectedPsikolog.topics)
+          ? selectedPsikolog.topics.join(", ")
+          : selectedPsikolog.topics
+        : "-";
+
+    const hargaEl = document.getElementById("harga");
+    if (hargaEl)
+      hargaEl.textContent = selectedPsikolog.price
+        ? `Rp${selectedPsikolog.price}`
+        : "-";
+
+    const fotoEl = document.getElementById("foto-psikolog");
+    if (fotoEl)
+      fotoEl.src = selectedPsikolog.photo || "/src/public/beranda/man.png";
 
     // Proses jadwal ke format { tanggal: [ {jam, booked}, ... ] }
     waktuJadwal = {};
