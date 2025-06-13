@@ -2,7 +2,7 @@ async function fetchConfirmedCounselingData() {
   try {
     const token = sessionStorage.getItem('authToken');
 
-    const response = await fetch('https://mentalwell-backend.vercel.app/confirmedCounseling', {
+    const response = await fetch('https://mentalwell10-api-production.up.railway.app/confirmedCounseling', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -41,7 +41,7 @@ async function populateHTMLWithData() {
 
 function redirectToIndex() {
   // window.location.href = `http://localhost:5501/src/templates/index.html`;
-  window.location.href = `https://mentalwell.vercel.app/`;
+  window.location.href = `https://mentalwell-10-frontend.vercel.app/`;
 }
 
 function convertDateFormat(inputDate) {

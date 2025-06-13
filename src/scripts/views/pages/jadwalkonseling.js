@@ -4,7 +4,7 @@ async function fetchCounselingData() {
     const token = sessionStorage.getItem("authToken");
 
     const response = await fetch(
-      `https://mentalwell-backend.vercel.app/counselings/patient`,
+      `https://mentalwell10-api-production.up.railway.app/counselings/patient`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -24,11 +24,30 @@ async function fetchCounselingData() {
   }
 }
 
+async function fetchUserProfile() {
+  const token = sessionStorage.getItem("authToken");
+  try {
+    const response = await fetch(
+      "https://mentalwell10-api-production.up.railway.app/my-data",
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    if (!response.ok) throw new Error("Gagal mengambil data profil.");
+    const data = await response.json();
+    return data.result.users;
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    return null;
+  }
+}
+
 async function populateFormFields() {
   try {
     showLoadingIndicator();
 
-    const counselingData = await fetchCounselingData();
+    const user = await fetchUserProfile();
+    if (!user) throw new Error("User data not found");
 
     const fullNameInput = document.querySelector(
       'input[placeholder="Nama Lengkap"]'
@@ -46,29 +65,34 @@ async function populateFormFields() {
       'input[placeholder="08123456789"]'
     );
 
-    const options = { year: "numeric", month: "long", day: "numeric" };
+    // Format tanggal lahir ke yyyy-mm-dd (atau format lain sesuai kebutuhan)
+    const formattedBirthdate = user.birthdate
+      ? new Date(user.birthdate).toISOString().split("T")[0]
+      : "";
 
-    const formattedBirthdate = new Date(
-      counselingData.users.birthdate
-    ).toLocaleDateString("id-ID", options);
-
-    let formattedGender;
-    if (counselingData.users.gender == "laki_laki") {
-      formattedGender = "Laki-laki";
-    } else {
-      formattedGender = "Perempuan";
+    // Normalisasi gender
+    let formattedGender = "";
+    if (user.gender) {
+      if (user.gender.toLowerCase().includes("laki")) {
+        formattedGender = "Laki-laki";
+      } else if (user.gender.toLowerCase().includes("perempuan")) {
+        formattedGender = "Perempuan";
+      } else {
+        formattedGender = user.gender;
+      }
     }
 
-    // Populate form fields with counseling data
-    fullNameInput.value = counselingData.users.name || "";
-    nicknameInput.value = counselingData.users.nickname || "";
-    birthdateInput.value = formattedBirthdate || "";
-    genderInput.value = formattedGender || "";
-    phoneNumberInput.value = counselingData.users.phone_number || "";
+    // Isi form
+    if (fullNameInput) fullNameInput.value = user.name || "";
+    if (nicknameInput) nicknameInput.value = user.nickname || "";
+    if (birthdateInput) birthdateInput.value = formattedBirthdate || "";
+    if (genderInput) genderInput.value = formattedGender || "";
+    if (phoneNumberInput) phoneNumberInput.value = user.phone_number || "";
 
     hideLoadingIndicator();
   } catch (error) {
     console.error("Error populating form fields:", error);
+    hideLoadingIndicator();
   }
 }
 
@@ -94,7 +118,7 @@ function getPsychologistIdFromUrl() {
 }
 
 async function fetchPsychologistSchedule(psychologistId) {
-  const url = `https://mentalwell-backend.vercel.app/schedule/psychologist/${psychologistId}`;
+  const url = `https://mentalwell10-api-production.up.railway.app/schedule/psychologist/${psychologistId}`;
 
   try {
     const response = await fetch(url);
@@ -113,7 +137,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (jadwalData) {
     // Tampilkan tanggal dan waktu yang dipilih
-    document.getElementById("selectedDate").textContent = formatTanggalIndo(jadwalData.tanggal);
+    document.getElementById("selectedDate").textContent = formatTanggalIndo(
+      jadwalData.tanggal
+    );
     document.getElementById("selectedTime").textContent = jadwalData.waktu;
   } else {
     // Jika tidak ada data, redirect atau beri peringatan
@@ -125,13 +151,22 @@ document.addEventListener("DOMContentLoaded", () => {
 // Fungsi bantu: format tanggal dari yyyy-mm-dd ke format Indonesia (misal: 2 Juni 2025)
 function formatTanggalIndo(tanggalStr) {
   const bulanIndo = [
-    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    "Januari",
+    "Februari",
+    "Maret",
+    "April",
+    "Mei",
+    "Juni",
+    "Juli",
+    "Agustus",
+    "September",
+    "Oktober",
+    "November",
+    "Desember",
   ];
   const [tahun, bulan, hari] = tanggalStr.split("-");
   return `${parseInt(hari)} ${bulanIndo[parseInt(bulan) - 1]} ${tahun}`;
 }
-
 
 // Tahap 1
 async function redirectToCounseling2() {
@@ -161,7 +196,7 @@ async function redirectToCounseling2() {
   }
 
   // window.location.href = `http://localhost:5501/src/templates/jadwalkonseling-permasalahan.html?id=${currentId}`;
-  window.location.href = `https://mentalwell.vercel.app/jadwalkonseling-permasalahan?id=${currentId}`;
+  window.location.href = `https://mentalwell-10-frontend.vercel.app/jadwalkonseling-permasalahan?id=${currentId}`;
 }
 
 //Tahap 2
@@ -186,7 +221,7 @@ async function sendCounselingData() {
     });
 
     if (result.isConfirmed) {
-      window.location.href = `http://mentalwell.vercel.app/jadwalkonseling-pembayaran?id=${currentId}`;
+      window.location.href = `https://mentalwell-10-frontend.vercel.app/jadwalkonseling-pembayaran?id=${currentId}`;
     } else {
       console.log("User canceled.");
     }
@@ -229,7 +264,7 @@ async function confirmPayment() {
 
   try {
     const response = await fetch(
-      `https://mentalwell-backend.vercel.app/counselings/create/${currentId}`,
+      `https://mentalwell10-api-production.up.railway.app/counselings/create/${currentId}`,
       {
         method: "POST",
         headers: {
@@ -251,7 +286,7 @@ async function confirmPayment() {
       text: "Data telah berhasil dikirim.",
       confirmButtonText: "Lanjut",
     }).then(() => {
-      window.location.href = `https://mentalwell.vercel.app/jadwalkonseling-selesai?id=${currentId}`;
+      window.location.href = `https://mentalwell-10-frontend.vercel.app/jadwalkonseling-selesai?id=${currentId}`;
     });
   } catch (error) {
     console.error("Error during payment confirmation:", error);
@@ -259,6 +294,67 @@ async function confirmPayment() {
       icon: "error",
       title: "Terjadi Kesalahan",
       text: "Tidak dapat mengirim data. Coba lagi nanti.",
+    });
+  }
+}
+
+async function createCounselingBySchedule() {
+  const token = sessionStorage.getItem("authToken");
+  const counselingDataStorage = JSON.parse(
+    sessionStorage.getItem("counselingData") || "{}"
+  );
+  const psychologistId = counselingDataStorage.psikologId; // Pastikan sudah disimpan di sessionStorage
+
+  // Data yang dikirim sesuai backend
+  const payload = {
+    name: counselingDataStorage.name,
+    nickname: counselingDataStorage.nickname,
+    birthdate: counselingDataStorage.birthdate,
+    phone_number: counselingDataStorage.phone_number,
+    gender: counselingDataStorage.gender,
+    schedule_date: counselingDataStorage.schedule_date,
+    schedule_time: counselingDataStorage.schedule_time,
+    occupation: counselingDataStorage.occupation,
+    problem_description: counselingDataStorage.problem_description,
+    hope_after: counselingDataStorage.hope_after,
+    type: "scheduled",
+  };
+
+  try {
+    const response = await fetch(
+      `https://mentalwell10-api-production.up.railway.app/counselings/${psychologistId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Gagal membuat counseling.");
+    }
+
+    const result = await response.json();
+    // Simpan counseling_id ke sessionStorage untuk proses pembayaran berikutnya
+    sessionStorage.setItem("counselingId", result.newCounseling.counseling_id);
+
+    Swal.fire({
+      icon: "success",
+      title: "Berhasil!",
+      text: "Counseling berhasil dibuat, menunggu konfirmasi pembayaran.",
+      confirmButtonText: "Lanjut ke Pembayaran",
+    }).then(() => {
+      window.location.href = `https://mentalwell-10-frontend.vercel.app/jadwalkonseling-pembayaran?id=${result.newCounseling.counseling_id}`;
+    });
+  } catch (error) {
+    console.error("Error creating counseling:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Terjadi Kesalahan",
+      text: "Tidak dapat membuat counseling. Coba lagi nanti.",
     });
   }
 }

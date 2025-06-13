@@ -208,14 +208,15 @@ document.addEventListener("DOMContentLoaded", async function () {
       });
     }
 
-    async function cekKetersediaanSlot(psikologId, tanggal, jam) {
+    // Fungsi cek ketersediaan jadwal
+    async function cekKetersediaanJadwal(psikologId, tanggal, jam) {
       const token = localStorage.getItem("token");
-      const res = await fetch(
-        `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}/schedules/availability?date=${tanggal}&time=${encodeURIComponent(
-          jam
-        )}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const url = `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}/schedules/availability?date=${tanggal}&time=${encodeURIComponent(
+        jam
+      )}`;
+      const res = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const data = await res.json();
       return data.result?.is_available;
     }
@@ -226,25 +227,15 @@ document.addEventListener("DOMContentLoaded", async function () {
         alert("Silakan pilih tanggal dan waktu terlebih dahulu.");
         return;
       }
-
-      const available = await cekKetersediaanSlot(
+      const available = await cekKetersediaanJadwal(
         psikologId,
         selectedTanggal,
         selectedWaktu
       );
       if (available) {
-        localStorage.setItem(
-          "jadwal",
-          JSON.stringify({
-            nama: selectedPsikolog.name,
-            spesialis: selectedPsikolog.specialist,
-            harga: selectedPsikolog.price,
-            tanggal: selectedTanggal,
-            waktu: selectedWaktu,
-          })
-        );
-
-        window.location.href = `jadwalkonseling-isidata?id=${psikologId}`;
+        // Lanjutkan ke proses booking atau halaman berikutnya
+        // window.location.href = "/halaman-booking.html";
+        alert("Slot tersedia! Silakan lanjutkan booking.");
       } else {
         alert("Slot sudah diambil, silakan pilih waktu lain.");
       }
