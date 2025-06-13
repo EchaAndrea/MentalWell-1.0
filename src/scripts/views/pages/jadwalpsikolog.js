@@ -225,7 +225,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Saat user klik tombol "Jadwalkan"
     btnJadwalkan.addEventListener("click", async () => {
       if (!selectedTanggal || !selectedWaktu) {
-        alert("Silakan pilih tanggal dan waktu terlebih dahulu.");
         return;
       }
       const available = await cekKetersediaanJadwal(
@@ -235,10 +234,8 @@ document.addEventListener("DOMContentLoaded", async function () {
       );
       if (available) {
         window.location.href = "/jadwalkonseling-isidata.html";
-        alert("Slot tersedia! Silakan lanjutkan booking.");
-      } else {
-        alert("Slot sudah diambil, silakan pilih waktu lain.");
       }
+      // Tidak perlu alert sama sekali
     });
   } catch (err) {
     alert("Gagal mengambil data psikolog atau jadwal: " + err.message);
