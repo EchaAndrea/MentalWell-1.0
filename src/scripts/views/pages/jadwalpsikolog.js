@@ -121,9 +121,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
     console.log("waktuJadwal:", waktuJadwal); // Tambahkan log ini
 
-    // Generate tombol tanggal dari waktuJadwal (bukan 5 hari ke depan)
-    Object.keys(waktuJadwal).forEach((tglStr) => {
-      const date = new Date(tglStr);
+    // Generate tombol tanggal 5 hari ke depan
+    for (let i = 0; i < 5; i++) {
+      const date = new Date();
+      date.setDate(date.getDate() + i);
+      const tglStr = date.toISOString().split("T")[0]; // yyyy-mm-dd
       const tglDisplay = date.getDate();
 
       const btn = document.createElement("button");
@@ -132,7 +134,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       btn.title = tglStr;
       btn.addEventListener("click", () => selectTanggal(tglStr, btn));
       tanggalContainer.appendChild(btn);
-    });
+    }
 
     // Klik icon kalender untuk buka date picker
     btnCalendar.addEventListener("click", () => {
