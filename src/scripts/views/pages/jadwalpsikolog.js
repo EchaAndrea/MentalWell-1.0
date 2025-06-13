@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const hargaEl = document.getElementById("harga");
     if (hargaEl)
       hargaEl.textContent = selectedPsikolog.price
-        ? `Rp${selectedPsikolog.price}`
+        ? `Rp. ${selectedPsikolog.price}`
         : "-";
 
     const fotoEl = document.getElementById("foto-psikolog");
