@@ -51,7 +51,18 @@ document.addEventListener("DOMContentLoaded", async function () {
   try {
     const psikologId = getPsikologId();
     selectedPsikolog = await fetchPsikolog(psikologId);
-    const jadwalArr = await fetchJadwal(psikologId);
+    // Setelah fetchJadwal
+    const jadwalData = await fetchJadwal(psikologId);
+    // jadwalData = { name, price, schedules }
+
+    selectedPsikolog = {
+      ...selectedPsikolog, // dari fetchPsikolog
+      price: jadwalData.price,
+    };
+
+    const jadwalArr = Array.isArray(jadwalData.schedules)
+      ? jadwalData.schedules
+      : [];
 
     console.log("selectedPsikolog:", selectedPsikolog);
     console.log("jadwalArr:", jadwalArr);
