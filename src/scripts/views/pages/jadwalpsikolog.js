@@ -75,14 +75,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     const namaEl = document.getElementById("nama");
     if (namaEl) namaEl.textContent = selectedPsikolog.name || "-";
 
-    const topicEl = document.getElementById("topiclist");
-    if (topicEl)
-      topicEl.textContent = selectedPsikolog.topics
-        ? Array.isArray(selectedPsikolog.topics)
-          ? selectedPsikolog.topics.join(", ")
-          : selectedPsikolog.topics
-        : "-";
-
     const hargaEl = document.getElementById("harga");
     if (hargaEl)
       hargaEl.textContent = selectedPsikolog.price
@@ -95,11 +87,15 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Proses jadwal ke format { tanggal: [ {jam, booked}, ... ] }
     waktuJadwal = {};
-    jadwalArr.forEach((item) => {
-      // Asumsi item: { date: "2025-06-02", time: "08:00-09:00", booked: false }
+    // Hanya jadwal yang punya field 'date' (bukan 'day')
+    const jadwalWithDate = jadwalArr.filter((item) => item.date);
+    for (const item of jadwalWithDate) {
+      const jam = `${item.start_time?.slice(0, 5) || ""}-${
+        item.end_time?.slice(0, 5) || ""
+      }`;
       if (!waktuJadwal[item.date]) waktuJadwal[item.date] = [];
-      waktuJadwal[item.date].push({ jam: item.time, booked: item.booked });
-    });
+      waktuJadwal[item.date].push({ jam, id: item.id });
+    }
 
     // Generate tombol tanggal 5 hari ke depan
     for (let i = 0; i < 5; i++) {
@@ -152,7 +148,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       renderWaktu();
     }
 
-    function renderWaktu() {
+    async function renderWaktu() {
       waktuContainer.innerHTML = "";
 
       const waktuList = waktuJadwal[selectedTanggal] || [];
@@ -162,10 +158,30 @@ document.addEventListener("DOMContentLoaded", async function () {
         return;
       }
 
-      waktuList.forEach(({ jam, booked }) => {
+      // Cek ketersediaan setiap slot
+      for (const { jam, id } of waktuList) {
         const btn = document.createElement("button");
         btn.className = "btn btn-outline-primary btn-slot me-2 mb-2";
         btn.textContent = jam;
+
+        // Cek ketersediaan via API
+        let booked = true;
+        try {
+          const availRes = await fetch(
+            `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}/schedules/availability?date=${selectedTanggal}&time=${encodeURIComponent(
+              jam
+            )}`,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+          const availData = await availRes.json();
+          booked = !availData.result?.is_available;
+        } catch (e) {
+          booked = true; // anggap booked jika error
+        }
 
         if (booked) {
           btn.disabled = true;
@@ -187,7 +203,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
 
         waktuContainer.appendChild(btn);
-      });
+      }
     }
 
     btnJadwalkan.addEventListener("click", () => {
