@@ -285,10 +285,6 @@ async function confirmPayment() {
 
 // Jalankan fungsi sesuai halaman
 document.addEventListener("DOMContentLoaded", function () {
-  const path = window.location.pathname;
-  if (path.includes("jadwalkonseling-isidata")) {
-    populateUserData();
-  }
   const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
   const dateEl = document.getElementById("selectedDate");
   const timeEl = document.getElementById("selectedTime");
