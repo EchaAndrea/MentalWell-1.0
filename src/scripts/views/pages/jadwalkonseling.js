@@ -214,12 +214,6 @@ async function populateUserData() {
   } catch (e) {
     // Optional: tampilkan error
   }
-  // Tampilkan jadwal dari localStorage
-  const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
-  const dateEl = document.getElementById("selectedDate");
-  const timeEl = document.getElementById("selectedTime");
-  if (dateEl) dateEl.textContent = formatTanggalIndo(jadwal.tanggal);
-  if (timeEl) timeEl.textContent = jadwal.waktu || "-";
 }
 
 function redirectToCounseling2() {
@@ -285,11 +279,10 @@ async function confirmPayment() {
 
 // Jalankan fungsi sesuai halaman
 document.addEventListener("DOMContentLoaded", function () {
-  const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
-  const dateEl = document.getElementById("selectedDate");
-  const timeEl = document.getElementById("selectedTime");
-  if (dateEl && jadwal.tanggal) dateEl.textContent = jadwal.tanggal;
-  if (timeEl && jadwal.waktu) timeEl.textContent = jadwal.waktu;
+  const path = window.location.pathname;
+  if (path.includes("jadwalkonseling-isidata")) {
+    populateUserData();
+  }
 });
 
 function showLoadingIndicator() {
