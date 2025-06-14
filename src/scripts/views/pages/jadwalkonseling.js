@@ -289,6 +289,11 @@ document.addEventListener("DOMContentLoaded", function () {
   if (path.includes("jadwalkonseling-isidata")) {
     populateUserData();
   }
+  const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
+  const dateEl = document.getElementById("selectedDate");
+  const timeEl = document.getElementById("selectedTime");
+  if (dateEl && jadwal.tanggal) dateEl.textContent = jadwal.tanggal;
+  if (timeEl && jadwal.waktu) timeEl.textContent = jadwal.waktu;
 });
 
 function showLoadingIndicator() {
