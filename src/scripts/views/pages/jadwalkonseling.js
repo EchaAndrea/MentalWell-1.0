@@ -391,3 +391,111 @@ const token = sessionStorage.getItem("authToken");
 if (!token) {
   window.location.href = "/src/templates/login.html";
 }
+
+document.addEventListener("DOMContentLoaded", async function () {
+  const path = window.location.pathname;
+
+  // --- ISI DATA ---
+  if (path.includes("jadwalkonseling-isidata")) {
+    const token = localStorage.getItem("token");
+    const inputs = document.querySelectorAll(".form-center input");
+    const selectedDate = document.getElementById("selectedDate");
+    const selectedTime = document.getElementById("selectedTime");
+
+    // Fetch user data
+    try {
+      const res = await fetch(
+        "https://mentalwell10-api-production.up.railway.app/my-data",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const data = await res.json();
+      const user = data.result.users;
+      if (inputs.length >= 5) {
+        inputs[0].value = user.name || "";
+        inputs[1].value = user.nickname || "";
+        inputs[2].value = user.birthdate || "";
+        inputs[3].value = user.gender || "";
+        inputs[4].value = user.phone_number || "";
+      }
+    } catch (e) {
+      alert("Gagal mengambil data user");
+    }
+
+    // Jadwal dari localStorage
+    const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
+    selectedDate.textContent = jadwal.tanggal || "-";
+    selectedTime.textContent = jadwal.waktu || "-";
+  }
+
+  // --- PERMASALAHAN ---
+  if (path.includes("jadwalkonseling-permasalahan")) {
+    window.sendCounselingData = function () {
+      const problem = document.getElementById("descriptionTextarea").value;
+      const hope = document.getElementById("hopeAfterTextarea").value;
+      localStorage.setItem(
+        "counseling_problem",
+        JSON.stringify({ problem, hope })
+      );
+      window.location.href = "jadwalkonseling-pembayaran.html";
+    };
+  }
+
+  // --- PEMBAYARAN ---
+  if (path.includes("jadwalkonseling-pembayaran")) {
+    window.confirmPayment = async function () {
+      const token = localStorage.getItem("token");
+      const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
+      const problemData = JSON.parse(
+        localStorage.getItem("counseling_problem") || "{}"
+      );
+      const buktiBayar = document.getElementById("buktiBayar").files[0];
+
+      if (!buktiBayar) {
+        alert("Upload bukti pembayaran terlebih dahulu.");
+        return;
+      }
+
+      // psychologist_id dari localStorage jadwal
+      const params = new URLSearchParams(window.location.search);
+      const psychologist_id = params.get("id") || jadwal.psikolog_id || "1";
+
+      const formData = new FormData();
+      formData.append("occupation", "Mahasiswa"); // Ganti jika ada input pekerjaan
+      formData.append("problem_description", problemData.problem || "");
+      formData.append("hope_after", problemData.hope || "");
+      formData.append("date", jadwal.tanggal || "");
+      formData.append("time", jadwal.waktu || "");
+      formData.append("payment_proof", buktiBayar);
+
+      try {
+        const res = await fetch(
+          `https://mentalwell10-api-production.up.railway.app/counselings/${psychologist_id}`,
+          {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}` },
+            body: formData,
+          }
+        );
+        const data = await res.json();
+        if (data.status === "success") {
+          localStorage.setItem(
+            "last_counseling_id",
+            data.newCounseling.counseling_id || data.newCounseling.id
+          );
+          window.location.href = "jadwalkonseling-selesai.html";
+        } else {
+          alert(data.message || "Gagal mengirim pembayaran");
+        }
+      } catch (e) {
+        alert("Gagal mengirim pembayaran");
+      }
+    };
+  }
+});
+
+// Untuk tombol "Selanjutnya" di isi data
+function redirectToCounseling2() {
+  window.location.href = "jadwalkonseling-permasalahan.html";
+}
