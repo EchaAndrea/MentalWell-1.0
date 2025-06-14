@@ -222,8 +222,18 @@ function redirectToCounseling2() {
 
 // Tahap 2: Permasalahan
 function sendCounselingData() {
-  const problem = document.getElementById("descriptionTextarea")?.value || "";
-  const hope = document.getElementById("hopeAfterTextarea")?.value || "";
+  const problem = document.getElementById("descriptionTextarea")?.value.trim();
+  const hope = document.getElementById("hopeAfterTextarea")?.value.trim();
+
+  if (!problem || !hope) {
+    Swal.fire({
+      icon: "warning",
+      title: "Form belum lengkap",
+      text: "Deskripsi masalah dan harapan harus diisi!",
+    });
+    return;
+  }
+
   localStorage.setItem("counseling_problem", JSON.stringify({ problem, hope }));
   window.location.href = "/jadwalkonseling-pembayaran";
 }
