@@ -21,10 +21,24 @@ async function populateHTMLWithData() {
   try {
     const counseling = await fetchConfirmedCounselingData();
     const valueContainer = document.querySelector(".value");
+
+    // Fallback jika data pasien tidak ada di counseling
+    let patient_name = counseling.patient_name;
+    let patient_nickname = counseling.patient_nickname;
+    let patient_phone = counseling.patient_phone_number;
+
+    if (!patient_name || !patient_nickname || !patient_phone) {
+      // Ambil dari localStorage jika tidak ada di counseling
+      const userData = JSON.parse(localStorage.getItem("user_data") || "{}");
+      patient_name = patient_name || userData.name || "-";
+      patient_nickname = patient_nickname || userData.nickname || "-";
+      patient_phone = patient_phone || userData.phone_number || "-";
+    }
+
     valueContainer.innerHTML = `
-      <p>${counseling.patient_name || "-"}</p>
-      <p>${counseling.patient_nickname || "-"}</p>
-      <p>${counseling.patient_phone_number || "-"}</p>
+      <p>${patient_name}</p>
+      <p>${patient_nickname}</p>
+      <p>${patient_phone}</p>
       <p>${convertDateFormat(counseling.schedule_date)}</p>
       <p>${convertTimeFormat(counseling.schedule_time)}</p>
       <p>${counseling.type === "scheduled" ? "Terjadwal" : counseling.type}</p>

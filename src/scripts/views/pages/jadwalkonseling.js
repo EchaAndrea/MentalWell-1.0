@@ -280,8 +280,26 @@ async function confirmPayment() {
 // Jalankan fungsi sesuai halaman
 document.addEventListener("DOMContentLoaded", function () {
   const path = window.location.pathname;
-  if (path.includes("jadwalkonseling-isidata")) {
-    populateUserData();
+
+  // Jalankan hanya di halaman pembayaran
+  if (path.includes("jadwalkonseling-pembayaran")) {
+    const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
+    const harga = parseInt(jadwal.harga) || 0;
+    const biayaAplikasi = 15000;
+    const total = harga + biayaAplikasi;
+
+    // Update harga di halaman (pastikan urutan span sesuai HTML kamu)
+    const spans = document.querySelectorAll("span");
+    if (spans[1]) spans[1].textContent = `Rp. ${harga.toLocaleString("id-ID")}`;
+    if (spans[3])
+      spans[3].textContent = `Rp. ${biayaAplikasi.toLocaleString("id-ID")}`;
+    if (spans[5]) spans[5].textContent = `Rp. ${total.toLocaleString("id-ID")}`;
+
+    // Update total di bawah (virtual account)
+    const h5s = document.querySelectorAll("h5.fw-bold");
+    if (h5s[1]) h5s[1].textContent = `Rp. ${total.toLocaleString("id-ID")}`;
+    if (h5s[0])
+      h5s[0].textContent = jadwal.virtual_account || "123 456 789 1011";
   }
 });
 
