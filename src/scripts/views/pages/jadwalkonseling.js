@@ -167,6 +167,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     type: jadwalData.metode || "scheduled",
   };
   sessionStorage.setItem("counselingData", JSON.stringify(counselingData));
+
+  // Setelah fetch user dari /my-data
+  localStorage.setItem("user_data", JSON.stringify(user));
 });
 
 // Helper: Format tanggal ke Indonesia

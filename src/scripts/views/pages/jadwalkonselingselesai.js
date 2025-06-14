@@ -28,7 +28,6 @@ async function populateHTMLWithData() {
     let patient_phone = counseling.patient_phone_number;
 
     if (!patient_name || !patient_nickname || !patient_phone) {
-      // Ambil dari localStorage jika tidak ada di counseling
       const userData = JSON.parse(localStorage.getItem("user_data") || "{}");
       patient_name = patient_name || userData.name || "-";
       patient_nickname = patient_nickname || userData.nickname || "-";
