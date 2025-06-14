@@ -374,16 +374,23 @@ function normalizeTimeFormat(time) {
 }
 
 function showLoadingIndicator() {
-  // Get loading indicator element and show it
-  const loadingIndicator = document.getElementById("loading-indicator");
-  loadingIndicator.style.display = "block";
+  const el = document.getElementById("loading-indicator");
+  if (el) el.style.display = "block";
+}
+function hideLoadingIndicator() {
+  const el = document.getElementById("loading-indicator");
+  if (el) el.style.display = "none";
 }
 
-function hideLoadingIndicator() {
-  // Hide loading indicator
-  const loadingIndicator = document.getElementById("loading-indicator");
-  loadingIndicator.style.display = "none";
-}
+document.addEventListener("DOMContentLoaded", async () => {
+  const jadwalData = JSON.parse(localStorage.getItem("jadwal"));
+  if (!jadwalData) return;
+
+  const dateEl = document.getElementById("selectedDate");
+  const timeEl = document.getElementById("selectedTime");
+  if (dateEl) dateEl.textContent = formatTanggalIndo(jadwalData.tanggal);
+  if (timeEl) timeEl.textContent = jadwalData.waktu;
+});
 
 function confirmAndRedirect() {}
 
