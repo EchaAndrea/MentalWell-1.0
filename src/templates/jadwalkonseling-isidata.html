@@ -80,17 +80,23 @@
           </form>
         </div>
       </div>
-<div class="jadwal card w-50 mx-3 shadow">
-  <h3 class="atur-jadwal text-center mt-2 mb-3">Jadwal Konseling</h3>
+      <div class="jadwal card w-50 mx-3 shadow">
+        <h3 class="atur-jadwal text-center mt-2 mb-3">Jadwal Konseling</h3>
 
-  <p class="mx-4"><strong>Tanggal Konseling</strong></p>
-  <p class="mx-4" id="selectedDate"></p> 
+        <p class="mx-4"><strong>Tanggal Konseling</strong></p>
+        <p class="mx-4" id="selectedDate"></p>
 
-  <p class="mx-4"><strong>Waktu Konseling (WIB)</strong></p>
-  <p class="mx-4" id="selectedTime"></p> 
+        <p class="mx-4"><strong>Waktu Konseling (WIB)</strong></p>
+        <p class="mx-4" id="selectedTime"></p>
 
-  <button class="rounded p-1 mx-3 my-3 mb-4" onclick="redirectToCounseling2()">Selanjutnya</button>
-</div>
+        <!-- Tampilkan info jadwal di bawah data user -->
+        <div class="jadwal-info mx-4 my-2">
+          <strong>Tanggal Konseling:</strong> <span id="selectedDate"></span><br>
+          <strong>Waktu Konseling:</strong> <span id="selectedTime"></span>
+        </div>
+        <!-- Button -->
+        <button class="rounded p-1 mx-3 my-3 mb-4" onclick="redirectToCounseling2()">Selanjutnya</button>
+      </div>
   </main>
 
   <footer>
