@@ -223,7 +223,7 @@ async function populateUserData() {
 }
 
 function redirectToCounseling2() {
-  window.location.href = "jadwalkonseling-permasalahan.html";
+  window.location.href = "/jadwalkonseling-permasalahan";
 }
 
 // Tahap 2: Permasalahan
@@ -231,7 +231,7 @@ function sendCounselingData() {
   const problem = document.getElementById("descriptionTextarea")?.value || "";
   const hope = document.getElementById("hopeAfterTextarea")?.value || "";
   localStorage.setItem("counseling_problem", JSON.stringify({ problem, hope }));
-  window.location.href = "jadwalkonseling-pembayaran.html";
+  window.location.href = "/jadwalkonseling-pembayaran";
 }
 
 // Tahap 3: Pembayaran
@@ -274,7 +274,7 @@ async function confirmPayment() {
         "last_counseling_id",
         data.newCounseling.counseling_id || data.newCounseling.id
       );
-      window.location.href = "jadwalkonseling-selesai.html";
+      window.location.href = "/jadwalkonseling-selesai";
     } else {
       Swal.fire(data.message || "Gagal mengirim pembayaran");
     }
@@ -290,3 +290,12 @@ document.addEventListener("DOMContentLoaded", function () {
     populateUserData();
   }
 });
+
+function showLoadingIndicator() {
+  const el = document.getElementById("loading-indicator");
+  if (el) el.style.display = "block";
+}
+function hideLoadingIndicator() {
+  const el = document.getElementById("loading-indicator");
+  if (el) el.style.display = "none";
+}
