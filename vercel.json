@@ -88,6 +88,10 @@
       "src": "/jadwalkonseling-permasalahan",
       "dest": "/src/templates/jadwalkonseling-permasalahan.html"
     },
+        {
+      "src": "/jadwalkonseling-pembayaran",
+      "dest": "/src/templates/jadwalkonseling-pembayaran.html"
+    },
     {
       "src": "/jadwalkonseling-selesai",
       "dest": "/src/templates/jadwalkonseling-selesai.html"
