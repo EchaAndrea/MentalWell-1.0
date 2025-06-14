@@ -484,7 +484,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             "last_counseling_id",
             data.newCounseling.counseling_id || data.newCounseling.id
           );
-          window.location.href = "jadwalkonseling-selesai.html";
+          window.location.href = "/jadwalkonseling-selesai";
         } else {
           alert(data.message || "Gagal mengirim pembayaran");
         }
@@ -497,5 +497,5 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 // Untuk tombol "Selanjutnya" di isi data
 function redirectToCounseling2() {
-  window.location.href = "jadwalkonseling-permasalahan.html";
+  window.location.href = "/jadwalkonseling-permasalahan";
 }
