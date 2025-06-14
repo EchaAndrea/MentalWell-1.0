@@ -21,8 +21,7 @@ async function populateHTMLWithData() {
   try {
     const counseling = await fetchConfirmedCounselingData();
     const valueContainer = document.querySelector(".value");
-
-    // Fallback jika data pasien tidak ada di counseling
+    // Ambil data user dari counseling, fallback ke localStorage jika tidak ada
     let patient_name = counseling.patient_name;
     let patient_nickname = counseling.patient_nickname;
     let patient_phone = counseling.patient_phone_number;
@@ -40,7 +39,6 @@ async function populateHTMLWithData() {
       <p>${patient_phone}</p>
       <p>${convertDateFormat(counseling.schedule_date)}</p>
       <p>${convertTimeFormat(counseling.schedule_time)}</p>
-      <p>${counseling.type === "scheduled" ? "Terjadwal" : counseling.type}</p>
     `;
   } catch (error) {
     // Tampilkan error ke user jika perlu
