@@ -198,14 +198,13 @@ async function populateUserData() {
   const token = localStorage.getItem("token");
   if (!token) return;
   try {
-    const res = await fetch(
-      "https://mentalwell10-api-production.up.railway.app/my-data",
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+    const res = await fetch("https://mentalwell10-api-production.up.railway.app/my-data", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
     const data = await res.json();
     const user = data.result.users;
+    // Simpan ke localStorage agar bisa diakses di halaman selesai
+    localStorage.setItem("user_data", JSON.stringify(user));
     const inputs = document.querySelectorAll(".form-center input");
     if (inputs.length >= 5) {
       inputs[0].value = user.name || "";
@@ -215,7 +214,7 @@ async function populateUserData() {
       inputs[4].value = user.phone_number || "";
     }
   } catch (e) {
-    // Optional: tampilkan error
+    // error handling
   }
 }
 
