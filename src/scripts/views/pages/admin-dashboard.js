@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function fetchCounselings() {
   try {
-    const res = await fetch("{{endpoint link}}/admin/counselings");
+    const res = await fetch("https://mentalwellbackend-production.up.railway.app/admin/counselings");
     const json = await res.json();
     if (json.status === "success") {
       dataKonseling = json.counselings.map(item => ({
