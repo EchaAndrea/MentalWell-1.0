@@ -1,37 +1,18 @@
 const authToken = sessionStorage.getItem("authToken");
 
-const statusDropdown = document.getElementById('statusDropdown2')
+const statusDropdown = document.getElementById('statusDropdown2');
 const tableBody = document.querySelector('tbody');
 const loadingIndicator = document.getElementById('loading-indicator');
 
 loadingIndicator.style.display = 'block';
 
+// Fungsi redirect ke detail konseling (hanya chat)
 const redirectToCounselingDetail = (counselingId) => {
-  fetch(
-    `https://mentalwell-backend.vercel.app/dashboard/counseling/${counselingId}`,
-    {
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
-    }
-  )
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        console.error("Failed to fetch");
-        throw new Error("Failed to fetch");
-      }
-    })
-    .then((counselingDetails) => {
-      // window.location.href = `http://localhost:5501/src/templates/aturkonseling.html?id=${counselingDetails[0].id}`
-      window.location.href = `http://mentalwell.vercel.app/aturkonseling?id=${counselingDetails[0].id}`;
-    })
-    .catch((error) => {
-      console.error("Error fetching details:", error);
-    });
+  // Langsung redirect ke halaman chat dengan id konseling
+  window.location.href = `https://mentalwell-10-frontend.vercel.app/aturkonseling?id=${counselingId}`;
 };
 
+// Update status ketersediaan psikolog
 statusDropdown.addEventListener("change", () => {
   const selectedValue = statusDropdown.value;
 
@@ -46,83 +27,74 @@ statusDropdown.addEventListener("change", () => {
     },
   });
 
-  fetch("https://mentalwell-backend.vercel.app/counselings/psychologist", {
+  fetch("https://mentalwell10-api-production.up.railway.app/psychologist/availability", {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${authToken}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ newAvailability: selectedValue }),
+    body: JSON.stringify({ availability: selectedValue }),
   })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Failed to update availability");
-      }
-      return response.json();
-    })
+    .then((response) => response.json())
     .then((data) => {
-      if (selectedValue == "unavailable") {
-        formattedValue = "Tidak Tersedia";
-      } else {
-        formattedValue = "Tersedia";
-      }
-
       Swal.close();
-
-      Swal.fire({
-        title: `Berhasil Mengubah Ketersediaan Menjadi ${formattedValue}!`,
-        icon: "success",
-        timer: 3000,
-        showConfirmButton: false, // Hide the "OK" button
-      });
-
+      if (data.status === "success") {
+        const formattedValue = selectedValue === "unavailable" ? "Tidak Tersedia" : "Tersedia";
+        Swal.fire({
+          title: `Berhasil Mengubah Ketersediaan Menjadi ${formattedValue}!`,
+          icon: "success",
+          timer: 3000,
+          showConfirmButton: false,
+        });
+      } else {
+        Swal.fire({
+          title: "Gagal!",
+          text: data.message || "Gagal mengubah status.",
+          icon: "error",
+        });
+      }
     })
     .catch((error) => {
+      Swal.close();
+      Swal.fire({
+        title: "Error",
+        text: "Terjadi kesalahan koneksi.",
+        icon: "error",
+      });
       console.error("Error update availability:", error);
     });
 });
 
+// Event klik pada tabel untuk redirect ke chat konseling
 tableBody.addEventListener("click", (event) => {
   const isIcon = event.target.tagName === "IMG" && event.target.alt === "tulis";
-
-  const counselingId = event.target
-    .closest("tr")
-    .querySelector("img")
-    .getAttribute("data-counseling-id");
-
+  if (!isIcon) return;
+  const counselingId = event.target.getAttribute("data-counseling-id");
   if (counselingId) {
     redirectToCounselingDetail(counselingId);
   }
 });
 
-try {
-  fetch("https://mentalwell-backend.vercel.app/dashboard/psychologist", {
+// Fetch daftar konseling (hanya chat)
+function fetchCounselings() {
+  fetch("https://mentalwell10-api-production.up.railway.app/psychologist/counselings", {
     headers: {
       Authorization: `Bearer ${authToken}`,
-      "Content-Type": "application/json",
     },
   })
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        console.error("Failed to fetch");
-        throw new Error("Failed to fetch data from the backend.");
-      }
-    })
-    .then(data => {
+    .then((response) => response.json())
+    .then((data) => {
       loadingIndicator.style.display = 'none';
+      if (data.status !== "success") throw new Error(data.message);
 
-      if (data.psychologistAvailability == 'unavailable') {
-        statusDropdown.value = 'unavailable';
-      } else if (data.psychologistAvailability == 'available') {
-        statusDropdown.value = 'available';
-      }
+      // Set status dropdown sesuai availability (jika ada di response)
+      // (Jika ingin fetch availability, tambahkan endpoint khusus)
 
-      const tableBody = document.querySelector("tbody");
+      // Render tabel konseling
       tableBody.innerHTML = "";
-
-      data.counselingList.forEach((counseling) => {
+      data.counselings.forEach((counseling) => {
+        // Hanya tampilkan chat (jika memang hanya chat)
+        // Jika ingin filter, tambahkan if (counseling.access_type === "chat") { ... }
         const row = tableBody.insertRow();
 
         const nameCell = row.insertCell(0);
@@ -132,24 +104,11 @@ try {
         const statusCell = row.insertCell(4);
         const actionCell = row.insertCell(5);
 
-        const backendValues = {
-          call: "Call",
-          video_call: "Video Call",
-          chat: "Chat",
-          belum_selesai: "Belum Selesai",
-          selesai: "Selesai",
-        };
-
-        const backendType = counseling.type;
-        const backendStatus = counseling.status;
-        const displayTextType = backendValues[backendType];
-        const displayTextStatus = backendValues[backendStatus];
-
-        nameCell.textContent = counseling.patientName;
-        dateCell.textContent = formatDate(counseling.scheduleDate);
-        timeCell.textContent = counseling.scheduleTime;
-        typeCell.textContent = displayTextType;
-        statusCell.textContent = displayTextStatus;
+        nameCell.textContent = counseling.patient_name;
+        dateCell.textContent = formatDate(counseling.schedule_date);
+        timeCell.textContent = counseling.schedule_time;
+        typeCell.textContent = "Chat";
+        statusCell.textContent = counseling.status === "finished" ? "Selesai" : "Belum Selesai";
 
         const actionImage = document.createElement("img");
         actionImage.src = "/src/public/dashboard/tulis.png";
@@ -159,13 +118,17 @@ try {
       });
     })
     .catch(error => {
-      console.error('Error during data fetching:', error);
       loadingIndicator.style.display = 'none';
+      Swal.fire({
+        title: "Gagal Memuat Data",
+        text: error.message || "Terjadi kesalahan koneksi.",
+        icon: "error",
+      });
+      console.error('Error during data fetching:', error);
     });
-} catch (error) {
-  console.error('Error during data fetching:', error);
-  loadingIndicator.style.display = 'none';
 }
+
+fetchCounselings();
 
 function formatDate(dateString) {
   const options = { year: "numeric", month: "long", day: "numeric" };
