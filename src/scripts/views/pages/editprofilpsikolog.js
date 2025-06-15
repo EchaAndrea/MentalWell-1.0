@@ -4,44 +4,56 @@ const form = document.querySelector(".editpsikolog-form");
 
 document.addEventListener("DOMContentLoaded", async function () {
   const token = sessionStorage.getItem("authToken");
-  const response = await fetch(
-    "https://mentalwell10-api-production.up.railway.app/psychologist/profile",
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  try {
+    const response = await fetch(
+      "https://mentalwell10-api-production.up.railway.app/psychologist/profile",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (!response.ok) throw new Error("Unauthorized or server error");
+    const psychologistData = await response.json();
+    const data = psychologistData.data;
+    if (!data) throw new Error("No data received");
 
-  const psychologistData = await response.json();
-  const data = psychologistData.data;
+    // Isi gambar profil
+    document.getElementById("profileimage").innerHTML = `
+      <div id="imagePreviewContainer">
+        <img src="${data.profile_image || ""}" id="gambar">
+      </div>
+      <label for="inputImage" class="inputImage">Ubah Gambar</label>
+      <input type="file" id="inputImage" onchange="previewImage(event)">
+    `;
 
-  // Isi gambar profil
-  document.getElementById("profileimage").innerHTML = `
-    <div id="imagePreviewContainer">
-      <img src="${data.profile_image || ""}" id="gambar">
-    </div>
-    <label for="inputImage" class="inputImage">Ubah Gambar</label>
-    <input type="file" id="inputImage" onchange="previewImage(event)">
-  `;
+    // Isi field lain
+    document.getElementById("email").innerHTML = `<h4>${data.email || ""}</h4>`;
+    document.getElementById("namapanggilan").value = data.nickname || "";
+    document.getElementById("nowa").value = data.phone_number || "";
+    document.getElementById("tgllahir").value = data.birthdate || "";
+    document.getElementById("gender").value = data.gender || "";
+    document.getElementById("bio").value = data.bio || "";
+    document.getElementById("pengalaman").value = data.experience || "";
 
-  // Isi field lain
-  document.getElementById("email").innerHTML = `<h4>${data.email || ""}</h4>`;
-  document.getElementById("namapanggilan").value = data.nickname || "";
-  document.getElementById("nowa").value = data.phone_number || "";
-  document.getElementById("tgllahir").value = data.birthdate || "";
-  document.getElementById("gender").value = data.gender || "";
-  document.getElementById("bio").value = data.bio || "";
-  document.getElementById("pengalaman").value = data.experience || "";
-
-  // Topik keahlian (checkbox)
-  const expertiseCheckboxes = document.querySelectorAll('input[name="topik"]');
-  const expertiseTopics = data.topics || [];
-  expertiseCheckboxes.forEach((checkbox) => {
-    checkbox.checked = expertiseTopics
-      .map((row) => row.name)
-      .includes(checkbox.value);
-  });
+    // Topik keahlian (checkbox)
+    const expertiseCheckboxes = document.querySelectorAll(
+      'input[name="topik"]'
+    );
+    const expertiseTopics = data.topics || [];
+    expertiseCheckboxes.forEach((checkbox) => {
+      checkbox.checked = expertiseTopics
+        .map((row) => row.name)
+        .includes(checkbox.value);
+    });
+  } catch (error) {
+    Swal.fire({
+      title: "Gagal Memuat Data",
+      text: "Silakan login ulang atau hubungi admin.",
+      icon: "error",
+      showConfirmButton: true,
+    });
+  }
 });
 
 function previewImage(event) {
@@ -125,7 +137,7 @@ form.addEventListener("submit", async function (event) {
   });
 
   const response = await fetch(
-    "https://mentalwell10-api-production.up.railway.app/psychologist/profile",
+    "https://mentalwell10-api-production.up.railway.app/psychologist/profile", // pastikan endpoint sudah benar
     {
       method: "PUT",
       headers: {
