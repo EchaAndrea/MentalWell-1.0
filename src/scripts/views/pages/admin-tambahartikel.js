@@ -24,13 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const formData = new FormData();
     formData.append('title', form.judul.value.trim());
-    formData.append('category', form.kategori.value.trim());
-    formData.append('date', form.tanggal.value.trim());
     formData.append('content', form.konten.value.trim());
     if (inputGambar.files[0]) formData.append('image', inputGambar.files[0]);
 
     try {
-      const res = await fetch(`https://mentalwell10-api-production.up.railway.app/article`, {
+      const res = await fetch(`${ENDPOINT}/article`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${TOKEN}` },
         body: formData
