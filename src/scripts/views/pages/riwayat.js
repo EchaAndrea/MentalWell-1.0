@@ -1,4 +1,4 @@
-// const authToken = sessionStorage.getItem('authToken');
+const authToken = sessionStorage.getItem("authToken");
 const containerRiwayat = document.querySelector(".content-riwayat");
 
 fetch("https://mentalwell10-api-production.up.railway.app/history", {
