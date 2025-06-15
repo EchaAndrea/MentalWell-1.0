@@ -1,3 +1,16 @@
+const Hapi = require("@hapi/hapi");
+
+const server = Hapi.server({
+  port: 3000,
+  host: "localhost",
+  routes: {
+    cors: {
+      origin: ["https://mentalwell-10-frontend.vercel.app"], // Ganti dengan domain frontend kamu
+      credentials: true, // jika perlu mengirim cookie/token
+    },
+  },
+});
+
 const ENDPOINT = "https://mentalwellbackend-production.up.railway.app";
 const TOKEN = "{{admin_token}}";
 
@@ -241,3 +254,12 @@ window.updateRowsPerPage = updateRowsPerPage;
 window.changePage = changePage;
 window.hapusItem = hapusItem;
 window.hapusYangDipilih = hapusYangDipilih;
+
+server
+  .start()
+  .then(() => {
+    console.log("Server running on %s", server.info.uri);
+  })
+  .catch((err) => {
+    console.log("Error starting server:", err);
+  });
