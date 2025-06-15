@@ -10,7 +10,8 @@ fetch(apiUrl)
   .then((data) => {
     loadingIndicator.style.display = 'none';
 
-    data.forEach((articleData) => {
+    // Perbaikan di sini: akses data.data
+    data.data.forEach((articleData) => {
       const articleElement = document.createElement('div');
       articleElement.classList.add('content-rekomendasi');
 
