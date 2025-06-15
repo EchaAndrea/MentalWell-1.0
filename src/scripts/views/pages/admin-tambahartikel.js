@@ -27,10 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const formData = new FormData();
     formData.append('title', form.judul.value.trim());
-    formData.append('category', form.kategori.value.trim());
-    formData.append('date', form.tanggal.value.trim());
     formData.append('content', form.konten.value.trim());
     if (inputGambar.files[0]) formData.append('image', inputGambar.files[0]);
+    if (form.references && form.references.value.trim()) {
+      formData.append('references', form.references.value.trim());
+    }
 
     try {
       const res = await fetch('https://mentalwellbackend-production.up.railway.app/article', {
@@ -40,8 +41,13 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       const result = await res.json();
       if (res.ok && result.status === 'success') {
-        Swal.fire({ icon: 'success', title: 'Artikel berhasil ditambahkan!', text: `Judul: ${result.data.title}` })
-          .then(() => window.location.href = '/src/templates/admin-artikel.html');
+        Swal.fire({
+          icon: 'success',
+          title: 'Artikel berhasil dibuat!',
+          text: result.message
+        }).then(() => {
+          window.location.href = '/src/templates/admin-artikel.html';
+        });
         form.reset();
         namaFile.value = '';
       } else {
