@@ -260,12 +260,17 @@ class NavBarLogin extends HTMLElement {
             flex-direction: row; 
           }
 
-          .dropdown-content .keluar-button {
+          .dropdown-content .sesikonseling-button {
             display: flex;
             flex-direction: row;
           }
 
           .dropdown-content .riwayat-button {
+            display: flex;
+            flex-direction: row;
+          }
+
+          .dropdown-content .keluar-button {
             display: flex;
             flex-direction: row;
           }
@@ -364,7 +369,7 @@ class NavBarLogin extends HTMLElement {
                                 <span>Profil saya</span>
                               </a>
                             </div>
-                            <div class="sesi-konseling-button" id="sesi-konseling-button">
+                            <div class="sesikonseling-button" id="sesikonseling-button">
                               <a class="sesiKonseling" id="sesiKonseling" href="#">
                                 <img src="/src/public/dropdown/calender.png" width="25px" height="25px">
                                 <span>Sesi Konseling</span>

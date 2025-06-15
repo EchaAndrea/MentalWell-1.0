@@ -101,6 +101,10 @@
       "dest": "/src/templates/ubah-sandi.html"
     },
     {
+      "src": "/sesikonseling",
+      "dest": "/src/templates/sesikonseling.html"
+    },
+    {
       "src": "/tespsikologi",
       "dest": "/src/templates/tespsikologi.html"
     },
