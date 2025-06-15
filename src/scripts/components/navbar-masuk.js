@@ -364,6 +364,12 @@ class NavBarLogin extends HTMLElement {
                                 <span>Profil saya</span>
                               </a>
                             </div>
+                            <div class="sesi-konseling-button" id="sesi-konseling-button">
+                              <a class="sesiKonseling" id="sesiKonseling" href="#">
+                                <img src="/src/public/dropdown/calendar.png" width="25px" height="25px">
+                                <span>Sesi Konseling</span>
+                              </a>
+                            </div>
                             <div class="riwayat-button" id="keluar-button">
                               <a class="riwayat" id="riwayat" href="#">
                                 <img src="/src/public/dropdown/histori.png" width="25px" height="25px">
@@ -417,6 +423,7 @@ class NavBarLogin extends HTMLElement {
 
     const userDropdown = this.shadowRoot.getElementById('userDropdown');
     const profilLink = this.shadowRoot.getElementById('profilLink');
+    const sesiKonseling = this.shadowRoot.getElementById('sesiKonseling');
     const riwayat = this.shadowRoot.getElementById('riwayat');
 
     userDropdown.addEventListener('mouseover', () => {
@@ -436,6 +443,12 @@ class NavBarLogin extends HTMLElement {
     riwayat.addEventListener('click', () => {
       window.location.href = '/riwayat';
     });
+
+    if (sesiKonseling) {
+      sesiKonseling.addEventListener('click', () => {
+        window.location.href = '/sesikonseling';
+      });
+    }
 
     this.shadowRoot.querySelector('.keluar').addEventListener('click', () => {
       this.logout();
