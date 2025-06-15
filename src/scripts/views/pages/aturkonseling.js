@@ -1,5 +1,5 @@
 const urlParams = new URLSearchParams(window.location.search);
-const counselingId = urlParams.get('id')
+const counselingId = urlParams.get('id');
 const loadingIndicator = document.getElementById('loading-indicator');
 
 const patientProfile = document.getElementById('patientProfile');
@@ -8,21 +8,20 @@ const tanggalKonseling = document.querySelector('.tanggal-konseling');
 const deskripsiKonseling = document.querySelector('.deskripsi-konseling');
 const harapanPasien = document.querySelector('.harapan-pasien');
 const statusDropdown = document.getElementById('statusDropdown');
-const statusKonseling = document.querySelector('.status-konseling')
 const btnSimpan = document.getElementById('btnSimpan');
 
 loadingIndicator.style.display = 'block';
 
 if (btnSimpan) {
   btnSimpan.addEventListener('click', () => {
-    window.location.href = 'https://mentalwell.vercel.app/dashboardpsikolog';
-    // window.location.href = 'http://localhost:5501/src/templates/dashboardpsikolog.html';
+    window.location.href = 'https://mentalwell-10-frontend.vercel.app/dashboardpsikolog';
   });
 }
 
-const authToken = sessionStorage.getItem('authToken')
+const authToken = sessionStorage.getItem('authToken');
 
-fetch(`https://mentalwell-backend.vercel.app/dashboard/counseling/${counselingId}`, {
+// GET counseling details
+fetch(`https://mentalwell10-api-production.up.railway.app/psychologist/counseling/${counselingId}`, {
   headers: {
     'Authorization': `Bearer ${authToken}`,
   },
@@ -31,66 +30,63 @@ fetch(`https://mentalwell-backend.vercel.app/dashboard/counseling/${counselingId
     if (response.ok) {
       return response.json();
     } else {
-      console.error('Failed to fetch')
-      throw new Error('Failed to fetch')
+      throw new Error('Failed to fetch counseling details');
     }
   })
-  .then(counselingDetails => {
+  .then(result => {
     loadingIndicator.style.display = 'none';
-    const patientDetails = counselingDetails[0];
-    const birthdateString = patientDetails.birthdate;
-    const birthdate = new Date(birthdateString);
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    const formattedBirthdate = birthdate.toLocaleDateString('id-ID', options);
+    if (result.status !== "success") throw new Error(result.message);
 
-    const scheduleDateString = patientDetails.schedule_date;
-    const scheduleDate = new Date(scheduleDateString);
-    const optionsSchedule = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const counseling = result.counseling;
+    // Set foto default jika tidak ada
+    patientProfile.src = counseling.profile_image || "/src/public/beranda/man.png";
+    // Format tanggal lahir
+    const birthdate = new Date(counseling.birthdate);
+    const formattedBirthdate = birthdate.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+    // Format tanggal konseling
+    const scheduleDate = new Date(counseling.schedule_date);
+    const formattedScheduleDate = scheduleDate.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-    const formattedScheduleDate = scheduleDate.toLocaleDateString('id-ID', optionsSchedule)
-
-    const backendValues = {
-      call: 'Call',
-      video_call: 'Video Call',
-      chat: 'Chat',
-      laki_laki: 'Laki-laki',
-      perempuan: 'Perempuan'
-    };
-
-    const backendType = patientDetails.type;
-    const backendGender = patientDetails.gender;
-    const displayTextType = backendValues[backendType]
-    const displayTextGender = backendValues[backendGender]
-
-    patientProfile.src = `${patientDetails.profile_image}`
     biodataPasien.innerHTML = `
-        <h2>${patientDetails.full_name}</h2>
-        <p>Nama Panggilan: ${patientDetails.nickname}</p>
-        <p>Tanggal Lahir: ${formattedBirthdate}</p>
-        <p>Jenis Kelamin: ${displayTextGender}</p>
-        <p>Nomor WhatsApp: ${patientDetails.phone_number}</p>
+      <h2>${counseling.name}</h2>
+      <p>Nama Panggilan: ${counseling.nickname || '-'}</p>
+      <p>Tanggal Lahir: ${formattedBirthdate}</p>
+      <p>Jenis Kelamin: ${counseling.gender || '-'}</p>
+      <p>Pekerjaan: ${counseling.occupation || '-'}</p>
     `;
     tanggalKonseling.innerHTML = `
-        <p>${formattedScheduleDate}</p>
-        <p>${patientDetails.schedule_time}</p>
-        <p>Via ${displayTextType}</p>
-      `;
+      <p>${formattedScheduleDate}</p>
+      <p>${counseling.schedule_time || '-'}</p>
+      <p>Chat</p>
+    `;
     deskripsiKonseling.innerHTML = `
-        <h3>Deskripsi Masalah</h3>
-        <p>${patientDetails.problem_description}</p>
-      `;
+      <h3>Deskripsi Masalah</h3>
+      <p>${counseling.problem_description || '-'}</p>
+    `;
     harapanPasien.innerHTML = `
-        <h3>Harapan Setelah Konseling</h3>
-        <p>${patientDetails.hope_after}</p>
-      `;
-    const selectedStatus = patientDetails.status.toLowerCase();
-    statusDropdown.value = selectedStatus;
+      <h3>Harapan Setelah Konseling</h3>
+      <p>${counseling.hope_after || '-'}</p>
+    `;
+
+    // Set status dropdown
+    if (counseling.status === "finished") {
+      statusDropdown.value = "selesai";
+      statusDropdown.disabled = true;
+    } else {
+      statusDropdown.value = "belum_selesai";
+      statusDropdown.disabled = false;
+    }
   })
   .catch(error => {
-    console.error('Error fetching details:', error)
     loadingIndicator.style.display = 'none';
-  })
+    Swal.fire({
+      title: "Gagal Memuat Data",
+      text: error.message || "Terjadi kesalahan koneksi.",
+      icon: "error",
+    });
+  });
 
+// Update status konseling
 statusDropdown.addEventListener('change', () => {
   const newStatus = statusDropdown.value;
 
@@ -105,38 +101,46 @@ statusDropdown.addEventListener('change', () => {
     },
   });
 
-  // Update the status using the backend API
-  fetch(`https://mentalwell-backend.vercel.app/dashboard/counseling/${counselingId}`, {
+  fetch(`https://mentalwell10-api-production.up.railway.app/psychologist/counseling/${counselingId}/status`, {
     method: 'PUT',
     headers: {
       'Authorization': `Bearer ${authToken}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      newStatus: newStatus,
+      status: newStatus === "selesai" ? "finished" : "pending",
     }),
   })
-    .then(response => {
-      if (response.ok) {
-        Swal.close();
-
+    .then(response => response.json())
+    .then(result => {
+      Swal.close();
+      if (result.status === "success") {
         Swal.fire({
           title: 'Status Konseling Berhasil Diubah!',
           icon: 'success',
           showConfirmButton: false,
           timer: 2000,
         });
-
+        if (newStatus === "selesai") statusDropdown.disabled = true;
       } else {
-        console.error('Failed to update status');
-        throw new Error('Failed to update status.');
+        Swal.fire({
+          title: "Gagal!",
+          text: result.message || "Gagal mengubah status.",
+          icon: "error",
+        });
       }
     })
     .catch(error => {
-      console.error('Error updating status:', error);
+      Swal.close();
+      Swal.fire({
+        title: "Error",
+        text: error.message || "Terjadi kesalahan koneksi.",
+        icon: "error",
+      });
     });
 });
 
+// Popup chat (tidak diubah)
 document.addEventListener("DOMContentLoaded", () => {
   const btnKonseling = document.getElementById("btnKonseling");
   const popupContainer = document.getElementById("popup-container");
