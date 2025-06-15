@@ -3,7 +3,7 @@ const ENDPOINT = 'https://mentalwellbackend-production.up.railway.app';
 
 async function fetchArticles() {
   try {
-    const res = await fetch(`${ENDPOINT}/articles`);
+    const res = await fetch(`https://mentalwellbackend-production.up.railway.app/articles`);
     const result = await res.json();
     if (res.ok && result.status === 'success') {
       // result.articles adalah array artikel
