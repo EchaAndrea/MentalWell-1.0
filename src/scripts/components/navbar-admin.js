@@ -103,10 +103,6 @@ class NavbarAdmin extends HTMLElement {
             z-index: 1000;
           }
   
-          .button-user:hover .dropdown-content {
-            display: block;
-          }
-  
           .dropdown-content a {
             display: flex;
             align-items: center;
@@ -168,17 +164,37 @@ class NavbarAdmin extends HTMLElement {
         sessionStorage.removeItem("authToken");
         window.location.href = "/login";
       });
+
+    const buttonUser = this.shadowRoot.querySelector("#userDropdown");
+    const dropdownContent = this.shadowRoot.querySelector(".dropdown-content");
+
+    buttonUser.addEventListener("click", (e) => {
+      // Agar tidak trigger logout jika klik link
+      if (e.target.closest("#logoutBtn")) return;
+      e.stopPropagation();
+      dropdownContent.style.display =
+        dropdownContent.style.display === "block" ? "none" : "block";
+    });
+
+    // Tutup dropdown jika klik di luar
+    document.addEventListener("click", (e) => {
+      if (!buttonUser.contains(e.target)) {
+        dropdownContent.style.display = "none";
+      }
+    });
   }
 
   async fetchUserData() {
-
     try {
-      const response = await fetch('https://mentalwellbackend-production.up.railway.app/login', {
-        credentials: 'include', // jika backend pakai cookie/session
-        headers: {
-          'Content-Type': 'application/json'
+      const response = await fetch(
+        "https://mentalwellbackend-production.up.railway.app/login",
+        {
+          credentials: "include", // jika backend pakai cookie/session
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-      });
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -188,7 +204,7 @@ class NavbarAdmin extends HTMLElement {
       // ...gunakan data user sesuai kebutuhan...
       this.renderUser(data);
     } catch (error) {
-      console.error('Error saat fetch user:', error);
+      console.error("Error saat fetch user:", error);
       // Tampilkan pesan error di UI jika perlu
       this.renderUser(null);
     }
