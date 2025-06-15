@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (artikelId) {
     try {
-      const res = await fetch(`${ENDPOINT}/article/${artikelId}`, {
+      const res = await fetch(`https://mentalwellbackend-production.up.railway.app/article/${artikelId}`, {
         headers: { 'Authorization': `Bearer ${TOKEN}` }
       });
       const data = await res.json();

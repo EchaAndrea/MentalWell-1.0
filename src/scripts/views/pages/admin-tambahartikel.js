@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (inputGambar.files[0]) formData.append('image', inputGambar.files[0]);
 
     try {
-      const res = await fetch('{{endpoint link}}/article', {
+      const res = await fetch('https://mentalwellbackend-production.up.railway.app/article', {
         method: 'POST',
         headers: { 'Authorization': 'Bearer {{admin_token}}' },
         body: formData
