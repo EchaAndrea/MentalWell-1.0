@@ -1,18 +1,47 @@
-const dataKonseling = [
-  { nama: "Andi", tanggal: "01-05-2025", waktu: "10:00-11:00", status: "Lunas" },
-  { nama: "Budi", tanggal: "02-05-2025", waktu: "14:00-15:00", status: "Belum Lunas" },
-  { nama: "Citra", tanggal: "03-05-2025", waktu: "09:00-10:00", status: "Lunas" },
-  // Tambahkan data lainnya jika perlu
-];
-
-let filteredData = [...dataKonseling];
+let dataKonseling = [];
+let filteredData = [];
 let rowsPerPage = 10;
 let currentPage = 1;
 
-document.addEventListener("DOMContentLoaded", () => {
+const PAYMENT_STATUS_MAP = {
+  approved: "Lunas",
+  waiting: "Belum Lunas",
+  failed: "Gagal",
+  refunded: "Refund"
+};
+
+document.addEventListener("DOMContentLoaded", async () => {
+  await fetchCounselings();
   document.getElementById("filterKategori").addEventListener("change", handleFilter);
   renderTable();
 });
+
+async function fetchCounselings() {
+  try {
+    const res = await fetch("{{endpoint link}}/admin/counselings");
+    const json = await res.json();
+    if (json.status === "success") {
+      dataKonseling = json.counselings.map(item => ({
+        id: item.id,
+        nama: item.patient_name,
+        tanggal: formatDate(item.schedule_date),
+        waktu: item.schedule_time,
+        status: PAYMENT_STATUS_MAP[item.payment_status] || item.payment_status
+      }));
+      filteredData = [...dataKonseling];
+    }
+  } catch (e) {
+    alert("Gagal memuat data konseling");
+    dataKonseling = [];
+    filteredData = [];
+  }
+}
+
+function formatDate(dateStr) {
+  // dari yyyy-mm-dd ke dd-mm-yyyy
+  const [y, m, d] = dateStr.split("-");
+  return `${d}-${m}-${y}`;
+}
 
 // Filter berdasarkan status bayar
 function handleFilter() {
@@ -20,11 +49,10 @@ function handleFilter() {
   filteredData = kategori === "semua"
     ? [...dataKonseling]
     : dataKonseling.filter(item => {
-        const statusNormalized = item.status.trim().toLowerCase();
-        return (
-          (kategori === "lunas" && statusNormalized === "lunas") ||
-          (kategori === "belum-lunas" && statusNormalized === "belum lunas")
+        const statusKey = Object.keys(PAYMENT_STATUS_MAP).find(
+          key => PAYMENT_STATUS_MAP[key].toLowerCase() === item.status.toLowerCase()
         );
+        return statusKey === kategori;
       });
   currentPage = 1;
   renderTable();
@@ -80,6 +108,8 @@ function renderTable() {
   for (const item of pageData) {
     tbody.innerHTML += `
       <tr>
+        <td><input type="checkbox" class="row-checkbox" data-nama="${item.id}"></td>  
+        <td>${item.id}</td>
         <td>${item.nama}</td>
         <td>${item.tanggal}</td>
         <td>${item.waktu}</td>
@@ -98,7 +128,7 @@ function renderTable() {
 
 // Render pagination
 function renderPagination() {
-  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage) || 1;
   const pagination = document.querySelector(".pagination");
   pagination.innerHTML = "";
 

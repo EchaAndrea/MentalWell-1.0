@@ -69,6 +69,7 @@
         tbody.innerHTML += `
           <tr>
             <td><input type="checkbox" class="row-checkbox" data-nama="${p.nama}"></td>
+            <td>${p.id}</td>
             <td>${p.nama}</td>
             <td>${p.email}</td>
             <td>${p.password}</td>

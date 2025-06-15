@@ -84,6 +84,7 @@ function renderTable() {
     <thead>
       <tr>
         <th><input type="checkbox" id="selectAll"></th>
+        <th>ID</th>
         <th>Judul</th>
         <th>Kategori</th>
         <th>Tanggal</th>
