@@ -5,14 +5,27 @@ const server = Hapi.server({
   host: "localhost",
   routes: {
     cors: {
-      origin: ["https://mentalwell-10-frontend.vercel.app"], // Ganti dengan domain frontend kamu
-      credentials: true, // jika perlu mengirim cookie/token
+      origin: ["https://mentalwell-10-frontend.vercel.app"], 
+      credentials: true,
     },
   },
 });
 
-const ENDPOINT = "https://mentalwellbackend-production.up.railway.app";
-const TOKEN = "{{admin_token}}";
+// Mendapatkan semua artikel
+const ENDPOINT = 'https://mentalwellbackend-production.up.railway.app';
+
+async function fetchArticles() {
+  try {
+    const res = await fetch(`${ENDPOINT}/articles`);
+    const result = await res.json();
+    if (res.ok && result.status === 'success') {
+      // result.articles adalah array artikel
+      console.log(result.articles);
+    }
+  } catch (err) {
+    console.error('Gagal fetch:', err);
+  }
+}
 
 let allArticles = [];
 let filteredData = [];
@@ -38,9 +51,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderTable();
 });
 
+const TOKEN = "{{admin_token}}";
 async function fetchArticles() {
   try {
-    const res = await fetch(`${ENDPOINT}/article`, {
+    const res = await fetch(`${ENDPOINT}/articles`, {
       headers: { Authorization: `Bearer ${TOKEN}` },
     });
     const result = await res.json();
