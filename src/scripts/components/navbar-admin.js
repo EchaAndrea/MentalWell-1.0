@@ -171,6 +171,7 @@ class NavbarAdmin extends HTMLElement {
   }
 
   async fetchUserData() {
+
     try {
       const response = await fetch('https://mentalwellbackend-production.up.railway.app/login', {
         credentials: 'include', // jika backend pakai cookie/session

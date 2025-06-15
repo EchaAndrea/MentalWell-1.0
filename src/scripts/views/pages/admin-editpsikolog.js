@@ -1,26 +1,46 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const psikologId = urlParams.get('id');
+  const adminToken = localStorage.getItem("admin_token");
   const form = document.getElementById('formArtikel');
   const jadwalContainer = document.getElementById('jadwalContainer');
   const inputGambar = document.getElementById('gambar');
   const namaFileInput = document.getElementById('namaFile');
 
-  // Data awal (contoh)
-  const dataAwal = {
-    nama: "Budi Santoso",
-    email: "budi@example.com",
-    password: "budi123",
-    nohp: "08123456789",
-    tanggallahir: "1985-05-15",
-    jeniskelamin: "Laki-laki",
-    pengalaman: "2-4_tahun",
-    keahlian: ["Adiksi", "Trauma"],
-    jadwal: [
-      { hari: "Senin", jamMulai: "09:00", jamSelesai: "12:00" },
-      { hari: "Rabu", jamMulai: "14:00", jamSelesai: "16:00" }
-    ],
-    bio: "Psikolog berpengalaman dengan spesialisasi trauma.",
-    namaFile: "profil-budi.jpg",
-  };
+  // Prefill form dari backend
+  if (psikologId) {
+    try {
+      const res = await fetch(`https://mentalwell10-api-production.up.railway.app/admin/psychologist/${psikologId}`, {
+        headers: { Authorization: `Bearer ${adminToken}` }
+      });
+      const json = await res.json();
+      if (json.status === "success") {
+        const data = json.data;
+        form.nama.value = data.name || "";
+        form.email.value = data.email || "";
+        form.password.value = "********";
+        form.nohp.value = data.phone_number || "";
+        form.tanggallahir.value = data.birthdate || "";
+        form.jeniskelamin.value = data.gender || "";
+        form.pengalaman.value = data.experience || "";
+        form.bio.value = data.bio || "";
+        namaFileInput.value = data.profile_image || "";
+        // Topik keahlian
+        const checkboxes = form.querySelectorAll('input[name="keahlian"]');
+        const topicNames = (data.topics || []).map(t => t.name.toLowerCase());
+        checkboxes.forEach(cb => {
+          cb.checked = topicNames.includes(cb.value.toLowerCase());
+        });
+        // Jadwal
+        jadwalContainer.innerHTML = '';
+        (data.schedules || []).forEach(item => {
+          addJadwalRow(item);
+        });
+      }
+    } catch (e) {
+      alert("Gagal memuat data psikolog");
+    }
+  }
 
   // Tambah 1 baris jadwal
   function addJadwalRow(item = {}) {
@@ -60,29 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
     jadwalContainer.appendChild(row);
   }
 
-  // Prefill form dengan data awal
-  function prefillForm(data) {
-    form.nama.value = data.nama;
-    form.email.value = data.email;
-    form.password.value = data.password;
-    form.nohp.value = data.nohp;
-    form.tanggallahir.value = data.tanggallahir;
-    form.jeniskelamin.value = data.jeniskelamin;
-    form.pengalaman.value = data.pengalaman;
-    form.bio.value = data.bio;
-    namaFileInput.value = data.namaFile || '';
-
-    // Keahlian
-    const checkboxes = form.querySelectorAll('input[name="keahlian"]');
-    checkboxes.forEach(cb => {
-      cb.checked = data.keahlian.includes(cb.value);
-    });
-
-    // Jadwal
-    jadwalContainer.innerHTML = ''; // Bersihkan jadwal lama
-    data.jadwal.forEach(item => addJadwalRow(item));
-  }
-
   // Delegasi tombol tambah/hapus jadwal
   jadwalContainer.addEventListener('click', (e) => {
     if (e.target.closest('.tambah-jadwal')) {
@@ -100,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Submit form
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(form);
 
@@ -130,17 +127,23 @@ document.addEventListener('DOMContentLoaded', () => {
       namaFile: namaFileInput.value,
     };
 
-    console.log("Data dikirim:", dataEdit);
-
-    // Tampilkan notifikasi sukses pakai SweetAlert2
-    Swal.fire({
-      icon: 'success',
-      title: 'Berhasil!',
-      text: 'Data psikolog berhasil disimpan.',
-      confirmButtonText: 'OK'
-    }).then(() => {
-      window.location.href = '/src/templates/admin-psikolog.html';
-    });
+    // Kirim ke backend
+    try {
+      const res = await fetch(`https://mentalwell10-api-production.up.railway.app/admin/psychologist/${psikologId}`, {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${adminToken}` },
+        body: formData
+      });
+      const json = await res.json();
+      if (json.status === "success") {
+        Swal.fire({ icon: 'success', title: 'Berhasil!', text: 'Data psikolog berhasil diubah.' })
+          .then(() => window.location.href = '/src/templates/admin-psikolog.html');
+      } else {
+        throw new Error(json.message);
+      }
+    } catch (err) {
+      Swal.fire({ icon: 'error', title: 'Gagal!', text: err.message });
+    }
   });
 
   // Tombol kembali

@@ -101,9 +101,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Submit form
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
-
     const formData = new FormData(form);
     const dataEdit = {
       nama: formData.get('nama'),
@@ -134,14 +133,22 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("Data yang disimpan:", dataEdit);
     localStorage.setItem("dataPsikologEdit", JSON.stringify(dataEdit));
 
-    Swal.fire({
-      icon: 'success',
-      title: 'Berhasil!',
-      text: 'Data psikolog berhasil disimpan.',
-      confirmButtonText: 'OK'
-    }).then(() => {
-      window.location.href = '/src/templates/admin-psikolog.html';
-    });
+    try {
+      const res = await fetch("https://mentalwell10-api-production.up.railway.app/admin/psychologist", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${localStorage.getItem("admin_token")}` },
+        body: formData
+      });
+      const json = await res.json();
+      if (json.status === "success") {
+        Swal.fire({ icon: 'success', title: 'Berhasil!', text: 'Data psikolog berhasil ditambahkan.' })
+          .then(() => window.location.href = '/src/templates/admin-psikolog.html');
+      } else {
+        throw new Error(json.message);
+      }
+    } catch (err) {
+      Swal.fire({ icon: 'error', title: 'Gagal!', text: err.message });
+    }
   });
 
   // Tombol kembali
