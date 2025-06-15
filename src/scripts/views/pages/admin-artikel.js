@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 const TOKEN = '{{admin_token}}';
 async function fetchArticles() {
   try {
-    const res = await fetch(`${ENDPOINT}/articles`, {
+    const res = await fetch(`https://mentalwellbackend-production.up.railway.app/articles`, {
       headers: { Authorization: `Bearer ${TOKEN}` },
     });
     const result = await res.json();
