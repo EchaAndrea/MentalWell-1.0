@@ -189,9 +189,10 @@ class NavbarAdmin extends HTMLElement {
       const response = await fetch(
         "https://mentalwellbackend-production.up.railway.app/login",
         {
-          credentials: "include", // jika backend pakai cookie/session
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${sessionStorage.getItem("authToken")}`,
           },
         }
       );
