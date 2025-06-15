@@ -1,57 +1,21 @@
-// Mendapatkan semua artikel
-const ENDPOINT = 'https://mentalwellbackend-production.up.railway.app';
-
-async function fetchArticles() {
-  try {
-    const res = await fetch(`https://mentalwellbackend-production.up.railway.app/articles`);
-    const result = await res.json();
-    if (res.ok && result.status === 'success') {
-      // result.articles adalah array artikel
-      console.log(result.articles);
-    }
-  } catch (err) {
-    console.error('Gagal fetch:', err);
-  }
-}
-
 let allArticles = [];
 let filteredData = [];
 let rowsPerPage = 10;
 let currentPage = 1;
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await fetchArticles();
-  renderKategoriOptions();
-  document
-    .getElementById('filterKategori')
-    .addEventListener('change', handleFilter);
-  document
-    .getElementById('searchInput')
-    .addEventListener('input', handleSearch);
-  document
-    .getElementById('rowsPerPage')
-    .addEventListener('change', updateRowsPerPage);
-  document.getElementById('selectAll')?.addEventListener('change', function () {
-    const checkboxes = document.querySelectorAll('.row-checkbox');
-    checkboxes.forEach((cb) => (cb.checked = this.checked));
-  });
-  renderTable();
-});
-
-const TOKEN = '{{admin_token}}';
 async function fetchArticles() {
   try {
     const res = await fetch(`https://mentalwellbackend-production.up.railway.app/articles`, {
       headers: { Authorization: `Bearer ${TOKEN}` },
     });
     const result = await res.json();
-    if (res.ok && result.data) {
+    if (res.ok && result.status === 'success' && Array.isArray(result.data)) {
       allArticles = result.data.map((a) => ({
         id: a.id,
         judul: a.title,
         kategori: a.category,
-        tanggal: a.date
-          ? new Date(a.date).toLocaleDateString('id-ID', {
+        tanggal: a.created_at
+          ? new Date(a.created_at).toLocaleDateString('id-ID', {
               day: '2-digit',
               month: 'long',
               year: 'numeric',
@@ -102,8 +66,8 @@ function handleSearch() {
 }
 
 function updateRowsPerPage() {
-  rowsPerPage =
-    parseInt(document.getElementById('rowsPerPage').value, 10) || 10;
+  const value = document.getElementById('rowsPerPage').value;
+  rowsPerPage = value === "all" ? filteredData.length : parseInt(value, 10) || 10;
   currentPage = 1;
   renderTable();
 }
@@ -184,7 +148,7 @@ async function hapusItem(id) {
   });
   if (konfirmasi.isConfirmed) {
     try {
-      const res = await fetch(`${ENDPOINT}/article/${id}`, {
+      const res = await fetch(`https://mentalwellbackend-production.up.railway.app/article/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${TOKEN}` },
       });
@@ -256,11 +220,21 @@ window.changePage = changePage;
 window.hapusItem = hapusItem;
 window.hapusYangDipilih = hapusYangDipilih;
 
-server
-  .start()
-  .then(() => {
-    console.log('Server running on %s', server.info.uri);
-  })
-  .catch((err) => {
-    console.log('Error starting server:', err);
+document.addEventListener('DOMContentLoaded', async () => {
+  await fetchArticles();
+  renderKategoriOptions();
+  document
+    .getElementById('filterKategori')
+    .addEventListener('change', handleFilter);
+  document
+    .getElementById('searchInput')
+    .addEventListener('input', handleSearch);
+  document
+    .getElementById('rowsPerPage')
+    .addEventListener('change', updateRowsPerPage);
+  document.getElementById('selectAll')?.addEventListener('change', function () {
+    const checkboxes = document.querySelectorAll('.row-checkbox');
+    checkboxes.forEach((cb) => (cb.checked = this.checked));
   });
+  renderTable();
+});

@@ -4,8 +4,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const inputGambar = document.getElementById('gambar');
   const inputNamaFile = document.getElementById('namaFile');
 
-  // Ganti dengan endpoint dan token asli
-  const ENDPOINT = '{{endpoint link}}';
+  const ENDPOINT = 'https://mentalwellbackend-production.up.railway.app';
   const TOKEN = '{{admin_token}}';
 
   // Ambil ID artikel dari URL (misal: ...?artikel_id=4)
@@ -23,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (res.ok && data.data) {
         form.judul.value = data.data.title || '';
         form.kategori.value = data.data.category || '';
-        form.tanggal.value = data.data.date ? data.data.date.slice(0, 10) : '';
+        form.tanggal.value = data.data.created_at ? data.data.created_at.slice(0, 10) : '';
         form.konten.value = data.data.content || '';
         inputNamaFile.value = data.data.image ? data.data.image.split('/').pop() : '';
       }
@@ -60,7 +59,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-      const res = await fetch(`${ENDPOINT}/article/${artikelId}`, {
+      const res = await fetch(`https://mentalwellbackend-production.up.railway.app/article/${artikelId}`, {
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${TOKEN}` },
         body: formData
