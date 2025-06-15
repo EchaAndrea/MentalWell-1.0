@@ -286,9 +286,20 @@ class NavBarLogin extends HTMLElement {
           .profilLink img {
             margin-right: 5px;
           }
-          
 
           .dropdown-content .profile-button:hover {
+            background-color: #044B97;
+            color: #fff;
+            cursor: pointer;
+          }
+
+          .dropdown-content .sesikonseling-button:hover {
+            background-color: #044B97;
+            color: #fff;
+            cursor: pointer;
+          }
+
+          .dropdown-content .sesikonseling-button:hover {
             background-color: #044B97;
             color: #fff;
             cursor: pointer;
@@ -300,10 +311,17 @@ class NavBarLogin extends HTMLElement {
             cursor: pointer;
           }
 
-          .dropdown-content .riwayat-button:hover {
-            background-color: #044B97;
-            color: #fff;
-            cursor: pointer;
+            .sesiKonseling {
+            border-bottom-left-radius: none;
+            display: flex;
+            align-items: center; /* Pusatkan elemen secara vertikal */
+            text-decoration: none; /* Hilangkan garis bawah pada tautan */
+            color: black; /* Ubah warna teks jika diinginkan */
+            padding: 12px 16px;
+          }
+
+          .sesiKonseling img {
+            margin-right: 8px;
           }
 
           .riwayat {
