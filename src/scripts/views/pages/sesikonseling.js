@@ -1,81 +1,82 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const sessions = [
-    {
-      name: "John Doe M.Si., M.Psi., Psikolog",
-      date: "27 November 2025",
-      time: "16:00 - 17:00",
-      mode: "Via Chat",
-      status: "Belum selesai",
-      photo: "/src/public/beranda/man.png",
-      chatUrl: "/src/templates/popupchat.html"
-    },
-    {
-      name: "John Doe M.Si., M.Psi., Psikolog",
-      date: "28 November 2025",
-      time: "10:00 - 11:00",
-      mode: "Via Chat",
-      status: "Selesai",
-      photo: "/src/public/beranda/man.png",
-      chatUrl: "/src/templates/popupchat.html"
-    },
-  ];
-
   const sessionList = document.getElementById("session-list");
   const popupContainer = document.getElementById("popup-container");
 
-  sessions.forEach((session) => {
-    const sessionElement = document.createElement("div");
-    sessionElement.classList.add("container-sesi");
+  // Ganti URL di bawah dengan endpoint backend-mu
+  fetch(
+    "https://mentalwell10-api-production.up.railway.app/realtime/counseling/list"
+  )
+    .then((res) => {
+      if (!res.ok) throw new Error("Gagal memuat data sesi konseling");
+      return res.json();
+    })
+    .then((data) => {
+      // Asumsikan data.sessions adalah array sesi dari backend
+      (data.sessions || []).forEach((session) => {
+        const sessionElement = document.createElement("div");
+        sessionElement.classList.add("container-sesi");
 
-    const isDisabled = session.status === "Selesai";
+        const isDisabled = session.status === "Selesai";
 
-    sessionElement.innerHTML = `
-      <img src="${session.photo}" alt="Foto Pasien" class="session-photo" />
-      <div class="info-sesi">
-        <div class="info-text">
-          <p>
-            ${session.name}<br />
-            ${session.date}<br />
-            ${session.time}<br />
-            ${session.mode}
-          </p>
-        </div>
-      </div>
-      <div class="status-sesi">
-        <span class="status">${session.status}</span>
-        <button 
-          type="button" 
-          class="btn-konseling${isDisabled ? ' disabled' : ''}"
-          ${isDisabled ? 'disabled' : ''}
-        >
-          KONSELING
-        </button>
-      </div>
-    `;
+        sessionElement.innerHTML = `
+          <img src="${
+            session.photo || "/src/public/beranda/man.png"
+          }" alt="Foto Pasien" class="session-photo" />
+          <div class="info-sesi">
+            <div class="info-text">
+              <p>
+                ${session.psychologist_name || "-"}<br />
+                ${session.schedule_date || "-"}<br />
+                ${session.schedule_time || "-"}<br />
+                ${
+                  session.type === "on_demand"
+                    ? "Via Chat"
+                    : session.type || "-"
+                }
+              </p>
+            </div>
+          </div>
+          <div class="status-sesi">
+            <span class="status">${session.status || "-"}</span>
+            <button 
+              type="button" 
+              class="btn-konseling${isDisabled ? " disabled" : ""}"
+              ${isDisabled ? "disabled" : ""}
+            >
+              KONSELING
+            </button>
+          </div>
+        `;
 
-    const button = sessionElement.querySelector(".btn-konseling");
+        const button = sessionElement.querySelector(".btn-konseling");
 
-    if (!isDisabled && button) {
-      button.addEventListener("click", () => {
-        fetch(session.chatUrl)
-          .then((res) => {
-            if (!res.ok) throw new Error("Gagal memuat popup chat");
-            return res.text();
-          })
-          .then((html) => {
-            popupContainer.innerHTML = html;
-            popupContainer.style.display = "flex";
-            initPopup();
-          })
-          .catch((err) => alert(err.message));
+        if (!isDisabled && button) {
+          button.addEventListener("click", () => {
+            fetch("/src/templates/popupchat.html")
+              .then((res) => {
+                if (!res.ok) throw new Error("Gagal memuat popup chat");
+                return res.text();
+              })
+              .then((html) => {
+                popupContainer.innerHTML = html;
+                popupContainer.style.display = "flex";
+                initPopup();
+              })
+              .catch((err) => alert(err.message));
+          });
+        }
+
+        sessionList.appendChild(sessionElement);
       });
-    }
-
-    sessionList.appendChild(sessionElement);
-  });
+    })
+    .catch((err) => {
+      sessionList.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+    });
 
   function initPopup() {
-    const closeBtn = popupContainer.querySelector("button[onclick='toggleChat()']");
+    const closeBtn = popupContainer.querySelector(
+      "button[onclick='toggleChat()']"
+    );
     if (closeBtn) {
       closeBtn.addEventListener("click", () => {
         popupContainer.style.display = "none";
