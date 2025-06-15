@@ -1,29 +1,16 @@
-const Hapi = require("@hapi/hapi");
-
-const server = Hapi.server({
-  port: 3000,
-  host: "localhost",
-  routes: {
-    cors: {
-      origin: ["https://mentalwell-10-frontend.vercel.app"], 
-      credentials: true,
-    },
-  },
-});
-
 // Mendapatkan semua artikel
-const ENDPOINT = 'https://mentalwellbackend-production.up.railway.app';
+const ENDPOINT = "https://mentalwellbackend-production.up.railway.app";
 
 async function fetchArticles() {
   try {
     const res = await fetch(`${ENDPOINT}/articles`);
     const result = await res.json();
-    if (res.ok && result.status === 'success') {
+    if (res.ok && result.status === "success") {
       // result.articles adalah array artikel
       console.log(result.articles);
     }
   } catch (err) {
-    console.error('Gagal fetch:', err);
+    console.error("Gagal fetch:", err);
   }
 }
 
