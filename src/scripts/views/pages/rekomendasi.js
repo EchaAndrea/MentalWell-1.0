@@ -5,7 +5,13 @@ const loadingIndicator = document.getElementById('loading-indicator');
 
 loadingIndicator.style.display = 'block';
 
-fetch(apiUrl)
+const token = localStorage.getItem("token"); 
+
+fetch(apiUrl, {
+  headers: {
+    "Authorization": `Bearer ${token}`
+  }
+})
   .then((response) => response.json())
   .then((data) => {
     loadingIndicator.style.display = 'none';
