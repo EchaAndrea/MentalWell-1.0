@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Ganti URL di bawah dengan endpoint backend-mu
   fetch(
-    "https://mentalwell10-api-production.up.railway.app/realtime/counseling/list"
+    "https://mentalwell10-api-production.up.railway.app/realtime/counseling/{{psychologist_id}}"
   )
     .then((res) => {
       if (!res.ok) throw new Error("Gagal memuat data sesi konseling");
