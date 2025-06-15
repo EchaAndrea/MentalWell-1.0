@@ -366,7 +366,7 @@ class NavBarLogin extends HTMLElement {
                             </div>
                             <div class="sesi-konseling-button" id="sesi-konseling-button">
                               <a class="sesiKonseling" id="sesiKonseling" href="#">
-                                <img src="/src/public/dropdown/calendar.png" width="25px" height="25px">
+                                <img src="/src/public/dropdown/calender.png" width="25px" height="25px">
                                 <span>Sesi Konseling</span>
                               </a>
                             </div>
