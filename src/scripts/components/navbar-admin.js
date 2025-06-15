@@ -171,32 +171,36 @@ class NavbarAdmin extends HTMLElement {
   }
 
   async fetchUserData() {
-    const token = sessionStorage.getItem("authToken");
-    if (!token) return;
-
     try {
-      const response = await fetch(
-        "https://mentalwellbackend-production.up.railway.app/login",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const response = await fetch('https://mentalwellbackend-production.up.railway.app/login', {
+        credentials: 'include', // jika backend pakai cookie/session
+        headers: {
+          'Content-Type': 'application/json'
         }
-      );
+      });
 
-      if (!response.ok) throw new Error("Gagal memuat data pengguna");
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
       const data = await response.json();
-      const nickname = data.psychologist.name;
-      const photo = data.psychologist.profilePicture;
-
-      this.shadowRoot.querySelector("#nicknameTag").textContent =
-        nickname || "User";
-      if (photo) {
-        this.shadowRoot.querySelector("#photoUser").src = photo;
-      }
+      // ...gunakan data user sesuai kebutuhan...
+      this.renderUser(data);
     } catch (error) {
-      console.error("Error:", error);
+      console.error('Error saat fetch user:', error);
+      // Tampilkan pesan error di UI jika perlu
+      this.renderUser(null);
+    }
+  }
+
+  renderUser(data) {
+    const nickname = data?.psychologist?.name;
+    const photo = data?.psychologist?.profilePicture;
+
+    this.shadowRoot.querySelector("#nicknameTag").textContent =
+      nickname || "User";
+    if (photo) {
+      this.shadowRoot.querySelector("#photoUser").src = photo;
     }
   }
 }
