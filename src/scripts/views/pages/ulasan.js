@@ -1,4 +1,4 @@
-const authToken = sessionStorage.getItem("authToken");
+let authToken = sessionStorage.getItem("authToken");
 
 let currentCounselingId;
 
