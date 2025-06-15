@@ -366,7 +366,7 @@ class NavBarLogin extends HTMLElement {
                             </div>
                             <div class="sesi-konseling-button" id="sesi-konseling-button">
                               <a class="sesiKonseling" id="sesiKonseling" href="#">
-                                <img src="/src/public/dropdown/calender.png" width="25px" height="25px">
+                                <img src="/src/public/dropdown/calendar.png" width="25px" height="25px">
                                 <span>Sesi Konseling</span>
                               </a>
                             </div>
@@ -408,13 +408,12 @@ class NavBarLogin extends HTMLElement {
     fetch('https://mentalwell10-api-production.up.railway.app/profile', requestOptions)
       .then((response) => response.json())
       .then((data) => {
-        const currentUser = data[0];
-
-        if (nicknameTag && photoUser) {
-          nicknameTag.innerText = currentUser.nickname;
-          photoUser.src = currentUser.profile_image;
+        const currentUser = Array.isArray(data) ? data[0] : data;
+        if (currentUser && nicknameTag && photoUser) {
+          nicknameTag.innerText = currentUser.nickname || "User";
+          photoUser.src = currentUser.profile_image || "/src/public/beranda/man.png";
         } else {
-          console.error('Element with ID "nicknameTag" not found.');
+          console.error('Profil user tidak ditemukan.');
         }
       })
       .catch((error) => {
@@ -425,14 +424,6 @@ class NavBarLogin extends HTMLElement {
     const profilLink = this.shadowRoot.getElementById('profilLink');
     const sesiKonseling = this.shadowRoot.getElementById('sesiKonseling');
     const riwayat = this.shadowRoot.getElementById('riwayat');
-
-    userDropdown.addEventListener('mouseover', () => {
-      userDropdown.querySelector('.dropdown-content').style.display = 'block';
-    });
-
-    userDropdown.addEventListener('mouseout', () => {
-      userDropdown.querySelector('.dropdown-content').style.display = 'none';
-    });
 
     profilLink.addEventListener('click', () => {
       const urlParams = new URLSearchParams(window.location.search);
