@@ -1,16 +1,16 @@
 // Mendapatkan semua artikel
-const ENDPOINT = "https://mentalwellbackend-production.up.railway.app";
+const ENDPOINT = 'https://mentalwellbackend-production.up.railway.app';
 
 async function fetchArticles() {
   try {
     const res = await fetch(`${ENDPOINT}/articles`);
     const result = await res.json();
-    if (res.ok && result.status === "success") {
+    if (res.ok && result.status === 'success') {
       // result.articles adalah array artikel
       console.log(result.articles);
     }
   } catch (err) {
-    console.error("Gagal fetch:", err);
+    console.error('Gagal fetch:', err);
   }
 }
 
@@ -19,26 +19,26 @@ let filteredData = [];
 let rowsPerPage = 10;
 let currentPage = 1;
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener('DOMContentLoaded', async () => {
   await fetchArticles();
   renderKategoriOptions();
   document
-    .getElementById("filterKategori")
-    .addEventListener("change", handleFilter);
+    .getElementById('filterKategori')
+    .addEventListener('change', handleFilter);
   document
-    .getElementById("searchInput")
-    .addEventListener("input", handleSearch);
+    .getElementById('searchInput')
+    .addEventListener('input', handleSearch);
   document
-    .getElementById("rowsPerPage")
-    .addEventListener("change", updateRowsPerPage);
-  document.getElementById("selectAll")?.addEventListener("change", function () {
-    const checkboxes = document.querySelectorAll(".row-checkbox");
+    .getElementById('rowsPerPage')
+    .addEventListener('change', updateRowsPerPage);
+  document.getElementById('selectAll')?.addEventListener('change', function () {
+    const checkboxes = document.querySelectorAll('.row-checkbox');
     checkboxes.forEach((cb) => (cb.checked = this.checked));
   });
   renderTable();
 });
 
-const TOKEN = "{{admin_token}}";
+const TOKEN = '{{admin_token}}';
 async function fetchArticles() {
   try {
     const res = await fetch(`${ENDPOINT}/articles`, {
@@ -51,13 +51,13 @@ async function fetchArticles() {
         judul: a.title,
         kategori: a.category,
         tanggal: a.date
-          ? new Date(a.date).toLocaleDateString("id-ID", {
-              day: "2-digit",
-              month: "long",
-              year: "numeric",
+          ? new Date(a.date).toLocaleDateString('id-ID', {
+              day: '2-digit',
+              month: 'long',
+              year: 'numeric',
             })
-          : "",
-        dibuatoleh: a.created_by || "Admin",
+          : '',
+        dibuatoleh: a.created_by || 'Admin',
       }));
       filteredData = [...allArticles];
     } else {
@@ -71,18 +71,18 @@ async function fetchArticles() {
 }
 
 function renderKategoriOptions() {
-  const select = document.getElementById("filterKategori");
+  const select = document.getElementById('filterKategori');
   if (!select) return;
   const kategoriSet = new Set(allArticles.map((a) => a.kategori));
   select.innerHTML =
     `<option value="semua">Semua Kategori</option>` +
-    [...kategoriSet].map((k) => `<option value="${k}">${k}</option>`).join("");
+    [...kategoriSet].map((k) => `<option value="${k}">${k}</option>`).join('');
 }
 
 function handleFilter() {
-  const kategori = document.getElementById("filterKategori").value;
+  const kategori = document.getElementById('filterKategori').value;
   filteredData =
-    kategori === "semua"
+    kategori === 'semua'
       ? [...allArticles]
       : allArticles.filter((item) => item.kategori === kategori);
   currentPage = 1;
@@ -90,12 +90,12 @@ function handleFilter() {
 }
 
 function handleSearch() {
-  const keyword = document.getElementById("searchInput").value.toLowerCase();
+  const keyword = document.getElementById('searchInput').value.toLowerCase();
   filteredData = allArticles.filter(
     (p) =>
-      (p.kategori || "").toLowerCase().includes(keyword) ||
-      (p.judul || "").toLowerCase().includes(keyword) ||
-      (p.dibuatoleh || "").toLowerCase().includes(keyword)
+      (p.kategori || '').toLowerCase().includes(keyword) ||
+      (p.judul || '').toLowerCase().includes(keyword) ||
+      (p.dibuatoleh || '').toLowerCase().includes(keyword)
   );
   currentPage = 1;
   renderTable();
@@ -103,7 +103,7 @@ function handleSearch() {
 
 function updateRowsPerPage() {
   rowsPerPage =
-    parseInt(document.getElementById("rowsPerPage").value, 10) || 10;
+    parseInt(document.getElementById('rowsPerPage').value, 10) || 10;
   currentPage = 1;
   renderTable();
 }
@@ -114,7 +114,7 @@ function changePage(page) {
 }
 
 function renderTable() {
-  const table = document.querySelector("table");
+  const table = document.querySelector('table');
   if (!table) return;
   let html = `
     <thead>
@@ -153,8 +153,8 @@ function renderTable() {
   }
   html += `</tbody>`;
   table.innerHTML = html;
-  document.getElementById("selectAll")?.addEventListener("change", function () {
-    const checkboxes = document.querySelectorAll(".row-checkbox");
+  document.getElementById('selectAll')?.addEventListener('change', function () {
+    const checkboxes = document.querySelectorAll('.row-checkbox');
     checkboxes.forEach((cb) => (cb.checked = this.checked));
   });
   renderPagination();
@@ -162,11 +162,11 @@ function renderTable() {
 
 function renderPagination() {
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
-  const pagination = document.getElementById("pagination");
+  const pagination = document.getElementById('pagination');
   if (!pagination) return;
-  let html = "";
+  let html = '';
   for (let i = 1; i <= totalPages; i++) {
-    html += `<li class="page-item${i === currentPage ? " active" : ""}">
+    html += `<li class="page-item${i === currentPage ? ' active' : ''}">
       <a class="page-link" href="#" onclick="changePage(${i});return false;">${i}</a>
     </li>`;
   }
@@ -175,41 +175,41 @@ function renderPagination() {
 
 async function hapusItem(id) {
   const konfirmasi = await Swal.fire({
-    icon: "warning",
-    title: "Hapus Artikel?",
-    text: "Artikel yang dihapus tidak dapat dikembalikan.",
+    icon: 'warning',
+    title: 'Hapus Artikel?',
+    text: 'Artikel yang dihapus tidak dapat dikembalikan.',
     showCancelButton: true,
-    confirmButtonText: "Ya, hapus!",
-    cancelButtonText: "Batal",
+    confirmButtonText: 'Ya, hapus!',
+    cancelButtonText: 'Batal',
   });
   if (konfirmasi.isConfirmed) {
     try {
       const res = await fetch(`${ENDPOINT}/article/${id}`, {
-        method: "DELETE",
+        method: 'DELETE',
         headers: { Authorization: `Bearer ${TOKEN}` },
       });
       const result = await res.json();
-      if (res.ok && result.status === "success") {
+      if (res.ok && result.status === 'success') {
         Swal.fire({
-          icon: "success",
-          title: "Berhasil",
-          text: "Artikel dihapus.",
+          icon: 'success',
+          title: 'Berhasil',
+          text: 'Artikel dihapus.',
         });
         await fetchArticles();
         renderKategoriOptions();
         renderTable();
       } else {
         Swal.fire({
-          icon: "error",
-          title: "Gagal",
-          text: result.message || "Gagal menghapus.",
+          icon: 'error',
+          title: 'Gagal',
+          text: result.message || 'Gagal menghapus.',
         });
       }
     } catch (err) {
       Swal.fire({
-        icon: "error",
-        title: "Gagal",
-        text: "Tidak dapat terhubung ke server.",
+        icon: 'error',
+        title: 'Gagal',
+        text: 'Tidak dapat terhubung ke server.',
       });
     }
   }
@@ -217,23 +217,23 @@ async function hapusItem(id) {
 
 async function hapusYangDipilih() {
   const checked = Array.from(
-    document.querySelectorAll(".row-checkbox:checked")
+    document.querySelectorAll('.row-checkbox:checked')
   ).map((cb) => cb.dataset.id);
   if (checked.length === 0) {
     Swal.fire({
-      icon: "info",
-      title: "Tidak ada yang dipilih",
-      text: "Pilih artikel yang ingin dihapus.",
+      icon: 'info',
+      title: 'Tidak ada yang dipilih',
+      text: 'Pilih artikel yang ingin dihapus.',
     });
     return;
   }
   const konfirmasi = await Swal.fire({
-    icon: "warning",
-    title: "Hapus Artikel Terpilih?",
-    text: "Artikel yang dihapus tidak dapat dikembalikan.",
+    icon: 'warning',
+    title: 'Hapus Artikel Terpilih?',
+    text: 'Artikel yang dihapus tidak dapat dikembalikan.',
     showCancelButton: true,
-    confirmButtonText: "Ya, hapus!",
-    cancelButtonText: "Batal",
+    confirmButtonText: 'Ya, hapus!',
+    cancelButtonText: 'Batal',
   });
   if (konfirmasi.isConfirmed) {
     for (const id of checked) {
@@ -248,7 +248,7 @@ async function hapusYangDipilih() {
 // Agar bisa dipanggil dari HTML
 window.handleSearch = handleSearch;
 window.resetTable = () => {
-  document.getElementById("searchInput").value = "";
+  document.getElementById('searchInput').value = '';
   handleSearch();
 };
 window.updateRowsPerPage = updateRowsPerPage;
@@ -259,8 +259,8 @@ window.hapusYangDipilih = hapusYangDipilih;
 server
   .start()
   .then(() => {
-    console.log("Server running on %s", server.info.uri);
+    console.log('Server running on %s', server.info.uri);
   })
   .catch((err) => {
-    console.log("Error starting server:", err);
+    console.log('Error starting server:', err);
   });
