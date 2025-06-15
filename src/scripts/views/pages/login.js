@@ -56,7 +56,7 @@ loginForm.addEventListener("submit", async (event) => {
     allowOutsideClick: false,
     showCancelButton: false,
     showConfirmButton: false,
-    onBeforeOpen: () => {
+    didOpen: () => {
       Swal.showLoading();
     },
   });
