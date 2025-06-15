@@ -1,24 +1,29 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const form = document.getElementById('formArtikel');
   const btnKembali = document.getElementById('btnKembali');
+  const inputNamaFile = document.getElementById('namaFile');
 
-  // Dummy data artikel
-  const artikelData = {
-    judul: "Mengenal Kesehatan Mental Remaja",
-    kategori: "Psikologi Anak",
-    tanggal: "2025-05-28",
-    konten: `Remaja sering menghadapi tekanan akademik, sosial, dan emosional. 
-Penting bagi mereka untuk memiliki sistem dukungan yang baik serta pemahaman dasar mengenai kesehatan mental.`,
-    gambar: "mental-remaja.jpg"
-  };
+  const ENDPOINT = '{{endpoint link}}';
+  const TOKEN = '{{admin_token}}';
+  const urlParams = new URLSearchParams(window.location.search);
+  const artikelId = urlParams.get('artikel_id');
 
-  // Isi form dengan data dummy
-  if (form) {
-    form.judul.value = artikelData.judul;
-    form.kategori.value = artikelData.kategori;
-    form.tanggal.value = artikelData.tanggal;
-    form.konten.value = artikelData.konten;
-    document.getElementById('namaFile').value = artikelData.gambar;
+  if (artikelId) {
+    try {
+      const res = await fetch(`${ENDPOINT}/article/${artikelId}`, {
+        headers: { 'Authorization': `Bearer ${TOKEN}` }
+      });
+      const data = await res.json();
+      if (res.ok && data.data) {
+        form.judul.value = data.data.title || '';
+        form.kategori.value = data.data.category || '';
+        form.tanggal.value = data.data.date ? data.data.date.slice(0, 10) : '';
+        form.konten.value = data.data.content || '';
+        inputNamaFile.value = data.data.image ? data.data.image.split('/').pop() : '';
+      }
+    } catch (err) {
+      Swal.fire({ icon: 'error', title: 'Gagal', text: 'Gagal mengambil data artikel.' });
+    }
   }
 
   // Buat semua input, textarea, dan file readonly atau disabled

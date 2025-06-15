@@ -1,59 +1,89 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const form = document.getElementById('formArtikel');
   const btnKembali = document.getElementById('btnKembali');
   const inputGambar = document.getElementById('gambar');
   const inputNamaFile = document.getElementById('namaFile');
 
-  // === 1. Data dummy artikel yang akan diedit ===
-  const dummyArtikel = {
-    judul: "Pentingnya Istirahat untuk Kesehatan Mental",
-    kategori: "Kesehatan Mental",
-    tanggal: "2025-05-29",
-    konten: `Istirahat tidak hanya penting untuk tubuh tetapi juga sangat penting untuk kesehatan mental. 
-Luangkan waktu untuk diri sendiri dan jangan abaikan sinyal stres.`,
-    gambar: "istirahat-mental.png"
-  };
+  // Ganti dengan endpoint dan token asli
+  const ENDPOINT = '{{endpoint link}}';
+  const TOKEN = '{{admin_token}}';
 
-  // === 2. Isi form dengan data dummy ===
-  if (form) {
-    form.judul.value = dummyArtikel.judul;
-    form.kategori.value = dummyArtikel.kategori;
-    form.tanggal.value = dummyArtikel.tanggal;
-    form.konten.value = dummyArtikel.konten;
-    inputNamaFile.value = dummyArtikel.gambar;
+  // Ambil ID artikel dari URL (misal: ...?artikel_id=4)
+  const urlParams = new URLSearchParams(window.location.search);
+  const artikelId = urlParams.get('artikel_id');
+
+  // --- Ambil data artikel dari backend (GET) ---
+  async function fetchArtikel() {
+    if (!artikelId) return;
+    try {
+      const res = await fetch(`${ENDPOINT}/article/${artikelId}`, {
+        headers: { 'Authorization': `Bearer ${TOKEN}` }
+      });
+      const data = await res.json();
+      if (res.ok && data.data) {
+        form.judul.value = data.data.title || '';
+        form.kategori.value = data.data.category || '';
+        form.tanggal.value = data.data.date ? data.data.date.slice(0, 10) : '';
+        form.konten.value = data.data.content || '';
+        inputNamaFile.value = data.data.image ? data.data.image.split('/').pop() : '';
+      }
+    } catch (err) {
+      Swal.fire({ icon: 'error', title: 'Gagal', text: 'Gagal mengambil data artikel.' });
+    }
   }
+  await fetchArtikel();
 
-  // === 3. Update nama file gambar saat file dipilih ===
+  // --- Update nama file gambar saat file dipilih ---
   inputGambar.addEventListener('change', (e) => {
     const fileName = e.target.files[0]?.name || "";
     inputNamaFile.value = fileName;
   });
 
-  // === 4. Submit form: tampilkan popup konfirmasi ===
-  form.addEventListener('submit', (e) => {
+  // --- Submit form: PUT ke backend ---
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (!artikelId) {
+      Swal.fire({ icon: 'error', title: 'Gagal', text: 'ID artikel tidak ditemukan.' });
+      return;
+    }
 
-    // Ambil nilai-nilai form
-    const dataEdit = {
-      judul: form.judul.value,
-      kategori: form.kategori.value,
-      tanggal: form.tanggal.value,
-      konten: form.konten.value,
-      gambar: inputNamaFile.value
-    };
+    const formData = new FormData();
+    if (form.judul.value.trim()) formData.append('title', form.judul.value.trim());
+    if (form.kategori.value.trim()) formData.append('category', form.kategori.value.trim());
+    if (form.tanggal.value.trim()) formData.append('date', form.tanggal.value.trim());
+    if (form.konten.value.trim()) formData.append('content', form.konten.value.trim());
+    if (inputGambar.files[0]) formData.append('image', inputGambar.files[0]);
 
-    // Simulasi penyimpanan (console.log)
-    console.log("Data yang disimpan:", dataEdit);
+    if ([...formData.keys()].length === 0) {
+      Swal.fire({ icon: 'error', title: 'Gagal', text: 'Tidak ada data yang diubah.' });
+      return;
+    }
 
-    Swal.fire({
-      icon: 'success',
-      title: 'Berhasil disimpan!',
-      text: 'Perubahan artikel berhasil disimpan.',
-      confirmButtonText: 'OK'
-    });
+    try {
+      const res = await fetch(`${ENDPOINT}/article/${artikelId}`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${TOKEN}` },
+        body: formData
+      });
+      const result = await res.json();
+      if (res.ok && result.status === 'success') {
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil disimpan!',
+          text: 'Perubahan artikel berhasil disimpan.',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          window.location.href = '/src/templates/admin-artikel.html';
+        });
+      } else {
+        Swal.fire({ icon: 'error', title: 'Gagal', text: result.message || 'Terjadi kesalahan.' });
+      }
+    } catch (err) {
+      Swal.fire({ icon: 'error', title: 'Gagal', text: 'Tidak dapat terhubung ke server.' });
+    }
   });
 
-  // === 5. Tombol kembali ke halaman daftar artikel ===
+  // --- Tombol kembali ---
   btnKembali.addEventListener('click', () => {
     window.location.href = '/src/templates/admin-artikel.html';
   });

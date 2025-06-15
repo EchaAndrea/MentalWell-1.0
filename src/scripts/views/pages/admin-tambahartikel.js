@@ -22,30 +22,33 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Tangani submit form
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Ambil data dari form
-    const dataArtikel = {
-      judul: form.judul.value,
-      kategori: form.kategori.value,
-      tanggal: form.tanggal.value,
-      konten: form.konten.value,
-      gambar: namaFile.value,
-    };
+    const formData = new FormData();
+    formData.append('title', form.judul.value.trim());
+    formData.append('category', form.kategori.value.trim());
+    formData.append('date', form.tanggal.value.trim());
+    formData.append('content', form.konten.value.trim());
+    if (inputGambar.files[0]) formData.append('image', inputGambar.files[0]);
 
-    console.log('Data artikel yang akan dikirim:', dataArtikel);
-
-    // Tampilkan notifikasi sukses
-    Swal.fire({
-      icon: 'success',
-      title: 'Artikel berhasil ditambahkan!',
-      text: `Judul: ${dataArtikel.judul}`,
-      confirmButtonText: 'OK'
-    }).then(() => {
-      window.location.href = '/src/templates/admin-artikel.html';
-      form.reset(); // Kosongkan form
-      namaFile.value = ''; // Kosongkan nama file
-    });
+    try {
+      const res = await fetch('{{endpoint link}}/article', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer {{admin_token}}' },
+        body: formData
+      });
+      const result = await res.json();
+      if (res.ok && result.status === 'success') {
+        Swal.fire({ icon: 'success', title: 'Artikel berhasil ditambahkan!', text: `Judul: ${result.data.title}` })
+          .then(() => window.location.href = '/src/templates/admin-artikel.html');
+        form.reset();
+        namaFile.value = '';
+      } else {
+        Swal.fire({ icon: 'error', title: 'Gagal', text: result.message || 'Terjadi kesalahan.' });
+      }
+    } catch (err) {
+      Swal.fire({ icon: 'error', title: 'Gagal', text: 'Tidak dapat terhubung ke server.' });
+    }
   });
 });
