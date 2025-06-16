@@ -1,135 +1,107 @@
-const Token = "{{token}}"; 
-
-function formatRupiah(angka) {
-  return "Rp. " + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-}
-
-function getCounselingIdFromUrl() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get("id");
-}
-
-function formatDate(dateStr) {
-  if (!dateStr) return "-";
-  const [y, m, d] = dateStr.split("-");
-  return `${d}-${m}-${y}`;
-}
-
-function mapPaymentStatus(status) {
-  switch (status) {
-    case "approved":
-      return "Lunas";
-    case "waiting":
-      return "Belum Lunas";
-    case "failed":
-      return "Gagal";
-    case "refunded":
-      return "Refund";
-    case "rejected":
-      return "Ditolak";
-    default:
-      return status;
+document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const counselingId = urlParams.get('id');
+  if (counselingId) {
+    fetchCounselingDetail(counselingId);
   }
-}
+
+  document.getElementById('btnKembali').onclick = () => window.history.back();
+  document.getElementById('btnVerifikasi').onclick = () => updatePaymentStatus(counselingId, 'approved');
+  document.getElementById('btnTolak').onclick = () => rejectPayment(counselingId);
+
+  // Modal bukti bayar
+  document.getElementById('statusPembayaran').onclick = (e) => {
+    e.preventDefault();
+    const img = document.getElementById('imgBuktiBayar');
+    if (img.src) {
+      new bootstrap.Modal(document.getElementById('buktiBayarModal')).show();
+    }
+  };
+});
 
 async function fetchCounselingDetail(id) {
   try {
-    const res = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/admin/counseling/${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${Token}`,
-        },
-      }
-    );
-    const json = await res.json();
-    if (json.status === "success") {
-      return json.counseling;
-    } else {
-      alert("Gagal memuat detail konseling.");
-      return null;
+    const res = await fetch(`https://mentalwell10-api-production.up.railway.app/admin/counseling/${id}`, {
+      headers: { Authorization: `Bearer ${TOKEN}` }
+    });
+    const data = await res.json();
+    const c = data.counseling;
+
+    document.getElementById('namaPengguna').textContent = c.patient_name;
+    document.getElementById('emailPengguna').textContent = c.patient_email || '-';
+    document.getElementById('tanggalKonseling').textContent = c.schedule_date;
+    document.getElementById('waktuKonseling').textContent = c.schedule_time;
+    document.getElementById('metodePembayaran').textContent = c.payment_method || '-';
+    document.getElementById('tanggalPembayaran').textContent = c.created_at.split('T')[0];
+    document.getElementById('statusPembayaran').textContent = statusText(c.payment_status);
+    document.getElementById('hargaPaket').textContent = c.package_price ? `Rp${c.package_price}` : '-';
+    document.getElementById('hargaAplikasi').textContent = c.app_fee ? `Rp${c.app_fee}` : '-';
+    document.getElementById('totalHarga').textContent = c.total_price ? `Rp${c.total_price}` : '-';
+    document.getElementById('imgBuktiBayar').src = c.payment_proof || '';
+
+    // Disable tombol jika sudah diverifikasi/ditolak
+    if (c.payment_status === 'approved' || c.payment_status === 'rejected' || c.payment_status === 'refunded') {
+      document.getElementById('btnVerifikasi').disabled = true;
+      document.getElementById('btnTolak').disabled = true;
     }
-  } catch (e) {
-    alert("Terjadi kesalahan koneksi.");
-    return null;
+  } catch (err) {
+    alert('Gagal memuat detail konseling');
   }
 }
 
-function renderDataKonseling(data) {
-  document.getElementById("namaPengguna").textContent = data.patient_name;
-  document.getElementById("emailPengguna").textContent = "-";
-  document.getElementById("tanggalKonseling").textContent = formatDate(
-    data.schedule_date
-  );
-  document.getElementById("waktuKonseling").textContent = data.schedule_time;
-
-  // Render foto profil pasien & psikolog jika ada
-  if (document.getElementById("fotoPasien") && data.patient_profpic) {
-    document.getElementById("fotoPasien").src = data.patient_profpic;
-  }
-  if (document.getElementById("fotoPsikolog") && data.psychologist_profpic) {
-    document.getElementById("fotoPsikolog").src = data.psychologist_profpic;
-  }
-
-  document.getElementById("metodePembayaran").textContent = "-";
-  document.getElementById("tanggalPembayaran").textContent = formatDate(
-    data.created_at.split("T")[0]
-  );
-
-  const statusEl = document.getElementById("statusPembayaran");
-  statusEl.textContent = mapPaymentStatus(data.payment_status);
-  statusEl.classList.remove("text-success", "text-danger");
-  if (data.payment_status === "approved")
-    statusEl.classList.add("text-success");
-  else statusEl.classList.add("text-danger");
-
-  document.getElementById("hargaPaket").textContent = "-";
-  document.getElementById("hargaAplikasi").textContent = "-";
-  document.getElementById("totalHarga").textContent = "-";
-
-  // Bukti pembayaran
-  if (data.payment_proof) {
-    let img = document.getElementById("imgBuktiBayar");
-    if (img) img.src = data.payment_proof;
+function statusText(status) {
+  switch (status) {
+    case 'approved': return 'Lunas';
+    case 'waiting': return 'Belum Lunas';
+    case 'failed': return 'Gagal';
+    case 'refunded': return 'Refund';
+    case 'rejected': return 'Ditolak';
+    default: return status;
   }
 }
 
-async function updatePaymentStatus(id, status, note = "") {
-  const body = { payment_status: status };
-  if (status === "rejected") body.note = note;
-
+async function updatePaymentStatus(id, status) {
+  if (!confirm('Verifikasi pembayaran ini?')) return;
   try {
-    const res = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/admin/counseling/${id}`,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${Token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      }
-    );
-    const json = await res.json();
-    if (json.status === "success") {
-      alert("Status pembayaran berhasil diupdate!");
+    const res = await fetch(`https://mentalwell10-api-production.up.railway.app/admin/counseling/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${TOKEN}`
+      },
+      body: JSON.stringify({ payment_status: status })
+    });
+    const data = await res.json();
+    if (data.status === 'success') {
+      alert('Pembayaran diverifikasi!');
       location.reload();
     } else {
-      alert("Gagal update status: " + (json.message || "Unknown error"));
+      alert('Gagal verifikasi pembayaran');
     }
-  } catch (e) {
-    alert("Terjadi kesalahan koneksi.");
+  } catch (err) {
+    alert('Gagal verifikasi pembayaran');
   }
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  const id = getCounselingIdFromUrl();
-  if (!id) {
-    alert("ID konseling tidak ditemukan di URL.");
-    return;
-  }
-  const data = await fetchCounselingDetail(id);
-  if (data) {
-    renderDataKonseling(data);
-  }
-});
+function rejectPayment(id) {
+  const note = prompt('Masukkan alasan penolakan pembayaran:');
+  if (!note) return;
+  fetch(`https://mentalwell10-api-production.up.railway.app/admin/counseling/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${TOKEN}`
+    },
+    body: JSON.stringify({ payment_status: 'rejected', note })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 'success') {
+        alert('Pembayaran ditolak!');
+        location.reload();
+      } else {
+        alert('Gagal menolak pembayaran');
+      }
+    })
+    .catch(() => alert('Gagal menolak pembayaran'));
+}

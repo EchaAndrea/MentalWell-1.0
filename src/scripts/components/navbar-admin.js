@@ -162,7 +162,7 @@ class NavbarAdmin extends HTMLElement {
       .addEventListener("click", (e) => {
         e.preventDefault();
         sessionStorage.removeItem("authToken");
-        window.location.href = "/login";
+        window.location.href = "/";
       });
 
     const buttonUser = this.shadowRoot.querySelector("#userDropdown");

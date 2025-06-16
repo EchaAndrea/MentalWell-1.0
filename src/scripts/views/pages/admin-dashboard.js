@@ -1,179 +1,94 @@
-let dataKonseling = [];
-let filteredData = [];
-let rowsPerPage = 10;
+let allCounselings = [];
+let filteredCounselings = [];
 let currentPage = 1;
+let rowsPerPage = 10;
 
-const PAYMENT_STATUS_MAP = {
-  approved: "Lunas",
-  waiting: "Belum Lunas",
-  failed: "Gagal",
-  refunded: "Refund",
-};
+document.addEventListener('DOMContentLoaded', () => {
+  fetchCounselings();
 
-document.addEventListener("DOMContentLoaded", async () => {
-  await fetchCounselings();
-  document
-    .getElementById("filterKategori")
-    .addEventListener("change", handleFilter);
-  renderTable();
+  document.getElementById('filterKategori').addEventListener('change', handleFilter);
+  document.getElementById('searchInput').addEventListener('input', handleSearch);
+  document.getElementById('rowsPerPage').addEventListener('change', updateRowsPerPage);
 });
 
 async function fetchCounselings() {
   try {
-    const res = await fetch(
-      "https://mentalwell10-api-production.up.railway.app/admin/counselings",
-      {
-        headers: {
-          Authorization: `Bearer ${Token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const json = await res.json();
-    if (json.status === "success") {
-      dataKonseling = json.counselings.map((item) => ({
-        id: item.id,
-        nama: item.patient_name,
-        tanggal: formatDate(item.schedule_date),
-        waktu: item.schedule_time,
-        status: PAYMENT_STATUS_MAP[item.payment_status] || item.payment_status,
-      }));
-      filteredData = [...dataKonseling];
-    }
-  } catch (e) {
-    document.getElementById("psikologTableBody").innerHTML = `
-      <tr><td colspan="7" class="text-center text-danger">Gagal memuat data konseling. Silakan cek koneksi atau hubungi admin.</td></tr>
-    `;
-    dataKonseling = [];
-    filteredData = [];
+    const res = await fetch(`https://mentalwell10-api-production.up.railway.app/admin/counselings`, {
+      headers: { Authorization: `Bearer ${TOKEN}` }
+    });
+    const data = await res.json();
+    allCounselings = data.counselings || [];
+    filteredCounselings = [...allCounselings];
+    renderTable();
+  } catch (err) {
+    alert('Gagal memuat data konseling');
   }
 }
 
-function formatDate(dateStr) {
-  // dari yyyy-mm-dd ke dd-mm-yyyy
-  const [y, m, d] = dateStr.split("-");
-  return `${d}-${m}-${y}`;
+function renderTable() {
+  const tbody = document.getElementById('psikologTableBody');
+  tbody.innerHTML = '';
+  let start = (currentPage - 1) * rowsPerPage;
+  let end = rowsPerPage === 'all' ? filteredCounselings.length : start + rowsPerPage;
+  let pageData = filteredCounselings.slice(start, end);
+
+  pageData.forEach(item => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="checkbox"></td>
+      <td>${item.id}</td>
+      <td>${item.patient_name}</td>
+      <td>${item.schedule_date}</td>
+      <td>${item.schedule_time}</td>
+      <td>${renderStatus(item.payment_status)}</td>
+      <td>
+        <a href="/src/templates/admin-detaildashboard.html?id=${item.id}" class="btn btn-sm btn-primary">Detail</a>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
 }
 
-// Filter berdasarkan status bayar
+function renderStatus(status) {
+  switch (status) {
+    case 'approved': return '<span class="badge bg-success">Lunas</span>';
+    case 'waiting': return '<span class="badge bg-warning text-dark">Belum Lunas</span>';
+    case 'failed': return '<span class="badge bg-danger">Gagal</span>';
+    case 'refunded': return '<span class="badge bg-info text-dark">Refund</span>';
+    default: return status;
+  }
+}
+
 function handleFilter() {
-  const kategori = document.getElementById("filterKategori").value;
-  filteredData =
-    kategori === "semua"
-      ? [...dataKonseling]
-      : dataKonseling.filter((item) => {
-          const statusKey = Object.keys(PAYMENT_STATUS_MAP).find(
-            (key) =>
-              PAYMENT_STATUS_MAP[key].toLowerCase() ===
-              item.status.toLowerCase()
-          );
-          return statusKey === kategori;
-        });
+  const kategori = document.getElementById('filterKategori').value;
+  filteredCounselings = kategori === 'semua'
+    ? [...allCounselings]
+    : allCounselings.filter(c => c.payment_status === kategori);
   currentPage = 1;
   renderTable();
 }
 
-// Pencarian nama
 function handleSearch() {
-  const keyword = document.getElementById("searchInput").value.toLowerCase();
-  filteredData = dataKonseling.filter((item) =>
-    item.nama.toLowerCase().includes(keyword)
+  const keyword = document.getElementById('searchInput').value.toLowerCase();
+  filteredCounselings = allCounselings.filter(c =>
+    c.patient_name.toLowerCase().includes(keyword) ||
+    c.id.toString().includes(keyword)
   );
   currentPage = 1;
   renderTable();
 }
 
-// Reset semua filter dan pencarian
 function resetTable() {
-  document.getElementById("searchInput").value = "";
-  document.getElementById("filterKategori").value = "semua";
-  filteredData = [...dataKonseling];
+  document.getElementById('filterKategori').value = 'semua';
+  document.getElementById('searchInput').value = '';
+  filteredCounselings = [...allCounselings];
   currentPage = 1;
   renderTable();
 }
 
-// Ganti jumlah baris per halaman
 function updateRowsPerPage() {
-  const value = document.getElementById("rowsPerPage").value;
-  rowsPerPage = value === "all" ? filteredData.length : parseInt(value);
+  const val = document.getElementById('rowsPerPage').value;
+  rowsPerPage = val === 'all' ? 'all' : parseInt(val);
   currentPage = 1;
   renderTable();
 }
-
-// Ganti halaman
-function changePage(page) {
-  currentPage = page;
-  renderTable();
-}
-
-// Fungsi redirect ke halaman detail
-function redirectToDetail(id) {
-  window.location.href = `/src/templates/admin-detaildashboard.html?id=${encodeURIComponent(
-    id
-  )}`;
-}
-
-// Render tabel
-function renderTable() {
-  const tbody = document.getElementById("psikologTableBody");
-  tbody.innerHTML = "";
-
-  const start = (currentPage - 1) * rowsPerPage;
-  const end = start + rowsPerPage;
-  const pageData = filteredData.slice(start, end);
-
-  for (const item of pageData) {
-    tbody.innerHTML += `
-      <tr>
-        <td><input type="checkbox" class="row-checkbox" data-nama="${item.id}"></td>  
-        <td>${item.id}</td>
-        <td>${item.nama}</td>
-        <td>${item.tanggal}</td>
-        <td>${item.waktu}</td>
-        <td>${item.status}</td>
-        <td>
-          <button class="btn btn-sm btn-secondary" onclick="redirectToDetail('${item.id}')">
-            <img src="/src/public/admin/edit.png" width="13" alt="Detail">
-          </button>
-        </td>
-      </tr>
-    `;
-  }
-
-  renderPagination();
-}
-
-// Render pagination
-function renderPagination() {
-  const totalPages = Math.ceil(filteredData.length / rowsPerPage) || 1;
-  const pagination = document.querySelector(".pagination");
-  pagination.innerHTML = "";
-
-  pagination.innerHTML += `<li class="page-item ${
-    currentPage === 1 ? "disabled" : ""
-  }">
-    <a class="page-link" href="#" onclick="changePage(${
-      currentPage - 1
-    })">Sebelumnya</a></li>`;
-
-  for (let i = 1; i <= totalPages; i++) {
-    pagination.innerHTML += `<li class="page-item ${
-      i === currentPage ? "active" : ""
-    }">
-      <a class="page-link" href="#" onclick="changePage(${i})">${i}</a></li>`;
-  }
-
-  pagination.innerHTML += `<li class="page-item ${
-    currentPage === totalPages ? "disabled" : ""
-  }">
-    <a class="page-link" href="#" onclick="changePage(${
-      currentPage + 1
-    })">Selanjutnya</a></li>`;
-}
-
-// Agar bisa dipanggil dari HTML
-window.handleSearch = handleSearch;
-window.resetTable = resetTable;
-window.updateRowsPerPage = updateRowsPerPage;
-window.changePage = changePage;
-window.redirectToDetail = redirectToDetail;
