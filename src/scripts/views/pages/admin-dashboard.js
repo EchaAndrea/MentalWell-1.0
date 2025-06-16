@@ -43,9 +43,13 @@ async function fetchCounselings() {
 function renderTable() {
   const tbody = document.getElementById("psikologTableBody");
   tbody.innerHTML = "";
-  let start = (currentPage - 1) * rowsPerPage;
+
+  // Pastikan rowsPerPage bertipe number
+  let perPage =
+    rowsPerPage === "all" ? filteredCounselings.length : Number(rowsPerPage);
+  let start = (currentPage - 1) * perPage;
   let end =
-    rowsPerPage === "all" ? filteredCounselings.length : start + rowsPerPage;
+    rowsPerPage === "all" ? filteredCounselings.length : start + perPage;
   let pageData = filteredCounselings.slice(start, end);
 
   pageData.forEach((item) => {
@@ -167,12 +171,7 @@ function renderPagination() {
     el.addEventListener("click", function (e) {
       e.preventDefault();
       const page = parseInt(this.getAttribute("data-page"));
-      if (
-        !isNaN(page) &&
-        page >= 1 &&
-        page <= totalPages &&
-        page !== currentPage
-      ) {
+      if (!isNaN(page) && page >= 1 && page !== currentPage) {
         currentPage = page;
         renderTable();
       }
