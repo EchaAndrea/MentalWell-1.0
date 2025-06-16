@@ -20,12 +20,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function fetchCounselings() {
   try {
-    const token = localStorage.getItem("admin_token");
     const res = await fetch(
       "https://mentalwell10-api-production.up.railway.app/admin/counselings",
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${Token}`,
           "Content-Type": "application/json",
         },
       }

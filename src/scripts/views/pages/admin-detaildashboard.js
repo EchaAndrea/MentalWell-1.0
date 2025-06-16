@@ -1,3 +1,5 @@
+const Token = "{{token}}"; 
+
 function formatRupiah(angka) {
   return "Rp. " + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
@@ -31,13 +33,12 @@ function mapPaymentStatus(status) {
 }
 
 async function fetchCounselingDetail(id) {
-  const token = localStorage.getItem("admin_token");
   try {
     const res = await fetch(
       `https://mentalwell10-api-production.up.railway.app/admin/counseling/${id}`,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${Token}`,
         },
       }
     );
@@ -62,7 +63,7 @@ function renderDataKonseling(data) {
   );
   document.getElementById("waktuKonseling").textContent = data.schedule_time;
 
-  // Tambahkan render foto profil pasien & psikolog jika ada elemen-nya
+  // Render foto profil pasien & psikolog jika ada
   if (document.getElementById("fotoPasien") && data.patient_profpic) {
     document.getElementById("fotoPasien").src = data.patient_profpic;
   }
@@ -94,7 +95,6 @@ function renderDataKonseling(data) {
 }
 
 async function updatePaymentStatus(id, status, note = "") {
-  const token = localStorage.getItem("admin_token");
   const body = { payment_status: status };
   if (status === "rejected") body.note = note;
 
@@ -104,7 +104,7 @@ async function updatePaymentStatus(id, status, note = "") {
       {
         method: "PUT",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${Token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
