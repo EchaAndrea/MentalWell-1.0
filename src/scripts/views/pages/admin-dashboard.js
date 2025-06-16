@@ -7,31 +7,43 @@ const PAYMENT_STATUS_MAP = {
   approved: "Lunas",
   waiting: "Belum Lunas",
   failed: "Gagal",
-  refunded: "Refund"
+  refunded: "Refund",
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
   await fetchCounselings();
-  document.getElementById("filterKategori").addEventListener("change", handleFilter);
+  document
+    .getElementById("filterKategori")
+    .addEventListener("change", handleFilter);
   renderTable();
 });
 
 async function fetchCounselings() {
   try {
-    const res = await fetch("https://mentalwellbackend-production.up.railway.app/admin/counselings");
+    const token = localStorage.getItem("admin_token"); // Pastikan token sudah disimpan di localStorage
+    const res = await fetch(
+      "https://mentalwellbackend-production.up.railway.app/admin/counselings",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     const json = await res.json();
     if (json.status === "success") {
-      dataKonseling = json.counselings.map(item => ({
+      dataKonseling = json.counselings.map((item) => ({
         id: item.id,
         nama: item.patient_name,
         tanggal: formatDate(item.schedule_date),
         waktu: item.schedule_time,
-        status: PAYMENT_STATUS_MAP[item.payment_status] || item.payment_status
+        status: PAYMENT_STATUS_MAP[item.payment_status] || item.payment_status,
       }));
       filteredData = [...dataKonseling];
     }
   } catch (e) {
-    alert("Gagal memuat data konseling");
+    document.getElementById("psikologTableBody").innerHTML = `
+      <tr><td colspan="7" class="text-center text-danger">Gagal memuat data konseling. Silakan cek koneksi atau hubungi admin.</td></tr>
+    `;
     dataKonseling = [];
     filteredData = [];
   }
@@ -46,14 +58,17 @@ function formatDate(dateStr) {
 // Filter berdasarkan status bayar
 function handleFilter() {
   const kategori = document.getElementById("filterKategori").value;
-  filteredData = kategori === "semua"
-    ? [...dataKonseling]
-    : dataKonseling.filter(item => {
-        const statusKey = Object.keys(PAYMENT_STATUS_MAP).find(
-          key => PAYMENT_STATUS_MAP[key].toLowerCase() === item.status.toLowerCase()
-        );
-        return statusKey === kategori;
-      });
+  filteredData =
+    kategori === "semua"
+      ? [...dataKonseling]
+      : dataKonseling.filter((item) => {
+          const statusKey = Object.keys(PAYMENT_STATUS_MAP).find(
+            (key) =>
+              PAYMENT_STATUS_MAP[key].toLowerCase() ===
+              item.status.toLowerCase()
+          );
+          return statusKey === kategori;
+        });
   currentPage = 1;
   renderTable();
 }
@@ -61,7 +76,7 @@ function handleFilter() {
 // Pencarian nama
 function handleSearch() {
   const keyword = document.getElementById("searchInput").value.toLowerCase();
-  filteredData = dataKonseling.filter(item =>
+  filteredData = dataKonseling.filter((item) =>
     item.nama.toLowerCase().includes(keyword)
   );
   currentPage = 1;
@@ -93,7 +108,9 @@ function changePage(page) {
 
 // Fungsi redirect ke halaman detail
 function redirectToDetail(nama) {
-  window.location.href = `/src/templates/admin-detaildashboard.html?nama=${encodeURIComponent(nama)}`;
+  window.location.href = `/src/templates/admin-detaildashboard.html?nama=${encodeURIComponent(
+    nama
+  )}`;
 }
 
 // Render tabel
@@ -132,16 +149,26 @@ function renderPagination() {
   const pagination = document.querySelector(".pagination");
   pagination.innerHTML = "";
 
-  pagination.innerHTML += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-    <a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Sebelumnya</a></li>`;
+  pagination.innerHTML += `<li class="page-item ${
+    currentPage === 1 ? "disabled" : ""
+  }">
+    <a class="page-link" href="#" onclick="changePage(${
+      currentPage - 1
+    })">Sebelumnya</a></li>`;
 
   for (let i = 1; i <= totalPages; i++) {
-    pagination.innerHTML += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+    pagination.innerHTML += `<li class="page-item ${
+      i === currentPage ? "active" : ""
+    }">
       <a class="page-link" href="#" onclick="changePage(${i})">${i}</a></li>`;
   }
 
-  pagination.innerHTML += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-    <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Selanjutnya</a></li>`;
+  pagination.innerHTML += `<li class="page-item ${
+    currentPage === totalPages ? "disabled" : ""
+  }">
+    <a class="page-link" href="#" onclick="changePage(${
+      currentPage + 1
+    })">Selanjutnya</a></li>`;
 }
 
 // Agar bisa dipanggil dari HTML

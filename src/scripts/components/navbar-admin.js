@@ -169,8 +169,9 @@ class NavbarAdmin extends HTMLElement {
     const dropdownContent = this.shadowRoot.querySelector(".dropdown-content");
 
     buttonUser.addEventListener("click", (e) => {
-      // Agar tidak trigger logout jika klik link
-      if (e.target.closest("#logoutBtn")) return;
+      // Jika klik pada link profil, biarkan default (navigasi jalan)
+      if (e.target.closest("#logoutBtn") || e.target.closest("#profilLink"))
+        return;
       e.stopPropagation();
       dropdownContent.style.display =
         dropdownContent.style.display === "block" ? "none" : "block";
@@ -192,7 +193,7 @@ class NavbarAdmin extends HTMLElement {
           credentials: "include",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${sessionStorage.getItem("authToken")}`,
+            Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
           },
         }
       );

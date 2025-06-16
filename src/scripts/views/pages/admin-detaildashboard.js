@@ -1,71 +1,138 @@
-const dataPembayaran = {
-  pengguna: {
-    nama: "Echa Andrea Gustiar",
-    email: "echa.andrea@example.com",
-    tanggalKonseling: "24 Mei 2025",
-    waktuKonseling: "08.00 - 09.00 WIB",
-  },
-  pembayaran: {
-    metode: "Transfer Bank BRI",
-    tanggal: "11 Mei 2025",
-    status: "Terbayar",
-    buktiBayarUrl: "/src/public/bukti-pembayaran.png",
-  },
-  rincian: {
-    paket: 245000,
-    aplikasi: 15000,
-  },
-};
-
 function formatRupiah(angka) {
-  return (
-    "Rp. " +
-    angka
-      .toString()
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-  );
+  return "Rp. " + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-function renderData() {
-  document.getElementById("namaPengguna").textContent = dataPembayaran.pengguna.nama;
-  document.getElementById("emailPengguna").textContent = dataPembayaran.pengguna.email;
-  document.getElementById("tanggalKonseling").textContent = dataPembayaran.pengguna.tanggalKonseling;
-  document.getElementById("waktuKonseling").textContent = dataPembayaran.pengguna.waktuKonseling;
+function getCounselingIdFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("id");
+}
 
-  document.getElementById("metodePembayaran").textContent = dataPembayaran.pembayaran.metode;
-  document.getElementById("tanggalPembayaran").textContent = dataPembayaran.pembayaran.tanggal;
+function formatDate(dateStr) {
+  if (!dateStr) return "-";
+  const [y, m, d] = dateStr.split("-");
+  return `${d}-${m}-${y}`;
+}
+
+function mapPaymentStatus(status) {
+  switch (status) {
+    case "approved":
+      return "Lunas";
+    case "waiting":
+      return "Belum Lunas";
+    case "failed":
+      return "Gagal";
+    case "refunded":
+      return "Refund";
+    case "rejected":
+      return "Ditolak";
+    default:
+      return status;
+  }
+}
+
+async function fetchCounselingDetail(id) {
+  const token = localStorage.getItem("admin_token");
+  try {
+    const res = await fetch(
+      `https://mentalwellbackend-production.up.railway.app/admin/counseling/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const json = await res.json();
+    if (json.status === "success") {
+      return json.counseling;
+    } else {
+      alert("Gagal memuat detail konseling.");
+      return null;
+    }
+  } catch (e) {
+    alert("Terjadi kesalahan koneksi.");
+    return null;
+  }
+}
+
+function renderDataKonseling(data) {
+  document.getElementById("namaPengguna").textContent = data.patient_name;
+  document.getElementById("emailPengguna").textContent = "-";
+  document.getElementById("tanggalKonseling").textContent = formatDate(
+    data.schedule_date
+  );
+  document.getElementById("waktuKonseling").textContent = data.schedule_time;
+
+  document.getElementById("metodePembayaran").textContent = "-";
+  document.getElementById("tanggalPembayaran").textContent = formatDate(
+    data.created_at.split("T")[0]
+  );
 
   const statusEl = document.getElementById("statusPembayaran");
-  statusEl.textContent = dataPembayaran.pembayaran.status;
+  statusEl.textContent = mapPaymentStatus(data.payment_status);
   statusEl.classList.remove("text-success", "text-danger");
-  if (dataPembayaran.pembayaran.status.toLowerCase() === "terbayar") {
+  if (data.payment_status === "approved")
     statusEl.classList.add("text-success");
-  } else {
-    statusEl.classList.add("text-danger");
+  else statusEl.classList.add("text-danger");
+
+  document.getElementById("hargaPaket").textContent = "-";
+  document.getElementById("hargaAplikasi").textContent = "-";
+  document.getElementById("totalHarga").textContent = "-";
+
+  // Bukti pembayaran
+  if (data.payment_proof) {
+    let img = document.getElementById("imgBuktiBayar");
+    if (img) img.src = data.payment_proof;
   }
-
-  document.getElementById("hargaPaket").textContent = formatRupiah(dataPembayaran.rincian.paket);
-  document.getElementById("hargaAplikasi").textContent = formatRupiah(dataPembayaran.rincian.aplikasi);
-  document.getElementById("totalHarga").textContent = formatRupiah(dataPembayaran.rincian.paket + dataPembayaran.rincian.aplikasi);
-
-  document.getElementById("imgBuktiBayar").src = dataPembayaran.pembayaran.buktiBayarUrl;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  renderData();
+async function updatePaymentStatus(id, status, note = "") {
+  const token = localStorage.getItem("admin_token");
+  const body = { payment_status: status };
+  if (status === "rejected") body.note = note;
+
+  try {
+    const res = await fetch(
+      `https://mentalwellbackend-production.up.railway.app/admin/counseling/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      }
+    );
+    const json = await res.json();
+    if (json.status === "success") {
+      alert("Status pembayaran berhasil diupdate!");
+      location.reload();
+    } else {
+      alert("Gagal update status: " + (json.message || "Unknown error"));
+    }
+  } catch (e) {
+    alert("Terjadi kesalahan koneksi.");
+  }
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const id = getCounselingIdFromUrl();
+  if (!id) {
+    alert("ID konseling tidak ditemukan di URL.");
+    return;
+  }
+  const data = await fetchCounselingDetail(id);
+  if (data) renderDataKonseling(data);
 
   document.getElementById("btnVerifikasi").addEventListener("click", () => {
-    alert("Pembayaran berhasil diverifikasi!");
+    updatePaymentStatus(id, "approved");
   });
 
   document.getElementById("btnTolak").addEventListener("click", () => {
-    if (confirm("Apakah Anda yakin ingin menolak pembayaran ini?")) {
-      alert("Pembayaran ditolak.");
-    }
+    const note = prompt("Masukkan alasan penolakan pembayaran:");
+    if (note) updatePaymentStatus(id, "rejected", note);
   });
 
   document.getElementById("btnKembali").addEventListener("click", () => {
-    // Ganti URL ini sesuai tujuan redirect
     window.location.href = "/src/templates/admin-dashboard.html";
   });
 });
