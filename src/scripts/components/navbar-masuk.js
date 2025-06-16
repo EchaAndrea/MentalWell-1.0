@@ -1,9 +1,7 @@
 class NavBar extends HTMLElement {
   constructor() {
     super();
-
-    this.attachShadow({ mode: 'open' });
-
+    this.attachShadow({ mode: "open" });
     this.shadowRoot.innerHTML = `
         <style>
           /* Add your styling for the navbar here */
@@ -134,11 +132,7 @@ class NavBar extends HTMLElement {
 class NavBarLogin extends HTMLElement {
   constructor() {
     super();
-
-    // Create a shadow root
-    this.attachShadow({ mode: 'open' });
-
-    // Define the HTML content for the component
+    this.attachShadow({ mode: "open" });
     this.shadowRoot.innerHTML = `
             <style>
             /* Add your styling for the navbar here */
@@ -410,84 +404,90 @@ class NavBarLogin extends HTMLElement {
                   </div>
               </div>
           </nav>
-          <script src="/src/scripts/components/navbar-masuk.js"></script>
         `;
     this.connectedCallback();
   }
 
   connectedCallback() {
-    const photoUser = this.shadowRoot.getElementById('photoUser');
-    const nicknameTag = this.shadowRoot.getElementById('nicknameTag');
+    const photoUser = this.shadowRoot.getElementById("photoUser");
+    const nicknameTag = this.shadowRoot.getElementById("nicknameTag");
 
-    const token = sessionStorage.getItem('authToken');
+    const token = sessionStorage.getItem("authToken");
     const requestOptions = {
-      method: 'GET',
+      method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     };
 
-    fetch('https://mentalwell10-api-production.up.railway.app/profile', requestOptions)
+    fetch(
+      "https://mentalwell10-api-production.up.railway.app/profile",
+      requestOptions
+    )
       .then((response) => response.json())
       .then((data) => {
-        const currentUser = data[0];
+        const currentUser = data.result?.users || data.result || data;
 
         if (nicknameTag && photoUser) {
-          nicknameTag.innerText = currentUser.nickname;
-          photoUser.src = currentUser.profile_image;
+          nicknameTag.innerText = currentUser.nickname || "User";
+          photoUser.src = currentUser.profile_image
+            ? currentUser.profile_image + "?t=" + Date.now()
+            : "/src/public/beranda/man.png";
         } else {
           console.error('Element with ID "nicknameTag" not found.');
         }
       })
       .catch((error) => {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       });
 
-    const userDropdown = this.shadowRoot.getElementById('userDropdown');
-    const profilLink = this.shadowRoot.getElementById('profilLink');
-    const sesiKonseling = this.shadowRoot.getElementById('sesiKonseling');
-    const riwayat = this.shadowRoot.getElementById('riwayat');
-
-    userDropdown.addEventListener('mouseover', () => {
-      userDropdown.querySelector('.dropdown-content').style.display = 'block';
+    // Dropdown event
+    const userDropdown = this.shadowRoot.getElementById("userDropdown");
+    const dropdownContent = this.shadowRoot.querySelector(".dropdown-content");
+    userDropdown.addEventListener("mouseover", () => {
+      dropdownContent.style.display = "block";
+    });
+    userDropdown.addEventListener("mouseout", () => {
+      dropdownContent.style.display = "none";
     });
 
-    userDropdown.addEventListener('mouseout', () => {
-      userDropdown.querySelector('.dropdown-content').style.display = 'none';
-    });
+    // Link events
+    const profilLink = this.shadowRoot.getElementById("profilLink");
+    const sesiKonseling = this.shadowRoot.getElementById("sesiKonseling");
+    const riwayat = this.shadowRoot.getElementById("riwayat");
+    const keluar = this.shadowRoot.querySelector(".keluar");
 
-    profilLink.addEventListener('click', () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const articleId = urlParams.get('id');
-      window.location.href = `https://mentalwell-10-frontend.vercel.app/editprofilpasien`;
+    profilLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      window.location.href =
+        "https://mentalwell-10-frontend.vercel.app/editprofilpasien";
     });
-
-    riwayat.addEventListener('click', () => {
-      window.location.href = '/riwayat';
+    riwayat.addEventListener("click", (e) => {
+      e.preventDefault();
+      window.location.href = "/riwayat";
     });
-
     if (sesiKonseling) {
-      sesiKonseling.addEventListener('click', () => {
-        window.location.href = '/sesikonseling';
+      sesiKonseling.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.location.href = "/sesikonseling";
       });
     }
-
-    this.shadowRoot.querySelector('.keluar').addEventListener('click', () => {
+    keluar.addEventListener("click", (e) => {
+      e.preventDefault();
       this.logout();
     });
   }
 
   logout() {
-    sessionStorage.removeItem('authToken');
-    window.location.href = '/';
+    sessionStorage.removeItem("authToken");
+    window.location.href = "/";
   }
 }
 
-const authToken = sessionStorage.getItem('authToken');
-
+const authToken = sessionStorage.getItem("authToken");
 if (authToken) {
-  customElements.define('navbar-masuk', NavBarLogin);
+  customElements.define("navbar-masuk", NavBarLogin);
 } else {
-  customElements.define('navbar-masuk', NavBar);
+  customElements.define("navbar-masuk", NavBar);
 }

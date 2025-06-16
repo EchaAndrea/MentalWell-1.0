@@ -3,7 +3,7 @@ class NavBar extends HTMLElement {
     super();
 
     // Create a shadow root
-    this.attachShadow({ mode: 'open' });
+    this.attachShadow({ mode: "open" });
 
     // Define the HTML content for the component
     this.shadowRoot.innerHTML = `
@@ -185,31 +185,31 @@ class NavBar extends HTMLElement {
       `;
 
     // Get userDropdown element within Shadow DOM
-    const userDropdown = this.shadowRoot.getElementById('userDropdown');
-    const profilLink = this.shadowRoot.getElementById('profilLink');
+    const userDropdown = this.shadowRoot.getElementById("userDropdown");
+    const profilLink = this.shadowRoot.getElementById("profilLink");
 
     // Add event listeners for mouseover and mouseout within Shadow DOM
-    userDropdown.addEventListener('mouseover', () => {
-      userDropdown.querySelector('.dropdown-content').style.display = 'block';
+    userDropdown.addEventListener("mouseover", () => {
+      userDropdown.querySelector(".dropdown-content").style.display = "block";
     });
 
-    userDropdown.addEventListener('mouseout', () => {
-      userDropdown.querySelector('.dropdown-content').style.display = 'none';
+    userDropdown.addEventListener("mouseout", () => {
+      userDropdown.querySelector(".dropdown-content").style.display = "none";
     });
 
-    profilLink.addEventListener('click', () => {
+    profilLink.addEventListener("click", () => {
       const urlParams = new URLSearchParams(window.location.search);
       window.location.href = `https://mentalwell.vercel.app/editprofilpasien`;
     });
 
-    this.shadowRoot.querySelector('.keluar').addEventListener('click', () => {
+    this.shadowRoot.querySelector(".keluar").addEventListener("click", () => {
       this.logout();
     });
   }
 
   logout() {
-    sessionStorage.removeItem('authToken');
-    window.location.href = '/';
+    sessionStorage.removeItem("authToken");
+    window.location.href = "/";
   }
 }
 
