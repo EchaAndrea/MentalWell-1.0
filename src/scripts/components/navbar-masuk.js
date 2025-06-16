@@ -428,7 +428,6 @@ class NavBarLogin extends HTMLElement {
       .then((response) => response.json())
       .then((data) => {
         const currentUser = data.result?.users || data.result || data;
-
         if (nicknameTag && photoUser) {
           nicknameTag.innerText = currentUser.nickname || "User";
           photoUser.src = currentUser.profile_image
