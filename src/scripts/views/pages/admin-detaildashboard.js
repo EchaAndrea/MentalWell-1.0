@@ -106,6 +106,7 @@ async function updatePaymentStatus(id, status, TOKEN) {
       }
     );
     const data = await res.json();
+    console.log("API response:", data); 
     if (data.status === "success") {
       alert("Pembayaran diverifikasi!");
       location.reload();
