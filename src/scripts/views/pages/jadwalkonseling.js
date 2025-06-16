@@ -195,12 +195,15 @@ function formatTanggalIndo(tanggalStr) {
 
 // Tahap 1: Isi Data
 async function populateUserData() {
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("authToken"); // Ubah ke sessionStorage
   if (!token) return;
   try {
-    const res = await fetch("https://mentalwell10-api-production.up.railway.app/my-data", {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    const res = await fetch(
+      "https://mentalwell10-api-production.up.railway.app/my-data",
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
     const data = await res.json();
     const user = data.result.users;
     // Simpan ke localStorage agar bisa diakses di halaman selesai
@@ -242,7 +245,7 @@ function sendCounselingData() {
 
 // Tahap 3: Pembayaran
 async function confirmPayment() {
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("authToken"); // Ubah ke sessionStorage
   const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
   const problemData = JSON.parse(
     localStorage.getItem("counseling_problem") || "{}"
