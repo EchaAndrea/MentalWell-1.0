@@ -92,7 +92,7 @@ async function updatePaymentStatus(id, status, note = "") {
 
   try {
     const res = await fetch(
-      `https://mentalwellbackend-production.up.railway.app/admin/counseling/${id}`,
+      `https://mentalwell10-api-production.up.railway.app/admin/counseling/${id}`,
       {
         method: "PUT",
         headers: {

@@ -5,7 +5,7 @@ let currentPage = 1;
 
 async function fetchArticles() {
   try {
-    const res = await fetch(`https://mentalwellbackend-production.up.railway.app/articles`, {
+    const res = await fetch(`https://mentalwell10-api-production.up.railway.app/articles`, {
       headers: { Authorization: `Bearer ${TOKEN}` },
     });
     const result = await res.json();
@@ -149,7 +149,7 @@ async function hapusItem(id) {
   });
   if (konfirmasi.isConfirmed) {
     try {
-      const res = await fetch(`https://mentalwellbackend-production.up.railway.app/article/${id}`, {
+      const res = await fetch(`https://mentalwell10-api-production.up.railway.app/article/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${TOKEN}` },
       });

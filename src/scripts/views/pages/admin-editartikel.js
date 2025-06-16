@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function fetchArtikel() {
     if (!artikelId) return;
     try {
-      const res = await fetch(`https://mentalwellbackend-production.up.railway.app/article/${artikelId}`, {
+      const res = await fetch(`https://mentalwell10-api-production.up.railway.app/article/${artikelId}`, {
         headers: { 'Authorization': `Bearer ${TOKEN}` }
       });
       const data = await res.json();
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-      const res = await fetch(`https://mentalwellbackend-production.up.railway.app/article/${artikelId}`, {
+      const res = await fetch(`https://mentalwell10-api-production.up.railway.app/article/${artikelId}`, {
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${TOKEN}` },
         body: formData

@@ -256,7 +256,7 @@ class NavBar extends HTMLElement {
       },
     };
 
-    fetch('https://mentalwellbackend-production.up.railway.app/psychologist/profile', requestOptions)
+    fetch('https://mentalwell10-api-production.up.railway.app/psychologist/profile', requestOptions)
     .then((response) => response.json())
     .then((data) => {
       const currentUser = data[0];

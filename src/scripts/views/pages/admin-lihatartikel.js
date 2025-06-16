@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      const res = await fetch(`https://mentalwellbackend-production.up.railway.app/article`, {
+      const res = await fetch(`https://mentalwell10-api-production.up.railway.app/article`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${TOKEN}` },
         body: formData
