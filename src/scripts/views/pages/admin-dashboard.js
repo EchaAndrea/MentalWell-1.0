@@ -20,7 +20,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function fetchCounselings() {
   try {
-    const token = localStorage.getItem("admin_token"); // Pastikan token sudah disimpan di localStorage
+    const token = localStorage.getItem("admin_token");
+    if (!token) {
+      window.location.href = "/src/templates/admin-login.html";
+      return;
+    }
     const res = await fetch(
       "https://mentalwell10-api-production.up.railway.app/admin/counselings",
       {
@@ -29,6 +33,12 @@ async function fetchCounselings() {
         },
       }
     );
+    if (res.status === 401) {
+      // Token tidak valid/expired
+      localStorage.removeItem("admin_token");
+      window.location.href = "/src/templates/admin-login.html";
+      return;
+    }
     const json = await res.json();
     if (json.status === "success") {
       dataKonseling = json.counselings.map((item) => ({
