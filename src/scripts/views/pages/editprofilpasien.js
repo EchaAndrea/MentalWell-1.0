@@ -1,26 +1,52 @@
 const token = sessionStorage.getItem("authToken");
-const editIcon = document.getElementById("editIcon");
 const form = document.querySelector(".editpasien-form");
 
 document.addEventListener("DOMContentLoaded", async function () {
   const token = sessionStorage.getItem("authToken");
-  const response = await fetch(
-    "https://mentalwell10-api-production.up.railway.app/my-data",
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  const data = await response.json();
-  const user = data.result.users;
+  try {
+    const response = await fetch(
+      "https://mentalwell10-api-production.up.railway.app/my-data",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (!response.ok) throw new Error("Unauthorized or server error");
+    const data = await response.json();
+    const user = data.result.users;
 
-  document.getElementById("namalengkap").value = user.name || "";
-  document.getElementById("namapanggilan").value = user.nickname || "";
-  document.getElementById("nowa").value = user.phone_number || "";
-  document.getElementById("tgllahir").value = user.birthdate || "";
-  document.getElementById("gender").value = user.gender || "";
-  document.getElementById("email").innerHTML = `<h4>${user.email || ""}</h4>`;
+    // Tampilkan gambar profil dan input file
+    document.getElementById("profileimage").innerHTML = `
+      <div id="imagePreviewContainer">
+        <img src="${
+          user.profile_image || ""
+        }" id="gambar" style="max-width:120px;max-height:120px;border-radius:50%;">
+      </div>
+      <label for="inputImage" class="inputImage">Ubah Gambar</label>
+      <input type="file" id="inputImage" accept="image/*">
+    `;
+
+    // Isi field lain
+    document.getElementById("namalengkap").value = user.name || "";
+    document.getElementById("namapanggilan").value = user.nickname || "";
+    document.getElementById("nowa").value = user.phone_number || "";
+    document.getElementById("tgllahir").value = user.birthdate || "";
+    document.getElementById("gender").value = user.gender || "";
+    document.getElementById("email").innerHTML = `<h4>${user.email || ""}</h4>`;
+
+    // Event preview gambar
+    document
+      .getElementById("inputImage")
+      .addEventListener("change", previewImage);
+  } catch (error) {
+    Swal.fire({
+      title: "Gagal Memuat Data",
+      text: "Silakan login ulang atau hubungi admin.",
+      icon: "error",
+      showConfirmButton: true,
+    });
+  }
 });
 
 function previewImage(event) {
@@ -32,12 +58,10 @@ function previewImage(event) {
 
   if (inputImage.files && inputImage.files[0]) {
     const reader = new FileReader();
-
     reader.onload = function (e) {
       imagePreview.src = e.target.result;
       imagePreviewContainer.style.display = "block";
     };
-
     reader.readAsDataURL(inputImage.files[0]);
   } else {
     imagePreview.src = "";
@@ -82,7 +106,6 @@ form.addEventListener("submit", async function (event) {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
-        // Jangan set Content-Type, biarkan browser yang mengatur
       },
       body: formData,
     }
