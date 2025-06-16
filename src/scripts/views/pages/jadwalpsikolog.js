@@ -242,6 +242,4 @@ document.addEventListener("DOMContentLoaded", async function () {
   } catch (err) {
     alert("Gagal mengambil data psikolog atau jadwal: " + err.message);
   }
-  const token = localStorage.getItem("token");
-  console.log("Token:", token);
 });
