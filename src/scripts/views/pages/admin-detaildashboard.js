@@ -36,7 +36,9 @@ async function fetchCounselingDetail(id, TOKEN) {
       }
     );
     const data = await res.json();
+    console.log("API response:", data);
     const c = data.counseling;
+    console.log("Counseling object:", c);
 
     document.getElementById("namaPengguna").textContent = c.patient_name;
     document.getElementById("emailPengguna").textContent =
