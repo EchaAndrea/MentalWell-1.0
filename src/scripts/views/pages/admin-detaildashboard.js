@@ -144,3 +144,29 @@ function rejectPayment(id, TOKEN) {
     })
     .catch(() => alert("Gagal menolak pembayaran"));
 }
+
+async function updateCounselingStatus(id, status, token) {
+  try {
+    const res = await fetch(
+      `https://mentalwell10-api-production.up.railway.app/psychologist/counseling/${id}/status`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status }),
+      }
+    );
+    const data = await res.json();
+    console.log("API response:", data);
+    if (data.status === "success") {
+      alert("Status konseling berhasil diubah!");
+      location.reload();
+    } else {
+      alert(data.message || "Gagal mengubah status konseling");
+    }
+  } catch (err) {
+    alert("Gagal mengubah status konseling");
+  }
+}
