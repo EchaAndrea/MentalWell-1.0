@@ -216,14 +216,3 @@ class NavBar extends HTMLElement {
 // Define the custom element
 customElements.define("navbar-user", NavBar);
 
-// Get userDropdown element outside Shadow DOM
-const userDropdown = document.getElementById("userDropdown");
-
-// Add event listeners for mouseover and mouseout outside Shadow DOM
-userDropdown.addEventListener("mouseover", () => {
-  userDropdown.querySelector(".dropdown-content").style.display = "block";
-});
-
-userDropdown.addEventListener("mouseout", () => {
-  userDropdown.querySelector(".dropdown-content").style.display = "none";
-});
