@@ -62,6 +62,14 @@ function renderDataKonseling(data) {
   );
   document.getElementById("waktuKonseling").textContent = data.schedule_time;
 
+  // Tambahkan render foto profil pasien & psikolog jika ada elemen-nya
+  if (document.getElementById("fotoPasien") && data.patient_profpic) {
+    document.getElementById("fotoPasien").src = data.patient_profpic;
+  }
+  if (document.getElementById("fotoPsikolog") && data.psychologist_profpic) {
+    document.getElementById("fotoPsikolog").src = data.psychologist_profpic;
+  }
+
   document.getElementById("metodePembayaran").textContent = "-";
   document.getElementById("tanggalPembayaran").textContent = formatDate(
     data.created_at.split("T")[0]
@@ -96,8 +104,8 @@ async function updatePaymentStatus(id, status, note = "") {
       {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
       }
@@ -121,18 +129,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
   const data = await fetchCounselingDetail(id);
-  if (data) renderDataKonseling(data);
-
-  document.getElementById("btnVerifikasi").addEventListener("click", () => {
-    updatePaymentStatus(id, "approved");
-  });
-
-  document.getElementById("btnTolak").addEventListener("click", () => {
-    const note = prompt("Masukkan alasan penolakan pembayaran:");
-    if (note) updatePaymentStatus(id, "rejected", note);
-  });
-
-  document.getElementById("btnKembali").addEventListener("click", () => {
-    window.location.href = "/src/templates/admin-dashboard.html";
-  });
+  if (data) {
+    renderDataKonseling(data);
+  }
 });

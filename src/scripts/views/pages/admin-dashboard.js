@@ -20,12 +20,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function fetchCounselings() {
   try {
-    const token = localStorage.getItem("admin_token"); // Pastikan token sudah disimpan di localStorage
+    const token = localStorage.getItem("admin_token");
     const res = await fetch(
       "https://mentalwell10-api-production.up.railway.app/admin/counselings",
       {
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
       }
     );
@@ -107,9 +108,9 @@ function changePage(page) {
 }
 
 // Fungsi redirect ke halaman detail
-function redirectToDetail(nama) {
-  window.location.href = `/src/templates/admin-detaildashboard.html?nama=${encodeURIComponent(
-    nama
+function redirectToDetail(id) {
+  window.location.href = `/src/templates/admin-detaildashboard.html?id=${encodeURIComponent(
+    id
   )}`;
 }
 
@@ -132,7 +133,7 @@ function renderTable() {
         <td>${item.waktu}</td>
         <td>${item.status}</td>
         <td>
-          <button class="btn btn-sm btn-secondary" onclick="redirectToDetail('${item.nama}')">
+          <button class="btn btn-sm btn-secondary" onclick="redirectToDetail('${item.id}')">
             <img src="/src/public/admin/edit.png" width="13" alt="Detail">
           </button>
         </td>
