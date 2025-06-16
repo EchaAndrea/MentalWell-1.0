@@ -53,6 +53,10 @@
       "dest": "/src/templates/editprofilpsikolog.html"
     },
     {
+      "src": "/editprofiladmin",
+      "dest": "/src/templates/editprofiladmin.html"
+    },
+    {
       "src": "/detailartikel",
       "dest": "/src/templates/detailartikel.html"
     },
