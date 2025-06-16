@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (res.status === 401) {
       alert("Sesi Anda telah habis. Silakan login ulang.");
       localStorage.removeItem("token");
-      window.location.href = "/login"; // ganti sesuai path login kamu
+      window.location.href = "/#/login"; 
       throw new Error("Unauthorized");
     }
     if (!res.ok) throw new Error(data.message || "Gagal fetch jadwal");
