@@ -1,13 +1,4 @@
 document.addEventListener("DOMContentLoaded", async function () {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    alert("Token tidak ditemukan. Silakan login terlebih dahulu.");
-    console.log("Token: null");
-    return;
-  } else {
-    console.log("Token:", token);
-  }
-
   const tanggalContainer = document.getElementById("tanggal-container");
   const waktuContainer = document.getElementById("waktu-container");
   const waktuSection = document.getElementById("waktu-section");
@@ -52,8 +43,13 @@ document.addEventListener("DOMContentLoaded", async function () {
     );
     const data = await res.json();
     console.log("Jadwal response:", data);
+    if (res.status === 401) {
+      alert("Sesi Anda telah habis. Silakan login ulang.");
+      localStorage.removeItem("token");
+      window.location.href = "/login"; // ganti sesuai path login kamu
+      throw new Error("Unauthorized");
+    }
     if (!res.ok) throw new Error(data.message || "Gagal fetch jadwal");
-    // Ambil seluruh objek result, bukan hanya schedules
     return data.result;
   }
 
@@ -237,4 +233,6 @@ document.addEventListener("DOMContentLoaded", async function () {
   } catch (err) {
     alert("Gagal mengambil data psikolog atau jadwal: " + err.message);
   }
+  const token = localStorage.getItem("token");
+  console.log("Token:", token);
 });
