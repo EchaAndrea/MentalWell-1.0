@@ -188,7 +188,7 @@ class NavbarAdmin extends HTMLElement {
   async fetchUserData() {
     try {
       const response = await fetch(
-        "https://mentalwellbackend-production.up.railway.app/login",
+        "https://mentalwell10-api-production.up.railway.app/login",
         {
           credentials: "include",
           headers: {
