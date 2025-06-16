@@ -1,94 +1,134 @@
 <!DOCTYPE html>
 <html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MentalWell 1.0</title>
+    <link rel="icon" href="/src/public/logo/logoicon.png" type="image/x-icon" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/styles/admin-detaildashboard.css" />
+    <script
+      type="module"
+      src="/src/scripts/components/navbar-admin.js"
+      defer
+    ></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MentalWell 1.0</title>
-  <link rel="icon" href="/src/public/logo/logoicon.png" type="image/x-icon" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="/src/styles/admin-detaildashboard.css" />
-  <script type="module" src="/src/scripts/components/navbar-admin.js" defer></script>
-</head>
+  <body>
+    <navbar-admin id="admin"></navbar-admin>
 
-<body>
-  <navbar-admin id="admin"></navbar-admin>
-
-  <div class="container my-5 bg-white rounded shadow-sm">
-    <div class="card-body pt-4 pb-0 d-flex justify-content-end">
-      <button type="button" class="btn btn-kembali d-flex align-items-center" id="btnKembali">
-        <img src="/src/public/admin/kembali.png" alt="Kembali" style="width: 20px; height: 20px; margin-right: 5px;" />
-        Kembali
-      </button>
-    </div>
-
-    <!-- Judul tetap hardcoded -->
-    <h2 class="mb-1 judul-detail">Detail Pembayaran E-Konseling</h2>
-
-    <div class="card border-0">
-      <div class="card-body">
-        <h5 class="fw-bold border-bottom pb-2">Informasi Pengguna</h5>
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <p>Nama: <span id="namaPengguna"></span></p>
-            <p>Email: <span id="emailPengguna"></span></p>
-          </div>
-          <div class="col-md-6">
-            <p>Tanggal Konseling: <span id="tanggalKonseling"></span></p>
-            <p>Waktu Konseling: <span id="waktuKonseling"></span></p>
-          </div>
-        </div>
-
-        <h5 class="fw-bold border-bottom pb-2">Detail Pembayaran</h5>
-        <p>Metode: <span id="metodePembayaran"></span></p>
-        <p>Tanggal Pembayaran: <span id="tanggalPembayaran"></span></p>
-        <p class="mb-1">
-          Status:
-          <a href="#" data-bs-toggle="modal" data-bs-target="#buktiBayarModal" id="statusPembayaran" class="text-decoration-none fw-semibold"></a>
-        </p>
+    <div class="container my-5 bg-white rounded shadow-sm">
+      <div class="card-body pt-4 pb-0 d-flex justify-content-end">
+        <button
+          type="button"
+          class="btn btn-kembali d-flex align-items-center"
+          id="btnKembali"
+        >
+          <img
+            src="/src/public/admin/kembali.png"
+            alt="Kembali"
+            style="width: 20px; height: 20px; margin-right: 5px"
+          />
+          Kembali
+        </button>
       </div>
 
-      <div class="card-body pt-0">
-        <h5 class="fw-bold border-bottom pb-2">Rincian Pembayaran</h5>
-        <div class="d-flex justify-content-between border-bottom py-2">
-          <span>Paket Konseling</span><span id="hargaPaket"></span>
-        </div>
-        <div class="d-flex justify-content-between border-bottom py-2">
-          <span>Biaya Aplikasi</span><span id="hargaAplikasi"></span>
-        </div>
-        <div class="d-flex justify-content-between fw-bold py-2">
-          <span>Total</span><span id="totalHarga"></span>
-        </div>
-      </div>
+      <!-- Judul tetap hardcoded -->
+      <h2 class="mb-1 judul-detail">Detail Pembayaran E-Konseling</h2>
 
-      <!-- Modal Bukti Pembayaran -->
-      <div class="modal fade" id="buktiBayarModal" tabindex="-1" aria-labelledby="buktiBayarModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="buktiBayarModalLabel">Bukti Pembayaran</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+      <div class="card border-0">
+        <div class="card-body">
+          <h5 class="fw-bold border-bottom pb-2">Informasi Pengguna</h5>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <p>Nama: <span id="namaPengguna"></span></p>
+              <p>Email: <span id="emailPengguna"></span></p>
             </div>
-            <div class="modal-body text-center">
-              <img src="" alt="Bukti Pembayaran" id="imgBuktiBayar" class="img-fluid rounded shadow" />
+            <div class="col-md-6">
+              <p>Tanggal Konseling: <span id="tanggalKonseling"></span></p>
+              <p>Waktu Konseling: <span id="waktuKonseling"></span></p>
             </div>
           </div>
+
+          <h5 class="fw-bold border-bottom pb-2">Detail Pembayaran</h5>
+          <p>Metode: <span id="metodePembayaran"></span></p>
+          <p>Tanggal Pembayaran: <span id="tanggalPembayaran"></span></p>
+          <p class="mb-1">
+            Status:
+            <a
+              href="#"
+              data-bs-toggle="modal"
+              data-bs-target="#buktiBayarModal"
+              id="statusPembayaran"
+              class="text-decoration-none fw-semibold"
+            ></a>
+          </p>
+        </div>
+
+        <div class="card-body pt-0">
+          <h5 class="fw-bold border-bottom pb-2">Rincian Pembayaran</h5>
+          <div class="d-flex justify-content-between border-bottom py-2">
+            <span>Paket Konseling</span><span id="hargaPaket"></span>
+          </div>
+          <div class="d-flex justify-content-between border-bottom py-2">
+            <span>Biaya Aplikasi</span><span id="hargaAplikasi"></span>
+          </div>
+          <div class="d-flex justify-content-between fw-bold py-2">
+            <span>Total</span><span id="totalHarga"></span>
+          </div>
+        </div>
+
+        <!-- Modal Bukti Pembayaran -->
+        <div
+          class="modal fade"
+          id="buktiBayarModal"
+          tabindex="-1"
+          aria-labelledby="buktiBayarModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="buktiBayarModalLabel">
+                  Bukti Pembayaran
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Tutup"
+                ></button>
+              </div>
+              <div class="modal-body text-center">
+                <img
+                  src=""
+                  alt="Bukti Pembayaran"
+                  id="imgBuktiBayar"
+                  class="img-fluid rounded shadow"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body pt-0 d-flex justify-content-end gap-2">
+          <button class="btn btn-verifikasi" id="btnVerifikasi">
+            Verifikasi Pembayaran
+          </button>
+          <button class="btn btn-outline-secondary" id="btnTolak">Tolak</button>
+          <button class="btn btn-refund" id="btnRefund">Refund</button>
         </div>
       </div>
-
-      <div class="card-body pt-0 d-flex justify-content-end gap-2">
-        <button class="btn btn-verifikasi" id="btnVerifikasi">Verifikasi Pembayaran</button>
-        <button class="btn btn-outline-secondary" id="btnTolak">Tolak</button>
-      </div>
     </div>
-  </div>
 
-  <footer>
-    <span> &copy; 2025 MentalWell, Hak Cipta Dilindungi. </span>
-  </footer>
+    <footer>
+      <span> &copy; 2025 MentalWell, Hak Cipta Dilindungi. </span>
+    </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="/src/scripts/views/pages/admin-detaildashboard.js"></script>
-</body>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/src/scripts/views/pages/admin-detaildashboard.js"></script>
+  </body>
 </html>

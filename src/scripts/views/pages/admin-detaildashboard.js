@@ -16,6 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
     updatePaymentStatus(counselingId, "approved", TOKEN);
   document.getElementById("btnTolak").onclick = () =>
     rejectPayment(counselingId, TOKEN);
+  document.getElementById("btnRefund").onclick = () =>
+    refundPayment(counselingId, TOKEN);
 
   // Modal bukti bayar
   document.getElementById("statusPembayaran").onclick = (e) => {
@@ -64,10 +66,11 @@ async function fetchCounselingDetail(id, TOKEN) {
       : "-";
     document.getElementById("imgBuktiBayar").src = c.payment_proof || "";
 
-    // Disable tombol jika sudah diverifikasi/ditolak
+    // Disable tombol jika sudah diverifikasi/ditolak/refunded
     if (["approved", "rejected", "refunded"].includes(c.payment_status)) {
       document.getElementById("btnVerifikasi").disabled = true;
       document.getElementById("btnTolak").disabled = true;
+      document.getElementById("btnRefund").disabled = true;
     }
   } catch (err) {
     alert("Gagal memuat detail konseling");
@@ -143,6 +146,33 @@ function rejectPayment(id, TOKEN) {
       }
     })
     .catch(() => alert("Gagal menolak pembayaran"));
+}
+
+async function refundPayment(id, TOKEN) {
+  if (!confirm("Refund pembayaran ini?")) return;
+  try {
+    const res = await fetch(
+      `https://mentalwell10-api-production.up.railway.app/admin/counseling/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${TOKEN}`,
+        },
+        body: JSON.stringify({ payment_status: "refunded" }),
+      }
+    );
+    const data = await res.json();
+    console.log("API response:", data);
+    if (data.status === "success") {
+      alert("Pembayaran berhasil direfund!");
+      location.reload();
+    } else {
+      alert("Gagal refund pembayaran");
+    }
+  } catch (err) {
+    alert("Gagal refund pembayaran");
+  }
 }
 
 async function updateCounselingStatus(id, status, token) {

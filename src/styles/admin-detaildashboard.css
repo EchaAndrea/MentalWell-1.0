@@ -1,10 +1,10 @@
 body {
-    background-color: #f8f9fa;
+  background-color: #f8f9fa;
 }
 
 .container {
-    padding: 3rem;
-    max-width: 1000px;
+  padding: 3rem;
+  max-width: 1000px;
 }
 
 .btn-kembali {
@@ -16,27 +16,39 @@ body {
 .btn-kembali:hover {
   background-color: #99a4b0 !important;
   color: white !important;
-    border: none !important;
+  border: none !important;
 }
 
 .judul-detail {
-  font-weight: bold;   
+  font-weight: bold;
   padding-left: 30px;
   font-size: 1.75rem;
 }
 
 .card-body {
-    padding: 2rem;
+  padding: 2rem;
 }
 
 .btn-verifikasi {
-    background-color: #044B77;
-    color: white;
+  background-color: #044b77;
+  color: white;
 }
 
 .btn-verifikasi:hover {
-    background-color: #02BBDD;
-    color: white;
+  background-color: #02bbdd;
+  color: white;
+}
+
+.btn-refund {
+  background-color: #ffc107;
+  color: #212529;
+  border: none;
+}
+
+.btn-refund:hover {
+  background-color: #ffcd39;
+  color: #212529;
+  border: none;
 }
 
 footer {
