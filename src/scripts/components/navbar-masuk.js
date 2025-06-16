@@ -271,9 +271,9 @@ class NavBarLogin extends HTMLElement {
 
           .profilLink {
             display: flex;
-            align-items: center; /* Pusatkan elemen secara vertikal */
-            text-decoration: none; /* Hilangkan garis bawah pada tautan */
-            color: black; /* Ubah warna teks jika diinginkan */
+            align-items: center; 
+            text-decoration: none; 
+            color: black; 
             padding: 12px 16px;
           }
 
@@ -308,9 +308,9 @@ class NavBarLogin extends HTMLElement {
             .sesiKonseling {
             border-bottom-left-radius: none;
             display: flex;
-            align-items: center; /* Pusatkan elemen secara vertikal */
-            text-decoration: none; /* Hilangkan garis bawah pada tautan */
-            color: black; /* Ubah warna teks jika diinginkan */
+            align-items: center; 
+            text-decoration: none; 
+            color: black; 
             padding: 12px 16px;
           }
 
@@ -321,9 +321,9 @@ class NavBarLogin extends HTMLElement {
           .riwayat {
             border-bottom-left-radius: none;
             display: flex;
-            align-items: center; /* Pusatkan elemen secara vertikal */
-            text-decoration: none; /* Hilangkan garis bawah pada tautan */
-            color: black; /* Ubah warna teks jika diinginkan */
+            align-items: center; 
+            text-decoration: none; 
+            color: black; 
             padding: 12px 16px;
           }
 
@@ -340,9 +340,9 @@ class NavBarLogin extends HTMLElement {
           .keluar {
             border-bottom-left-radius: none;
             display: flex;
-            align-items: center; /* Pusatkan elemen secara vertikal */
-            text-decoration: none; /* Hilangkan garis bawah pada tautan */
-            color: black; /* Ubah warna teks jika diinginkan */
+            align-items: center; 
+            text-decoration: none; 
+            color: black; 
             padding: 12px 16px;
           }
 
