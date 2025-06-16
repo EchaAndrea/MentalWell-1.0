@@ -111,6 +111,9 @@ form.addEventListener("submit", async function (event) {
     }
   );
 
+  const responseData = await response.json();
+  console.log("API response:", responseData);
+
   if (response.ok) {
     Swal.close();
     Swal.fire({
@@ -121,10 +124,9 @@ form.addEventListener("submit", async function (event) {
     });
     location.reload();
   } else {
-    const errorMessage = await response.text();
     Swal.fire({
       title: "Gagal!",
-      text: errorMessage,
+      text: responseData.message || "Gagal update profil.",
       icon: "error",
       showConfirmButton: true,
     });
