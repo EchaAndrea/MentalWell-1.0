@@ -34,7 +34,7 @@ async function fetchCounselingDetail(id) {
   const token = localStorage.getItem("admin_token");
   try {
     const res = await fetch(
-      `https://mentalwellbackend-production.up.railway.app/admin/counseling/${id}`,
+      `https://mentalwell10-api-production.up.railway.app/admin/counseling/${id}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

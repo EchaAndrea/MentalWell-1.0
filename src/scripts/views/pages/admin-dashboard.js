@@ -22,7 +22,7 @@ async function fetchCounselings() {
   try {
     const token = localStorage.getItem("admin_token"); // Pastikan token sudah disimpan di localStorage
     const res = await fetch(
-      "https://mentalwellbackend-production.up.railway.app/admin/counselings",
+      "https://mentalwell10-api-production.up.railway.app/admin/counselings",
       {
         headers: {
           Authorization: `Bearer ${token}`,
