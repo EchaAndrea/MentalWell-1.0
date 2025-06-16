@@ -413,18 +413,12 @@ class NavBarLogin extends HTMLElement {
     const nicknameTag = this.shadowRoot.getElementById("nicknameTag");
 
     const token = sessionStorage.getItem("authToken");
-    const requestOptions = {
-      method: "GET",
+
+    fetch("https://mentalwell10-api-production.up.railway.app/profile", {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
       },
-    };
-
-    fetch(
-      "https://mentalwell10-api-production.up.railway.app/profile",
-      requestOptions
-    )
+    })
       .then((response) => response.json())
       .then((data) => {
         const currentUser = data.result?.users || data.result || data;
