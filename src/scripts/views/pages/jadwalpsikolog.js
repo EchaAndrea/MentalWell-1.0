@@ -1,4 +1,13 @@
 document.addEventListener("DOMContentLoaded", async function () {
+  const token = sessionStorage.getItem("authToken");
+  if (!token) {
+    alert("Token tidak ditemukan. Silakan login terlebih dahulu.");
+    console.log("Token: null");
+    return;
+  } else {
+    console.log("Token:", token);
+  }
+
   const tanggalContainer = document.getElementById("tanggal-container");
   const waktuContainer = document.getElementById("waktu-container");
   const waktuSection = document.getElementById("waktu-section");
@@ -20,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   // Fetch data psikolog
   async function fetchPsikolog(psikologId) {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("authToken");
     if (!token) {
       throw new Error("Anda belum login. Silakan login terlebih dahulu.");
     }
@@ -36,7 +45,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   // Fetch jadwal psikolog
   async function fetchJadwal(psikologId) {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("authToken");
     const res = await fetch(
       `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}/schedules`,
       { headers: { Authorization: `Bearer ${token}` } }
@@ -45,8 +54,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     console.log("Jadwal response:", data);
     if (res.status === 401) {
       alert("Sesi Anda telah habis. Silakan login ulang.");
-      localStorage.removeItem("token");
-      window.location.href = "/#/login"; 
+      sessionStorage.removeItem("authToken");
+      window.location.href = "/#/login";
       throw new Error("Unauthorized");
     }
     if (!res.ok) throw new Error(data.message || "Gagal fetch jadwal");
