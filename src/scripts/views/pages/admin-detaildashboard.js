@@ -69,12 +69,6 @@ async function fetchCounselingDetail(id, TOKEN) {
       document.getElementById("btnVerifikasi").disabled = true;
       document.getElementById("btnTolak").disabled = true;
     }
-
-    // Disable tombol verifikasi jika status gagal
-    if (c.status === "failed") {
-      document.getElementById("btnVerifikasi").disabled = true;
-      // Tombol tolak dan refund tetap aktif
-    }
   } catch (err) {
     alert("Gagal memuat detail konseling");
   }
