@@ -1,4 +1,13 @@
 document.addEventListener("DOMContentLoaded", async function () {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Token tidak ditemukan. Silakan login terlebih dahulu.");
+    console.log("Token: null");
+    return;
+  } else {
+    console.log("Token:", token);
+  }
+
   const tanggalContainer = document.getElementById("tanggal-container");
   const waktuContainer = document.getElementById("waktu-container");
   const waktuSection = document.getElementById("waktu-section");
@@ -228,6 +237,4 @@ document.addEventListener("DOMContentLoaded", async function () {
   } catch (err) {
     alert("Gagal mengambil data psikolog atau jadwal: " + err.message);
   }
-  const token = localStorage.getItem("token");
-  console.log("Token:", token);
 });

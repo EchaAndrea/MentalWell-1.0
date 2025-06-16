@@ -38,9 +38,7 @@ async function fetchCounselingDetail(id, TOKEN) {
       }
     );
     const data = await res.json();
-    console.log("API response:", data);
     const c = data.counseling;
-    console.log("Counseling object:", c);
 
     document.getElementById("namaPengguna").textContent = c.patient_name;
     document.getElementById("emailPengguna").textContent =
@@ -66,11 +64,18 @@ async function fetchCounselingDetail(id, TOKEN) {
       : "-";
     document.getElementById("imgBuktiBayar").src = c.payment_proof || "";
 
-    // Disable tombol jika sudah diverifikasi/ditolak/refunded
+    // Disable tombol jika status pembayaran sudah final
     if (["approved", "rejected", "refunded"].includes(c.payment_status)) {
       document.getElementById("btnVerifikasi").disabled = true;
       document.getElementById("btnTolak").disabled = true;
       document.getElementById("btnRefund").disabled = true;
+    }
+
+    // Tambahan: Disable tombol Verifikasi jika status sesi gagal
+    if (c.status === "failed") {
+      document.getElementById("btnVerifikasi").disabled = true;
+      // Optional: tampilkan pesan ke admin
+      alert("Sesi gagal, hanya bisa Tolak atau Refund.");
     }
   } catch (err) {
     alert("Gagal memuat detail konseling");
