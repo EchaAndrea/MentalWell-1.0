@@ -3,55 +3,43 @@ const loadingIndicator = document.getElementById("loading-indicator");
 const apiUrl =
   "https://mentalwell10-api-production.up.railway.app/psychologists/list";
 
-const token = sessionStorage.getItem("token");
-
 loadingIndicator.style.display = "block";
 
-if (!token) {
-  loadingIndicator.style.display = "none";
-  articleSection.innerHTML =
-    "<p>Anda harus login untuk melihat daftar psikolog.</p>";
-} else {
-  fetch(apiUrl, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+fetch(apiUrl)
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return response.json();
   })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then((data) => {
-      loadingIndicator.style.display = "none";
-      if (!data.data || data.data.length === 0) {
-        articleSection.innerHTML = "<p>Data psikolog tidak ditemukan.</p>";
-        return;
-      }
-      data.data.forEach((psikolog) => {
-        const el = document.createElement("div");
-        el.classList.add("content-rekomendasi");
-        el.innerHTML = `
-          <div class="rekomendasi-image">
-            <img src="${psikolog.profile_image}" alt="${psikolog.name}" />
-          </div>
-          <h2 class="nama-psikolog">${psikolog.name}</h2>
-          <div class="btn-detail">
-            <button type="button" onclick="redirectToDetailPsychologist('${psikolog.id}')">
-              Lihat Detail
-            </button>
-          </div>
-        `;
-        articleSection.appendChild(el);
-      });
-    })
-    .catch((error) => {
-      loadingIndicator.style.display = "none";
-      articleSection.innerHTML = `<p>Gagal mengambil data psikolog: ${error.message}</p>`;
-      console.error("Error fetching data from API:", error);
+  .then((data) => {
+    loadingIndicator.style.display = "none";
+    if (!data.data || data.data.length === 0) {
+      articleSection.innerHTML = "<p>Data psikolog tidak ditemukan.</p>";
+      return;
+    }
+    data.data.forEach((psikolog) => {
+      const el = document.createElement("div");
+      el.classList.add("content-rekomendasi");
+      el.innerHTML = `
+        <div class="rekomendasi-image">
+          <img src="${psikolog.profile_image}" alt="${psikolog.name}" />
+        </div>
+        <h2 class="nama-psikolog">${psikolog.name}</h2>
+        <div class="btn-detail">
+          <button type="button" onclick="redirectToDetailPsychologist('${psikolog.id}')">
+            Lihat Detail
+          </button>
+        </div>
+      `;
+      articleSection.appendChild(el);
     });
-}
+  })
+  .catch((error) => {
+    loadingIndicator.style.display = "none";
+    articleSection.innerHTML = `<p>Gagal mengambil data psikolog: ${error.message}</p>`;
+    console.error("Error fetching data from API:", error);
+  });
 
 function redirectToDetailPsychologist(id) {
   window.location.href = `/profilpsikolog?id=${id}`;
