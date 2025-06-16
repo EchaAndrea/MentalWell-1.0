@@ -183,10 +183,13 @@ class NavBar extends HTMLElement {
                 </div>
             </nav>
       `;
+  }
 
+  connectedCallback() {
     // Get userDropdown element within Shadow DOM
     const userDropdown = this.shadowRoot.getElementById("userDropdown");
     const profilLink = this.shadowRoot.getElementById("profilLink");
+    const keluarLink = this.shadowRoot.querySelector(".keluar");
 
     // Add event listeners for mouseover and mouseout within Shadow DOM
     userDropdown.addEventListener("mouseover", () => {
@@ -197,14 +200,17 @@ class NavBar extends HTMLElement {
       userDropdown.querySelector(".dropdown-content").style.display = "none";
     });
 
-    profilLink.addEventListener("click", () => {
-      const urlParams = new URLSearchParams(window.location.search);
+    profilLink.addEventListener("click", (e) => {
+      e.preventDefault();
       window.location.href = `https://mentalwell.vercel.app/editprofilpasien`;
     });
 
-    this.shadowRoot.querySelector(".keluar").addEventListener("click", () => {
-      this.logout();
-    });
+    if (keluarLink) {
+      keluarLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        this.logout();
+      });
+    }
   }
 
   logout() {
@@ -215,4 +221,3 @@ class NavBar extends HTMLElement {
 
 // Define the custom element
 customElements.define("navbar-user", NavBar);
-
