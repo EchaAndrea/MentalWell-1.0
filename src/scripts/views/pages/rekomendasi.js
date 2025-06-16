@@ -3,8 +3,7 @@ const loadingIndicator = document.getElementById("loading-indicator");
 const apiUrl =
   "https://mentalwell10-api-production.up.railway.app/psychologists/list";
 
-// Ambil token dari localStorage (pastikan sudah login)
-const token = localStorage.getItem("token");
+const token = sessionStorage.getItem("token");
 
 loadingIndicator.style.display = "block";
 
