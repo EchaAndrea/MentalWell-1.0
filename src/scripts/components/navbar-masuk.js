@@ -481,24 +481,26 @@ class NavBarLogin extends HTMLElement {
 const authToken = sessionStorage.getItem("authToken");
 if (authToken) {
   customElements.define("navbar-masuk", NavBarLogin);
+
+  // Hanya fetch jika token ada
+  fetch(
+    "https://mentalwell10-api-production.up.railway.app/psychologists/list",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+      body: JSON.stringify({}),
+    }
+  )
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((err) => {
+      console.error("Gagal fetch:", err);
+    });
 } else {
   customElements.define("navbar-masuk", NavBar);
 }
-
-// Contoh fetch POST dengan Authorization header
-fetch("https://mentalwell10-api-production.up.railway.app/psychologists/list", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${authToken}`,
-  },
-  body: JSON.stringify({
-  }),
-})
-  .then((res) => res.json())
-  .then((data) => {
-    console.log(data);
-  })
-  .catch((err) => {
-    console.error("Gagal fetch:", err);
-  });

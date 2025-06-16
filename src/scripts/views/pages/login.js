@@ -81,8 +81,6 @@ loginForm.addEventListener("submit", async (event) => {
       const userRole = responseData.role;
       const userName = responseData.name;
 
-      // Simpan token ke localStorage agar bisa diakses halaman lain
-      localStorage.setItem("token", token);
       // Setelah login berhasil
       sessionStorage.setItem("authToken", token);
 

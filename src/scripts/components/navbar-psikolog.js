@@ -3,7 +3,7 @@ class NavBar extends HTMLElement {
     super();
 
     // Create a shadow root
-    this.attachShadow({ mode: 'open' });
+    this.attachShadow({ mode: "open" });
 
     // Define the HTML content for the component
     this.shadowRoot.innerHTML = `
@@ -244,61 +244,68 @@ class NavBar extends HTMLElement {
   }
 
   connectedCallback() {
-    const photoUser = this.shadowRoot.getElementById('photoUser');
-    const nicknameTag = this.shadowRoot.getElementById('nicknameTag');
+    const photoUser = this.shadowRoot.getElementById("photoUser");
+    const nicknameTag = this.shadowRoot.getElementById("nicknameTag");
 
-    const token = sessionStorage.getItem('authToken');
+    const token = sessionStorage.getItem("authToken");
+    if (!token) {
+      window.location.href = "/"; // Atau ke halaman login
+      return;
+    }
     const requestOptions = {
-      method: 'GET',
+      method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     };
 
-    fetch('https://mentalwell10-api-production.up.railway.app/psychologist/profile', requestOptions)
-    .then((response) => response.json())
-    .then((data) => {
-      const currentUser = data[0];
+    fetch(
+      "https://mentalwell10-api-production.up.railway.app/psychologist/profile",
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        const currentUser = data[0];
 
-      if (nicknameTag && photoUser) {
-        nicknameTag.innerText = currentUser.name;
-        photoUser.src = currentUser.profile_image;
-      }  else {
-        console.error('Element with ID "nicknameTag" not found.');
-      }
-    })
-    .catch((error) => {
-      console.error('Error fetching data:', error);
-    });
+        if (nicknameTag && photoUser) {
+          nicknameTag.innerText = currentUser.name;
+          photoUser.src = currentUser.profile_image;
+        } else {
+          console.error('Element with ID "nicknameTag" not found.');
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
 
     // Get userDropdown element within Shadow DOM
-    const userDropdown = this.shadowRoot.getElementById('userDropdown');
-    const profilLink = this.shadowRoot.getElementById('profilLink');
+    const userDropdown = this.shadowRoot.getElementById("userDropdown");
+    const profilLink = this.shadowRoot.getElementById("profilLink");
 
     // Add event listeners for mouseover and mouseout within Shadow DOM
-    userDropdown.addEventListener('mouseover', () => {
-      userDropdown.querySelector('.dropdown-content').style.display = 'block';
+    userDropdown.addEventListener("mouseover", () => {
+      userDropdown.querySelector(".dropdown-content").style.display = "block";
     });
 
-    userDropdown.addEventListener('mouseout', () => {
-      userDropdown.querySelector('.dropdown-content').style.display = 'none';
+    userDropdown.addEventListener("mouseout", () => {
+      userDropdown.querySelector(".dropdown-content").style.display = "none";
     });
 
-    profilLink.addEventListener('click', () => {
-      window.location.href = '/editprofilpsikolog';
+    profilLink.addEventListener("click", () => {
+      window.location.href = "/editprofilpsikolog";
     });
 
-    this.shadowRoot.querySelector('.keluar').addEventListener('click', () => {
+    this.shadowRoot.querySelector(".keluar").addEventListener("click", () => {
       this.logout();
     });
   }
 
   logout() {
-    sessionStorage.removeItem('authToken');
-    window.location.href = '/';
+    sessionStorage.removeItem("authToken");
+    window.location.href = "/";
   }
 }
 
 // Define the custom element
-customElements.define('navbar-psikolog', NavBar);
+customElements.define("navbar-psikolog", NavBar);

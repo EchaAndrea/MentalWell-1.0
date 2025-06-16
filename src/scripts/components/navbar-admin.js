@@ -188,9 +188,8 @@ class NavbarAdmin extends HTMLElement {
   async fetchUserData() {
     try {
       const response = await fetch(
-        "https://mentalwell10-api-production.up.railway.app/login",
+        "https://mentalwell10-api-production.up.railway.app/admin/profile", // Ganti sesuai endpoint profil admin
         {
-          credentials: "include",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
@@ -203,11 +202,9 @@ class NavbarAdmin extends HTMLElement {
       }
 
       const data = await response.json();
-      // ...gunakan data user sesuai kebutuhan...
       this.renderUser(data);
     } catch (error) {
       console.error("Error saat fetch user:", error);
-      // Tampilkan pesan error di UI jika perlu
       this.renderUser(null);
     }
   }
