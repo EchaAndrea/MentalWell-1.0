@@ -5,18 +5,52 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     const data = await fetchArtikelDetail(artikelId);
-    document.getElementById("judul").textContent = data.title;
-    document.getElementById("konten").textContent = data.content;
-    document.getElementById("kategori").textContent = data.category || "-";
-    document.getElementById("tanggal").textContent = data.created_at
-      ? new Date(data.created_at).toLocaleDateString("id-ID", {
-          day: "2-digit",
-          month: "long",
-          year: "numeric",
-        })
-      : "-";
-    document.getElementById("references").textContent = data.references || "-";
-    if (data.image) document.getElementById("previewImage").src = data.image;
+
+    // Isi value input/textarea, dan set readonly/disabled
+    const judul = document.getElementById("judul");
+    if (judul) {
+      judul.value = data.title || "";
+      judul.readOnly = true;
+    }
+
+    const kategori = document.getElementById("kategori");
+    if (kategori) {
+      kategori.value = data.category || "-";
+      kategori.readOnly = true;
+    }
+
+    const tanggal = document.getElementById("tanggal");
+    if (tanggal) {
+      tanggal.value = data.created_at
+        ? new Date(data.created_at).toLocaleDateString("id-ID", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+          })
+        : "-";
+      tanggal.readOnly = true;
+    }
+
+    const konten = document.getElementById("konten");
+    if (konten) {
+      konten.value = data.content || "";
+      konten.readOnly = true;
+    }
+
+    const references = document.getElementById("references");
+    if (references) {
+      references.value = data.references || "-";
+      references.readOnly = true;
+    }
+
+    const gambar = document.getElementById("previewImage");
+    if (gambar && data.image) {
+      gambar.src = data.image;
+    }
+
+    // Disable tombol simpan jika ada
+    const btnSimpan = document.getElementById("btnSimpan");
+    if (btnSimpan) btnSimpan.disabled = true;
   } catch (err) {
     Swal.fire({ icon: "error", title: "Gagal", text: err.message });
   }
