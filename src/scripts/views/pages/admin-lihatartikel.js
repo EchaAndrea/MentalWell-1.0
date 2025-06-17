@@ -27,17 +27,29 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 async function fetchArtikelDetail(id) {
+  // Ambil token setiap kali fetch
   const TOKEN = sessionStorage.getItem("authToken");
-  if (!TOKEN) throw new Error("Token tidak ditemukan. Silakan login ulang.");
-  const res = await fetch(
-    `https://mentalwell10-api-production.up.railway.app/article/${id}`,
-    { headers: { Authorization: `Bearer ${TOKEN}` } }
-  );
-  if (!res.ok) throw new Error("Gagal mengambil data artikel");
-  const result = await res.json();
-  if (result.status === "success") {
-    return result.data;
-  } else {
-    throw new Error(result.message || "Gagal mengambil data artikel");
+  if (!TOKEN) {
+    window.location.href = "https://mentalwell-10-frontend.vercel.app/";
+    return;
+  }
+  try {
+    const res = await fetch(
+      `https://mentalwell10-api-production.up.railway.app/article/${id}`,
+      {
+        headers: { Authorization: `Bearer ${TOKEN}` },
+      }
+    );
+    if (!res.ok) {
+      throw new Error("Gagal mengambil data artikel");
+    }
+    const result = await res.json();
+    if (result.status === "success") {
+      return result.data;
+    } else {
+      throw new Error(result.message || "Gagal mengambil data artikel");
+    }
+  } catch (err) {
+    throw new Error("Failed to fetch: " + err.message);
   }
 }
