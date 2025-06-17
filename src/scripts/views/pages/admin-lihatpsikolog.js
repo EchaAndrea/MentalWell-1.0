@@ -93,8 +93,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Foto profil
     if (data.profile_image) {
       const namaFileInput = document.getElementById("namaFile");
-      if (namaFileInput)
-        namaFileInput.value = data.profile_image.split("/").pop();
       let imgPreview = document.getElementById("imgPreview");
       if (!imgPreview) {
         imgPreview = document.createElement("img");
@@ -102,7 +100,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         imgPreview.style.maxWidth = "120px";
         imgPreview.style.display = "block";
         imgPreview.style.marginTop = "10px";
-        namaFileInput.parentNode.appendChild(imgPreview);
+        // Sisipkan gambar sebelum input nama file
+        namaFileInput.parentNode.insertBefore(imgPreview, namaFileInput);
       }
       imgPreview.src = data.profile_image;
     }
