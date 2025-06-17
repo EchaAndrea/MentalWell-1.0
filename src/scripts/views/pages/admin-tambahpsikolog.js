@@ -10,14 +10,14 @@ document.addEventListener("DOMContentLoaded", () => {
   form.reset();
   namaFileInput.value = "";
 
-  // Fungsi tambah jadwal
+  // Fungsi tambah jadwal (HANYA HARI)
   function addJadwalRow(item = {}) {
     const row = document.createElement("div");
     row.className = "row mb-2 align-items-center jadwal-row";
 
     row.innerHTML = `
       <div class="col-md-4">
-        <select name="hari[]" class="form-select">
+        <select name="hari[]" class="form-select" required>
           <option value="">Pilih Hari</option>
           <option value="Senin">Senin</option>
           <option value="Selasa">Selasa</option>
@@ -27,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
           <option value="Sabtu">Sabtu</option>
           <option value="Minggu">Minggu</option>
         </select>
-        <input type="date" name="tanggal[]" class="form-control mt-1" placeholder="Tanggal (opsional)">
       </div>
       <div class="col-md-6">
         <div class="d-flex">
@@ -48,31 +47,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Prefill jika ada
     row.querySelector('select[name="hari[]"]').value = item.hari || "";
-    row.querySelector('input[name="tanggal[]"]').value = item.tanggal || "";
     row.querySelector('input[name="jamMulai[]"]').value = item.jamMulai || "";
     row.querySelector('input[name="jamSelesai[]"]').value =
       item.jamSelesai || "";
-
-    // Event: jika hari diisi, tanggal disable. Jika tanggal diisi, hari disable.
-    const hariSelect = row.querySelector('select[name="hari[]"]');
-    const tanggalInput = row.querySelector('input[name="tanggal[]"]');
-    function toggleDisable() {
-      if (hariSelect.value) {
-        tanggalInput.disabled = true;
-      } else {
-        tanggalInput.disabled = false;
-      }
-      if (tanggalInput.value) {
-        hariSelect.disabled = true;
-      } else {
-        hariSelect.disabled = false;
-      }
-    }
-    hariSelect.addEventListener("change", toggleDisable);
-    tanggalInput.addEventListener("change", toggleDisable);
-
-    // Inisialisasi disable
-    toggleDisable();
 
     jadwalContainer.appendChild(row);
     updateHapusButton();
@@ -81,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Update tombol hapus: disable jika hanya 1 row
   function updateHapusButton() {
     const rows = jadwalContainer.querySelectorAll(".jadwal-row");
-    rows.forEach((row, idx) => {
+    rows.forEach((row) => {
       const hapusBtn = row.querySelector(".hapus-jadwal");
       hapusBtn.disabled = rows.length === 1;
     });
@@ -115,12 +92,9 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // Ambil data jadwal
+    // Ambil data jadwal (HANYA HARI)
     const hariArr = Array.from(
       form.querySelectorAll('select[name="hari[]"]')
-    ).map((i) => i.value);
-    const tanggalArr = Array.from(
-      form.querySelectorAll('input[name="tanggal[]"]')
     ).map((i) => i.value);
     const jamMulaiArr = Array.from(
       form.querySelectorAll('input[name="jamMulai[]"]')
@@ -132,10 +106,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Format jadwal sesuai API
     const schedules = [];
     for (let i = 0; i < jamMulaiArr.length; i++) {
-      const time = `${jamMulaiArr[i]} - ${jamSelesaiArr[i]}`;
-      if (tanggalArr[i]) {
-        schedules.push({ date: tanggalArr[i], time });
-      } else if (hariArr[i]) {
+      if (hariArr[i]) {
+        const time = `${jamMulaiArr[i]} - ${jamSelesaiArr[i]}`;
         schedules.push({ day: hariArr[i].toLowerCase(), time });
       }
     }
