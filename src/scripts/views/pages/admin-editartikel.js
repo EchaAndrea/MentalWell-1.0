@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btnKembali = document.getElementById("btnKembali");
   const namaFile = document.getElementById("namaFile");
   const gambarInput = document.getElementById("gambar");
+  console.log(gambarInput); 
   const kontenTextarea = document.getElementById("konten");
 
   // Ambil artikel_id dari URL
@@ -86,7 +87,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       formData.append("category", form.kategori.value.trim());
     if (kontenTextarea.value.trim())
       formData.append("content", kontenTextarea.value.trim());
-    if (gambarInput.files[0]) formData.append("image", gambarInput.files[0]);
+    if (gambarInput && gambarInput.files[0]) {
+      formData.append("image", gambarInput.files[0]);
+    }
 
     if (formData.keys().next().done) {
       Swal.fire({ icon: "error", title: "Tidak ada data yang diubah" });
