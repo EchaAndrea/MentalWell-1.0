@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         "<span class='text-muted'>Tidak ada jadwal</span>";
     }
 
-    // Foto profil: hanya tampilkan nama file saja, tanpa gambar
+    // Foto profil
     if (data.profile_image) {
       const namaFileInput = document.getElementById("namaFile");
       if (namaFileInput)
