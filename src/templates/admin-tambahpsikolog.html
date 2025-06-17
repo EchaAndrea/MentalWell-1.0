@@ -54,9 +54,9 @@
           <label class="form-label fw-bold">Pengalaman Praktik</label>
           <select name="pengalaman" class="form-select" required>
             <option value="">Pilih Pengalaman Praktik</option>
-            <option value="2_tahun">2 Tahun</option>
-            <option value="2-4_tahun">2 - 4 Tahun</option>
-            <option value="4_tahun">4 Tahun</option>
+            <option value="2 tahun praktek">2 Tahun</option>
+            <option value="2-4 tahun praktek">2 - 4 Tahun</option>
+            <option value="4 tahun praktek">4 Tahun</option>
           </select>
         </div>
         <div class="mb-3">
@@ -64,37 +64,37 @@
           <div class="row">
             <div class="col-md-4">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="keahlian" value="Adiksi" id="adiksi">
+                <input class="form-check-input" type="checkbox" name="keahlian" value="1" id="adiksi">
                 <label class="form-check-label" for="adiksi">Adiksi</label>
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="keahlian" value="Anak remaja" id="anak-remaja">
+                <input class="form-check-input" type="checkbox" name="keahlian" value="2" id="anak-remaja">
                 <label class="form-check-label" for="anak-remaja">Anak remaja</label>
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="keahlian" value="Trauma" id="trauma">
+                <input class="form-check-input" type="checkbox" name="keahlian" value="3" id="trauma">
                 <label class="form-check-label" for="trauma">Trauma</label>
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="keahlian" value="Seksualitas" id="seksualitas">
+                <input class="form-check-input" type="checkbox" name="keahlian" value="4" id="seksualitas">
                 <label class="form-check-label" for="seksualitas">Seksualitas</label>
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="keahlian" value="Fobia" id="fobia">
+                <input class="form-check-input" type="checkbox" name="keahlian" value="5" id="fobia">
                 <label class="form-check-label" for="fobia">Fobia</label>
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="keahlian" value="Kecenderungan Bunuh Diri" id="bunuh-diri">
+                <input class="form-check-input" type="checkbox" name="keahlian" value="5" id="kecenderungan-bunuh-diri">
                 <label class="form-check-label" for="bunuh-diri">Kecenderungan Bunuh Diri</label>
               </div>
             </div>
@@ -124,9 +124,9 @@
                 </div>
               </div>
               <div class="col-md-2 d-flex justify-content-start gap-2">
-                <button type="button" class="btn btn-tambah tambah-jadwal" aria-label="Tambah jadwal" title="Tambah jadwal" disabled>
+                <button type="button" class="btn btn-tambah tambah-jadwal" aria-label="Tambah jadwal" title="Tambah jadwal">
                 <i class="fas fa-plus" aria-hidden="true"></i>
-                <button type="button" class="btn btn-danger hapus-jadwal" aria-label="Hapus jadwal" title="Hapus jadwal" disabled>
+                <button type="button" class="btn btn-danger hapus-jadwal" aria-label="Hapus jadwal" title="Hapus jadwal">
                 <i class="fas fa-trash-alt"></i></button>
               </div>
             </div>
@@ -146,6 +146,14 @@
             <input type="file" class="form-control" id="gambar" name="gambar" accept="image/*" style="display: none;">
             <input type="text" class="form-control" id="namaFile" readonly>
           </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-bold">Nama Panggilan</label>
+          <input type="text" name="nickname" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-bold">Harga per Sesi (Rp)</label>
+          <input type="number" name="harga" class="form-control" required>
         </div>
         <div class="text-end">
           <button type="submit" class="btn btn-simpan">Buat</button>
