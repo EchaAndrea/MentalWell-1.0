@@ -110,8 +110,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       formData.append("title", form.judul.value.trim());
     if (form.kategori.value.trim())
       formData.append("category", form.kategori.value.trim());
-    if (form.tanggal.value.trim())
+    if (form.tanggal.value.trim()) {
       formData.append("created_at", form.tanggal.value.trim());
+    }
     if (kontenTextarea.value.trim())
       formData.append("content", kontenTextarea.value.trim());
     if (gambarInput.files && gambarInput.files[0]) {
