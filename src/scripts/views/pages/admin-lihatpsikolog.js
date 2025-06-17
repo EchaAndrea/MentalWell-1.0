@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     form.password.value = "********";
     form.nohp.value = data.phone_number || "";
     form.tanggallahir.value = data.birthdate || "";
-    form.jeniskelamin.value = data.gender || ""; // Jika ada field gender
+    form.jeniskelamin.value = data.gender || "";
     form.pengalaman.value = data.experience || "";
     form.harga.value = data.price || "";
     form.bio.value = data.bio || "";
@@ -51,7 +51,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Topik keahlian (checkbox)
     if (Array.isArray(data.topics)) {
       data.topics.forEach((topic) => {
-        // Cekbox value bisa disesuaikan dengan id atau name
         const checkbox = form.querySelector(
           `input[name="keahlian"][value="${topic.id}"]`
         );
@@ -59,19 +58,40 @@ document.addEventListener("DOMContentLoaded", async function () {
       });
     }
 
-    // Jadwal
+    // Jadwal (tabel seperti di admin-psikolog)
     const jadwalContainer = document.getElementById("jadwalContainer");
     jadwalContainer.innerHTML = "";
     if (Array.isArray(data.schedules) && data.schedules.length > 0) {
-      data.schedules.forEach((sch) => {
-        let jadwalText = "";
-        if (sch.day) {
-          jadwalText = `${sch.day}, ${sch.start_time} - ${sch.end_time}`;
-        } else if (sch.date) {
-          jadwalText = `${sch.date}, ${sch.start_time} - ${sch.end_time}`;
-        }
-        jadwalContainer.innerHTML += `<div class="badge bg-primary me-2 mb-2">${jadwalText}</div>`;
+      let table = `
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Hari/Tanggal</th>
+                <th>Jam Mulai</th>
+                <th>Jam Selesai</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+      data.schedules.forEach((sch, idx) => {
+        let hariTanggal = sch.day ? sch.day : sch.date;
+        table += `
+          <tr>
+            <td>${idx + 1}</td>
+            <td>${hariTanggal || "-"}</td>
+            <td>${sch.start_time || "-"}</td>
+            <td>${sch.end_time || "-"}</td>
+          </tr>
+        `;
       });
+      table += `
+            </tbody>
+          </table>
+        </div>
+      `;
+      jadwalContainer.innerHTML = table;
     } else {
       jadwalContainer.innerHTML =
         "<span class='text-muted'>Tidak ada jadwal</span>";
@@ -79,11 +99,9 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Foto profil
     if (data.profile_image) {
-      // Tampilkan nama file atau preview gambar
       document.getElementById("namaFile").value = data.profile_image
         .split("/")
         .pop();
-      // Optional: tampilkan preview gambar
       let imgPreview = document.getElementById("imgPreview");
       if (!imgPreview) {
         imgPreview = document.createElement("img");
@@ -100,10 +118,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     Array.from(form.elements).forEach((el) => {
       el.disabled = true;
     });
-    // Kecuali tombol kembali
     document.getElementById("btnKembali").disabled = false;
   } catch (e) {
-    alert("Gagal memuat detail psikolog. Silakan coba lagi nanti.");
-    console.error(e);
+    alert("Gagal memuat detail psikolog.");
   }
 });
