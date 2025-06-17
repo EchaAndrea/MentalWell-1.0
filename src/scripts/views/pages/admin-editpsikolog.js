@@ -226,7 +226,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     ).map((cb) => Number(cb.value));
 
     // Siapkan FormData
-    const formData = new FormData();
+    const formData = new FormData(); 
+
     formData.append("name", form.nama.value.trim());
     formData.append("nickname", form.nickname.value.trim());
     formData.append("email", form.email.value.trim());
