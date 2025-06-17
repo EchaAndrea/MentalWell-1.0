@@ -241,6 +241,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (inputGambar.files[0])
       formData.append("profile_image", inputGambar.files[0]);
 
+    // Tambahkan ini untuk debug
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ": " + pair[1]);
+    }
+
     try {
       const res = await fetch(`${ENDPOINT}/admin/psychologists/${psikologId}`, {
         method: "PUT",
