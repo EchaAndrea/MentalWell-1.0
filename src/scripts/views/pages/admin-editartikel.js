@@ -78,6 +78,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   gambarInput.addEventListener("change", function () {
     if (gambarInput.files && gambarInput.files[0]) {
       namaFile.value = gambarInput.files[0].name;
+    } else {
+      namaFile.value = "";
     }
   });
 
