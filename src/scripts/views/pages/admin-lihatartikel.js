@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       // Isi form
       form.judul.value = artikel.title || "";
-      form.kategori.value = artikel.category || "-";
+      form.kategori.value = artikel.category || "";
       form.tanggal.value = artikel.created_at
         ? artikel.created_at.slice(0, 10)
         : "";
