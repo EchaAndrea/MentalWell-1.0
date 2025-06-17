@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btnKembali = document.getElementById("btnKembali");
   const namaFile = document.getElementById("namaFile");
   const gambarInput = document.getElementById("gambar");
+  const jadwalContainer = document.getElementById("jadwalContainer");
 
   // Ambil nama dari URL (atau ganti dengan id jika sudah pakai id)
   const params = new URLSearchParams(window.location.search);
@@ -16,6 +17,72 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Sembunyikan input file gambar
   gambarInput.style.display = "none";
+
+  // Tambahkan di atas fetch detail psikolog
+function addJadwalRow(item = {}) {
+  const row = document.createElement("div");
+  row.className = "row mb-2 align-items-center jadwal-row";
+  row.innerHTML = `
+    <div class="col-md-4">
+      <select name="hari[]" class="form-select" required>
+        <option value="">Pilih Hari</option>
+        <option value="Senin">Senin</option>
+        <option value="Selasa">Selasa</option>
+        <option value="Rabu">Rabu</option>
+        <option value="Kamis">Kamis</option>
+        <option value="Jumat">Jumat</option>
+        <option value="Sabtu">Sabtu</option>
+        <option value="Minggu">Minggu</option>
+      </select>
+    </div>
+    <div class="col-md-6">
+      <div class="d-flex">
+        <input type="time" name="jamMulai[]" class="form-control me-2" required>
+        <span class="mx-1 d-flex align-items-center">-</span>
+        <input type="time" name="jamSelesai[]" class="form-control ms-2" required>
+      </div>
+    </div>
+    <div class="col-md-2 d-flex justify-content-start gap-2">
+      <button type="button" class="btn btn-tambah tambah-jadwal" aria-label="Tambah jadwal" title="Tambah jadwal">
+        <i class="fas fa-plus"></i>
+      </button>
+      <button type="button" class="btn btn-danger hapus-jadwal" aria-label="Hapus jadwal" title="Hapus jadwal">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+    </div>
+  `;
+  // Prefill jika ada
+  row.querySelector('select[name="hari[]"]').value = item.hari || "";
+  row.querySelector('input[name="jamMulai[]"]').value = item.jamMulai || "";
+  row.querySelector('input[name="jamSelesai[]"]').value = item.jamSelesai || "";
+  jadwalContainer.appendChild(row);
+  updateHapusButton();
+}
+
+function updateHapusButton() {
+  const rows = jadwalContainer.querySelectorAll(".jadwal-row");
+  rows.forEach((row) => {
+    const hapusBtn = row.querySelector(".hapus-jadwal");
+    hapusBtn.disabled = rows.length === 1;
+  });
+}
+
+// Event delegasi untuk tambah/hapus jadwal
+jadwalContainer.addEventListener("click", (e) => {
+  if (e.target.closest(".tambah-jadwal")) {
+    addJadwalRow();
+  }
+  if (e.target.closest(".hapus-jadwal")) {
+    const row = e.target.closest(".jadwal-row");
+    if (jadwalContainer.children.length > 1) {
+      row.remove();
+      updateHapusButton();
+    }
+  }
+});
+
+// Tambah satu jadwal kosong saat load (jika tidak ada data)
+addJadwalRow();
 
   // Fetch detail psikolog
   try {
