@@ -1,97 +1,84 @@
-const token = sessionStorage.getItem("authToken");
-const form = document.querySelector(".editpasien-form");
+const token = sessionStorage.getItem('authToken');
+const editIcon = document.getElementById('editIcon');
+const form = document.querySelector('.editadmin-form');
 
-document.addEventListener("DOMContentLoaded", async function () {
-  const token = sessionStorage.getItem("authToken");
-  try {
-    const response = await fetch(
-      "https://mentalwell10-api-production.up.railway.app/profile",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    if (!response.ok) throw new Error("Unauthorized or server error");
-    const data = await response.json();
-    const user = data.data; 
+document.addEventListener('DOMContentLoaded', async function () {
+  // Fetch admin data from the backend with authorization
+  const response = await fetch('https://mentalwell-backend.vercel.app/admin', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-    // Tampilkan gambar profil dan input file
-    document.getElementById("profileimage").innerHTML = `
-      <div id="imagePreviewContainer">
-        <img src="${
-          user.profile_image || ""
-        }" id="gambar" style="max-width:120px;max-height:120px;border-radius:50%;">
-      </div>
-      <label for="inputImage" class="inputImage">Ubah Gambar</label>
-      <input type="file" id="inputImage" accept="image/*">
-    `;
+  const adminData = await response.json();
 
-    // Isi field lain
-    document.getElementById("namalengkap").value = user.name || "";
-    document.getElementById("namapanggilan").value = user.nickname || "";
-    document.getElementById("nowa").value = user.phone_number || "";
-    document.getElementById("tgllahir").value = user.birthdate || "";
-    document.getElementById("gender").value = user.gender || "";
-    document.getElementById("email").innerHTML = `<h4>${user.email || ""}</h4>`;
+  document.getElementById('profileimage').innerHTML = `
+    <div id="imagePreviewContainer">
+      <img src="${adminData.users.profile_image}" id="gambar">
+    </div>
+    <label for="inputImage" class="inputImage">Ubah Gambar</label>
+    <input type="file" id="inputImage" onchange="previewImage(event)">
+  `;
 
-    // Event preview gambar
-    document
-      .getElementById("inputImage")
-      .addEventListener("change", previewImage);
-  } catch (error) {
-    Swal.fire({
-      title: "Gagal Memuat Data",
-      text: "Silakan login ulang atau hubungi admin.",
-      icon: "error",
-      showConfirmButton: true,
-    });
-  }
+  // Update email
+  document.getElementById('email').innerHTML = `<h4>${adminData.users.email}</h4>`;
+
+  // Update name
+  document.getElementById('namalengkap').value = adminData.users.name;
+
+  // Update nickname
+  document.getElementById('namapanggilan').value = adminData.users.nickname;
+
+  // Update phone number
+  document.getElementById('nowa').value = adminData.users.phone_number;
+
+  // Update birthdate
+  document.getElementById('tgllahir').value = adminData.users.birthdate;
+
+  // Update gender
+  document.getElementById('gender').value = adminData.users.gender;
 });
 
 function previewImage(event) {
   const inputImage = event.target;
-  const imagePreview = document.getElementById("gambar");
-  const imagePreviewContainer = document.getElementById(
-    "imagePreviewContainer"
-  );
+  const imagePreview = document.getElementById('gambar');
+  const imagePreviewContainer = document.getElementById('imagePreviewContainer');
 
   if (inputImage.files && inputImage.files[0]) {
     const reader = new FileReader();
+
     reader.onload = function (e) {
       imagePreview.src = e.target.result;
-      imagePreviewContainer.style.display = "block";
+      imagePreviewContainer.style.display = 'block';
     };
+
     reader.readAsDataURL(inputImage.files[0]);
   } else {
-    imagePreview.src = "";
-    imagePreviewContainer.style.display = "none";
+    imagePreview.src = '';
+    imagePreviewContainer.style.display = 'none';
   }
 }
 
-form.addEventListener("submit", async function (event) {
+form.addEventListener('submit', async function (event) {
   event.preventDefault();
-  const name = document.getElementById("namalengkap").value;
-  const nickname = document.getElementById("namapanggilan").value;
-  const phone_number = document.getElementById("nowa").value;
-  const birthdate = document.getElementById("tgllahir").value;
-  const gender = document.getElementById("gender").value;
-  const imageInput = document.getElementById("inputImage");
-  const image = imageInput ? imageInput.files[0] : null;
+  const newName = document.getElementById('namalengkap').value;
+  const newNickname = document.getElementById('namapanggilan').value;
+  const newPhone_number = document.getElementById('nowa').value;
+  const newBirthdate = document.getElementById('tgllahir').value;
+  const newGender = document.getElementById('gender').value;
+  const image = document.getElementById('inputImage').files[0];
   const formData = new FormData();
 
-  formData.append("name", name);
-  formData.append("nickname", nickname);
-  formData.append("phone_number", phone_number);
-  formData.append("birthdate", birthdate);
-  formData.append("gender", gender);
-  if (image) {
-    formData.append("profile_image", image);
-  }
+  formData.append('newName', newName);
+  formData.append('newNickname', newNickname);
+  formData.append('newPhone_number', newPhone_number);
+  formData.append('newBirthdate', newBirthdate);
+  formData.append('newGender', newGender);
+  formData.append('profile_image', image);
 
   Swal.fire({
-    title: "Memuat...",
-    text: "Harap tunggu sejenak. Profil anda akan segera berubah.",
+    title: 'Memuat...',
+    text: 'Harap tunggu sejenak. Profil anda akan segera berubah. ',
     allowOutsideClick: false,
     showCancelButton: false,
     showConfirmButton: false,
@@ -100,34 +87,30 @@ form.addEventListener("submit", async function (event) {
     },
   });
 
-  const response = await fetch(
-    "https://mentalwell10-api-production.up.railway.app/profile",
-    {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
-    }
-  );
-
-  const responseData = await response.json();
-  console.log("API response:", responseData);
+  const response = await fetch('https://mentalwell-backend.vercel.app/admin', {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
 
   if (response.ok) {
     Swal.close();
+
     Swal.fire({
-      title: "Profil Berhasil Diubah",
-      icon: "success",
+      title: 'Profil Berhasil Diubah',
+      icon: 'success',
       showConfirmButton: false,
       timer: 2000,
     });
     location.reload();
   } else {
+    const errorMessage = await response.text();
     Swal.fire({
-      title: "Gagal!",
-      text: responseData.message || "Gagal update profil.",
-      icon: "error",
+      title: 'Gagal!',
+      text: 'Profil Gagal Diubah, Format Gambar Harus .JPG',
+      icon: 'error',
       showConfirmButton: true,
     });
   }

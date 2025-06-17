@@ -193,7 +193,7 @@ class NavbarAdmin extends HTMLElement {
 
       // Pastikan endpoint admin!
       const response = await fetch(
-        "https://mentalwell10-api-production.up.railway.app/admin/profile",
+        "https://mentalwell10-api-production.up.railway.app/profile",
         {
           headers: {
             "Content-Type": "application/json",
