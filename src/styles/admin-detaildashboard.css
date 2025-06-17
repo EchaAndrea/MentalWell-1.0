@@ -1,20 +1,10 @@
-* {
-  padding: 0;
-  margin: 0;
-}
-
 body {
-  font-family: "Inter", sans-serif;
-  background-color: #fafafa;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  background-color: #f8f9fa;
 }
 
 .container {
   padding: 3rem;
   max-width: 1000px;
-  flex: 1;
 }
 
 .btn-kembali {
@@ -62,11 +52,12 @@ body {
 }
 
 footer {
-  width: 100vw;
-  background: #02bbdd;
+  font-size: 18px;
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+  height: 20px;
+  width: 100%;
+  background-color: #02bbdd;
   color: #fff;
   text-align: center;
-  margin-top: auto;
-  padding: 2rem 0 3rem 0;
-  font-size: 18px;
 }
