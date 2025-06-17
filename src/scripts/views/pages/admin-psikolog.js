@@ -121,9 +121,7 @@ function renderTable() {
   for (const p of pageData) {
     tbody.innerHTML += `
       <tr>
-        <td><input type="checkbox" class="row-checkbox" data-nama="${
-          p.nama
-        }"></td>
+        <td><input type="checkbox" class="row-checkbox" data-id="${p.id}"></td>
         <td>${p.id}</td>
         <td>${p.nama}</td>
         <td>${p.email}</td>
@@ -131,19 +129,17 @@ function renderTable() {
         <td>${p.topik}</td>
         <td>${p.aktif ? "Aktif" : "Nonaktif"}</td>
         <td>
-          <a href="/src/templates/admin-lihatpsikolog.html?nama=${
-            p.nama
+          <a href="/src/templates/admin-lihatpsikolog.html?id=${
+            p.id
           }" class="btn btn-sm btn-secondary">
             <img src="/src/public/admin/lihat.png" width="13">
           </a>
-          <a href="/src/templates/admin-editpsikolog.html?nama=${
-            p.nama
+          <a href="/src/templates/admin-editpsikolog.html?id=${
+            p.id
           }" class="btn btn-sm btn-info">
             <img src="/src/public/admin/edit.png" width="13">
           </a>
-          <button class="btn btn-sm btn-danger" onclick="hapusItem('${
-            p.nama
-          }')">
+          <button class="btn btn-sm btn-danger" onclick="hapusItem(${p.id})">
             <img src="/src/public/admin/hapus.png" width="13">
           </button>
         </td>
@@ -207,8 +203,8 @@ function renderPagination() {
   });
 }
 
-function hapusItem(nama) {
-  const index = psikologData.findIndex((p) => p.nama === nama);
+function hapusItem(id) {
+  const index = psikologData.findIndex((p) => p.id === id);
   if (index !== -1) {
     psikologData.splice(index, 1);
     filteredData = [...psikologData];
@@ -221,8 +217,8 @@ function hapusYangDipilih() {
   if (checkboxes.length === 0) return alert("Pilih data terlebih dahulu.");
 
   checkboxes.forEach((cb) => {
-    const nama = cb.getAttribute("data-nama");
-    const index = psikologData.findIndex((p) => p.nama === nama);
+    const id = parseInt(cb.getAttribute("data-id"));
+    const index = psikologData.findIndex((p) => p.id === id);
     if (index !== -1) psikologData.splice(index, 1);
   });
 

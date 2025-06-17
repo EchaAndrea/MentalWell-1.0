@@ -5,116 +5,79 @@ document.addEventListener("DOMContentLoaded", async () => {
   const gambarInput = document.getElementById("gambar");
   const jadwalContainer = document.getElementById("jadwalContainer");
 
-  // Ambil nama dari URL (atau ganti dengan id jika sudah pakai id)
   const params = new URLSearchParams(window.location.search);
-  const nama = params.get("nama");
+  const id = params.get("id");
 
-  // Disable semua input (readonly)
-  Array.from(form.elements).forEach((el) => {
-    el.readOnly = true;
-    el.disabled = true;
-  });
-
-  // Sembunyikan input file gambar
-  gambarInput.style.display = "none";
-
-  // Tambahkan di atas fetch detail psikolog
-function addJadwalRow(item = {}) {
-  const row = document.createElement("div");
-  row.className = "row mb-2 align-items-center jadwal-row";
-  row.innerHTML = `
-    <div class="col-md-4">
-      <select name="hari[]" class="form-select" required>
-        <option value="">Pilih Hari</option>
-        <option value="Senin">Senin</option>
-        <option value="Selasa">Selasa</option>
-        <option value="Rabu">Rabu</option>
-        <option value="Kamis">Kamis</option>
-        <option value="Jumat">Jumat</option>
-        <option value="Sabtu">Sabtu</option>
-        <option value="Minggu">Minggu</option>
-      </select>
-    </div>
-    <div class="col-md-6">
-      <div class="d-flex">
-        <input type="time" name="jamMulai[]" class="form-control me-2" required>
-        <span class="mx-1 d-flex align-items-center">-</span>
-        <input type="time" name="jamSelesai[]" class="form-control ms-2" required>
+  // Generate field jadwal (seperti di tambah)
+  function addJadwalRow(item = {}) {
+    const row = document.createElement("div");
+    row.className = "row mb-2 align-items-center jadwal-row";
+    row.innerHTML = `
+      <div class="col-md-4">
+        <select name="hari[]" class="form-select" required>
+          <option value="">Pilih Hari</option>
+          <option value="Senin">Senin</option>
+          <option value="Selasa">Selasa</option>
+          <option value="Rabu">Rabu</option>
+          <option value="Kamis">Kamis</option>
+          <option value="Jumat">Jumat</option>
+          <option value="Sabtu">Sabtu</option>
+          <option value="Minggu">Minggu</option>
+        </select>
       </div>
-    </div>
-    <div class="col-md-2 d-flex justify-content-start gap-2">
-      <button type="button" class="btn btn-tambah tambah-jadwal" aria-label="Tambah jadwal" title="Tambah jadwal">
-        <i class="fas fa-plus"></i>
-      </button>
-      <button type="button" class="btn btn-danger hapus-jadwal" aria-label="Hapus jadwal" title="Hapus jadwal">
-        <i class="fas fa-trash-alt"></i>
-      </button>
-    </div>
-  `;
-  // Prefill jika ada
-  row.querySelector('select[name="hari[]"]').value = item.hari || "";
-  row.querySelector('input[name="jamMulai[]"]').value = item.jamMulai || "";
-  row.querySelector('input[name="jamSelesai[]"]').value = item.jamSelesai || "";
-  jadwalContainer.appendChild(row);
-  updateHapusButton();
-}
-
-function updateHapusButton() {
-  const rows = jadwalContainer.querySelectorAll(".jadwal-row");
-  rows.forEach((row) => {
-    const hapusBtn = row.querySelector(".hapus-jadwal");
-    hapusBtn.disabled = rows.length === 1;
-  });
-}
-
-// Event delegasi untuk tambah/hapus jadwal
-jadwalContainer.addEventListener("click", (e) => {
-  if (e.target.closest(".tambah-jadwal")) {
-    addJadwalRow();
+      <div class="col-md-6">
+        <div class="d-flex">
+          <input type="time" name="jamMulai[]" class="form-control me-2" required>
+          <span class="mx-1 d-flex align-items-center">-</span>
+          <input type="time" name="jamSelesai[]" class="form-control ms-2" required>
+        </div>
+      </div>
+      <div class="col-md-2 d-flex justify-content-start gap-2">
+        <button type="button" class="btn btn-tambah tambah-jadwal" aria-label="Tambah jadwal" title="Tambah jadwal">
+          <i class="fas fa-plus"></i>
+        </button>
+        <button type="button" class="btn btn-danger hapus-jadwal" aria-label="Hapus jadwal" title="Hapus jadwal">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+      </div>
+    `;
+    row.querySelector('select[name="hari[]"]').value = item.hari || "";
+    row.querySelector('input[name="jamMulai[]"]').value = item.jamMulai || "";
+    row.querySelector('input[name="jamSelesai[]"]').value =
+      item.jamSelesai || "";
+    jadwalContainer.appendChild(row);
+    updateHapusButton();
   }
-  if (e.target.closest(".hapus-jadwal")) {
-    const row = e.target.closest(".jadwal-row");
-    if (jadwalContainer.children.length > 1) {
-      row.remove();
-      updateHapusButton();
+  function updateHapusButton() {
+    const rows = jadwalContainer.querySelectorAll(".jadwal-row");
+    rows.forEach((row) => {
+      const hapusBtn = row.querySelector(".hapus-jadwal");
+      hapusBtn.disabled = rows.length === 1;
+    });
+  }
+  jadwalContainer.addEventListener("click", (e) => {
+    if (e.target.closest(".tambah-jadwal")) addJadwalRow();
+    if (e.target.closest(".hapus-jadwal")) {
+      const row = e.target.closest(".jadwal-row");
+      if (jadwalContainer.children.length > 1) {
+        row.remove();
+        updateHapusButton();
+      }
     }
-  }
-});
-
-// Tambah satu jadwal kosong saat load (jika tidak ada data)
-addJadwalRow();
+  });
 
   // Fetch detail psikolog
   try {
     const TOKEN = sessionStorage.getItem("authToken");
-    if (!TOKEN) {
-      window.location.href = "https://mentalwell-10-frontend.vercel.app/";
-      return;
-    }
-
-    // Pertama, fetch semua psikolog untuk dapatkan id dari nama
-    const resList = await fetch(
-      "https://mentalwell10-api-production.up.railway.app/admin/psychologists",
-      { headers: { Authorization: `Bearer ${TOKEN}` } }
-    );
-    const listJson = await resList.json();
-    if (!resList.ok || listJson.status !== "success") throw new Error();
-
-    const psikolog = listJson.data.find((p) => p.name === nama);
-    if (!psikolog) {
-      Swal.fire({ icon: "error", title: "Psikolog tidak ditemukan" });
-      return;
-    }
-
-    // Fetch detail psikolog by id
     const res = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/admin/psychologist/${psikolog.id}`,
+      `https://mentalwell10-api-production.up.railway.app/admin/psychologists/${id}`,
       { headers: { Authorization: `Bearer ${TOKEN}` } }
     );
     const result = await res.json();
     if (res.ok && result.status === "success") {
       const data = result.data;
       form.nama.value = data.name || "";
+      form.nickname.value = data.nickname || "";
       form.email.value = data.email || "";
       form.password.value = "********";
       form.nohp.value = data.phone_number || "";
@@ -124,53 +87,49 @@ addJadwalRow();
       form.jeniskelamin.value = data.gender || "";
       form.pengalaman.value = data.experience || "";
       form.bio.value = data.bio || "";
+      form.harga.value = data.price || "";
 
       // Topik keahlian (checkbox)
       if (Array.isArray(data.topics)) {
         data.topics.forEach((t) => {
           const cb = form.querySelector(
-            `input[type="checkbox"][value="${t.name}"]`
+            `input[type="checkbox"][value="${t.id}"]`
           );
           if (cb) cb.checked = true;
         });
       }
 
       // Jadwal (schedules)
-      if (Array.isArray(data.schedules)) {
-        const jadwalRows = form.querySelectorAll(".jadwal-row");
-        data.schedules.forEach((jadwal, idx) => {
-          if (jadwalRows[idx]) {
-            const hariSelect = jadwalRows[idx].querySelector(
-              'select[name="hari[]"]'
-            );
-            const jamMulai = jadwalRows[idx].querySelector(
-              'input[name="jamMulai[]"]'
-            );
-            const jamSelesai = jadwalRows[idx].querySelector(
-              'input[name="jamSelesai[]"]'
-            );
-            if (hariSelect && jadwal.day) hariSelect.value = jadwal.day;
-            if (jamMulai && jadwal.start_time)
-              jamMulai.value = jadwal.start_time.slice(0, 5);
-            if (jamSelesai && jadwal.end_time)
-              jamSelesai.value = jadwal.end_time.slice(0, 5);
-          }
+      jadwalContainer.innerHTML = "";
+      if (Array.isArray(data.schedules) && data.schedules.length > 0) {
+        data.schedules.forEach((jadwal) => {
+          addJadwalRow({
+            hari: jadwal.day
+              ? jadwal.day.charAt(0).toUpperCase() + jadwal.day.slice(1)
+              : "",
+            jamMulai: jadwal.start_time ? jadwal.start_time.slice(0, 5) : "",
+            jamSelesai: jadwal.end_time ? jadwal.end_time.slice(0, 5) : "",
+          });
         });
+      } else {
+        addJadwalRow();
       }
 
       // Tampilkan nama file gambar dan preview
       if (data.profile_image) {
         const urlParts = data.profile_image.split("/");
         namaFile.value = urlParts[urlParts.length - 1];
-        let imgPreview = document.createElement("img");
+        let imgPreview = document.getElementById("imgPreview");
+        if (!imgPreview) {
+          imgPreview = document.createElement("img");
+          imgPreview.id = "imgPreview";
+          imgPreview.style.maxWidth = "200px";
+          imgPreview.style.display = "block";
+          imgPreview.style.marginBottom = "10px";
+          namaFile.parentNode.insertBefore(imgPreview, namaFile);
+        }
         imgPreview.src = data.profile_image;
         imgPreview.alt = "Foto Profil";
-        imgPreview.style.maxWidth = "200px";
-        imgPreview.style.display = "block";
-        imgPreview.style.marginBottom = "10px";
-        namaFile.parentNode.insertBefore(imgPreview, namaFile);
-      } else {
-        namaFile.value = "";
       }
     } else {
       Swal.fire({ icon: "error", title: "Gagal memuat detail psikolog" });
@@ -179,18 +138,6 @@ addJadwalRow();
     Swal.fire({ icon: "error", title: "Gagal terhubung ke server" });
   }
 
-  // Tombol kembali
-  btnKembali.addEventListener("click", () => {
-    window.history.back();
-  });
-
-  // Enable input untuk edit
-  Array.from(form.elements).forEach((el) => {
-    el.readOnly = false;
-    el.disabled = false;
-  });
-  gambarInput.style.display = "block";
-
   // Preview nama file saat pilih gambar baru
   gambarInput.addEventListener("change", function () {
     if (gambarInput.files && gambarInput.files[0]) {
@@ -198,48 +145,30 @@ addJadwalRow();
     }
   });
 
-  // Submit form untuk edit psikolog
+  // Submit form untuk edit psikolog (PUT)
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const TOKEN = sessionStorage.getItem("authToken");
-    if (!TOKEN) {
-      Swal.fire({ icon: "error", title: "Token tidak ditemukan" });
-      return;
-    }
-
-    // Siapkan FormData hanya dengan field yang tidak kosong
     const formData = new FormData();
-    if (form.nama.value.trim()) formData.append("name", form.nama.value.trim());
-    if (form.nickname && form.nickname.value.trim())
-      formData.append("nickname", form.nickname.value.trim());
-    if (form.email.value.trim())
-      formData.append("email", form.email.value.trim());
-    if (form.nohp.value.trim())
-      formData.append("phone_number", form.nohp.value.trim());
-    if (form.tanggallahir.value.trim())
-      formData.append("birthdate", form.tanggallahir.value.trim());
-    if (form.jeniskelamin.value.trim())
-      formData.append("gender", form.jeniskelamin.value.trim());
-    if (form.bio.value.trim()) formData.append("bio", form.bio.value.trim());
-    if (form.pengalaman.value.trim())
-      formData.append("experience", form.pengalaman.value.trim());
-    if (form.harga && form.harga.value.trim())
-      formData.append("price", form.harga.value.trim());
-    if (gambarInput.files && gambarInput.files[0])
+    formData.append("name", form.nama.value.trim());
+    formData.append("nickname", form.nickname.value.trim());
+    formData.append("email", form.email.value.trim());
+    formData.append("phone_number", form.nohp.value.trim());
+    formData.append("birthdate", form.tanggallahir.value.trim());
+    formData.append("gender", form.jeniskelamin.value.trim());
+    formData.append("bio", form.bio.value.trim());
+    formData.append("experience", form.pengalaman.value.trim());
+    formData.append("price", form.harga.value.trim());
+    if (gambarInput.files[0])
       formData.append("profile_image", gambarInput.files[0]);
-    // Optional: availability
-    if (form.availability && form.availability.value.trim())
-      formData.append("availability", form.availability.value.trim());
-
-    // Topik keahlian (checkbox, value ID)
+    // Topik keahlian
     const topics = Array.from(
       form.querySelectorAll('input[name="keahlian"]:checked')
     ).map((cb) => Number(cb.value));
-    formData.append("topics", JSON.stringify(topics.length ? topics : []));
-
-    // Jadwal (custom date)
-    const tanggalArr = Array.from(
-      form.querySelectorAll('input[name="tanggal[]"]')
+    formData.append("topics", JSON.stringify(topics));
+    // Jadwal
+    const hariArr = Array.from(
+      form.querySelectorAll('select[name="hari[]"]')
     ).map((i) => i.value);
     const jamMulaiArr = Array.from(
       form.querySelectorAll('input[name="jamMulai[]"]')
@@ -248,20 +177,16 @@ addJadwalRow();
       form.querySelectorAll('input[name="jamSelesai[]"]')
     ).map((i) => i.value);
     const schedules = [];
-    for (let i = 0; i < tanggalArr.length; i++) {
-      if (tanggalArr[i]) {
+    for (let i = 0; i < hariArr.length; i++) {
+      if (hariArr[i]) {
         const time = `${jamMulaiArr[i]} - ${jamSelesaiArr[i]}`;
-        schedules.push({ date: tanggalArr[i], time });
+        schedules.push({ day: hariArr[i].toLowerCase(), time });
       }
     }
-    formData.append(
-      "schedules",
-      JSON.stringify(schedules.length ? schedules : [])
-    );
-
+    formData.append("schedules", JSON.stringify(schedules));
     try {
       const res = await fetch(
-        `https://mentalwell10-api-production.up.railway.app/admin/psychologists/${psikolog.id}`,
+        `https://mentalwell10-api-production.up.railway.app/admin/psychologists/${id}`,
         {
           method: "PUT",
           headers: { Authorization: `Bearer ${TOKEN}` },
@@ -291,4 +216,6 @@ addJadwalRow();
       });
     }
   });
+
+  btnKembali.addEventListener("click", () => window.history.back());
 });

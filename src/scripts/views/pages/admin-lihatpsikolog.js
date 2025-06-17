@@ -2,52 +2,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   const form = document.getElementById("formArtikel");
   const btnKembali = document.getElementById("btnKembali");
   const namaFile = document.getElementById("namaFile");
-  const gambarInput = document.getElementById("gambar");
 
-  // Ambil nama dari URL (atau ganti dengan id jika sudah pakai id)
   const params = new URLSearchParams(window.location.search);
-  const nama = params.get("nama");
+  const id = params.get("id");
 
-  // Disable semua input (readonly)
-  Array.from(form.elements).forEach((el) => {
-    el.readOnly = true;
-    el.disabled = true;
-  });
-
-  // Sembunyikan input file gambar
-  gambarInput.style.display = "none";
-
-  // Fetch detail psikolog
   try {
     const TOKEN = sessionStorage.getItem("authToken");
-    if (!TOKEN) {
-      window.location.href = "https://mentalwell-10-frontend.vercel.app/";
-      return;
-    }
-
-    // Pertama, fetch semua psikolog untuk dapatkan id dari nama
-    const resList = await fetch(
-      "https://mentalwell10-api-production.up.railway.app/admin/psychologists",
-      { headers: { Authorization: `Bearer ${TOKEN}` } }
-    );
-    const listJson = await resList.json();
-    if (!resList.ok || listJson.status !== "success") throw new Error();
-
-    const psikolog = listJson.data.find((p) => p.name === nama);
-    if (!psikolog) {
-      Swal.fire({ icon: "error", title: "Psikolog tidak ditemukan" });
-      return;
-    }
-
-    // Fetch detail psikolog by id
     const res = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/admin/psychologist/${psikolog.id}`,
+      `https://mentalwell10-api-production.up.railway.app/admin/psychologists/${id}`,
       { headers: { Authorization: `Bearer ${TOKEN}` } }
     );
     const result = await res.json();
     if (res.ok && result.status === "success") {
       const data = result.data;
       form.nama.value = data.name || "";
+      form.nickname.value = data.nickname || "";
       form.email.value = data.email || "";
       form.password.value = "********";
       form.nohp.value = data.phone_number || "";
@@ -62,7 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (Array.isArray(data.topics)) {
         data.topics.forEach((t) => {
           const cb = form.querySelector(
-            `input[type="checkbox"][value="${t.name}"]`
+            `input[type="checkbox"][value="${t.id}"]`
           );
           if (cb) cb.checked = true;
         });
@@ -95,13 +64,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (data.profile_image) {
         const urlParts = data.profile_image.split("/");
         namaFile.value = urlParts[urlParts.length - 1];
-        let imgPreview = document.createElement("img");
+        let imgPreview = document.getElementById("imgPreview");
+        if (!imgPreview) {
+          imgPreview = document.createElement("img");
+          imgPreview.id = "imgPreview";
+          imgPreview.style.maxWidth = "200px";
+          imgPreview.style.display = "block";
+          imgPreview.style.marginBottom = "10px";
+          namaFile.parentNode.insertBefore(imgPreview, namaFile);
+        }
         imgPreview.src = data.profile_image;
         imgPreview.alt = "Foto Profil";
-        imgPreview.style.maxWidth = "200px";
-        imgPreview.style.display = "block";
-        imgPreview.style.marginBottom = "10px";
-        namaFile.parentNode.insertBefore(imgPreview, namaFile);
       } else {
         namaFile.value = "";
       }
