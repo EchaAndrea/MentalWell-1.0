@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   const urlParams = new URLSearchParams(window.location.search);
   const psikologId = urlParams.get("id");
   if (!psikologId) {
-    alert("ID psikolog tidak ditemukan.");
+    Swal.fire("ID psikolog tidak ditemukan.");
     return;
   }
 
@@ -22,17 +22,14 @@ document.addEventListener("DOMContentLoaded", async function () {
   try {
     const res = await fetch(
       `https://mentalwell10-api-production.up.railway.app/admin/psychologist/${psikologId}`,
-      {
-        headers: { Authorization: `Bearer ${TOKEN}` },
-      }
+      { headers: { Authorization: `Bearer ${TOKEN}` } }
     );
-    if (res.status === 401) {
-      alert("Sesi Anda sudah habis atau tidak valid. Silakan login ulang.");
-      window.location.href = "https://mentalwell-10-frontend.vercel.app/";
+    const json = await res.json();
+
+    if (!res.ok || json.status !== "success") {
+      Swal.fire("Gagal!", json.message || "Gagal mengambil data.", "error");
       return;
     }
-    const json = await res.json();
-    if (json.status !== "success") throw new Error("Gagal mengambil data.");
 
     const data = json.data;
     // Isi form
@@ -58,40 +55,36 @@ document.addEventListener("DOMContentLoaded", async function () {
       });
     }
 
-    // Jadwal (tabel seperti di admin-psikolog)
+    // Jadwal (readonly, bentuk sama seperti tambah psikolog)
     const jadwalContainer = document.getElementById("jadwalContainer");
     jadwalContainer.innerHTML = "";
     if (Array.isArray(data.schedules) && data.schedules.length > 0) {
-      let table = `
-        <div class="table-responsive">
-          <table class="table table-bordered table-sm mb-0">
-            <thead>
-              <tr>
-                <th>No</th>
-                <th>Hari/Tanggal</th>
-                <th>Jam Mulai</th>
-                <th>Jam Selesai</th>
-              </tr>
-            </thead>
-            <tbody>
-      `;
-      data.schedules.forEach((sch, idx) => {
-        let hariTanggal = sch.day ? sch.day : sch.date;
-        table += `
-          <tr>
-            <td>${idx + 1}</td>
-            <td>${hariTanggal || "-"}</td>
-            <td>${sch.start_time || "-"}</td>
-            <td>${sch.end_time || "-"}</td>
-          </tr>
+      data.schedules.forEach((sch) => {
+        let hari = sch.day
+          ? sch.day.charAt(0).toUpperCase() + sch.day.slice(1)
+          : sch.date
+          ? sch.date
+          : "-";
+        const row = document.createElement("div");
+        row.className = "row mb-2 align-items-center jadwal-row";
+        row.innerHTML = `
+          <div class="col-md-4">
+            <input type="text" class="form-control" value="${hari}" readonly>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex">
+              <input type="time" class="form-control me-2" value="${
+                sch.start_time || ""
+              }" readonly>
+              <span class="mx-1 d-flex align-items-center">-</span>
+              <input type="time" class="form-control ms-2" value="${
+                sch.end_time || ""
+              }" readonly>
+            </div>
+          </div>
         `;
+        jadwalContainer.appendChild(row);
       });
-      table += `
-            </tbody>
-          </table>
-        </div>
-      `;
-      jadwalContainer.innerHTML = table;
     } else {
       jadwalContainer.innerHTML =
         "<span class='text-muted'>Tidak ada jadwal</span>";
@@ -99,9 +92,9 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Foto profil
     if (data.profile_image) {
-      document.getElementById("namaFile").value = data.profile_image
-        .split("/")
-        .pop();
+      const namaFileInput = document.getElementById("namaFile");
+      if (namaFileInput)
+        namaFileInput.value = data.profile_image.split("/").pop();
       let imgPreview = document.getElementById("imgPreview");
       if (!imgPreview) {
         imgPreview = document.createElement("img");
@@ -109,7 +102,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         imgPreview.style.maxWidth = "120px";
         imgPreview.style.display = "block";
         imgPreview.style.marginTop = "10px";
-        document.getElementById("namaFile").parentNode.appendChild(imgPreview);
+        namaFileInput.parentNode.appendChild(imgPreview);
       }
       imgPreview.src = data.profile_image;
     }
@@ -120,6 +113,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
     document.getElementById("btnKembali").disabled = false;
   } catch (e) {
-    alert("Gagal memuat detail psikolog.");
+    Swal.fire("Gagal!", "Tidak dapat terhubung ke server.", "error");
   }
 });
