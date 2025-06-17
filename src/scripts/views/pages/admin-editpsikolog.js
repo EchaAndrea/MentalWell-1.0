@@ -14,18 +14,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     el.disabled = true;
   });
 
-  // Sembunyikan input file gambar
+  // Sembunyikan input file gambar 
   gambarInput.style.display = "none";
 
   // Fetch detail psikolog
   try {
     const TOKEN = sessionStorage.getItem("authToken");
     if (!TOKEN) {
-      window.location.href = "https://mentalwell-10-frontend.vercel.app/";
+      window.location.href = "/";
       return;
     }
 
-    // Pertama, fetch semua psikolog untuk dapatkan id dari nama
+    // Fetch semua psikolog untuk dapatkan id dari nama
     const resList = await fetch(
       "https://mentalwell10-api-production.up.railway.app/admin/psychologists",
       { headers: { Authorization: `Bearer ${TOKEN}` } }
@@ -48,8 +48,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (res.ok && result.status === "success") {
       const data = result.data;
       form.nama.value = data.name || "";
+      form.nickname.value = data.nickname || "";
       form.email.value = data.email || "";
-      form.password.value = "********";
+      form.password.value = "";
       form.nohp.value = data.phone_number || "";
       form.tanggallahir.value = data.birthdate
         ? data.birthdate.slice(0, 10)
@@ -57,12 +58,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       form.jeniskelamin.value = data.gender || "";
       form.pengalaman.value = data.experience || "";
       form.bio.value = data.bio || "";
+      form.harga.value = data.price || "";
 
       // Topik keahlian (checkbox)
       if (Array.isArray(data.topics)) {
         data.topics.forEach((t) => {
           const cb = form.querySelector(
-            `input[type="checkbox"][value="${t.name}"]`
+            `input[type="checkbox"][value="${t.id}"]`
           );
           if (cb) cb.checked = true;
         });
@@ -82,7 +84,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             const jamSelesai = jadwalRows[idx].querySelector(
               'input[name="jamSelesai[]"]'
             );
-            if (hariSelect && jadwal.day) hariSelect.value = jadwal.day;
+            if (hariSelect && jadwal.day)
+              hariSelect.value =
+                jadwal.day.charAt(0).toUpperCase() + jadwal.day.slice(1);
             if (jamMulai && jadwal.start_time)
               jamMulai.value = jadwal.start_time.slice(0, 5);
             if (jamSelesai && jadwal.end_time)
@@ -91,19 +95,25 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
       }
 
-      // Tampilkan nama file gambar dan preview
+      // Preview nama file gambar dan gambar profil
       if (data.profile_image) {
         const urlParts = data.profile_image.split("/");
         namaFile.value = urlParts[urlParts.length - 1];
-        let imgPreview = document.createElement("img");
+        let imgPreview = document.getElementById("imgPreview");
+        if (!imgPreview) {
+          imgPreview = document.createElement("img");
+          imgPreview.id = "imgPreview";
+          imgPreview.style.maxWidth = "200px";
+          imgPreview.style.display = "block";
+          imgPreview.style.margin = "10px 0";
+          namaFile.parentNode.insertBefore(imgPreview, namaFile.nextSibling);
+        }
         imgPreview.src = data.profile_image;
         imgPreview.alt = "Foto Profil";
-        imgPreview.style.maxWidth = "200px";
-        imgPreview.style.display = "block";
-        imgPreview.style.marginBottom = "10px";
-        namaFile.parentNode.insertBefore(imgPreview, namaFile);
       } else {
         namaFile.value = "";
+        const imgPreview = document.getElementById("imgPreview");
+        if (imgPreview) imgPreview.remove();
       }
     } else {
       Swal.fire({ icon: "error", title: "Gagal memuat detail psikolog" });
@@ -117,7 +127,36 @@ document.addEventListener("DOMContentLoaded", async () => {
     el.readOnly = false;
     el.disabled = false;
   });
-  gambarInput.style.display = "block";
+  gambarInput.style.display = "none"; // tetap hidden, hanya pakai tombol custom
+
+  // Input gambar: update nama file saat pilih file baru
+  gambarInput.addEventListener("change", () => {
+    const fileName =
+      gambarInput.files.length > 0 ? gambarInput.files[0].name : "";
+    namaFile.value = fileName;
+    // Preview gambar baru jika dipilih
+    let imgPreview = document.getElementById("imgPreview");
+    if (!imgPreview) {
+      imgPreview = document.createElement("img");
+      imgPreview.id = "imgPreview";
+      imgPreview.style.maxWidth = "200px";
+      imgPreview.style.display = "block";
+      imgPreview.style.margin = "10px 0";
+      namaFile.parentNode.insertBefore(imgPreview, namaFile.nextSibling);
+    }
+    const file = gambarInput.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        imgPreview.src = e.target.result;
+        imgPreview.alt = "Foto Profil";
+      };
+      reader.readAsDataURL(file);
+    } else {
+      imgPreview.src = "";
+      imgPreview.alt = "";
+    }
+  });
 
   // Submit form untuk edit psikolog
   form.addEventListener("submit", async (e) => {
