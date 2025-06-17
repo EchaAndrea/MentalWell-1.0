@@ -188,11 +188,12 @@ class NavbarAdmin extends HTMLElement {
   async fetchUserData() {
     try {
       const token = sessionStorage.getItem("authToken");
+      console.log("Token:", token);
       if (!token) {
         throw new Error("Token tidak ditemukan. Silakan login ulang.");
       }
       const response = await fetch(
-        "https://mentalwell10-api-production.up.railway.app/admin/profile",
+        "https://mentalwell10-api-production.up.railway.app/profile",
         {
           headers: {
             "Content-Type": "application/json",
@@ -218,7 +219,7 @@ class NavbarAdmin extends HTMLElement {
     const photo = data?.psychologist?.profilePicture;
 
     this.shadowRoot.querySelector("#nicknameTag").textContent =
-      nickname || "User";
+      nickname || "Admin";
     if (photo) {
       this.shadowRoot.querySelector("#photoUser").src = photo;
     }
