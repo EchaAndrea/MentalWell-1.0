@@ -230,9 +230,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           icon: "success",
           title: "Berhasil",
           text: "Profil psikolog berhasil diperbarui.",
-        }).then(() => {
-          window.location.href = "/src/templates/admin-psikolog.html";
-        });
+        }).then(
+          () => (window.location.href = "/src/templates/admin-psikolog.html")
+        );
       } else {
         Swal.fire({
           icon: "error",
