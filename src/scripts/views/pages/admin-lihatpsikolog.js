@@ -90,20 +90,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         "<span class='text-muted'>Tidak ada jadwal</span>";
     }
 
-    // Foto profil
+    // Foto profil: hanya tampilkan nama file saja, tanpa gambar
     if (data.profile_image) {
       const namaFileInput = document.getElementById("namaFile");
-      let imgPreview = document.getElementById("imgPreview");
-      if (!imgPreview) {
-        imgPreview = document.createElement("img");
-        imgPreview.id = "imgPreview";
-        imgPreview.style.maxWidth = "120px";
-        imgPreview.style.display = "block";
-        imgPreview.style.marginTop = "10px";
-        // Sisipkan gambar sebelum input nama file
-        namaFileInput.parentNode.insertBefore(imgPreview, namaFileInput);
-      }
-      imgPreview.src = data.profile_image;
+      if (namaFileInput)
+        namaFileInput.value = data.profile_image.split("/").pop();
     }
 
     // Disable semua input (readonly)
