@@ -150,39 +150,59 @@ function renderTable() {
       </tr>`;
   }
 
-  renderPagination();
-}
-
 function renderPagination() {
-  const pagination = document.getElementById("pagination");
-  const totalPages =
-    rowsPerPage === "all" ? 1 : Math.ceil(filteredData.length / rowsPerPage);
+  const pagination = document.querySelector(".pagination");
+  if (!pagination) return;
+
+  // Hitung total halaman
+  const totalRows = filteredCounselings.length;
+  const perPage = rowsPerPage === "all" ? totalRows : rowsPerPage;
+  const totalPages = rowsPerPage === "all" ? 1 : Math.ceil(totalRows / perPage);
+
+  // Bersihkan pagination lama
   pagination.innerHTML = "";
 
-  const prevDisabled = currentPage === 1 ? "disabled" : "";
+  // Tombol Sebelumnya
+  const prevClass = currentPage === 1 ? "disabled" : "";
   pagination.innerHTML += `
-    <li class="page-item ${prevDisabled}">
-      <a class="page-link" href="#" onclick="changePage(${
+    <li class="page-item ${prevClass}">
+      <a class="page-link" href="#" data-page="${
         currentPage - 1
-      })">Sebelumnya</a>
-    </li>`;
+      }">Sebelumnya</a>
+    </li>
+  `;
 
+  // Nomor halaman
   for (let i = 1; i <= totalPages; i++) {
-    const active = currentPage === i ? "active" : "";
+    const activeClass = currentPage === i ? "active" : "";
     pagination.innerHTML += `
-      <li class="page-item ${active}">
-        <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
-      </li>`;
+      <li class="page-item ${activeClass}">
+        <a class="page-link" href="#" data-page="${i}">${i}</a>
+      </li>
+    `;
   }
 
-  const nextDisabled = currentPage === totalPages ? "disabled" : "";
+  // Tombol Selanjutnya
+  const nextClass = currentPage === totalPages ? "disabled" : "";
   pagination.innerHTML += `
-    <li class="page-item ${nextDisabled}">
-      <a class="page-link" href="#" onclick="changePage(${
+    <li class="page-item ${nextClass}">
+      <a class="page-link" href="#" data-page="${
         currentPage + 1
-      })">Selanjutnya</a>
-    </li>`;
-}
+      }">Selanjutnya</a>
+    </li>
+  `;
+
+  // Event listener untuk pagination
+  pagination.querySelectorAll("a.page-link").forEach((el) => {
+    el.addEventListener("click", function (e) {
+      e.preventDefault();
+      const page = parseInt(this.getAttribute("data-page"));
+      if (!isNaN(page) && page >= 1 && page !== currentPage) {
+        currentPage = page;
+        renderTable();
+      }
+    });
+  });
 
 function hapusItem(nama) {
   const index = psikologData.findIndex((p) => p.nama === nama);
