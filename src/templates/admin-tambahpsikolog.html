@@ -39,135 +39,118 @@
             Kembali
           </button>
         </div>
-        <form id="formArtikel" enctype="multipart/form-data">
-          <!-- 1. Name -->
+        <form id="formArtikel">
           <div class="mb-3">
             <label class="form-label fw-bold">Nama Lengkap</label>
             <input type="text" name="nama" class="form-control" required />
           </div>
-          <!-- 2. Nickname -->
           <div class="mb-3">
             <label class="form-label fw-bold">Nama Panggilan</label>
             <input type="text" name="nickname" class="form-control" required />
           </div>
-          <!-- 3. Email -->
           <div class="mb-3">
             <label class="form-label fw-bold">Email</label>
             <input type="email" name="email" class="form-control" required />
           </div>
-          <!-- 4. Phone Number -->
           <div class="mb-3">
-            <label class="form-label fw-bold">Nomor HP</label>
+            <label class="form-label fw-bold">Kata Sandi</label>
+            <input type="password" name="password" class="form-control" required/>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold">Nomor Handphone</label>
             <input type="text" name="nohp" class="form-control" required />
           </div>
-          <!-- 5. Birthdate -->
           <div class="mb-3">
             <label class="form-label fw-bold">Tanggal Lahir</label>
-            <input
-              type="date"
-              name="tanggallahir"
-              class="form-control"
-              required
-            />
+            <input type="date" name="tanggallahir" class="form-control" required/>
           </div>
-          <!-- 6. Gender -->
           <div class="mb-3">
             <label class="form-label fw-bold">Jenis Kelamin</label>
             <select name="jeniskelamin" class="form-select" required>
-              <option value="">Pilih</option>
+              <option value="">Pilih Jenis Kelamin</option>
               <option value="Laki-laki">Laki-laki</option>
               <option value="Perempuan">Perempuan</option>
-              <option value="Lainnya">Lainnya</option>
             </select>
           </div>
-          <!-- 7. Bio -->
-          <div class="mb-3">
-            <label class="form-label fw-bold">Bio</label>
-            <textarea
-              name="bio"
-              class="form-control"
-              rows="3"
-              required
-            ></textarea>
-          </div>
-          <!-- 8. Experience -->
           <div class="mb-3">
             <label class="form-label fw-bold">Pengalaman Praktik</label>
-            <input
-              type="text"
-              name="pengalaman"
-              class="form-control"
-              required
-            />
+            <select name="pengalaman" class="form-select" required>
+              <option value="">Pilih Pengalaman Praktik</option>
+              <option value="2 tahun praktek">2 Tahun</option>
+              <option value="2-4 tahun praktek">2 - 4 Tahun</option>
+              <option value="4 tahun praktek">4 Tahun</option>
+            </select>
           </div>
-          <!-- 9. Price -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Topik Keahlian</label>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="keahlian" value="1" id="adiksi"/>
+                  <label class="form-check-label" for="adiksi">Adiksi</label>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="keahlian" value="2" id="anak-remaja"/>
+                  <label class="form-check-label" for="anak-remaja" >Anak remaja</label>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="keahlian" value="3" id="trauma"/>
+                  <label class="form-check-label" for="trauma">Trauma</label>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="keahlian" value="4" id="seksualitas"/>
+                  <label class="form-check-label" for="seksualitas" >Seksualitas</label>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="keahlian" value="5" id="fobia"/>
+                  <label class="form-check-label" for="fobia">Fobia</label>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="keahlian" value="5" id="kecenderungan-bunuh-diri"/>
+                  <label class="form-check-label" for="bunuh-diri" >Kecenderungan Bunuh Diri</label>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="mb-3">
             <label class="form-label fw-bold">Harga per Sesi (Rp)</label>
             <input type="number" name="harga" class="form-control" required />
           </div>
-          <!-- 10. Topics -->
-          <div class="mb-3">
-            <label class="form-label fw-bold">Topik Keahlian</label>
-            <div>
-              <input type="checkbox" name="keahlian" value="1" id="adiksi" />
-              <label for="adiksi">Adiksi</label>
-              <input
-                type="checkbox"
-                name="keahlian"
-                value="2"
-                id="seksualitas"
-              />
-              <label for="seksualitas">Seksualitas</label>
-              <input
-                type="checkbox"
-                name="keahlian"
-                value="3"
-                id="anakremaja"
-              />
-              <label for="anakremaja">Anak remaja</label>
-              <input type="checkbox" name="keahlian" value="4" id="fobia" />
-              <label for="fobia">Fobia</label>
-              <input type="checkbox" name="keahlian" value="5" id="trauma" />
-              <label for="trauma">Trauma</label>
-              <input type="checkbox" name="keahlian" value="6" id="bunuhdiri" />
-              <label for="bunuhdiri">Kecenderungan Bunuh Diri</label>
-            </div>
-          </div>
-          <!-- 11. Schedules -->
           <div class="mb-3">
             <label class="form-label fw-bold">Waktu Tersedia</label>
             <div id="jadwalContainer"></div>
           </div>
-          <!-- 12. Password -->
           <div class="mb-3">
-            <label class="form-label fw-bold">Password</label>
-            <input
-              type="password"
-              name="password"
-              class="form-control"
-              required
-            />
+            <label class="form-label fw-bold">Bio</label>
+            <textarea name="bio" rows="5" class="form-control" required></textarea>
           </div>
-          <!-- 13. Profile Image -->
           <div class="mb-3">
             <label class="form-label fw-bold">Foto Profil</label>
-            <input
-              type="file"
-              name="gambar"
-              id="gambar"
-              class="form-control"
-              accept="image/*"
-            />
-            <input
-              type="text"
-              id="namaFile"
-              class="form-control mt-2"
-              placeholder="Nama file"
-              readonly
-            />
+            <div class="input-group">
+              <label class="input-group-text btn btn-file px-3" for="gambar">
+                <img
+                  src="/src/public/admin/gambar.png"
+                  alt="gambar"
+                  style="width: 18px; height: 18px; margin-right: 5px"
+                />
+                Pilih
+              </label>
+              <input type="file" class="form-control" id="gambar" name="gambar" accept="image/*" style="display: none"/>
+              <input type="text" class="form-control" id="namaFile" readonly />
+            </div>
           </div>
           <div class="text-end">
-            <button type="submit" class="btn btn-simpan">Simpan</button>
+            <button type="submit" class="btn btn-simpan">Buat</button>
           </div>
         </form>
       </div>
