@@ -4,6 +4,11 @@ let rowsPerPage = 10;
 let currentPage = 1;
 
 async function fetchArticles() {
+  const TOKEN = sessionStorage.getItem("authToken");
+if (!TOKEN) {
+  window.location.href = "https://mentalwell-10-frontend.vercel.app/";
+  return;
+}
   try {
     const res = await fetch(
       `https://mentalwell10-api-production.up.railway.app/articles`,
