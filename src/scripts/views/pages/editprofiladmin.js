@@ -2,6 +2,10 @@ const token = sessionStorage.getItem("authToken");
 
 document.addEventListener("DOMContentLoaded", async function () {
   const form = document.querySelector(".editpasien-form");
+  if (!form) {
+    console.error("Form .editpasien-form tidak ditemukan!");
+    return;
+  }
 
   // Fetch admin data from the new backend endpoint
   const response = await fetch(

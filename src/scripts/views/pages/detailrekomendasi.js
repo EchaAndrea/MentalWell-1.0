@@ -1,6 +1,6 @@
 async function fetchArticleById(articleId) {
     try {
-      const response = await fetch(`https://mentalwell-backend.vercel.app/psychologists/${articleId}`);
+      const response = await fetch(`https://mentalwell10-api-production.up.railway.app/psychologists/${articleId}`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
