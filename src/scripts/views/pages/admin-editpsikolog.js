@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", async function () {
-  const form = document.getElementById("formArtikel");
+  const form = document.getElementById("formPsikolog"); 
   const inputGambar = document.getElementById("gambar");
   const namaFileInput = document.getElementById("namaFile");
   const jadwalContainer = document.getElementById("jadwalContainer");
@@ -12,11 +12,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   // Ambil ID dari query string
   const urlParams = new URLSearchParams(window.location.search);
-  const psikologId = urlParams.get("id");
-  if (!psikologId) {
-    Swal.fire("ID psikolog tidak ditemukan.");
-    return;
-  }
+  const psikologId = urlParams.get("psikolog_id");
 
   // Fungsi tambah jadwal (editable)
   function addJadwalRow(item = {}) {
