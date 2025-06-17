@@ -3,19 +3,22 @@ let filteredData = [];
 let rowsPerPage = 10;
 let currentPage = 1;
 
-const adminToken = localStorage.getItem("admin_token");
-
 document.addEventListener("DOMContentLoaded", async function () {
   await fetchPsikologData();
   document
     .getElementById("filterKategori")
     .addEventListener("change", handleFilter);
+  document
+    .getElementById("searchInput")
+    .addEventListener("input", handleSearch);
+  document
+    .getElementById("rowsPerPage")
+    .addEventListener("change", updateRowsPerPage);
   document.getElementById("selectAll").addEventListener("change", function () {
     document
       .querySelectorAll(".row-checkbox")
       .forEach((cb) => (cb.checked = this.checked));
   });
-  renderTable();
 });
 
 async function fetchPsikologData() {
@@ -31,6 +34,11 @@ async function fetchPsikologData() {
         headers: { Authorization: `Bearer ${TOKEN}` },
       }
     );
+    if (res.status === 401) {
+      alert("Sesi Anda sudah habis atau tidak valid. Silakan login ulang.");
+      window.location.href = "https://mentalwell-10-frontend.vercel.app/";
+      return;
+    }
     const json = await res.json();
     if (json.status === "success") {
       psikologData = json.data.map((item) => ({
@@ -42,6 +50,9 @@ async function fetchPsikologData() {
         password: "********", // Tidak ada password dari BE
       }));
       filteredData = [...psikologData];
+    } else {
+      psikologData = [];
+      filteredData = [];
     }
   } catch (e) {
     alert("Gagal memuat data psikolog");
@@ -66,7 +77,6 @@ function handleSearch() {
   filteredData = psikologData.filter(
     (p) =>
       p.nama.toLowerCase().includes(keyword) ||
-      p.nama.toLowerCase().includes(keyword) ||
       p.email.toLowerCase().includes(keyword)
   );
   currentPage = 1;
@@ -83,7 +93,8 @@ function resetTable() {
 
 function updateRowsPerPage() {
   const value = document.getElementById("rowsPerPage").value;
-  rowsPerPage = value === "all" ? filteredData.length : parseInt(value);
+  rowsPerPage =
+    value === "all" ? filteredData.length : parseInt(value, 10) || 10;
   currentPage = 1;
   renderTable();
 }
@@ -98,8 +109,14 @@ function renderTable() {
   tbody.innerHTML = "";
 
   const start = (currentPage - 1) * rowsPerPage;
-  const end = start + rowsPerPage;
+  const end = rowsPerPage === "all" ? filteredData.length : start + rowsPerPage;
   const pageData = filteredData.slice(start, end);
+
+  if (pageData.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" class="text-center">Tidak ada data</td></tr>`;
+    renderPagination();
+    return;
+  }
 
   for (const p of pageData) {
     tbody.innerHTML += `
@@ -138,7 +155,8 @@ function renderTable() {
 
 function renderPagination() {
   const pagination = document.getElementById("pagination");
-  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+  const totalPages =
+    rowsPerPage === "all" ? 1 : Math.ceil(filteredData.length / rowsPerPage);
   pagination.innerHTML = "";
 
   const prevDisabled = currentPage === 1 ? "disabled" : "";
@@ -189,6 +207,7 @@ function hapusYangDipilih() {
   renderTable();
 }
 
+// Agar bisa dipanggil dari HTML
 window.handleSearch = handleSearch;
 window.resetTable = resetTable;
 window.updateRowsPerPage = updateRowsPerPage;
