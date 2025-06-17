@@ -111,9 +111,15 @@ function renderTable() {
       <td>${item.tanggal}</td>
       <td>${item.dibuatoleh}</td>
       <td>
-        <a href="/src/templates/admin-lihatartikel.html?artikel_id=${item.id}" class="btn btn-sm btn-info me-1">Lihat</a>
-        <a href="/src/templates/admin-editartikel.html?artikel_id=${item.id}" class="btn btn-sm btn-warning me-1">Edit</a>
-        <button class="btn btn-sm btn-danger" onclick="hapusItem(${item.id})">Hapus</button>
+        <a href="/src/templates/admin-lihatartikel.html?artikel_id=${item.id}" class="btn btn-sm btn-secondary me-1" title="Lihat">
+          <img src="/src/public/admin/lihat.png" width="13">
+        </a>
+        <a href="/src/templates/admin-editartikel.html?artikel_id=${item.id}" class="btn btn-sm btn-info me-1" title="Edit">
+          <img src="/src/public/admin/edit.png" width="13">
+        </a>
+        <button class="btn btn-sm btn-danger" onclick="hapusItem(${item.id})" title="Hapus">
+          <img src="/src/public/admin/hapus.png" width="13">
+        </button>
       </td>
     `;
     tbody.appendChild(tr);
