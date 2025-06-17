@@ -101,7 +101,12 @@ document.addEventListener("DOMContentLoaded", async function () {
   });
 
   // Fetch detail psikolog untuk prefill
-  try {
+    try {
+    const TOKEN = sessionStorage.getItem("authToken");
+    if (!TOKEN) {
+      window.location.href = "https://mentalwell-10-frontend.vercel.app/";
+      return;
+    }
     const res = await fetch(`https://mentalwell10-api-production.up.railway.app//admin/psychologist/${psikologId}`, {
       headers: { Authorization: `Bearer ${TOKEN}` },
     });
