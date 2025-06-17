@@ -1,129 +1,119 @@
-document.addEventListener('DOMContentLoaded', async () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const psikologId = urlParams.get('id');
-  const adminToken = localStorage.getItem("admin_token");
-  if (!psikologId) return;
+document.addEventListener("DOMContentLoaded", async () => {
+  const form = document.getElementById("formArtikel");
+  const btnKembali = document.getElementById("btnKembali");
+  const namaFile = document.getElementById("namaFile");
+  const gambarInput = document.getElementById("gambar");
 
-  const form = document.getElementById('formArtikel');
-  if (!form) return;
+  // Ambil nama dari URL (atau ganti dengan id jika sudah pakai id)
+  const params = new URLSearchParams(window.location.search);
+  const nama = params.get("nama");
 
-  // Fetch detail psikolog dari backend
-  let psikologData;
-  try {
-    const res = await fetch(`https://mentalwell10-api-production.up.railway.app/admin/psychologist/${psikologId}`, {
-      headers: { Authorization: `Bearer ${adminToken}` }
-    });
-    const json = await res.json();
-    if (json.status === "success") {
-      psikologData = json.data;
-    } else {
-      throw new Error(json.message);
-    }
-  } catch (e) {
-    alert("Gagal memuat detail psikolog");
-    return;
-  }
-
-  // Isi form sesuai data dari backend
-  form.nama.value = psikologData.name || "";
-  form.email.value = psikologData.email || "";
-  form.password.value = "********";
-  form.nohp.value = psikologData.phone_number || "";
-  form.tanggallahir.value = psikologData.birthdate || "";
-  form.jeniskelamin.value = psikologData.gender || "";
-  form.pengalaman.value = psikologData.experience || "";
-  form.bio.value = psikologData.bio || "";
-  document.getElementById('namaFile').value = psikologData.profile_image || "";
-
-  // Checkbox keahlian
-  const semuaCheckbox = form.querySelectorAll('input[type="checkbox"][name="keahlian"]');
-  const topicNames = (psikologData.topics || []).map(t => t.name.toLowerCase());
-  semuaCheckbox.forEach(cb => {
-    cb.checked = topicNames.includes(cb.value.toLowerCase());
-    cb.disabled = true;
-  });
-
-  // Jadwal
-  const jadwalContainer = document.getElementById('jadwalContainer');
-  jadwalContainer.innerHTML = '';
-  (psikologData.schedules || []).forEach(jadwalItem => {
-    const row = document.createElement('div');
-    row.classList.add('row', 'mb-2', 'align-items-center', 'jadwal-row');
-
-    const colHari = document.createElement('div');
-    colHari.classList.add('col-md-4');
-    const selectHari = document.createElement('select');
-    selectHari.name = "hari[]";
-    selectHari.classList.add('form-select');
-    selectHari.disabled = true;
-    ["", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"].forEach(h => {
-      const opt = document.createElement('option');
-      opt.value = h;
-      opt.textContent = h === "" ? "Pilih Hari" : h;
-      if (h === jadwalItem.hari) opt.selected = true;
-      selectHari.appendChild(opt);
-    });
-    colHari.appendChild(selectHari);
-
-    const colJam = document.createElement('div');
-    colJam.classList.add('col-md-6');
-    const jamDiv = document.createElement('div');
-    jamDiv.classList.add('d-flex');
-
-    const inputJamMulai = document.createElement('input');
-    inputJamMulai.type = "time";
-    inputJamMulai.name = "jamMulai[]";
-    inputJamMulai.classList.add('form-control', 'me-2');
-    inputJamMulai.value = jadwalItem.jamMulai;
-    inputJamMulai.disabled = true;
-
-    const spanPisah = document.createElement('span');
-    spanPisah.classList.add('mx-1', 'd-flex', 'align-items-center');
-    spanPisah.textContent = "-";
-
-    const inputJamSelesai = document.createElement('input');
-    inputJamSelesai.type = "time";
-    inputJamSelesai.name = "jamSelesai[]";
-    inputJamSelesai.classList.add('form-control', 'ms-2');
-    inputJamSelesai.value = jadwalItem.jamSelesai;
-    inputJamSelesai.disabled = true;
-
-    jamDiv.appendChild(inputJamMulai);
-    jamDiv.appendChild(spanPisah);
-    jamDiv.appendChild(inputJamSelesai);
-    colJam.appendChild(jamDiv);
-
-    const colTombol = document.createElement('div');
-    colTombol.classList.add('col-md-2', 'd-flex', 'justify-content-start', 'gap-2');
-
-    const btnTambah = document.createElement('button');
-    btnTambah.type = 'button';
-    btnTambah.classList.add('btn', 'btn-tambah', 'tambah-jadwal');
-    btnTambah.disabled = true;
-    btnTambah.innerHTML = '<i class="fas fa-plus" aria-hidden="true"></i>';
-
-    const btnHapus = document.createElement('button');
-    btnHapus.type = 'button';
-    btnHapus.classList.add('btn', 'btn-danger', 'hapus-jadwal');
-    btnHapus.disabled = true;
-    btnHapus.innerHTML = '<i class="fas fa-trash-alt"></i>';
-
-    colTombol.appendChild(btnTambah);
-    colTombol.appendChild(btnHapus);
-
-    row.appendChild(colHari);
-    row.appendChild(colJam);
-    row.appendChild(colTombol);
-    jadwalContainer.appendChild(row);
-  });
-
-  // Disable semua field form kecuali tombol submit dan kembali
-  const semuaElemenForm = form.querySelectorAll('input, select, textarea');
-  semuaElemenForm.forEach(el => {
+  // Disable semua input (readonly)
+  Array.from(form.elements).forEach((el) => {
+    el.readOnly = true;
     el.disabled = true;
   });
 
-  // File input
-  const inputFile = form.querySelector('input[type="file"]');
-  if (inputFile) inputFile.disabled = true;
+  // Sembunyikan input file gambar
+  gambarInput.style.display = "none";
+
+  // Fetch detail psikolog
+  try {
+    const TOKEN = sessionStorage.getItem("authToken");
+    if (!TOKEN) {
+      window.location.href = "https://mentalwell-10-frontend.vercel.app/";
+      return;
+    }
+
+    // Pertama, fetch semua psikolog untuk dapatkan id dari nama
+    const resList = await fetch(
+      "https://mentalwell10-api-production.up.railway.app/admin/psychologists",
+      { headers: { Authorization: `Bearer ${TOKEN}` } }
+    );
+    const listJson = await resList.json();
+    if (!resList.ok || listJson.status !== "success") throw new Error();
+
+    const psikolog = listJson.data.find((p) => p.name === nama);
+    if (!psikolog) {
+      Swal.fire({ icon: "error", title: "Psikolog tidak ditemukan" });
+      return;
+    }
+
+    // Fetch detail psikolog by id
+    const res = await fetch(
+      `https://mentalwell10-api-production.up.railway.app/admin/psychologist/${psikolog.id}`,
+      { headers: { Authorization: `Bearer ${TOKEN}` } }
+    );
+    const result = await res.json();
+    if (res.ok && result.status === "success") {
+      const data = result.data;
+      form.nama.value = data.name || "";
+      form.email.value = data.email || "";
+      form.password.value = "********";
+      form.nohp.value = data.phone_number || "";
+      form.tanggallahir.value = data.birthdate
+        ? data.birthdate.slice(0, 10)
+        : "";
+      form.jeniskelamin.value = data.gender || "";
+      form.pengalaman.value = data.experience || "";
+      form.bio.value = data.bio || "";
+
+      // Topik keahlian (checkbox)
+      if (Array.isArray(data.topics)) {
+        data.topics.forEach((t) => {
+          const cb = form.querySelector(
+            `input[type="checkbox"][value="${t.name}"]`
+          );
+          if (cb) cb.checked = true;
+        });
+      }
+
+      // Jadwal (schedules)
+      if (Array.isArray(data.schedules)) {
+        const jadwalRows = form.querySelectorAll(".jadwal-row");
+        data.schedules.forEach((jadwal, idx) => {
+          if (jadwalRows[idx]) {
+            const hariSelect = jadwalRows[idx].querySelector(
+              'select[name="hari[]"]'
+            );
+            const jamMulai = jadwalRows[idx].querySelector(
+              'input[name="jamMulai[]"]'
+            );
+            const jamSelesai = jadwalRows[idx].querySelector(
+              'input[name="jamSelesai[]"]'
+            );
+            if (hariSelect && jadwal.day) hariSelect.value = jadwal.day;
+            if (jamMulai && jadwal.start_time)
+              jamMulai.value = jadwal.start_time.slice(0, 5);
+            if (jamSelesai && jadwal.end_time)
+              jamSelesai.value = jadwal.end_time.slice(0, 5);
+          }
+        });
+      }
+
+      // Tampilkan nama file gambar dan preview
+      if (data.profile_image) {
+        const urlParts = data.profile_image.split("/");
+        namaFile.value = urlParts[urlParts.length - 1];
+        let imgPreview = document.createElement("img");
+        imgPreview.src = data.profile_image;
+        imgPreview.alt = "Foto Profil";
+        imgPreview.style.maxWidth = "200px";
+        imgPreview.style.display = "block";
+        imgPreview.style.marginBottom = "10px";
+        namaFile.parentNode.insertBefore(imgPreview, namaFile);
+      } else {
+        namaFile.value = "";
+      }
+    } else {
+      Swal.fire({ icon: "error", title: "Gagal memuat detail psikolog" });
+    }
+  } catch (err) {
+    Swal.fire({ icon: "error", title: "Gagal terhubung ke server" });
+  }
+
+  // Tombol kembali
+  btnKembali.addEventListener("click", () => {
+    window.history.back();
+  });
 });
