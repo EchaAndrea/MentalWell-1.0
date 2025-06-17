@@ -1,90 +1,171 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const form = document.getElementById("formArtikel");
-  const inputGambar = document.getElementById("gambar");
-  const inputNamaFile = document.getElementById("namaFile");
   const btnKembali = document.getElementById("btnKembali");
+  const namaFile = document.getElementById("namaFile");
+  const gambarInput = document.getElementById("gambar");
+  const kontenTextarea = document.getElementById("konten");
+
+  // Ambil artikel_id dari URL
   const params = new URLSearchParams(window.location.search);
   const artikelId = params.get("artikel_id");
-  if (!artikelId) return;
 
-  // Prefill data artikel
+  // Fetch artikel untuk isi form
   try {
-    const data = await fetchArtikelDetail(artikelId);
-    form.judul.value = data.title;
-    form.konten.value = data.content;
-    if (form.references) form.references.value = data.references || "";
-    if (data.image) document.getElementById("previewImage").src = data.image;
+    const TOKEN = sessionStorage.getItem("authToken");
+    if (!TOKEN) {
+      window.location.href = "https://mentalwell-10-frontend.vercel.app/";
+      return;
+    }
+    const res = await fetch(
+      `https://mentalwell10-api-production.up.railway.app/articles`,
+      {
+        headers: { Authorization: `Bearer ${TOKEN}` },
+      }
+    );
+    const result = await res.json();
+    if (
+      res.ok &&
+      result.status === "success" &&
+      Array.isArray(result.articles)
+    ) {
+      const artikel = result.articles.find(
+        (a) => String(a.id) === String(artikelId)
+      );
+      if (!artikel) {
+        Swal.fire({
+          icon: "error",
+          title: "Artikel tidak ditemukan",
+        });
+        return;
+      }
+      // Isi form
+      form.judul.value = artikel.title || "";
+      form.kategori.value = artikel.category || "-";
+      form.tanggal.value = artikel.created_at
+        ? artikel.created_at.slice(0, 10)
+        : "";
+      kontenTextarea.value = artikel.content || "";
+
+      // Tampilkan nama file gambar
+      if (artikel.image) {
+        const urlParts = artikel.image.split("/");
+        namaFile.value = urlParts[urlParts.length - 1];
+        // Tampilkan preview gambar di atas input file
+        let imgPreview = document.createElement("img");
+        imgPreview.src = artikel.image;
+        imgPreview.alt = "Gambar Artikel";
+        imgPreview.style.maxWidth = "200px";
+        imgPreview.style.display = "block";
+        imgPreview.style.marginBottom = "10px";
+        namaFile.parentNode.insertBefore(imgPreview, namaFile);
+      } else {
+        namaFile.value = "";
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Gagal memuat artikel",
+      });
+    }
   } catch (err) {
-    Swal.fire({ icon: "error", title: "Gagal", text: err.message });
+    Swal.fire({
+      icon: "error",
+      title: "Gagal terhubung ke server",
+    });
   }
 
-  inputGambar.addEventListener("change", () => {
-    const file = inputGambar.files[0];
-    inputNamaFile.value = file ? file.name : "";
+  // Preview nama file saat pilih gambar baru
+  gambarInput.addEventListener("change", function () {
+    if (gambarInput.files && gambarInput.files[0]) {
+      namaFile.value = gambarInput.files[0].name;
+    }
   });
 
+  // Tombol kembali
   btnKembali.addEventListener("click", () => {
-    window.location.href = "/src/templates/admin-artikel.html";
+    window.history.back();
   });
 
+  // Enable input untuk edit
+  Array.from(form.elements).forEach((el) => {
+    el.readOnly = false;
+    el.disabled = false;
+  });
+  kontenTextarea.readOnly = false;
+  gambarInput.style.display = "block";
+  form.querySelector(".btn-simpan").style.display = "inline-block";
+
+  // Submit form untuk edit artikel
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const TOKEN = sessionStorage.getItem("authToken");
-    const ENDPOINT = "https://mentalwell10-api-production.up.railway.app";
+    if (!TOKEN) {
+      Swal.fire({ icon: "error", title: "Token tidak ditemukan" });
+      return;
+    }
+
+    // Siapkan FormData hanya dengan field yang tidak kosong
     const formData = new FormData();
     if (form.judul.value.trim())
       formData.append("title", form.judul.value.trim());
-    if (form.konten.value.trim())
-      formData.append("content", form.konten.value.trim());
-    if (inputGambar.files[0]) formData.append("image", inputGambar.files[0]);
-    if (form.references && form.references.value.trim()) {
-      formData.append("references", form.references.value.trim());
+    if (form.kategori.value.trim())
+      formData.append("category", form.kategori.value.trim());
+    if (form.tanggal.value.trim())
+      formData.append("created_at", form.tanggal.value.trim());
+    if (kontenTextarea.value.trim())
+      formData.append("content", kontenTextarea.value.trim());
+    if (gambarInput.files && gambarInput.files[0]) {
+      formData.append("image", gambarInput.files[0]);
+    }
+
+    // Pastikan tidak ada field kosong yang dikirim
+    if (
+      !formData.has("title") &&
+      !formData.has("category") &&
+      !formData.has("created_at") &&
+      !formData.has("content") &&
+      !formData.has("image")
+    ) {
+      Swal.fire({
+        icon: "warning",
+        title: "Tidak ada perubahan",
+        text: "Isi setidaknya satu field untuk mengedit.",
+      });
+      return;
     }
 
     try {
-      const res = await fetch(`${ENDPOINT}/article/${artikelId}`, {
-        method: "PUT",
-        headers: { Authorization: `Bearer ${TOKEN}` },
-        body: formData,
-      });
+      const res = await fetch(
+        `https://mentalwell10-api-production.up.railway.app/article/${artikelId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+          },
+          body: formData,
+        }
+      );
       const result = await res.json();
       if (res.ok && result.status === "success") {
         Swal.fire({
           icon: "success",
-          title: "Artikel berhasil diupdate!",
-          text: result.message,
+          title: "Berhasil",
+          text: "Artikel berhasil diperbarui.",
         }).then(() => {
           window.location.href = "/src/templates/admin-artikel.html";
         });
       } else {
         Swal.fire({
           icon: "error",
-          title: "Gagal",
-          text: result.message || "Terjadi kesalahan.",
+          title: "Gagal update",
+          text: result.message || "Gagal memperbarui artikel.",
         });
       }
     } catch (err) {
       Swal.fire({
         icon: "error",
-        title: "Gagal",
-        text: "Tidak dapat terhubung ke server.",
+        title: "Gagal terhubung ke server",
       });
     }
   });
 });
-
-async function fetchArtikelDetail(id) {
-  const TOKEN = sessionStorage.getItem("authToken");
-  if (!TOKEN) throw new Error("Token tidak ditemukan. Silakan login ulang.");
-  const res = await fetch(
-    `https://mentalwell10-api-production.up.railway.app/article/${id}`,
-    { headers: { Authorization: `Bearer ${TOKEN}` } }
-  );
-  if (!res.ok) throw new Error("Gagal mengambil data artikel");
-  const result = await res.json();
-  if (result.status === "success") {
-    return result.data;
-  } else {
-    throw new Error(result.message || "Gagal mengambil data artikel");
-  }
-}
