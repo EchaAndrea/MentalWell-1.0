@@ -7,8 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const data = await fetchArtikelDetail(artikelId);
     document.getElementById("judul").textContent = data.title;
     document.getElementById("konten").textContent = data.content;
-    if (data.image) document.getElementById("previewImage").src = data.image;
-    document.getElementById("references").textContent = data.references || "-";
+    document.getElementById("kategori").textContent = data.category || "-";
     document.getElementById("tanggal").textContent = data.created_at
       ? new Date(data.created_at).toLocaleDateString("id-ID", {
           day: "2-digit",
@@ -16,6 +15,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           year: "numeric",
         })
       : "-";
+    document.getElementById("references").textContent = data.references || "-";
+    if (data.image) document.getElementById("previewImage").src = data.image;
   } catch (err) {
     Swal.fire({ icon: "error", title: "Gagal", text: err.message });
   }
