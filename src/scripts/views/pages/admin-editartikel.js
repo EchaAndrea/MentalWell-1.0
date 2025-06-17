@@ -9,17 +9,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(window.location.search);
   const artikelId = params.get("artikel_id");
 
-  // Disable semua input (readonly)
-  Array.from(form.elements).forEach((el) => {
-    el.readOnly = true;
-    el.disabled = true;
-  });
-  kontenTextarea.readOnly = true;
-
-  // Sembunyikan tombol simpan
-  form.querySelector(".btn-simpan").style.display = "none";
-  gambarInput.style.display = "none";
-
   // Fetch artikel
   try {
     const TOKEN = sessionStorage.getItem("authToken");
@@ -82,13 +71,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.history.back();
   });
 
-  Array.from(form.elements).forEach((el) => {
-    el.readOnly = false;
-    el.disabled = false;
-  });
-  kontenTextarea.readOnly = false;
-  form.querySelector(".btn-simpan").style.display = "inline-block";
-  gambarInput.style.display = "block";
+  // Jangan set readonly/disabled di sini!
+  // Pastikan input tetap aktif agar bisa diedit
 
   // Submit handler untuk edit artikel
   form.addEventListener("submit", async (e) => {
