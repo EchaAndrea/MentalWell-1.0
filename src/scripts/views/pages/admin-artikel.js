@@ -5,10 +5,10 @@ let currentPage = 1;
 
 async function fetchArticles() {
   const TOKEN = sessionStorage.getItem("authToken");
-if (!TOKEN) {
-  window.location.href = "https://mentalwell-10-frontend.vercel.app/";
-  return;
-}
+  if (!TOKEN) {
+    window.location.href = "https://mentalwell-10-frontend.vercel.app/";
+    return;
+  }
   try {
     const res = await fetch(
       `https://mentalwell10-api-production.up.railway.app/articles`,
@@ -17,6 +17,7 @@ if (!TOKEN) {
       }
     );
     const result = await res.json();
+    console.log("API result:", result); // Debug
     if (
       res.ok &&
       result.status === "success" &&
@@ -43,7 +44,10 @@ if (!TOKEN) {
   } catch (err) {
     allArticles = [];
     filteredData = [];
+    console.error("Fetch error:", err);
   }
+  renderKategoriOptions();
+  renderTable();
 }
 
 function renderKategoriOptions() {
@@ -230,7 +234,6 @@ window.hapusYangDipilih = hapusYangDipilih;
 
 document.addEventListener("DOMContentLoaded", async () => {
   await fetchArticles();
-  renderKategoriOptions();
   document
     .getElementById("filterKategori")
     .addEventListener("change", handleFilter);
@@ -244,5 +247,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     const checkboxes = document.querySelectorAll(".row-checkbox");
     checkboxes.forEach((cb) => (cb.checked = this.checked));
   });
-  renderTable();
 });
