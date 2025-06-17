@@ -220,7 +220,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     ).map((cb) => Number(cb.value));
 
     // Siapkan FormData
-    const formData = new FormData(); 
+    const formData = new FormData();
 
     formData.append("name", form.nama.value.trim());
     formData.append("nickname", form.nickname.value.trim());
@@ -245,9 +245,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     try {
-      const res = await fetch(`${ENDPOINT}/admin/psychologists/${psikologId}`, {
+      const res = await fetch(`https://mentalwell10-api-production.up.railway.app/admin/psychologists/${psikologId}`, {
         method: "PUT",
-        headers: { Authorization: `Bearer ${TOKEN}` },
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+        },
         body: formData,
       });
       const json = await res.json();
