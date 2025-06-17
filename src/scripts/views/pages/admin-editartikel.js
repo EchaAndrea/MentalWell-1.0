@@ -4,19 +4,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const namaFile = document.getElementById("namaFile");
   const kontenTextarea = document.getElementById("konten");
 
-  // Tambahkan input file tersembunyi ke dalam .input-group
-  const inputGroup = document.querySelector(".input-group");
-  let gambarInput = document.getElementById("gambar");
-  if (!gambarInput) {
-    gambarInput = document.createElement("input");
-    gambarInput.type = "file";
-    gambarInput.id = "gambar";
-    gambarInput.name = "gambar";
-    gambarInput.accept = "image/*";
-    gambarInput.style.display = "none";
-    inputGroup.appendChild(gambarInput);
-  }
-
   // Event klik label "Pilih" untuk buka file picker
   inputGroup
     .querySelector('label[for="gambar"]')
