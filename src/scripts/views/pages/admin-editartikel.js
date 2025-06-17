@@ -2,8 +2,50 @@ document.addEventListener("DOMContentLoaded", async () => {
   const form = document.getElementById("formArtikel");
   const btnKembali = document.getElementById("btnKembali");
   const namaFile = document.getElementById("namaFile");
-  const gambarInput = document.getElementById("gambar");
   const kontenTextarea = document.getElementById("konten");
+
+  // Tambahkan input file tersembunyi ke dalam .input-group
+  const inputGroup = document.querySelector(".input-group");
+  let gambarInput = document.getElementById("gambar");
+  if (!gambarInput) {
+    gambarInput = document.createElement("input");
+    gambarInput.type = "file";
+    gambarInput.id = "gambar";
+    gambarInput.name = "gambar";
+    gambarInput.accept = "image/*";
+    gambarInput.style.display = "none";
+    inputGroup.appendChild(gambarInput);
+  }
+
+  // Event klik label "Pilih" untuk buka file picker
+  inputGroup
+    .querySelector('label[for="gambar"]')
+    .addEventListener("click", function () {
+      gambarInput.click();
+    });
+
+  // Event tampilkan nama file di input text
+  gambarInput.addEventListener("change", function () {
+    if (gambarInput.files && gambarInput.files[0]) {
+      namaFile.value = gambarInput.files[0].name;
+    } else {
+      namaFile.value = "";
+    }
+  });
+
+  // Tombol kembali
+  btnKembali.addEventListener("click", () => {
+    window.history.back();
+  });
+
+  // Enable input untuk edit
+  Array.from(form.elements).forEach((el) => {
+    el.readOnly = false;
+    el.disabled = false;
+  });
+  kontenTextarea.readOnly = false;
+  gambarInput.style.display = "block";
+  form.querySelector(".btn-simpan").style.display = "inline-block";
 
   // Ambil artikel_id dari URL
   const params = new URLSearchParams(window.location.search);
@@ -65,29 +107,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       title: "Gagal terhubung ke server",
     });
   }
-
-  // Preview nama file saat pilih gambar baru
-  gambarInput.addEventListener("change", function () {
-    if (gambarInput.files && gambarInput.files[0]) {
-      namaFile.value = gambarInput.files[0].name;
-    } else {
-      namaFile.value = "";
-    }
-  });
-
-  // Tombol kembali
-  btnKembali.addEventListener("click", () => {
-    window.history.back();
-  });
-
-  // Enable input untuk edit
-  Array.from(form.elements).forEach((el) => {
-    el.readOnly = false;
-    el.disabled = false;
-  });
-  kontenTextarea.readOnly = false;
-  gambarInput.style.display = "block";
-  form.querySelector(".btn-simpan").style.display = "inline-block";
 
   // Submit form untuk edit artikel
   form.addEventListener("submit", async (e) => {
@@ -161,22 +180,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         icon: "error",
         title: "Gagal terhubung ke server",
       });
-    }
-  });
-
-  // Event klik label "Pilih" untuk buka file picker
-  document
-    .querySelector('label[for="gambar"]')
-    .addEventListener("click", function () {
-      gambarInput.click();
-    });
-
-  // Event tampilkan nama file di input text
-  gambarInput.addEventListener("change", function () {
-    if (gambarInput.files && gambarInput.files[0]) {
-      namaFile.value = gambarInput.files[0].name;
-    } else {
-      namaFile.value = "";
     }
   });
 });
