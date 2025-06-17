@@ -218,7 +218,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     const schedules = {};
     if (weekly.length > 0) schedules.weekly = weekly;
     if (custom.length > 0) schedules.custom = custom;
-    formData.append("schedules", JSON.stringify(schedules));
 
     // Ambil topik (ID) dari checkbox
     const topics = Array.from(
@@ -226,7 +225,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     ).map((cb) => Number(cb.value));
 
     // Siapkan FormData
-    const formData = new FormData();
+    const formData = new FormData(); // <-- DEKLARASI DULU DI SINI!
 
     formData.append("name", form.nama.value.trim());
     formData.append("nickname", form.nickname.value.trim());
