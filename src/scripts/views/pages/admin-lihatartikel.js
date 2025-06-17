@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   kontenTextarea.readOnly = true;
 
   // Sembunyikan tombol simpan
-  form.querySelector('.btn-simpan').style.display = "none";
+  form.querySelector(".btn-simpan").style.display = "none";
   gambarInput.style.display = "none";
 
   // Fetch artikel
@@ -87,3 +87,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Tombol kembali
   btnKembali.addEventListener("click", () => {
+    window.history.back();
+  });
+});
