@@ -62,9 +62,8 @@ function renderTable() {
       <td>${item.schedule_time}</td>
       <td>${renderStatus(item.payment_status)}</td>
       <td>
-        <a href="/src/templates/admin-detaildashboard.html?id=${
-          item.id
-        }" class="btn btn-sm btn-primary">Detail</a>
+        <a href="/src/templates/admin-detaildashboard.html?id=${item.id}" class="btn btn-sm btn-primary">Detail</a>
+        <img src="/src/public/admin/edit.png" width="13">
       </td>
     `;
     tbody.appendChild(tr);
