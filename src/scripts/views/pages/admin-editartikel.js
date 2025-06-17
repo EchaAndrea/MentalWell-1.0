@@ -72,9 +72,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.history.back();
   });
 
-  // Jangan set readonly/disabled di sini!
-  // Pastikan input tetap aktif agar bisa diedit
-
   // Submit handler untuk edit artikel
   form.addEventListener("submit", async (e) => {
     e.preventDefault();

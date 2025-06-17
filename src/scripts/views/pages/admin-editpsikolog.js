@@ -1,11 +1,4 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  const ENDPOINT = "https://mentalwell10-api-production.up.railway.app";
-  const TOKEN = sessionStorage.getItem("authToken");
-  if (!TOKEN) {
-    window.location.href = "/";
-    return;
-  }
-
   const form = document.getElementById("formPsikolog");
   const inputGambar = document.getElementById("gambar");
   const namaFileInput = document.getElementById("namaFile");
@@ -19,9 +12,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Prefill data psikolog
   try {
-    const res = await fetch(`${ENDPOINT}/admin/psychologists/${psikologId}`, {
-      headers: { Authorization: `Bearer ${TOKEN}` },
-    });
+    const TOKEN = sessionStorage.getItem("authToken");
+    if (!TOKEN) {
+      window.location.href = "https://mentalwell-10-frontend.vercel.app/";
+      return;
+    }
+    const res = await fetch(
+      `https://mentalwell10-api-production.up.railway.app/admin/psychologist/${psikologId}`,
+      {
+        headers: { Authorization: `Bearer ${TOKEN}` },
+      }
+    );
     const json = await res.json();
     if (!res.ok || json.status !== "success") {
       Swal.fire({
@@ -54,7 +55,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     jadwalContainer.innerHTML = "";
     if (Array.isArray(data.schedules)) {
       data.schedules.forEach((sch) => {
-        // Hanya pakai day, start_time, end_time
         addJadwalRow({
           day: sch.day,
           start_time: sch.start_time,
@@ -78,7 +78,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Submit form (PUT)
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    // Ambil jadwal
     const hariArr = Array.from(
       form.querySelectorAll('select[name="hari[]"]')
     ).map((i) => i.value);
@@ -98,11 +97,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
       }
     }
-    // Topik keahlian
     const topics = Array.from(
       form.querySelectorAll('input[name="keahlian"]:checked')
     ).map((cb) => Number(cb.value));
-    // FormData
     const formData = new FormData();
     formData.append("name", form.nama.value.trim());
     formData.append("nickname", form.nickname.value.trim());
@@ -118,11 +115,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (inputGambar.files[0])
       formData.append("profile_image", inputGambar.files[0]);
     try {
-      const res = await fetch(`${ENDPOINT}/admin/psychologists/${psikologId}`, {
-        method: "PUT",
-        headers: { Authorization: `Bearer ${TOKEN}` },
-        body: formData,
-      });
+      const res = await fetch(
+        `https://mentalwell10-api-production.up.railway.app/admin/psychologist/${psikologId}`,
+        {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${TOKEN}` },
+          body: formData,
+        }
+      );
       const json = await res.json();
       if (res.ok && json.status === "success") {
         Swal.fire({
@@ -148,7 +148,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // Fungsi tambah jadwal (minimal)
   function addJadwalRow(item = {}) {
     const row = document.createElement("div");
     row.className = "row mb-2 align-items-center jadwal-row";
