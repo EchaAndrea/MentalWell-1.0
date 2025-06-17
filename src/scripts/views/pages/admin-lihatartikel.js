@@ -4,8 +4,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const namaFile = document.getElementById('namaFile');
   const btnKembali = document.getElementById('btnKembali');
 
-  const ENDPOINT = 'https://mentalwellbackend-production.up.railway.app';
-  const TOKEN = '{{admin_token}}';
+async function fetchArtikelDetail(id) {
+  const TOKEN = sessionStorage.getItem("authToken");
+  const res = await fetch(`https://mentalwell10-api-production.up.railway.app/article/${id}`, {
+    headers: { Authorization: `Bearer ${TOKEN}` }
+  });
+  const result = await res.json();
+  if (res.ok && result.status === "success") {
+    return result.data;
+  } else {
+    throw new Error(result.message || "Gagal mengambil data artikel");
+  }
+}
 
   // Tampilkan nama file saat gambar dipilih
   inputGambar.addEventListener('change', () => {

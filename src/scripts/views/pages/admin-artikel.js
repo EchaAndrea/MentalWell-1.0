@@ -181,6 +181,7 @@ function renderPagination() {
 }
 
 async function hapusItem(id) {
+  const TOKEN = sessionStorage.getItem("authToken");
   const konfirmasi = await Swal.fire({
     icon: "warning",
     title: "Hapus Artikel?",
@@ -206,8 +207,6 @@ async function hapusItem(id) {
           text: "Artikel dihapus.",
         });
         await fetchArticles();
-        renderKategoriOptions();
-        renderTable();
       } else {
         Swal.fire({
           icon: "error",
