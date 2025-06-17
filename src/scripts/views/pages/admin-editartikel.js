@@ -164,31 +164,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // Event klik label untuk buka file picker
+  // Event klik label "Pilih" untuk buka file picker
   document
     .querySelector('label[for="gambar"]')
     .addEventListener("click", function () {
       gambarInput.click();
     });
 
-  // Event tampilkan nama file
+  // Event tampilkan nama file di input text
   gambarInput.addEventListener("change", function () {
     if (gambarInput.files && gambarInput.files[0]) {
       namaFile.value = gambarInput.files[0].name;
-    } else {
-      namaFile.value = "";
-    }
-  });
-
-  document
-    .getElementById("btnPilihGambar")
-    .addEventListener("click", function () {
-      document.getElementById("gambar").click();
-    });
-  document.getElementById("gambar").addEventListener("change", function () {
-    const namaFile = document.getElementById("namaFile");
-    if (this.files && this.files[0]) {
-      namaFile.value = this.files[0].name;
     } else {
       namaFile.value = "";
     }
