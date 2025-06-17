@@ -198,27 +198,22 @@ document.addEventListener("DOMContentLoaded", async function () {
     ).map((i) => i.value);
 
     // Format jadwal sesuai API
-    const weekly = [];
-    const custom = [];
+    const schedules = [];
     for (let i = 0; i < jamMulaiArr.length; i++) {
-      if (hariArr[i]) {
-        weekly.push({
-          day: hariArr[i].toLowerCase(),
-          start_time: jamMulaiArr[i],
-          end_time: jamSelesaiArr[i],
-        });
-      } else if (tanggalArr[i]) {
-        custom.push({
+      let time = `${jamMulaiArr[i]} - ${jamSelesaiArr[i]}`;
+      if (tanggalArr[i]) {
+        schedules.push({
           date: tanggalArr[i],
-          start_time: jamMulaiArr[i],
-          end_time: jamSelesaiArr[i],
+          time: time,
+        });
+      } else if (hariArr[i]) {
+        // Jika backend ingin hari, bisa tambahkan field day
+        schedules.push({
+          day: hariArr[i].toLowerCase(),
+          time: time,
         });
       }
     }
-    const schedules = {};
-    if (weekly.length > 0) schedules.weekly = weekly;
-    if (custom.length > 0) schedules.custom = custom;
-
     // Ambil topik (ID) dari checkbox
     const topics = Array.from(
       form.querySelectorAll('input[name="keahlian"]:checked')
