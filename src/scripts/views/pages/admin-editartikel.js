@@ -2,49 +2,25 @@ document.addEventListener("DOMContentLoaded", async () => {
   const form = document.getElementById("formArtikel");
   const btnKembali = document.getElementById("btnKembali");
   const namaFile = document.getElementById("namaFile");
+  const gambarInput = document.getElementById("gambar");
   const kontenTextarea = document.getElementById("konten");
-  const inputGroup = document.querySelector(".inputGroup"); // atau '#inputGroup' jika id
-
-  // Pastikan inputGroup tidak null sebelum digunakan
-  if (inputGroup) {
-    // Event klik label "Pilih" untuk buka file picker
-    inputGroup
-      .querySelector('label[for="gambar"]')
-      .addEventListener("click", function () {
-        gambarInput.click();
-      });
-
-    // Event tampilkan nama file di input text
-    gambarInput.addEventListener("change", function () {
-      if (gambarInput.files && gambarInput.files[0]) {
-        namaFile.value = gambarInput.files[0].name;
-      } else {
-        namaFile.value = "";
-      }
-    });
-  } else {
-    console.error("inputGroup tidak ditemukan di DOM");
-  }
-
-  // Tombol kembali
-  btnKembali.addEventListener("click", () => {
-    window.history.back();
-  });
-
-  // Enable input untuk edit
-  Array.from(form.elements).forEach((el) => {
-    el.readOnly = false;
-    el.disabled = false;
-  });
-  kontenTextarea.readOnly = false;
-  gambarInput.style.display = "block";
-  form.querySelector(".btn-simpan").style.display = "inline-block";
 
   // Ambil artikel_id dari URL
   const params = new URLSearchParams(window.location.search);
   const artikelId = params.get("artikel_id");
 
-  // Fetch artikel untuk isi form
+  // Disable semua input (readonly)
+  Array.from(form.elements).forEach((el) => {
+    el.readOnly = true;
+    el.disabled = true;
+  });
+  kontenTextarea.readOnly = true;
+
+  // Sembunyikan tombol simpan
+  form.querySelector(".btn-simpan").style.display = "none";
+  gambarInput.style.display = "none";
+
+  // Fetch artikel
   try {
     const TOKEN = sessionStorage.getItem("authToken");
     if (!TOKEN) {
@@ -81,6 +57,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         : "";
       kontenTextarea.value = artikel.content || "";
 
+      // Tampilkan nama file gambar
       if (artikel.image) {
         const urlParts = artikel.image.split("/");
         namaFile.value = urlParts[urlParts.length - 1];
@@ -91,7 +68,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       Swal.fire({
         icon: "error",
         title: "Gagal memuat artikel",
-        text: result.message || "Terjadi kesalahan saat memuat artikel.",
       });
     }
   } catch (err) {
@@ -101,54 +77,45 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // Submit form untuk edit artikel
+  // Tombol kembali
+  btnKembali.addEventListener("click", () => {
+    window.history.back();
+  });
+
+  Array.from(form.elements).forEach((el) => {
+    el.readOnly = false;
+    el.disabled = false;
+  });
+  kontenTextarea.readOnly = false;
+  form.querySelector(".btn-simpan").style.display = "inline-block";
+  gambarInput.style.display = "block";
+
+  // Submit handler untuk edit artikel
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const TOKEN = sessionStorage.getItem("authToken");
-    if (!TOKEN) {
-      Swal.fire({ icon: "error", title: "Token tidak ditemukan" });
-      return;
-    }
 
-    // Siapkan FormData hanya dengan field yang tidak kosong
     const formData = new FormData();
+    // Hanya kirim field yang tidak kosong
     if (form.judul.value.trim())
       formData.append("title", form.judul.value.trim());
     if (form.kategori.value.trim())
       formData.append("category", form.kategori.value.trim());
-    if (form.tanggal.value.trim()) {
-      formData.append("created_at", form.tanggal.value.trim());
-    }
     if (kontenTextarea.value.trim())
       formData.append("content", kontenTextarea.value.trim());
-    if (gambarInput.files && gambarInput.files[0]) {
-      formData.append("image", gambarInput.files[0]);
-    }
+    if (gambarInput.files[0]) formData.append("image", gambarInput.files[0]);
 
-    // Pastikan tidak ada field kosong yang dikirim
-    if (
-      !formData.has("title") &&
-      !formData.has("category") &&
-      !formData.has("created_at") &&
-      !formData.has("content") &&
-      !formData.has("image")
-    ) {
-      Swal.fire({
-        icon: "warning",
-        title: "Tidak ada perubahan",
-        text: "Isi setidaknya satu field untuk mengedit.",
-      });
+    if (formData.keys().next().done) {
+      Swal.fire({ icon: "error", title: "Tidak ada data yang diubah" });
       return;
     }
 
     try {
+      const TOKEN = sessionStorage.getItem("authToken");
       const res = await fetch(
         `https://mentalwell10-api-production.up.railway.app/article/${artikelId}`,
         {
           method: "PUT",
-          headers: {
-            Authorization: `Bearer ${TOKEN}`,
-          },
+          headers: { Authorization: `Bearer ${TOKEN}` },
           body: formData,
         }
       );
@@ -156,23 +123,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (res.ok && result.status === "success") {
         Swal.fire({
           icon: "success",
-          title: "Berhasil",
-          text: "Artikel berhasil diperbarui.",
+          title: "Artikel berhasil diperbarui",
         }).then(() => {
-          window.location.href = "/src/templates/admin-artikel.html";
+          window.location.reload();
         });
       } else {
         Swal.fire({
           icon: "error",
-          title: "Gagal update",
-          text: result.message || "Gagal memperbarui artikel.",
+          title: result.message || "Gagal memperbarui artikel",
         });
       }
     } catch (err) {
-      Swal.fire({
-        icon: "error",
-        title: "Gagal terhubung ke server",
-      });
+      Swal.fire({ icon: "error", title: "Gagal terhubung ke server" });
     }
   });
 });
