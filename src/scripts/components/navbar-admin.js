@@ -188,12 +188,12 @@ class NavbarAdmin extends HTMLElement {
   async fetchUserData() {
     try {
       const token = sessionStorage.getItem("authToken");
-      console.log("Token:", token);
+      console.log("Token yang digunakan:", token);
       if (!token) {
         throw new Error("Token tidak ditemukan. Silakan login ulang.");
       }
       const response = await fetch(
-        "https://mentalwell10-api-production.up.railway.app/profile",
+        "https://mentalwell10-api-production.up.railway.app/admin/profile",
         {
           headers: {
             "Content-Type": "application/json",
@@ -202,8 +202,14 @@ class NavbarAdmin extends HTMLElement {
         }
       );
 
+      // Tambahkan log response untuk debug
+      console.log("Response status:", response.status);
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const text = await response.text();
+        throw new Error(
+          `HTTP error! status: ${response.status}, body: ${text}`
+        );
       }
 
       const data = await response.json();
@@ -211,6 +217,12 @@ class NavbarAdmin extends HTMLElement {
     } catch (error) {
       console.error("Error saat fetch user:", error);
       this.renderUser(null);
+
+      // Tampilkan error ke UI jika perlu
+      const nicknameTag = this.shadowRoot.querySelector("#nicknameTag");
+      if (nicknameTag) {
+        nicknameTag.textContent = "Gagal memuat data admin";
+      }
     }
   }
 
