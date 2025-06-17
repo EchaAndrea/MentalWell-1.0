@@ -169,4 +169,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     .addEventListener("click", function () {
       gambarInput.click();
     });
+  document
+    .getElementById("btnPilihGambar")
+    .addEventListener("click", function () {
+      document.getElementById("gambar").click();
+    });
+  document.getElementById("gambar").addEventListener("change", function () {
+    const namaFile = document.getElementById("namaFile");
+    if (this.files && this.files[0]) {
+      namaFile.value = this.files[0].name;
+    } else {
+      namaFile.value = "";
+    }
+  });
 });
