@@ -164,16 +164,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Submit form untuk edit psikolog
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const formData = new FormData();
 
-    // Hanya kirim field yang diisi
+    const formData = new FormData();
     if (form.nama.value.trim()) formData.append("name", form.nama.value.trim());
-    if (form.nickname && form.nickname.value.trim())
+    if (form.nickname.value.trim())
       formData.append("nickname", form.nickname.value.trim());
-    if (form.email.value.trim())
-      formData.append("email", form.email.value.trim());
-    if (form.nohp.value.trim())
-      formData.append("phone_number", form.nohp.value.trim());
+    if (form.email.value.trim()) formData.append("email", form.email.value.trim());
+    if (form.nohp.value.trim()) formData.append("phone_number", form.nohp.value.trim());
     if (form.tanggallahir.value.trim())
       formData.append("birthdate", form.tanggallahir.value.trim());
     if (form.jeniskelamin.value.trim())
@@ -181,12 +178,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (form.bio.value.trim()) formData.append("bio", form.bio.value.trim());
     if (form.pengalaman.value.trim())
       formData.append("experience", form.pengalaman.value.trim());
-    if (form.harga && form.harga.value.trim())
-      formData.append("price", form.harga.value.trim());
-    if (form.password && form.password.value.trim())
-      formData.append("password", form.password.value.trim());
-    if (gambarInput.files && gambarInput.files[0])
-      formData.append("profile_image", gambarInput.files[0]);
+    if (form.harga.value.trim()) formData.append("price", form.harga.value.trim());
+    if (gambarInput.files[0]) formData.append("profile_image", gambarInput.files[0]);
 
     // Topik keahlian (checkbox, value ID)
     const topics = Array.from(
@@ -194,9 +187,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     ).map((cb) => Number(cb.value));
     if (topics.length > 0) formData.append("topics", JSON.stringify(topics));
 
-    // Jadwal (schedules)
-    const hariArr = Array.from(
-      form.querySelectorAll('select[name="hari[]"]')
+    // Jadwal (custom date)
+    const tanggalArr = Array.from(
+      form.querySelectorAll('input[name="tanggal[]"]')
     ).map((i) => i.value);
     const jamMulaiArr = Array.from(
       form.querySelectorAll('input[name="jamMulai[]"]')
@@ -205,19 +198,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       form.querySelectorAll('input[name="jamSelesai[]"]')
     ).map((i) => i.value);
     const schedules = [];
-    for (let i = 0; i < jamMulaiArr.length; i++) {
-      if (hariArr[i]) {
+    for (let i = 0; i < tanggalArr.length; i++) {
+      if (tanggalArr[i]) {
         const time = `${jamMulaiArr[i]} - ${jamSelesaiArr[i]}`;
-        schedules.push({ day: hariArr[i].toLowerCase(), time });
+        schedules.push({ date: tanggalArr[i], time });
       }
     }
-    if (schedules.length > 0)
-      formData.append("schedules", JSON.stringify(schedules));
+    if (schedules.length > 0) formData.append("schedules", JSON.stringify(schedules));
 
     try {
       const TOKEN = sessionStorage.getItem("authToken");
+      const id = /* ambil id psikolog dari variabel atau hasil fetch sebelumnya */;
       const res = await fetch(
-        `https://mentalwell10-api-production.up.railway.app/admin/psychologists/${psikolog.id}`,
+        `https://mentalwell10-api-production.up.railway.app/admin/psychologists/${id}`,
         {
           method: "PUT",
           headers: { Authorization: `Bearer ${TOKEN}` },
@@ -230,9 +223,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           icon: "success",
           title: "Berhasil",
           text: "Profil psikolog berhasil diperbarui.",
-        }).then(
-          () => (window.location.href = "/src/templates/admin-psikolog.html")
-        );
+        }).then(() => {
+          window.location.href = "/src/templates/admin-psikolog.html";
+        });
       } else {
         Swal.fire({
           icon: "error",
