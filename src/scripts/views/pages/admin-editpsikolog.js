@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Ambil nama dari URL (atau ganti dengan id jika sudah pakai id)
   const params = new URLSearchParams(window.location.search);
-  const nama = params.get("nama");
+  const id = params.get("id");
 
   // Disable semua input (readonly)
   Array.from(form.elements).forEach((el) => {
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const listJson = await resList.json();
     if (!resList.ok || listJson.status !== "success") throw new Error();
 
-    psikolog = listJson.data.find((p) => p.name === nama);
+    psikolog = listJson.data.find((p) => p.id === id);
     if (!psikolog) {
       Swal.fire({ icon: "error", title: "Psikolog tidak ditemukan" });
       return;
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Fetch detail psikolog by id
     const res = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/admin/psychologists/${psikolog.id}`,
+      `https://mentalwell10-api-production.up.railway.app/admin/psychologists/${id}`,
       { headers: { Authorization: `Bearer ${TOKEN}` } }
     );
     const result = await res.json();
