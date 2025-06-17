@@ -200,17 +200,17 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Format jadwal sesuai API
     const schedules = [];
     for (let i = 0; i < jamMulaiArr.length; i++) {
-      let time = `${jamMulaiArr[i]} - ${jamSelesaiArr[i]}`;
       if (tanggalArr[i]) {
         schedules.push({
           date: tanggalArr[i],
-          time: time,
+          start_time: jamMulaiArr[i],
+          end_time: jamSelesaiArr[i],
         });
       } else if (hariArr[i]) {
-        // Jika backend ingin hari, bisa tambahkan field day
         schedules.push({
           day: hariArr[i].toLowerCase(),
-          time: time,
+          start_time: jamMulaiArr[i],
+          end_time: jamSelesaiArr[i],
         });
       }
     }
@@ -245,13 +245,16 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     try {
-      const res = await fetch(`https://mentalwell10-api-production.up.railway.app/admin/psychologists/${psikologId}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${TOKEN}`,
-        },
-        body: formData,
-      });
+      const res = await fetch(
+        `https://mentalwell10-api-production.up.railway.app/admin/psychologists/${psikologId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+          },
+          body: formData,
+        }
+      );
       const json = await res.json();
       if (json.status === "success") {
         Swal.fire({
