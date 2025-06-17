@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   // Fetch detail psikolog untuk prefill
   try {
-    const res = await fetch(`${ENDPOINT}/admin/psychologist/${psikologId}`, {
+    const res = await fetch(`https://mentalwell10-api-production.up.railway.app//admin/psychologist/${psikologId}`, {
       headers: { Authorization: `Bearer ${TOKEN}` },
     });
     const json = await res.json();
