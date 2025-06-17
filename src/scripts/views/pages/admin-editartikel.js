@@ -163,4 +163,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     }
   });
+
+  document
+    .querySelector('label[for="gambar"]')
+    .addEventListener("click", function () {
+      gambarInput.click();
+    });
 });
