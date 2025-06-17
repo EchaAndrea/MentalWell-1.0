@@ -3,8 +3,6 @@ document.addEventListener("DOMContentLoaded", async function () {
   const inputGambar = document.getElementById("gambar");
   const namaFileInput = document.getElementById("namaFile");
   const jadwalContainer = document.getElementById("jadwalContainer");
-  const ENDPOINT = "https://mentalwell10-api-production.up.railway.app";
-  const TOKEN = sessionStorage.getItem("authToken");
 
   document.getElementById("btnKembali").addEventListener("click", () => {
     window.history.back();
@@ -12,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   // Ambil ID dari query string
   const urlParams = new URLSearchParams(window.location.search);
-  const psikologId = urlParams.get("id"); 
+  const psikologId = urlParams.get("id");
 
   // Fungsi tambah jadwal (editable)
   function addJadwalRow(item = {}) {
