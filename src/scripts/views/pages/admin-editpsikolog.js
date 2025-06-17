@@ -4,9 +4,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const namaFile = document.getElementById("namaFile");
   const gambarInput = document.getElementById("gambar");
 
-  // 1. Ambil ID dari URL
+  // Ambil nama dari URL (atau ganti dengan id jika sudah pakai id)
   const params = new URLSearchParams(window.location.search);
-  const id = params.get("id");
+  const nama = params.get("nama");
 
   // Disable semua input (readonly)
   Array.from(form.elements).forEach((el) => {
@@ -17,109 +17,119 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Sembunyikan input file gambar
   gambarInput.style.display = "none";
 
-  // 2. Fetch detail psikolog
-  async function loadPsikolog() {
-    try {
-      const TOKEN = sessionStorage.getItem("authToken");
-      if (!TOKEN) {
-        window.location.href = "/";
-        return;
-      }
+  let psikolog = null;
 
-      const res = await fetch(
-        `https://mentalwell10-api-production.up.railway.app/admin/psychologists/${id}`,
-        { headers: { Authorization: `Bearer ${TOKEN}` } }
-      );
-      const result = await res.json();
-      if (res.ok && result.status === "success") {
-        // 3. Isi form dengan data
-        const data = result.data;
-        form.nama.value = data.name || "";
-        form.nickname.value = data.nickname || "";
-        form.email.value = data.email || "";
-        form.password.value = "";
-        form.nohp.value = data.phone_number || "";
-        form.tanggallahir.value = data.birthdate
-          ? data.birthdate.slice(0, 10)
-          : "";
-        form.jeniskelamin.value = data.gender || "";
-        form.pengalaman.value = data.experience || "";
-        form.bio.value = data.bio || "";
-        form.harga.value = data.price || "";
-
-        // Topik keahlian (checkbox)
-        if (Array.isArray(data.topics)) {
-          data.topics.forEach((t) => {
-            const cb = form.querySelector(
-              `input[type="checkbox"][value="${t.id}"]`
-            );
-            if (cb) cb.checked = true;
-          });
-        }
-
-        // Jadwal (schedules)
-        if (Array.isArray(data.schedules)) {
-          const jadwalRows = form.querySelectorAll(".jadwal-row");
-          data.schedules.forEach((jadwal, idx) => {
-            if (jadwalRows[idx]) {
-              const hariSelect = jadwalRows[idx].querySelector(
-                'select[name="hari[]"]'
-              );
-              const jamMulai = jadwalRows[idx].querySelector(
-                'input[name="jamMulai[]"]'
-              );
-              const jamSelesai = jadwalRows[idx].querySelector(
-                'input[name="jamSelesai[]"]'
-              );
-              if (hariSelect && jadwal.day)
-                hariSelect.value =
-                  jadwal.day.charAt(0).toUpperCase() + jadwal.day.slice(1);
-              if (jamMulai && jadwal.start_time)
-                jamMulai.value = jadwal.start_time.slice(0, 5);
-              if (jamSelesai && jadwal.end_time)
-                jamSelesai.value = jadwal.end_time.slice(0, 5);
-            }
-          });
-        }
-
-        // Preview nama file gambar dan gambar profil
-        if (data.profile_image) {
-          const urlParts = data.profile_image.split("/");
-          namaFile.value = urlParts[urlParts.length - 1];
-
-          // Cek apakah sudah ada imgPreview, jika belum buat dan letakkan sebelum namaFile
-          let imgPreview = document.getElementById("imgPreview");
-          if (!imgPreview) {
-            imgPreview = document.createElement("img");
-            imgPreview.id = "imgPreview";
-            imgPreview.style.maxWidth = "200px";
-            imgPreview.style.display = "block";
-            imgPreview.style.marginBottom = "10px";
-            // Sisipkan sebelum namaFile agar urutan: gambar, lalu nama file
-            namaFile.parentNode.insertBefore(imgPreview, namaFile);
-          }
-          imgPreview.src = data.profile_image;
-          imgPreview.alt = "Foto Profil";
-        } else {
-          namaFile.value = "";
-          const imgPreview = document.getElementById("imgPreview");
-          if (imgPreview) imgPreview.remove();
-        }
-      } else {
-        Swal.fire({ icon: "error", title: "Gagal memuat detail psikolog" });
-      }
-    } catch (err) {
-      Swal.fire({ icon: "error", title: "Gagal terhubung ke server" });
+  // Fetch detail psikolog
+  try {
+    const TOKEN = sessionStorage.getItem("authToken");
+    if (!TOKEN) {
+      window.location.href = "https://mentalwell-10-frontend.vercel.app/";
+      return;
     }
+
+    // Pertama, fetch semua psikolog untuk dapatkan id dari nama
+    const resList = await fetch(
+      "https://mentalwell10-api-production.up.railway.app/admin/psychologists",
+      { headers: { Authorization: `Bearer ${TOKEN}` } }
+    );
+    const listJson = await resList.json();
+    if (!resList.ok || listJson.status !== "success") throw new Error();
+
+    psikolog = listJson.data.find((p) => p.name === nama);
+    if (!psikolog) {
+      Swal.fire({ icon: "error", title: "Psikolog tidak ditemukan" });
+      return;
+    }
+
+    // Fetch detail psikolog by id
+    const res = await fetch(
+      `https://mentalwell10-api-production.up.railway.app/admin/psychologists/${psikolog.id}`,
+      { headers: { Authorization: `Bearer ${TOKEN}` } }
+    );
+    const result = await res.json();
+    if (res.ok && result.status === "success") {
+      const data = result.data;
+      form.nama.value = data.name || "";
+      form.nickname.value = data.nickname || "";
+      form.email.value = data.email || "";
+      form.password.value = "";
+      form.nohp.value = data.phone_number || "";
+      form.tanggallahir.value = data.birthdate
+        ? data.birthdate.slice(0, 10)
+        : "";
+      form.jeniskelamin.value = data.gender || "";
+      form.pengalaman.value = data.experience || "";
+      form.bio.value = data.bio || "";
+      form.harga.value = data.price || "";
+
+      // Topik keahlian (checkbox)
+      if (Array.isArray(data.topics)) {
+        data.topics.forEach((t) => {
+          const cb = form.querySelector(
+            `input[type="checkbox"][value="${t.id}"]`
+          );
+          if (cb) cb.checked = true;
+        });
+      }
+
+      // Jadwal (schedules)
+      if (Array.isArray(data.schedules)) {
+        const jadwalRows = form.querySelectorAll(".jadwal-row");
+        data.schedules.forEach((jadwal, idx) => {
+          if (jadwalRows[idx]) {
+            const hariSelect = jadwalRows[idx].querySelector(
+              'select[name="hari[]"]'
+            );
+            const jamMulai = jadwalRows[idx].querySelector(
+              'input[name="jamMulai[]"]'
+            );
+            const jamSelesai = jadwalRows[idx].querySelector(
+              'input[name="jamSelesai[]"]'
+            );
+            if (hariSelect && jadwal.day)
+              hariSelect.value =
+                jadwal.day.charAt(0).toUpperCase() + jadwal.day.slice(1);
+            if (jamMulai && jadwal.start_time)
+              jamMulai.value = jadwal.start_time.slice(0, 5);
+            if (jamSelesai && jadwal.end_time)
+              jamSelesai.value = jadwal.end_time.slice(0, 5);
+          }
+        });
+      }
+
+      // Tampilkan nama file gambar dan preview
+      if (data.profile_image) {
+        const urlParts = data.profile_image.split("/");
+        namaFile.value = urlParts[urlParts.length - 1];
+        let imgPreview = document.getElementById("imgPreview");
+        if (!imgPreview) {
+          imgPreview = document.createElement("img");
+          imgPreview.id = "imgPreview";
+          imgPreview.style.maxWidth = "200px";
+          imgPreview.style.display = "block";
+          imgPreview.style.marginBottom = "10px";
+          namaFile.parentNode.insertBefore(imgPreview, namaFile);
+        }
+        imgPreview.src = data.profile_image;
+        imgPreview.alt = "Foto Profil";
+      } else {
+        namaFile.value = "";
+        const imgPreview = document.getElementById("imgPreview");
+        if (imgPreview) imgPreview.remove();
+      }
+    } else {
+      Swal.fire({ icon: "error", title: "Gagal memuat detail psikolog" });
+    }
+  } catch (err) {
+    Swal.fire({ icon: "error", title: "Gagal terhubung ke server" });
   }
-  loadPsikolog();
 
   // Enable input untuk edit
   Array.from(form.elements).forEach((el) => {
     el.readOnly = false;
     el.disabled = false;
   });
-  gambarInput.style.display = "none"; // tetap hidden, hanya pakai tombol custom
+  gambarInput.style.display = "block";
 
   // Input gambar: update nama file dan preview saat pilih file baru
   gambarInput.addEventListener("change", () => {
@@ -150,10 +160,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // 4. User edit form, lalu submit
+  // Submit form untuk edit psikolog
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-
     const formData = new FormData();
     if (form.nama.value.trim()) formData.append("name", form.nama.value.trim());
     if (form.nickname.value.trim())
@@ -203,7 +212,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       const TOKEN = sessionStorage.getItem("authToken");
       const res = await fetch(
-        `https://mentalwell10-api-production.up.railway.app/admin/psychologists/${id}`,
+        `https://mentalwell10-api-production.up.railway.app/admin/psychologists/${psikolog.id}`,
         {
           method: "PUT",
           headers: { Authorization: `Bearer ${TOKEN}` },
