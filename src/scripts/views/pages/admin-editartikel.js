@@ -179,4 +179,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       namaFile.value = "";
     }
   });
+
+  document
+    .getElementById("btnPilihGambar")
+    .addEventListener("click", function () {
+      document.getElementById("gambar").click();
+    });
+  document.getElementById("gambar").addEventListener("change", function () {
+    const namaFile = document.getElementById("namaFile");
+    if (this.files && this.files[0]) {
+      namaFile.value = this.files[0].name;
+    } else {
+      namaFile.value = "";
+    }
+  });
 });

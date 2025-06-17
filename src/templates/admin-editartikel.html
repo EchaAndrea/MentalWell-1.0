@@ -75,11 +75,12 @@
 
           <div class="mb-3">
             <label class="form-label fw-bold">Gambar</label>
-            <div class="input-group">
-              <label
-                class="input-group-text btn btn-file px-3"
-                for="gambar"
-                style="cursor: pointer"
+            <div style="display: flex; gap: 8px">
+              <button
+                type="button"
+                id="btnPilihGambar"
+                class="btn btn-primary"
+                style="display: flex; align-items: center"
               >
                 <img
                   src="/src/public/admin/gambar.png"
@@ -87,7 +88,7 @@
                   style="width: 18px; height: 18px; margin-right: 5px"
                 />
                 Pilih
-              </label>
+              </button>
               <input
                 type="file"
                 id="gambar"
