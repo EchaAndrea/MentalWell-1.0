@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Ambil nama dari URL (atau ganti dengan id jika sudah pakai id)
   const params = new URLSearchParams(window.location.search);
-  const id = params.get("id");
+  const nama = params.get("nama");
 
   // Disable semua input (readonly)
   Array.from(form.elements).forEach((el) => {
@@ -16,8 +16,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Sembunyikan input file gambar
   gambarInput.style.display = "none";
-
-  let psikolog = null;
 
   // Fetch detail psikolog
   try {
@@ -35,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const listJson = await resList.json();
     if (!resList.ok || listJson.status !== "success") throw new Error();
 
-    psikolog = listJson.data.find((p) => p.id === id);
+    const psikolog = listJson.data.find((p) => p.name === nama);
     if (!psikolog) {
       Swal.fire({ icon: "error", title: "Psikolog tidak ditemukan" });
       return;
@@ -43,16 +41,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Fetch detail psikolog by id
     const res = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/admin/psychologists/${id}`,
+      `https://mentalwell10-api-production.up.railway.app/admin/psychologist/${psikolog.id}`,
       { headers: { Authorization: `Bearer ${TOKEN}` } }
     );
     const result = await res.json();
     if (res.ok && result.status === "success") {
       const data = result.data;
       form.nama.value = data.name || "";
-      form.nickname.value = data.nickname || "";
       form.email.value = data.email || "";
-      form.password.value = "";
+      form.password.value = "********";
       form.nohp.value = data.phone_number || "";
       form.tanggallahir.value = data.birthdate
         ? data.birthdate.slice(0, 10)
@@ -60,13 +57,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       form.jeniskelamin.value = data.gender || "";
       form.pengalaman.value = data.experience || "";
       form.bio.value = data.bio || "";
-      form.harga.value = data.price || "";
 
       // Topik keahlian (checkbox)
       if (Array.isArray(data.topics)) {
         data.topics.forEach((t) => {
           const cb = form.querySelector(
-            `input[type="checkbox"][value="${t.id}"]`
+            `input[type="checkbox"][value="${t.name}"]`
           );
           if (cb) cb.checked = true;
         });
@@ -86,9 +82,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const jamSelesai = jadwalRows[idx].querySelector(
               'input[name="jamSelesai[]"]'
             );
-            if (hariSelect && jadwal.day)
-              hariSelect.value =
-                jadwal.day.charAt(0).toUpperCase() + jadwal.day.slice(1);
+            if (hariSelect && jadwal.day) hariSelect.value = jadwal.day;
             if (jamMulai && jadwal.start_time)
               jamMulai.value = jadwal.start_time.slice(0, 5);
             if (jamSelesai && jadwal.end_time)
@@ -101,21 +95,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (data.profile_image) {
         const urlParts = data.profile_image.split("/");
         namaFile.value = urlParts[urlParts.length - 1];
-        let imgPreview = document.getElementById("imgPreview");
-        if (!imgPreview) {
-          imgPreview = document.createElement("img");
-          imgPreview.id = "imgPreview";
-          imgPreview.style.maxWidth = "200px";
-          imgPreview.style.display = "block";
-          imgPreview.style.marginBottom = "10px";
-          namaFile.parentNode.insertBefore(imgPreview, namaFile);
-        }
+        let imgPreview = document.createElement("img");
         imgPreview.src = data.profile_image;
         imgPreview.alt = "Foto Profil";
+        imgPreview.style.maxWidth = "200px";
+        imgPreview.style.display = "block";
+        imgPreview.style.marginBottom = "10px";
+        namaFile.parentNode.insertBefore(imgPreview, namaFile);
       } else {
         namaFile.value = "";
-        const imgPreview = document.getElementById("imgPreview");
-        if (imgPreview) imgPreview.remove();
       }
     } else {
       Swal.fire({ icon: "error", title: "Gagal memuat detail psikolog" });
@@ -123,125 +111,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   } catch (err) {
     Swal.fire({ icon: "error", title: "Gagal terhubung ke server" });
   }
-
-  // Enable input untuk edit
-  Array.from(form.elements).forEach((el) => {
-    el.readOnly = false;
-    el.disabled = false;
-  });
-  gambarInput.style.display = "block";
-
-  // Input gambar: update nama file dan preview saat pilih file baru
-  gambarInput.addEventListener("change", () => {
-    const fileName =
-      gambarInput.files.length > 0 ? gambarInput.files[0].name : "";
-    namaFile.value = fileName;
-
-    let imgPreview = document.getElementById("imgPreview");
-    if (!imgPreview) {
-      imgPreview = document.createElement("img");
-      imgPreview.id = "imgPreview";
-      imgPreview.style.maxWidth = "200px";
-      imgPreview.style.display = "block";
-      imgPreview.style.marginBottom = "10px";
-      namaFile.parentNode.insertBefore(imgPreview, namaFile);
-    }
-    const file = gambarInput.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        imgPreview.src = e.target.result;
-        imgPreview.alt = "Foto Profil";
-      };
-      reader.readAsDataURL(file);
-    } else {
-      imgPreview.src = "";
-      imgPreview.alt = "";
-    }
-  });
-
-  // Submit form untuk edit psikolog
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    if (form.nama.value.trim()) formData.append("name", form.nama.value.trim());
-    if (form.nickname.value.trim())
-      formData.append("nickname", form.nickname.value.trim());
-    if (form.email.value.trim())
-      formData.append("email", form.email.value.trim());
-    if (form.nohp.value.trim())
-      formData.append("phone_number", form.nohp.value.trim());
-    if (form.tanggallahir.value.trim())
-      formData.append("birthdate", form.tanggallahir.value.trim());
-    if (form.jeniskelamin.value.trim())
-      formData.append("gender", form.jeniskelamin.value.trim());
-    if (form.bio.value.trim()) formData.append("bio", form.bio.value.trim());
-    if (form.pengalaman.value.trim())
-      formData.append("experience", form.pengalaman.value.trim());
-    if (form.harga.value.trim())
-      formData.append("price", form.harga.value.trim());
-    if (gambarInput.files[0])
-      formData.append("profile_image", gambarInput.files[0]);
-
-    // Topik keahlian (checkbox, value ID)
-    const topics = Array.from(
-      form.querySelectorAll('input[name="keahlian"]:checked')
-    ).map((cb) => Number(cb.value));
-    if (topics.length > 0) formData.append("topics", JSON.stringify(topics));
-
-    // Jadwal (custom date)
-    const tanggalArr = Array.from(
-      form.querySelectorAll('input[name="tanggal[]"]')
-    ).map((i) => i.value);
-    const jamMulaiArr = Array.from(
-      form.querySelectorAll('input[name="jamMulai[]"]')
-    ).map((i) => i.value);
-    const jamSelesaiArr = Array.from(
-      form.querySelectorAll('input[name="jamSelesai[]"]')
-    ).map((i) => i.value);
-    const schedules = [];
-    for (let i = 0; i < tanggalArr.length; i++) {
-      if (tanggalArr[i]) {
-        const time = `${jamMulaiArr[i]} - ${jamSelesaiArr[i]}`;
-        schedules.push({ date: tanggalArr[i], time });
-      }
-    }
-    if (schedules.length > 0)
-      formData.append("schedules", JSON.stringify(schedules));
-
-    try {
-      const TOKEN = sessionStorage.getItem("authToken");
-      const res = await fetch(
-        `https://mentalwell10-api-production.up.railway.app/admin/psychologists/${psikolog.id}`,
-        {
-          method: "PUT",
-          headers: { Authorization: `Bearer ${TOKEN}` },
-          body: formData,
-        }
-      );
-      const result = await res.json();
-      if (res.ok && result.status === "success") {
-        Swal.fire({
-          icon: "success",
-          title: "Berhasil",
-          text: "Profil psikolog berhasil diperbarui.",
-        }).then(() => {
-          window.location.href = "/src/templates/admin-psikolog.html";
-        });
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Gagal update",
-          text: result.message || "Gagal memperbarui data.",
-        });
-      }
-    } catch (err) {
-      Swal.fire({
-        icon: "error",
-        title: "Gagal terhubung ke server",
-      });
-    }
-  });
 
   // Tombol kembali
   btnKembali.addEventListener("click", () => {
