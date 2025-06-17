@@ -3,12 +3,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const inputGambar = document.getElementById("gambar");
   const inputNamaFile = document.getElementById("namaFile");
   const btnKembali = document.getElementById("btnKembali");
-  const ENDPOINT = "https://mentalwell10-api-production.up.railway.app";
-  const TOKEN = sessionStorage.getItem("authToken");
-
-  // Ambil id artikel dari query string
   const params = new URLSearchParams(window.location.search);
   const artikelId = params.get("artikel_id");
+  if (!artikelId) return;
 
   // Prefill data artikel
   try {
@@ -16,9 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     form.judul.value = data.title;
     form.konten.value = data.content;
     if (form.references) form.references.value = data.references || "";
-    if (data.image) {
-      document.getElementById("previewImage").src = data.image;
-    }
+    if (data.image) document.getElementById("previewImage").src = data.image;
   } catch (err) {
     Swal.fire({ icon: "error", title: "Gagal", text: err.message });
   }
@@ -34,7 +29,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-
+    const TOKEN = sessionStorage.getItem("authToken");
+    const ENDPOINT = "https://mentalwell10-api-production.up.railway.app";
     const formData = new FormData();
     if (form.judul.value.trim())
       formData.append("title", form.judul.value.trim());
@@ -79,12 +75,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function fetchArtikelDetail(id) {
   const TOKEN = sessionStorage.getItem("authToken");
+  if (!TOKEN) throw new Error("Token tidak ditemukan. Silakan login ulang.");
   const res = await fetch(
     `https://mentalwell10-api-production.up.railway.app/article/${id}`,
     { headers: { Authorization: `Bearer ${TOKEN}` } }
   );
+  if (!res.ok) throw new Error("Gagal mengambil data artikel");
   const result = await res.json();
-  if (res.ok && result.status === "success") {
+  if (result.status === "success") {
     return result.data;
   } else {
     throw new Error(result.message || "Gagal mengambil data artikel");
