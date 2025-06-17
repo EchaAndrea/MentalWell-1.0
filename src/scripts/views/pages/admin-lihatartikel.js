@@ -1,14 +1,43 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('formArtikel');
-  const inputGambar = document.getElementById('gambar');
-  const namaFile = document.getElementById('namaFile');
-  const btnKembali = document.getElementById('btnKembali');
+document.addEventListener("DOMContentLoaded", async () => {
+  const judul = document.getElementById("judul");
+  const konten = document.getElementById("konten");
+  const gambar = document.getElementById("previewImage");
+  const references = document.getElementById("references");
+  const tanggal = document.getElementById("tanggal");
+  const btnKembali = document.getElementById("btnKembali");
+
+  // Ambil id artikel dari query string
+  const params = new URLSearchParams(window.location.search);
+  const artikelId = params.get("artikel_id");
+
+  try {
+    const data = await fetchArtikelDetail(artikelId);
+    if (judul) judul.textContent = data.title;
+    if (konten) konten.textContent = data.content;
+    if (gambar && data.image) gambar.src = data.image;
+    if (references) references.textContent = data.references || "-";
+    if (tanggal && data.created_at)
+      tanggal.textContent = new Date(data.created_at).toLocaleDateString(
+        "id-ID",
+        { day: "2-digit", month: "long", year: "numeric" }
+      );
+  } catch (err) {
+    Swal.fire({ icon: "error", title: "Gagal", text: err.message });
+  }
+
+  if (btnKembali) {
+    btnKembali.addEventListener("click", () => {
+      window.location.href = "/src/templates/admin-artikel.html";
+    });
+  }
+});
 
 async function fetchArtikelDetail(id) {
   const TOKEN = sessionStorage.getItem("authToken");
-  const res = await fetch(`https://mentalwell10-api-production.up.railway.app/article/${id}`, {
-    headers: { Authorization: `Bearer ${TOKEN}` }
-  });
+  const res = await fetch(
+    `https://mentalwell10-api-production.up.railway.app/article/${id}`,
+    { headers: { Authorization: `Bearer ${TOKEN}` } }
+  );
   const result = await res.json();
   if (res.ok && result.status === "success") {
     return result.data;
@@ -16,54 +45,3 @@ async function fetchArtikelDetail(id) {
     throw new Error(result.message || "Gagal mengambil data artikel");
   }
 }
-
-  // Tampilkan nama file saat gambar dipilih
-  inputGambar.addEventListener('change', () => {
-    const file = inputGambar.files[0];
-    namaFile.value = file ? file.name : '';
-  });
-
-  // Tangani tombol kembali
-  if (btnKembali) {
-    btnKembali.addEventListener('click', () => {
-      window.location.href = '/src/templates/admin-artikel.html';
-    });
-  }
-
-  // Tangani submit form
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData();
-    formData.append('title', form.judul.value.trim());
-    formData.append('content', form.konten.value.trim());
-    if (inputGambar.files[0]) formData.append('image', inputGambar.files[0]);
-    if (form.references && form.references.value.trim()) {
-      formData.append('references', form.references.value.trim());
-    }
-
-    try {
-      const res = await fetch(`https://mentalwell10-api-production.up.railway.app/article`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${TOKEN}` },
-        body: formData
-      });
-      const result = await res.json();
-      if (res.ok && result.status === 'success') {
-        Swal.fire({
-          icon: 'success',
-          title: 'Artikel berhasil dibuat!',
-          text: result.message
-        }).then(() => {
-          window.location.href = '/src/templates/admin-artikel.html';
-        });
-        form.reset();
-        namaFile.value = '';
-      } else {
-        Swal.fire({ icon: 'error', title: 'Gagal', text: result.message || 'Terjadi kesalahan.' });
-      }
-    } catch (err) {
-      Swal.fire({ icon: 'error', title: 'Gagal', text: 'Tidak dapat terhubung ke server.' });
-    }
-  });
-});

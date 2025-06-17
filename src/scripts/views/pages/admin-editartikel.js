@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     form.judul.value = data.title;
     form.konten.value = data.content;
     if (form.references) form.references.value = data.references || "";
-    // Tampilkan gambar jika ada
     if (data.image) {
       document.getElementById("previewImage").src = data.image;
     }
@@ -78,14 +77,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 });
 
-// Fungsi ambil detail artikel (bisa di-share ke file lain)
 async function fetchArtikelDetail(id) {
   const TOKEN = sessionStorage.getItem("authToken");
   const res = await fetch(
     `https://mentalwell10-api-production.up.railway.app/article/${id}`,
-    {
-      headers: { Authorization: `Bearer ${TOKEN}` },
-    }
+    { headers: { Authorization: `Bearer ${TOKEN}` } }
   );
   const result = await res.json();
   if (res.ok && result.status === "success") {
