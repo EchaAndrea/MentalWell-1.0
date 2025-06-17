@@ -37,8 +37,12 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       </div>
       <div class="col-md-2 d-flex justify-content-start gap-2">
-        <button type="button" class="btn btn-tambah tambah-jadwal"><i class="fas fa-plus"></i></button>
-        <button type="button" class="btn btn-danger hapus-jadwal"><i class="fas fa-trash-alt"></i></button>
+        <button type="button" class="btn btn-tambah tambah-jadwal" aria-label="Tambah jadwal" title="Tambah jadwal">
+          <i class="fas fa-plus"></i>
+        </button>
+        <button type="button" class="btn btn-danger hapus-jadwal" aria-label="Hapus jadwal" title="Hapus jadwal">
+          <i class="fas fa-trash-alt"></i>
+        </button>
       </div>
     `;
 
@@ -49,7 +53,38 @@ document.addEventListener("DOMContentLoaded", () => {
     row.querySelector('input[name="jamSelesai[]"]').value =
       item.jamSelesai || "";
 
+    // Event: jika hari diisi, tanggal disable. Jika tanggal diisi, hari disable.
+    const hariSelect = row.querySelector('select[name="hari[]"]');
+    const tanggalInput = row.querySelector('input[name="tanggal[]"]');
+    function toggleDisable() {
+      if (hariSelect.value) {
+        tanggalInput.disabled = true;
+      } else {
+        tanggalInput.disabled = false;
+      }
+      if (tanggalInput.value) {
+        hariSelect.disabled = true;
+      } else {
+        hariSelect.disabled = false;
+      }
+    }
+    hariSelect.addEventListener("change", toggleDisable);
+    tanggalInput.addEventListener("change", toggleDisable);
+
+    // Inisialisasi disable
+    toggleDisable();
+
     jadwalContainer.appendChild(row);
+    updateHapusButton();
+  }
+
+  // Update tombol hapus: disable jika hanya 1 row
+  function updateHapusButton() {
+    const rows = jadwalContainer.querySelectorAll(".jadwal-row");
+    rows.forEach((row, idx) => {
+      const hapusBtn = row.querySelector(".hapus-jadwal");
+      hapusBtn.disabled = rows.length === 1;
+    });
   }
 
   // Event delegasi untuk tambah/hapus jadwal
@@ -61,6 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const row = e.target.closest(".jadwal-row");
       if (jadwalContainer.children.length > 1) {
         row.remove();
+        updateHapusButton();
       }
     }
   });
@@ -109,7 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
       form.querySelectorAll('input[name="keahlian"]:checked')
     ).map((cb) => Number(cb.value));
 
-    // Siapkan FormData
+    // Siapkan FormData sesuai urutan field
     const formData = new FormData();
     formData.append("name", form.nama.value.trim());
     formData.append("nickname", form.nickname.value.trim());
