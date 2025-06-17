@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", async function () {
-  const form = document.getElementById("formPsikolog"); 
+  const form = document.getElementById("formPsikolog");
   const inputGambar = document.getElementById("gambar");
   const namaFileInput = document.getElementById("namaFile");
   const jadwalContainer = document.getElementById("jadwalContainer");
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   // Ambil ID dari query string
   const urlParams = new URLSearchParams(window.location.search);
-  const psikologId = urlParams.get("psikolog_id");
+  const psikologId = urlParams.get("id"); 
 
   // Fungsi tambah jadwal (editable)
   function addJadwalRow(item = {}) {
