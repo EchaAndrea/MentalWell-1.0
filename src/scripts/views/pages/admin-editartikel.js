@@ -3,22 +3,28 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btnKembali = document.getElementById("btnKembali");
   const namaFile = document.getElementById("namaFile");
   const kontenTextarea = document.getElementById("konten");
+  const inputGroup = document.querySelector(".inputGroup"); // atau '#inputGroup' jika id
 
-  // Event klik label "Pilih" untuk buka file picker
-  inputGroup
-    .querySelector('label[for="gambar"]')
-    .addEventListener("click", function () {
-      gambarInput.click();
+  // Pastikan inputGroup tidak null sebelum digunakan
+  if (inputGroup) {
+    // Event klik label "Pilih" untuk buka file picker
+    inputGroup
+      .querySelector('label[for="gambar"]')
+      .addEventListener("click", function () {
+        gambarInput.click();
+      });
+
+    // Event tampilkan nama file di input text
+    gambarInput.addEventListener("change", function () {
+      if (gambarInput.files && gambarInput.files[0]) {
+        namaFile.value = gambarInput.files[0].name;
+      } else {
+        namaFile.value = "";
+      }
     });
-
-  // Event tampilkan nama file di input text
-  gambarInput.addEventListener("change", function () {
-    if (gambarInput.files && gambarInput.files[0]) {
-      namaFile.value = gambarInput.files[0].name;
-    } else {
-      namaFile.value = "";
-    }
-  });
+  } else {
+    console.error("inputGroup tidak ditemukan di DOM");
+  }
 
   // Tombol kembali
   btnKembali.addEventListener("click", () => {
