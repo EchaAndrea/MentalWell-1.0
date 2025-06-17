@@ -58,37 +58,40 @@ document.addEventListener("DOMContentLoaded", async function () {
       });
     }
 
-    // Jadwal 
+    // Jadwal (tabel seperti di admin-psikolog)
     const jadwalContainer = document.getElementById("jadwalContainer");
     jadwalContainer.innerHTML = "";
     if (Array.isArray(data.schedules) && data.schedules.length > 0) {
+      let table = `
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm mb-0">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Hari/Tanggal</th>
+                <th>Jam Mulai</th>
+                <th>Jam Selesai</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
       data.schedules.forEach((sch, idx) => {
-        // Ambil hari saja, jika ada
-        let hari = sch.day
-          ? sch.day.charAt(0).toUpperCase() + sch.day.slice(1)
-          : sch.date
-          ? sch.date
-          : "-";
-        const row = document.createElement("div");
-        row.className = "row mb-2 align-items-center jadwal-row";
-        row.innerHTML = `
-          <div class="col-md-4">
-            <input type="text" class="form-control" value="${hari}" readonly>
-          </div>
-          <div class="col-md-6">
-            <div class="d-flex">
-              <input type="time" class="form-control me-2" value="${
-                sch.start_time || ""
-              }" readonly>
-              <span class="mx-1 d-flex align-items-center">-</span>
-              <input type="time" class="form-control ms-2" value="${
-                sch.end_time || ""
-              }" readonly>
-            </div>
-          </div>
+        let hariTanggal = sch.day ? sch.day : sch.date;
+        table += `
+          <tr>
+            <td>${idx + 1}</td>
+            <td>${hariTanggal || "-"}</td>
+            <td>${sch.start_time || "-"}</td>
+            <td>${sch.end_time || "-"}</td>
+          </tr>
         `;
-        jadwalContainer.appendChild(row);
       });
+      table += `
+            </tbody>
+          </table>
+        </div>
+      `;
+      jadwalContainer.innerHTML = table;
     } else {
       jadwalContainer.innerHTML =
         "<span class='text-muted'>Tidak ada jadwal</span>";
