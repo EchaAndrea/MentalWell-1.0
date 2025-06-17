@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnKembali = document.getElementById("btnKembali");
   const inputGambar = document.getElementById("gambar");
   const inputNamaFile = document.getElementById("namaFile");
+  const kategoriSelect = document.getElementById("kategori");
 
   const ENDPOINT = "https://mentalwell10-api-production.up.railway.app";
   const TOKEN = sessionStorage.getItem("authToken"); // <-- perbaiki token
@@ -29,6 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (form.references && form.references.value.trim()) {
       formData.append("references", form.references.value.trim());
     }
+    const kategoriDipilih = kategoriSelect.value;
+    formData.append("category", kategoriDipilih);
 
     try {
       const res = await fetch(`${ENDPOINT}/article`, {
