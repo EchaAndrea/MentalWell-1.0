@@ -1,92 +1,109 @@
-document.addEventListener("DOMContentLoaded", async () => {
-  const form = document.getElementById("formArtikel");
-  const btnKembali = document.getElementById("btnKembali");
-  const namaFile = document.getElementById("namaFile");
-
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get("id");
-
-  try {
-    const TOKEN = sessionStorage.getItem("authToken");
-    const res = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/admin/psychologists/${id}`,
-      { headers: { Authorization: `Bearer ${TOKEN}` } }
-    );
-    const result = await res.json();
-    if (res.ok && result.status === "success") {
-      const data = result.data;
-      form.nama.value = data.name || "";
-      form.nickname.value = data.nickname || "";
-      form.email.value = data.email || "";
-      form.password.value = "********";
-      form.nohp.value = data.phone_number || "";
-      form.tanggallahir.value = data.birthdate
-        ? data.birthdate.slice(0, 10)
-        : "";
-      form.jeniskelamin.value = data.gender || "";
-      form.pengalaman.value = data.experience || "";
-      form.bio.value = data.bio || "";
-
-      // Topik keahlian (checkbox)
-      if (Array.isArray(data.topics)) {
-        data.topics.forEach((t) => {
-          const cb = form.querySelector(
-            `input[type="checkbox"][value="${t.id}"]`
-          );
-          if (cb) cb.checked = true;
-        });
-      }
-
-      // Jadwal (schedules)
-      if (Array.isArray(data.schedules)) {
-        const jadwalRows = form.querySelectorAll(".jadwal-row");
-        data.schedules.forEach((jadwal, idx) => {
-          if (jadwalRows[idx]) {
-            const hariSelect = jadwalRows[idx].querySelector(
-              'select[name="hari[]"]'
-            );
-            const jamMulai = jadwalRows[idx].querySelector(
-              'input[name="jamMulai[]"]'
-            );
-            const jamSelesai = jadwalRows[idx].querySelector(
-              'input[name="jamSelesai[]"]'
-            );
-            if (hariSelect && jadwal.day) hariSelect.value = jadwal.day;
-            if (jamMulai && jadwal.start_time)
-              jamMulai.value = jadwal.start_time.slice(0, 5);
-            if (jamSelesai && jadwal.end_time)
-              jamSelesai.value = jadwal.end_time.slice(0, 5);
-          }
-        });
-      }
-
-      // Tampilkan nama file gambar dan preview
-      if (data.profile_image) {
-        const urlParts = data.profile_image.split("/");
-        namaFile.value = urlParts[urlParts.length - 1];
-        let imgPreview = document.getElementById("imgPreview");
-        if (!imgPreview) {
-          imgPreview = document.createElement("img");
-          imgPreview.id = "imgPreview";
-          imgPreview.style.maxWidth = "200px";
-          imgPreview.style.display = "block";
-          imgPreview.style.marginBottom = "10px";
-          namaFile.parentNode.insertBefore(imgPreview, namaFile);
-        }
-        imgPreview.src = data.profile_image;
-        imgPreview.alt = "Foto Profil";
-      } else {
-        namaFile.value = "";
-      }
-    } else {
-      Swal.fire({ icon: "error", title: "Gagal memuat detail psikolog" });
-    }
-  } catch (err) {
-    Swal.fire({ icon: "error", title: "Gagal terhubung ke server" });
-  }
-
+document.addEventListener("DOMContentLoaded", async function () {
   // Tombol kembali
-  btnKembali.addEventListener("click", () => {
+  document.getElementById("btnKembali").addEventListener("click", () => {
     window.history.back();
   });
+
+  // Ambil ID dari query string
+  const urlParams = new URLSearchParams(window.location.search);
+  const psikologId = urlParams.get("id");
+  if (!psikologId) {
+    alert("ID psikolog tidak ditemukan.");
+    return;
+  }
+
+  // Ambil token
+  const TOKEN = sessionStorage.getItem("authToken");
+  if (!TOKEN) {
+    window.location.href = "https://mentalwell-10-frontend.vercel.app/";
+    return;
+  }
+
+  try {
+    const res = await fetch(
+      `https://mentalwell10-api-production.up.railway.app/admin/psychologist/${psikologId}`,
+      {
+        headers: { Authorization: `Bearer ${TOKEN}` },
+      }
+    );
+    if (res.status === 401) {
+      alert("Sesi Anda sudah habis atau tidak valid. Silakan login ulang.");
+      window.location.href = "https://mentalwell-10-frontend.vercel.app/";
+      return;
+    }
+    const json = await res.json();
+    if (json.status !== "success") throw new Error("Gagal mengambil data.");
+
+    const data = json.data;
+    // Isi form
+    const form = document.getElementById("formArtikel");
+    form.nama.value = data.name || "";
+    form.nickname.value = data.nickname || "";
+    form.email.value = data.email || "";
+    form.password.value = "********";
+    form.nohp.value = data.phone_number || "";
+    form.tanggallahir.value = data.birthdate || "";
+    form.jeniskelamin.value = data.gender || ""; // Jika ada field gender
+    form.pengalaman.value = data.experience || "";
+    form.harga.value = data.price || "";
+    form.bio.value = data.bio || "";
+
+    // Topik keahlian (checkbox)
+    if (Array.isArray(data.topics)) {
+      data.topics.forEach((topic) => {
+        // Cekbox value bisa disesuaikan dengan id atau name
+        const checkbox = form.querySelector(
+          `input[name="keahlian"][value="${topic.id}"]`
+        );
+        if (checkbox) checkbox.checked = true;
+      });
+    }
+
+    // Jadwal
+    const jadwalContainer = document.getElementById("jadwalContainer");
+    jadwalContainer.innerHTML = "";
+    if (Array.isArray(data.schedules) && data.schedules.length > 0) {
+      data.schedules.forEach((sch) => {
+        let jadwalText = "";
+        if (sch.day) {
+          jadwalText = `${sch.day}, ${sch.start_time} - ${sch.end_time}`;
+        } else if (sch.date) {
+          jadwalText = `${sch.date}, ${sch.start_time} - ${sch.end_time}`;
+        }
+        jadwalContainer.innerHTML += `<div class="badge bg-primary me-2 mb-2">${jadwalText}</div>`;
+      });
+    } else {
+      jadwalContainer.innerHTML =
+        "<span class='text-muted'>Tidak ada jadwal</span>";
+    }
+
+    // Foto profil
+    if (data.profile_image) {
+      // Tampilkan nama file atau preview gambar
+      document.getElementById("namaFile").value = data.profile_image
+        .split("/")
+        .pop();
+      // Optional: tampilkan preview gambar
+      let imgPreview = document.getElementById("imgPreview");
+      if (!imgPreview) {
+        imgPreview = document.createElement("img");
+        imgPreview.id = "imgPreview";
+        imgPreview.style.maxWidth = "120px";
+        imgPreview.style.display = "block";
+        imgPreview.style.marginTop = "10px";
+        document.getElementById("namaFile").parentNode.appendChild(imgPreview);
+      }
+      imgPreview.src = data.profile_image;
+    }
+
+    // Disable semua input (readonly)
+    Array.from(form.elements).forEach((el) => {
+      el.disabled = true;
+    });
+    // Kecuali tombol kembali
+    document.getElementById("btnKembali").disabled = false;
+  } catch (e) {
+    alert("Gagal memuat detail psikolog. Silakan coba lagi nanti.");
+    console.error(e);
+  }
 });
