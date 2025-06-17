@@ -46,18 +46,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         : "";
       kontenTextarea.value = artikel.content || "";
 
-      // Tampilkan nama file gambar
       if (artikel.image) {
         const urlParts = artikel.image.split("/");
         namaFile.value = urlParts[urlParts.length - 1];
-        // Tampilkan preview gambar di atas input file
-        let imgPreview = document.createElement("img");
-        imgPreview.src = artikel.image;
-        imgPreview.alt = "Gambar Artikel";
-        imgPreview.style.maxWidth = "200px";
-        imgPreview.style.display = "block";
-        imgPreview.style.marginBottom = "10px";
-        namaFile.parentNode.insertBefore(imgPreview, namaFile);
       } else {
         namaFile.value = "";
       }
@@ -65,6 +56,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       Swal.fire({
         icon: "error",
         title: "Gagal memuat artikel",
+        text: result.message || "Terjadi kesalahan saat memuat artikel.",
       });
     }
   } catch (err) {
