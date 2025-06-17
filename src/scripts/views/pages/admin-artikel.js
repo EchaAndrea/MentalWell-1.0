@@ -182,21 +182,28 @@ function renderPagination() {
 
 async function hapusItem(id) {
   const TOKEN = sessionStorage.getItem("authToken");
+  if (!TOKEN) {
+    Swal.fire({ icon: "error", title: "Token tidak ditemukan" });
+    return;
+  }
+
   const konfirmasi = await Swal.fire({
+    title: "Yakin ingin menghapus artikel ini?",
     icon: "warning",
-    title: "Hapus Artikel?",
-    text: "Artikel yang dihapus tidak dapat dikembalikan.",
     showCancelButton: true,
     confirmButtonText: "Ya, hapus!",
     cancelButtonText: "Batal",
   });
+
   if (konfirmasi.isConfirmed) {
     try {
       const res = await fetch(
         `https://mentalwell10-api-production.up.railway.app/article/${id}`,
         {
           method: "DELETE",
-          headers: { Authorization: `Bearer ${TOKEN}` },
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+          },
         }
       );
       const result = await res.json();
@@ -204,21 +211,21 @@ async function hapusItem(id) {
         Swal.fire({
           icon: "success",
           title: "Berhasil",
-          text: "Artikel dihapus.",
+          text: "Artikel berhasil dihapus.",
         });
-        await fetchArticles();
+        // Refresh data
+        fetchArticles();
       } else {
         Swal.fire({
           icon: "error",
-          title: "Gagal",
-          text: result.message || "Gagal menghapus.",
+          title: "Gagal hapus",
+          text: result.message || "Gagal menghapus artikel.",
         });
       }
     } catch (err) {
       Swal.fire({
         icon: "error",
-        title: "Gagal",
-        text: "Tidak dapat terhubung ke server.",
+        title: "Gagal terhubung ke server",
       });
     }
   }
