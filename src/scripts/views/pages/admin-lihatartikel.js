@@ -1,86 +1,89 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  // Deklarasi variabel input di atas
-  const judul = document.getElementById("judul");
-  const kategori = document.getElementById("kategori");
-  const tanggal = document.getElementById("tanggal");
-  const konten = document.getElementById("konten");
-  const references = document.getElementById("references");
-  const gambar = document.getElementById("previewImage");
-  const btnSimpan = document.getElementById("btnSimpan");
+  const form = document.getElementById("formArtikel");
   const btnKembali = document.getElementById("btnKembali");
+  const namaFile = document.getElementById("namaFile");
+  const gambarInput = document.getElementById("gambar");
+  const kontenTextarea = document.getElementById("konten");
 
+  // Ambil artikel_id dari URL
   const params = new URLSearchParams(window.location.search);
   const artikelId = params.get("artikel_id");
-  if (!artikelId) return;
 
-  let data;
+  // Disable semua input (readonly)
+  Array.from(form.elements).forEach((el) => {
+    el.readOnly = true;
+    el.disabled = true;
+  });
+  kontenTextarea.readOnly = true;
+
+  // Sembunyikan tombol simpan
+  form.querySelector('.btn-simpan').style.display = "none";
+  gambarInput.style.display = "none";
+
+  // Fetch artikel
   try {
-    // Fetch semua artikel
-    const articles = await fetchArticles();
-    // Cari artikel sesuai id
-    data = articles.find((a) => String(a.id) === String(artikelId));
-    if (!data) throw new Error("Artikel tidak ditemukan");
+    const TOKEN = sessionStorage.getItem("authToken");
+    if (!TOKEN) {
+      window.location.href = "https://mentalwell-10-frontend.vercel.app/";
+      return;
+    }
+    const res = await fetch(
+      `https://mentalwell10-api-production.up.railway.app/articles`,
+      {
+        headers: { Authorization: `Bearer ${TOKEN}` },
+      }
+    );
+    const result = await res.json();
+    if (
+      res.ok &&
+      result.status === "success" &&
+      Array.isArray(result.articles)
+    ) {
+      const artikel = result.articles.find(
+        (a) => String(a.id) === String(artikelId)
+      );
+      if (!artikel) {
+        Swal.fire({
+          icon: "error",
+          title: "Artikel tidak ditemukan",
+        });
+        return;
+      }
+      // Isi form
+      form.judul.value = artikel.title || "";
+      form.kategori.value = artikel.category || "-";
+      form.tanggal.value = artikel.created_at
+        ? artikel.created_at.slice(0, 10)
+        : "";
+      kontenTextarea.value = artikel.content || "";
+
+      // Tampilkan nama file gambar
+      if (artikel.image) {
+        const urlParts = artikel.image.split("/");
+        namaFile.value = urlParts[urlParts.length - 1];
+        // Tampilkan preview gambar di atas input file
+        let imgPreview = document.createElement("img");
+        imgPreview.src = artikel.image;
+        imgPreview.alt = "Gambar Artikel";
+        imgPreview.style.maxWidth = "200px";
+        imgPreview.style.display = "block";
+        imgPreview.style.marginBottom = "10px";
+        namaFile.parentNode.insertBefore(imgPreview, namaFile);
+      } else {
+        namaFile.value = "";
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Gagal memuat artikel",
+      });
+    }
   } catch (err) {
-    Swal.fire({ icon: "error", title: "Gagal", text: err.message });
-    return;
-  }
-
-  // Isi value input/textarea, dan set readonly/disabled
-  if (judul) {
-    judul.value = data.title || "";
-    judul.readOnly = true;
-  }
-  if (kategori) {
-    kategori.value = data.category || "-";
-    kategori.readOnly = true;
-  }
-  if (tanggal) {
-    tanggal.value = data.created_at
-      ? new Date(data.created_at).toLocaleDateString("id-ID", {
-          day: "2-digit",
-          month: "long",
-          year: "numeric",
-        })
-      : "-";
-    tanggal.readOnly = true;
-  }
-  if (konten) {
-    konten.value = data.content || "";
-    konten.readOnly = true;
-  }
-  if (references) {
-    references.value = data.references || "-";
-    references.readOnly = true;
-  }
-  if (gambar && data.image) {
-    gambar.src = data.image;
-  }
-  if (btnSimpan) btnSimpan.disabled = true;
-
-  if (btnKembali) {
-    btnKembali.addEventListener("click", () => {
-      window.location.href = "/src/templates/admin-artikel.html";
+    Swal.fire({
+      icon: "error",
+      title: "Gagal terhubung ke server",
     });
   }
-});
 
-async function fetchArticles() {
-  const TOKEN = sessionStorage.getItem("authToken");
-  if (!TOKEN) {
-    window.location.href = "https://mentalwell-10-frontend.vercel.app/";
-    return [];
-  }
-  const res = await fetch(
-    `https://mentalwell10-api-production.up.railway.app/articles`,
-    {
-      headers: { Authorization: `Bearer ${TOKEN}` },
-    }
-  );
-  if (!res.ok) throw new Error("Gagal mengambil data artikel");
-  const result = await res.json();
-  if (result.status === "success") {
-    return result.articles;
-  } else {
-    throw new Error(result.message || "Gagal mengambil data artikel");
-  }
-}
+  // Tombol kembali
+  btnKembali.addEventListener("click", () => {
