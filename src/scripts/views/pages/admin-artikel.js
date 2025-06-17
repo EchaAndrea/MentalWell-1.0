@@ -26,7 +26,7 @@ async function fetchArticles() {
       allArticles = result.articles.map((a) => ({
         id: a.id,
         judul: a.title,
-        kategori: a.category || "", 
+        kategori: a.category || "",
         tanggal: a.created_at
           ? new Date(a.created_at).toLocaleDateString("id-ID", {
               day: "2-digit",

@@ -203,12 +203,35 @@ function renderPagination() {
   });
 }
 
-function hapusItem(id) {
-  const index = psikologData.findIndex((p) => p.id === id);
-  if (index !== -1) {
-    psikologData.splice(index, 1);
-    filteredData = [...psikologData];
-    renderTable();
+async function hapusItem(id) {
+  const TOKEN = sessionStorage.getItem("authToken");
+  if (!TOKEN) {
+    alert("Token tidak ditemukan. Silakan login ulang.");
+    return;
+  }
+
+  const konfirmasi = confirm("Yakin ingin menghapus psikolog ini?");
+  if (!konfirmasi) return;
+
+  try {
+    const res = await fetch(
+      `https://mentalwell10-api-production.up.railway.app/admin/psychologist/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      }
+    );
+    const result = await res.json();
+    if (res.ok && result.status === "success") {
+      alert("Psikolog berhasil dihapus.");
+      await fetchPsikologData(); // Refresh data dari server
+    } else {
+      alert(result.message || "Gagal menghapus psikolog.");
+    }
+  } catch (err) {
+    alert("Gagal terhubung ke server.");
   }
 }
 
