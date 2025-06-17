@@ -149,13 +149,15 @@ function renderTable() {
         </td>
       </tr>`;
   }
+  renderPagination();
+}
 
 function renderPagination() {
   const pagination = document.querySelector(".pagination");
   if (!pagination) return;
 
   // Hitung total halaman
-  const totalRows = filteredCounselings.length;
+  const totalRows = filteredData.length; // Perbaiki dari filteredCounselings ke filteredData
   const perPage = rowsPerPage === "all" ? totalRows : rowsPerPage;
   const totalPages = rowsPerPage === "all" ? 1 : Math.ceil(totalRows / perPage);
 
@@ -203,6 +205,7 @@ function renderPagination() {
       }
     });
   });
+}
 
 function hapusItem(nama) {
   const index = psikologData.findIndex((p) => p.nama === nama);
