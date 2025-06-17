@@ -187,12 +187,16 @@ class NavbarAdmin extends HTMLElement {
 
   async fetchUserData() {
     try {
+      const token = sessionStorage.getItem("authToken");
+      if (!token) {
+        throw new Error("Token tidak ditemukan. Silakan login ulang.");
+      }
       const response = await fetch(
-        "https://mentalwell10-api-production.up.railway.app/admin/profile", // Ganti sesuai endpoint profil admin
+        "https://mentalwell10-api-production.up.railway.app/admin/profile",
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
