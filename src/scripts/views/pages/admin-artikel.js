@@ -86,50 +86,41 @@ function changePage(page) {
 }
 
 function renderTable() {
-  const table = document.querySelector("table");
-  if (!table) return;
-  let html = `
-    <thead>
-      <tr>
-        <th><input type="checkbox" id="selectAll"></th>
-        <th>ID</th>
-        <th>Judul</th>
-        <th>Kategori</th>
-        <th>Tanggal</th>
-        <th>Dibuat Oleh</th>
-        <th>Aksi</th>
-      </tr>
-    </thead>
-    <tbody>
-  `;
-  const start = (currentPage - 1) * rowsPerPage;
-  const pageData = filteredData.slice(start, start + rowsPerPage);
+  const tbody = document.getElementById("psikologTableBody");
+  if (!tbody) return;
+
+  // Pastikan rowsPerPage bertipe number
+  let perPage =
+    rowsPerPage === "all" ? filteredData.length : Number(rowsPerPage);
+  let start = (currentPage - 1) * perPage;
+  let end = rowsPerPage === "all" ? filteredData.length : start + perPage;
+  let pageData = filteredData.slice(start, end);
+
+  tbody.innerHTML = "";
+
   if (pageData.length === 0) {
-    html += `<tr><td colspan="6" class="text-center">Tidak ada data</td></tr>`;
-  } else {
-    for (const item of pageData) {
-      html += `
-        <tr>
-          <td><input type="checkbox" class="row-checkbox" data-id="${item.id}"></td>
-          <td>${item.judul}</td>
-          <td>${item.kategori}</td>
-          <td>${item.tanggal}</td>
-          <td>${item.dibuatoleh}</td>
-          <td>
-            <a href="/src/templates/admin-lihatartikel.html?artikel_id=${item.id}" class="btn btn-sm btn-info me-1">Lihat</a>
-            <a href="/src/templates/admin-editartikel.html?artikel_id=${item.id}" class="btn btn-sm btn-warning me-1">Edit</a>
-            <button class="btn btn-sm btn-danger" onclick="hapusItem(${item.id})">Hapus</button>
-          </td>
-        </tr>
-      `;
-    }
+    tbody.innerHTML = `<tr><td colspan="7" class="text-center">Tidak ada data</td></tr>`;
+    return;
   }
-  html += `</tbody>`;
-  table.innerHTML = html;
-  document.getElementById("selectAll")?.addEventListener("change", function () {
-    const checkboxes = document.querySelectorAll(".row-checkbox");
-    checkboxes.forEach((cb) => (cb.checked = this.checked));
+
+  pageData.forEach((item) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><input type="checkbox" class="row-checkbox" data-id="${item.id}"></td>
+      <td>${item.id}</td>
+      <td>${item.judul}</td>
+      <td>${item.kategori}</td>
+      <td>${item.tanggal}</td>
+      <td>${item.dibuatoleh}</td>
+      <td>
+        <a href="/src/templates/admin-lihatartikel.html?artikel_id=${item.id}" class="btn btn-sm btn-info me-1">Lihat</a>
+        <a href="/src/templates/admin-editartikel.html?artikel_id=${item.id}" class="btn btn-sm btn-warning me-1">Edit</a>
+        <button class="btn btn-sm btn-danger" onclick="hapusItem(${item.id})">Hapus</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
   });
+
   renderPagination();
 }
 
