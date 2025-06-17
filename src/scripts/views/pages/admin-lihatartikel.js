@@ -61,14 +61,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (artikel.image) {
         const urlParts = artikel.image.split("/");
         namaFile.value = urlParts[urlParts.length - 1];
-        // Tampilkan preview gambar di atas input file
-        let imgPreview = document.createElement("img");
-        imgPreview.src = artikel.image;
-        imgPreview.alt = "Gambar Artikel";
-        imgPreview.style.maxWidth = "200px";
-        imgPreview.style.display = "block";
-        imgPreview.style.marginBottom = "10px";
-        namaFile.parentNode.insertBefore(imgPreview, namaFile);
       } else {
         namaFile.value = "";
       }
