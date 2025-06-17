@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     el.disabled = true;
   });
 
-  // Sembunyikan input file gambar 
+  // Sembunyikan input file gambar
   gambarInput.style.display = "none";
 
   // Fetch detail psikolog
@@ -99,14 +99,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (data.profile_image) {
         const urlParts = data.profile_image.split("/");
         namaFile.value = urlParts[urlParts.length - 1];
+
+        // Cek apakah sudah ada imgPreview, jika belum buat dan letakkan sebelum namaFile
         let imgPreview = document.getElementById("imgPreview");
         if (!imgPreview) {
           imgPreview = document.createElement("img");
           imgPreview.id = "imgPreview";
           imgPreview.style.maxWidth = "200px";
           imgPreview.style.display = "block";
-          imgPreview.style.margin = "10px 0";
-          namaFile.parentNode.insertBefore(imgPreview, namaFile.nextSibling);
+          imgPreview.style.marginBottom = "10px";
+          // Sisipkan sebelum namaFile agar urutan: gambar, lalu nama file
+          namaFile.parentNode.insertBefore(imgPreview, namaFile);
         }
         imgPreview.src = data.profile_image;
         imgPreview.alt = "Foto Profil";
@@ -129,20 +132,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
   gambarInput.style.display = "none"; // tetap hidden, hanya pakai tombol custom
 
-  // Input gambar: update nama file saat pilih file baru
+  // Input gambar: update nama file dan preview saat pilih file baru
   gambarInput.addEventListener("change", () => {
     const fileName =
       gambarInput.files.length > 0 ? gambarInput.files[0].name : "";
     namaFile.value = fileName;
-    // Preview gambar baru jika dipilih
+
     let imgPreview = document.getElementById("imgPreview");
     if (!imgPreview) {
       imgPreview = document.createElement("img");
       imgPreview.id = "imgPreview";
       imgPreview.style.maxWidth = "200px";
       imgPreview.style.display = "block";
-      imgPreview.style.margin = "10px 0";
-      namaFile.parentNode.insertBefore(imgPreview, namaFile.nextSibling);
+      imgPreview.style.marginBottom = "10px";
+      namaFile.parentNode.insertBefore(imgPreview, namaFile);
     }
     const file = gambarInput.files[0];
     if (file) {
