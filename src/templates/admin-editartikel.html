@@ -76,15 +76,21 @@
           <div class="mb-3">
             <label class="form-label fw-bold">Gambar</label>
             <div class="input-group">
-              <button
-                type="button"
-                class="btn btn-outline-secondary"
-                id="btnPilihGambar"
+              <label
+                class="input-group-text btn btn-file px-3"
+                for="gambar"
+                style="cursor: pointer"
               >
-                Pilih File
-              </button>
+                <img
+                  src="/src/public/admin/gambar.png"
+                  alt="gambar"
+                  style="width: 18px; height: 18px; margin-right: 5px"
+                />
+                Pilih
+              </label>
               <input
                 type="file"
+                class="form-control"
                 id="gambar"
                 name="gambar"
                 accept="image/*"
