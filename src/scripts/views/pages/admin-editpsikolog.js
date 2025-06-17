@@ -215,7 +215,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
       }
     }
-    const schedules = { weekly, custom };
+    const schedules = {};
+    if (weekly.length > 0) schedules.weekly = weekly;
+    if (custom.length > 0) schedules.custom = custom;
+    formData.append("schedules", JSON.stringify(schedules));
 
     // Ambil topik (ID) dari checkbox
     const topics = Array.from(
