@@ -46,17 +46,7 @@ async function fetchArticles() {
     filteredData = [];
     console.error("Fetch error:", err);
   }
-  renderKategoriOptions();
   renderTable();
-}
-
-function renderKategoriOptions() {
-  const select = document.getElementById("filterKategori");
-  if (!select) return;
-  const kategoriSet = new Set(allArticles.map((a) => a.kategori));
-  select.innerHTML =
-    `<option value="semua">Semua Kategori</option>` +
-    [...kategoriSet].map((k) => `<option value="${k}">${k}</option>`).join("");
 }
 
 function handleFilter() {
