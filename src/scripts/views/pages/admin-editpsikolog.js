@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       formData.append("profile_image", inputGambar.files[0]);
     try {
       const res = await fetch(
-        `https://mentalwell10-api-production.up.railway.app/admin/psychologist/${psikologId}`,
+        `https://mentalwell10-api-production.up.railway.app/admin/psychologists/${psikologId}`,
         {
           method: "PUT",
           headers: { Authorization: `Bearer ${TOKEN}` },
