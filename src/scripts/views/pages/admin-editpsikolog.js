@@ -124,6 +124,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     formData.append("schedules", JSON.stringify(schedules));
     if (inputGambar.files[0])
       formData.append("profile_image", inputGambar.files[0]);
+
+    // Ambil TOKEN di sini agar selalu fresh
+    const TOKEN = sessionStorage.getItem("authToken");
+    if (!TOKEN) {
+      Swal.fire({
+        icon: "error",
+        title: "Gagal!",
+        text: "Token tidak ditemukan, silakan login ulang.",
+      });
+      return;
+    }
+
     try {
       const res = await fetch(
         `https://mentalwell10-api-production.up.railway.app/admin/psychologists/${psikologId}`,
@@ -133,7 +145,18 @@ document.addEventListener("DOMContentLoaded", async () => {
           body: formData,
         }
       );
-      const json = await res.json();
+      let json;
+      try {
+        json = await res.json();
+      } catch (err) {
+        console.error("Gagal parsing JSON:", err);
+        Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Format data server tidak valid.",
+        });
+        return;
+      }
       if (res.ok && json.status === "success") {
         Swal.fire({
           icon: "success",
@@ -143,6 +166,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           () => (window.location.href = "/src/templates/admin-psikolog.html")
         );
       } else {
+        console.error("Error dari server:", json);
         Swal.fire({
           icon: "error",
           title: "Gagal!",
@@ -150,6 +174,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
       }
     } catch (err) {
+      console.error("Fetch error:", err);
       Swal.fire({
         icon: "error",
         title: "Gagal!",
