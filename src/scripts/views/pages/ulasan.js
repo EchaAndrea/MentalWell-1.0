@@ -40,7 +40,7 @@ function submitUlasan(ulasan) {
   });
 
   fetch(
-    `https://mentalwell10-api-production.up.railway.app/counseling/{id}/review`,
+    `https://mentalwell10-api-production.up.railway.app/counseling/${currentCounselingId}/review`,
     {
       method: "POST",
       headers: {
