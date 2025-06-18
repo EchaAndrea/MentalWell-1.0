@@ -303,6 +303,12 @@ class NavBarLogin extends HTMLElement {
             cursor: pointer;
           }
 
+          .dropdown-content .riwayat-button:hover {
+            background-color: #044B97;
+            color: #fff;
+            cursor: pointer;
+}
+
           .dropdown-content .keluar-button:hover {
             background-color: #044B97;
             color: #fff;
