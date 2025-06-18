@@ -79,6 +79,8 @@ form.addEventListener("submit", async function (event) {
   const imageInput = document.getElementById("inputImage");
   const image = imageInput ? imageInput.files[0] : null;
   const email = document.getElementById("email").innerText.trim();
+  const passwordInput = document.getElementById("password"); // pastikan ada input password jika ingin support
+  const password = passwordInput ? passwordInput.value : "";
 
   const formData = new FormData();
   formData.append("name", name);
@@ -89,6 +91,9 @@ form.addEventListener("submit", async function (event) {
   formData.append("birthdate", birthdate);
   if (image) {
     formData.append("profile_image", image);
+  }
+  if (password) {
+    formData.append("password", password);
   }
 
   Swal.fire({
@@ -102,32 +107,54 @@ form.addEventListener("submit", async function (event) {
     },
   });
 
-  const response = await fetch(
-    "https://mentalwell10-api-production.up.railway.app/profile",
-    {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
+  try {
+    const response = await fetch(
+      "https://mentalwell10-api-production.up.railway.app/profile",
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      }
+    );
+    let responseData;
+    try {
+      responseData = await response.json();
+    } catch (err) {
+      console.error("Gagal parsing JSON:", err);
+      Swal.fire({
+        title: "Gagal!",
+        text: "Format data server tidak valid.",
+        icon: "error",
+        showConfirmButton: true,
+      });
+      return;
     }
-  );
 
-  const responseData = await response.json();
-
-  if (response.ok) {
-    Swal.close();
-    Swal.fire({
-      title: "Profil Berhasil Diubah",
-      icon: "success",
-      showConfirmButton: false,
-      timer: 2000,
-    });
-    location.reload();
-  } else {
+    if (response.ok) {
+      Swal.close();
+      Swal.fire({
+        title: "Profil Berhasil Diubah",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      location.reload();
+    } else {
+      console.error("Error dari server:", responseData);
+      Swal.fire({
+        title: "Gagal!",
+        text: responseData.message || "Gagal update profil.",
+        icon: "error",
+        showConfirmButton: true,
+      });
+    }
+  } catch (error) {
+    console.error("Fetch error:", error);
     Swal.fire({
       title: "Gagal!",
-      text: responseData.message || "Gagal update profil.",
+      text: "Tidak dapat terhubung ke server.",
       icon: "error",
       showConfirmButton: true,
     });
