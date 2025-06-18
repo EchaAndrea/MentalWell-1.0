@@ -79,13 +79,8 @@ function updateButtonAfterSubmission(counselingId) {
   );
 
   if (buttonElement) {
-    // Disable the button
     buttonElement.disabled = true;
-
-    // Change the color and text
-    buttonElement.style.backgroundColor = "lightgray";
-    buttonElement.style.color = "gray";
-    buttonElement.textContent = "ULASAN TERISI";
+    buttonElement.classList.add("disabled");
   }
 }
 
