@@ -15,89 +15,53 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
     return response.json();
   })
   .then((data) => {
-    if (data && Array.isArray(data.data)) {
-      if (data.data.length === 0) {
+    if (data && Array.isArray(data.counselings)) {
+      if (data.counselings.length === 0) {
         const noDataElement = document.createElement("p");
         noDataElement.textContent = "Tidak ada riwayat konseling.";
         containerRiwayat.appendChild(noDataElement);
       } else {
-        data.data.forEach((riwayat) => {
+        data.counselings.forEach((riwayat) => {
           const riwayatElement = document.createElement("div");
           riwayatElement.classList.add("container-riwayat");
 
-          const isReviewFilled = riwayat.review !== null;
-          const scheduleDateString = riwayat.schedule_date;
-          const scheduleDate = new Date(scheduleDateString);
+          const scheduleDate = new Date(riwayat.schedule_date);
           const optionsSchedule = {
             weekday: "long",
             year: "numeric",
             month: "long",
             day: "numeric",
           };
-
           const formattedScheduleDate = scheduleDate.toLocaleDateString(
             "id-ID",
             optionsSchedule
           );
 
-          let formattedType;
+          let formattedScheduleTime = riwayat.schedule_time
+            .replace(":", ".")
+            .replace("-", " - ")
+            .replace(":", ".");
 
-          if (riwayat.type == "chat") {
-            formattedType = "Chat";
-          }
-
-          let formattedStatus;
-
-          if (riwayat.status == "belum_selesai") {
-            formattedStatus = "Belum Selesai";
-          } else if (riwayat.status == "selesai") {
-            formattedStatus = "Selesai";
-          }
-
-          let formattedScheduleTime;
-
-          if (riwayat.schedule_time == "13:00-14:00") {
-            formattedScheduleTime = "13.00 - 14.00";
-          } else if (riwayat.schedule_time == "16:00-17:00") {
-            formattedScheduleTime = "16.00 - 17.00";
-          } else if (riwayat.schedule_time == "19:30-20:30") {
-            formattedScheduleTime = "19.30 - 20.30";
-          }
+          let formattedStatus = "";
+          if (riwayat.status === "finished") formattedStatus = "Selesai";
+          else if (riwayat.status === "waiting") formattedStatus = "Menunggu";
+          else if (riwayat.status === "failed") formattedStatus = "Gagal";
+          else formattedStatus = riwayat.status;
 
           riwayatElement.innerHTML = `
-            <img src="${
-              riwayat.profile_image
-            }" alt="Foto Psikolog" id="psychologPhoto" />
+            <img src="${riwayat.psychologist_profpic}" alt="Foto Psikolog" id="psychologPhoto" />
             <div class="info-riwayat">
               <div class="info-text">
                 <p>
                   ${riwayat.psychologist_name}<br />
                   ${formattedScheduleDate}<br />
                   ${formattedScheduleTime} WIB<br />
-                  Via ${formattedType}
                 </p>
-                </div>
-                <div class="status-button">
-                  <span class="status-riwayat">${formattedStatus}</span>
-                  <button type="button" data-counseling-id="${
-                    riwayat.id
-                  }" onclick="openUlasanPopup(${riwayat.id}, '${
-            riwayat.status
-          }')"
-                    ${
-                      riwayat.status === "belum_selesai" || isReviewFilled
-                        ? "disabled"
-                        : ""
-                    }
-                    style="${
-                      riwayat.status === "belum_selesai" || isReviewFilled
-                        ? "background-color: lightgray; color: gray; cursor: default"
-                        : ""
-                    }">
-                    ${isReviewFilled ? "ULASAN TERISI" : "ISI ULASAN"}
-                  </button>
-                </div>
               </div>
+              <div class="status-button">
+                <span class="status-riwayat">${formattedStatus}</span>
+              </div>
+            </div>
           `;
 
           containerRiwayat.appendChild(riwayatElement);
