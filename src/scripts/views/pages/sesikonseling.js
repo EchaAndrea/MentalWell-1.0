@@ -1,19 +1,20 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const sessionList = document.getElementById("session-list");
   const popupContainer = document.getElementById("popup-container");
-  const token = localStorage.getItem("token") || sessionStorage.getItem("authToken");
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("authToken");
 
   try {
     const res = await fetch(
-      "https://mentalwell10-api-production.up.railway.app/counselings/patient",
+      "https://mentalwell10-api-production.up.railway.app/counselings",
       {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       }
     );
     if (!res.ok) throw new Error("Gagal memuat data sesi konseling");
     const data = await res.json();
 
-    // Asumsikan data.result.counselings adalah array sesi dari backend
+    // data.result.counselings adalah array sesi dari backend
     const sessions = data.result?.counselings || [];
     if (sessions.length === 0) {
       sessionList.innerHTML = `<div class="alert alert-info">Belum ada sesi konseling.</div>`;
@@ -27,23 +28,25 @@ document.addEventListener("DOMContentLoaded", async () => {
       const isDisabled = session.status === "Selesai";
 
       sessionElement.innerHTML = `
-        <img src="${session.psychologist_photo || '/src/public/beranda/man.png'}" alt="Foto Psikolog" class="session-photo" />
+        <img src="${
+          session.psychologist_photo || "/src/public/beranda/man.png"
+        }" alt="Foto Psikolog" class="session-photo" />
         <div class="info-sesi">
           <div class="info-text">
             <p>
-              ${session.psychologist_name || '-'}<br />
-              ${session.schedule_date || '-'}<br />
-              ${session.schedule_time || '-'}<br />
-              ${session.type === 'on_demand' ? 'Via Chat' : (session.type || '-')}
+              ${session.psychologist_name || "-"}<br />
+              ${session.schedule_date || "-"}<br />
+              ${session.schedule_time || "-"}<br />
+              ${session.type === "on_demand" ? "Via Chat" : session.type || "-"}
             </p>
           </div>
         </div>
         <div class="status-sesi">
-          <span class="status">${session.status || '-'}</span>
+          <span class="status">${session.status || "-"}</span>
           <button 
             type="button" 
-            class="btn-konseling${isDisabled ? ' disabled' : ''}"
-            ${isDisabled ? 'disabled' : ''}
+            class="btn-konseling${isDisabled ? " disabled" : ""}"
+            ${isDisabled ? "disabled" : ""}
             data-counseling-id="${session.counseling_id}"
           >
             KONSELING
@@ -79,7 +82,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function initPopup() {
-    const closeBtn = popupContainer.querySelector("button[onclick='toggleChat()']");
+    const closeBtn = popupContainer.querySelector(
+      "button[onclick='toggleChat()']"
+    );
     if (closeBtn) {
       closeBtn.addEventListener("click", () => {
         popupContainer.style.display = "none";
