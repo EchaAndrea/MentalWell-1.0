@@ -218,14 +218,14 @@ class NavbarAdmin extends HTMLElement {
   }
 
   renderUser(data) {
-    const nickname = data?.psychologist?.name;
-    const photo = data?.psychologist?.profilePicture;
+    const user = data?.data;
+    const nickname = user?.name;
+    const photo = user?.profile_image;
 
     this.shadowRoot.querySelector("#nicknameTag").textContent =
       nickname || "Admin";
-    if (photo) {
-      this.shadowRoot.querySelector("#photoUser").src = photo;
-    }
+    this.shadowRoot.querySelector("#photoUser").src =
+      photo || "/src/public/beranda/man.png";
   }
 }
 
