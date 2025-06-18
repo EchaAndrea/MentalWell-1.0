@@ -15,13 +15,13 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
     return response.json();
   })
   .then((data) => {
-    if (data && Array.isArray(data)) {
-      if (data.length === 0) {
+    if (data && Array.isArray(data.data)) {
+      if (data.data.length === 0) {
         const noDataElement = document.createElement("p");
         noDataElement.textContent = "Tidak ada riwayat konseling.";
         containerRiwayat.appendChild(noDataElement);
       } else {
-        data.forEach((riwayat) => {
+        data.data.forEach((riwayat) => {
           const riwayatElement = document.createElement("div");
           riwayatElement.classList.add("container-riwayat");
 
