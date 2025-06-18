@@ -266,13 +266,18 @@ class NavBar extends HTMLElement {
     )
       .then((response) => response.json())
       .then((data) => {
-        const currentUser = data[0];
-
-        if (nicknameTag && photoUser) {
-          nicknameTag.innerText = currentUser.name;
-          photoUser.src = currentUser.profile_image;
+        // Cek struktur respons API
+        console.log("Psychologist Profile API response:", data);
+        const currentUser = data.data;
+        if (nicknameTag && photoUser && currentUser) {
+          nicknameTag.innerText = currentUser.name || "Psikolog";
+          photoUser.src = currentUser.profile_image
+            ? currentUser.profile_image + "?t=" + Date.now()
+            : "/src/public/beranda/man.png";
         } else {
-          console.error('Element with ID "nicknameTag" not found.');
+          console.error(
+            'Element with ID "nicknameTag" not found atau data user kosong.'
+          );
         }
       })
       .catch((error) => {
