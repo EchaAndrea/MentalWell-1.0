@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     row.className = "row mb-2 align-items-center jadwal-row";
     row.innerHTML = `
       <div class="col-md-4">
-        <select name="hari[]" class="form-select">
+        <select name="hari[]" class="form-select" required>
           <option value="">Pilih Hari</option>
           <option value="Senin">Senin</option>
           <option value="Selasa">Selasa</option>
@@ -178,17 +178,48 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="d-flex">
           <input type="time" name="jamMulai[]" class="form-control me-2" value="${
             item.start_time || ""
-          }">
+          }" required>
           <span class="mx-1 d-flex align-items-center">-</span>
           <input type="time" name="jamSelesai[]" class="form-control ms-2" value="${
             item.end_time || ""
-          }">
+          }" required>
         </div>
+      </div>
+      <div class="col-md-2 d-flex justify-content-start gap-2">
+        <button type="button" class="btn btn-tambah tambah-jadwal" aria-label="Tambah jadwal" title="Tambah jadwal">
+          <i class="fas fa-plus"></i>
+        </button>
+        <button type="button" class="btn btn-danger hapus-jadwal" aria-label="Hapus jadwal" title="Hapus jadwal">
+          <i class="fas fa-trash-alt"></i>
+        </button>
       </div>
     `;
     if (item.day)
       row.querySelector('select[name="hari[]"]').value =
         item.day.charAt(0).toUpperCase() + item.day.slice(1);
     jadwalContainer.appendChild(row);
+    updateHapusButton();
   }
+
+  // Tambahkan fungsi updateHapusButton dan event delegation:
+  function updateHapusButton() {
+    const rows = jadwalContainer.querySelectorAll(".jadwal-row");
+    rows.forEach((row) => {
+      const hapusBtn = row.querySelector(".hapus-jadwal");
+      if (hapusBtn) hapusBtn.disabled = rows.length === 1;
+    });
+  }
+
+  jadwalContainer.addEventListener("click", (e) => {
+    if (e.target.closest(".tambah-jadwal")) {
+      addJadwalRow();
+    }
+    if (e.target.closest(".hapus-jadwal")) {
+      const row = e.target.closest(".jadwal-row");
+      if (jadwalContainer.children.length > 1) {
+        row.remove();
+        updateHapusButton();
+      }
+    }
+  });
 });
