@@ -231,6 +231,10 @@ class NavBarLogin extends HTMLElement {
 
             #photoUser {
               margin-right: 1rem;
+              height: 32px;
+              width: 32px;
+              border-radius: 50%;
+              object-fit: cover;
             }
 
             .button h4 {

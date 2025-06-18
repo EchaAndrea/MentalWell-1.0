@@ -125,9 +125,10 @@ class NavBar extends HTMLElement {
                 margin-right: 1rem;
               }
               #photoUser {
+                  height: 32px;
+                  width: 32px;
                   border-radius: 50%;
-                  width: 50px;
-                  height: 50px;
+                  object-fit: cover;
                   cursor: pointer;
                   margin-right: 1rem;
                 }
