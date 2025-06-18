@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700&display=swap');
 
 * {
   padding: 0;
@@ -7,8 +7,8 @@
 }
 
 body {
-  font-family: "Inter", sans-serif;
-  background-color: #fafafa;
+  font-family: 'Inter', sans-serif;
+  background-color: #FAFAFA;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -32,83 +32,77 @@ h2 {
 
 .container-sesi {
   display: flex;
-  align-items: flex-start;
-  gap: 24px;
-  background: #fff;
-  border-radius: 16px;
-  border: 1.5px solid #222; /* tambahkan border seperti riwayat */
-  box-shadow: none; /* hilangkan shadow jika ada */
-  padding: 24px;
-  margin-bottom: 24px;
+  align-items: center;
+  background-color: white;
+  padding: 20px;
+  border: 1px solid black;
+  border-radius: 10px;
+  width: 1110px;
+  margin-bottom: 30px;
 }
 
-/* Samakan foto */
 .session-photo {
-  width: 140px;
-  height: 140px;
   border-radius: 50%;
-  object-fit: cover;
-  margin: 30px 30px 30px 10px;
+  width: 150px;
+  height: 150px;
+  margin: 30px 30px 30px 10px; 
   cursor: pointer;
 }
 
-/* Samakan info */
 .info-sesi {
   flex: 1;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .info-text p {
-  font-size: 1.25rem;
-  color: #222;
-  line-height: 1.5;
-  margin-bottom: 0;
+  font-size: 20px;
+  line-height: 1.7;
+  margin: 0 0 10px 10px;
   cursor: pointer;
 }
 
-/* Samakan status dan tombol */
 .status-sesi {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: flex-end;
-  gap: 8px;
-  min-width: 120px;
+  min-width: 230px;
 }
 
 .status {
-  font-size: 1.5rem;
-  font-weight: 400;
-  color: #044b97;
-  margin-bottom: 8px;
-  text-align: right;
-  text-transform: capitalize;
+  font-size: 22px;
+  margin-right: 35px;
 }
 
-/* Samakan tombol */
 .btn-konseling {
-  background: #044b97;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 12px 40px;
-  font-size: 1.25rem;
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  color: white;
+  font-weight: bold;
+  background-color: #044B77;
+  width: 230px;
+  height: 44px;
   cursor: pointer;
-  transition: background 0.2s;
-  margin-top: 8px;
+  font-size: 18px;
+  margin: 80px 20px 0 0;
 }
 
-.btn-konseling:hover:not(:disabled) {
-  background: #022e5c;
+.btn-konseling:hover {
+  background-color: #3ad0ea; 
+  color: #ffffff;
 }
 
 .btn-konseling.disabled,
 .btn-konseling:disabled {
-  background: #e0e0e0;
-  color: #aaa;
+  background-color: #7298a6;
   cursor: not-allowed;
+}
+
+.btn-konseling.disabled:hover,
+.btn-konseling:disabled:hover {
+  cursor: not-allowed; 
 }
 
 footer {
@@ -119,3 +113,4 @@ footer {
   text-align: center;
   margin-top: auto;
 }
+
