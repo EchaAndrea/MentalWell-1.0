@@ -290,7 +290,7 @@ h4 {
 }
 
 .gray-text {
-  background-color: #cccccc;
+  background-color: 	#cccccc;
 }
 
 /*
@@ -305,59 +305,4 @@ footer {
   color: #fff;
   margin-top: 2rem;
   text-align: center;
-}
-
-.editadmin-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-  align-items: center;
-  margin: 0 auto;
-  width: 100%;
-  max-width: 400px;
-  background: #fff;
-  border-radius: 16px;
-  padding: 2rem 2.5rem;
-  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.08);
-}
-
-.editadmin-form .form-control {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-bottom: 1.5rem;
-  width: 100%;
-}
-
-.editadmin-form .form-control label {
-  margin-bottom: 0.3rem;
-  font-weight: 500;
-}
-
-.editadmin-form .form-control input,
-.editadmin-form .form-control select {
-  width: 100%;
-  min-width: 220px;
-  padding: 0.6rem 1rem;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
-  background: #fafafa;
-  font-size: 1rem;
-}
-
-.editadmin-form .simpan-btn {
-  background: #02bbdd;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 0.7rem 2.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  margin-top: 1rem;
-  transition: background 0.2s;
-}
-
-.editadmin-form .simpan-btn:hover {
-  background: #029bb0;
 }
