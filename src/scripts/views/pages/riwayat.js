@@ -57,33 +57,28 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
 
           if (riwayat.status === "finished") {
             buttonText = "ISI ULASAN";
-            buttonClass += " btn-ulasan";
             buttonId = "button-riwayat-ulasan";
-          } else if (
-            riwayat.payment_status === "approved" &&
-            (riwayat.status === "waiting" || riwayat.status === "failed")
-          ) {
+          } else {
             buttonText = "KONSELING";
             buttonId = "button-riwayat-konseling";
-          } else if (
-            riwayat.payment_status === "refunded" ||
-            riwayat.payment_status === "rejected"
-          ) {
-            buttonText = "KONSELING";
-            buttonDisabled = "disabled";
-            buttonClass += " disabled";
-            buttonId = "button-riwayat-disabled";
+            // Disable jika status bukan approved atau status bukan waiting/failed
+            if (
+              riwayat.payment_status !== "approved" ||
+              riwayat.status === "waiting" ||
+              riwayat.status === "failed"
+            ) {
+              buttonDisabled = "disabled";
+              buttonClass += " disabled";
+            }
           }
 
-          if (buttonText) {
-            buttonHTML = `<button 
-              type="button" 
-              class="${buttonClass}" 
-              id="${buttonId}"
-              data-counseling-id="${riwayat.id}"
-              ${buttonDisabled}
-            >${buttonText}</button>`;
-          }
+          buttonHTML = `<button 
+            type="button" 
+            class="${buttonClass}" 
+            id="${buttonId}"
+            data-counseling-id="${riwayat.id}"
+            ${buttonDisabled}
+          >${buttonText}</button>`;
 
           riwayatElement.innerHTML = `
             <img src="${riwayat.psychologist_profpic}" alt="Foto Psikolog" id="psychologPhoto" />
