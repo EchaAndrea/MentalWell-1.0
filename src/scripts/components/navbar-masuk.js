@@ -421,16 +421,17 @@ class NavBarLogin extends HTMLElement {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Profile API response:", data); // Tambahkan ini
-        const currentUser = data.result?.users || data.result || data;
-        if (nicknameTag && photoUser) {
-          nicknameTag.innerText = currentUser.nickname || "User";
-          photoUser.src = currentUser.profile_image
-            ? currentUser.profile_image + "?t=" + Date.now()
-            : "/src/public/beranda/man.png";
-        } else {
-          console.error('Element with ID "nicknameTag" not found.');
+        console.log("Profile API response:", data);
+        const currentUser = data.data;
+        if (!currentUser) {
+          nicknameTag.innerText = "User";
+          photoUser.src = "/src/public/beranda/man.png";
+          return;
         }
+        nicknameTag.innerText = currentUser.nickname || "User";
+        photoUser.src = currentUser.profile_image
+          ? currentUser.profile_image + "?t=" + Date.now()
+          : "/src/public/beranda/man.png";
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
