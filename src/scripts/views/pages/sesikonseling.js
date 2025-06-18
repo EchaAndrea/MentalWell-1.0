@@ -14,8 +14,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!res.ok) throw new Error("Gagal memuat data sesi konseling");
     const data = await res.json();
 
-    // data.result.counselings adalah array sesi dari backend
-    const sessions = data.result?.counselings || [];
+    // Ambil array sesi dari data.counselings sesuai response API terbaru
+    const sessions = data.counselings || [];
     if (sessions.length === 0) {
       sessionList.innerHTML = `<div class="alert alert-info">Belum ada sesi konseling.</div>`;
       return;
@@ -25,11 +25,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       const sessionElement = document.createElement("div");
       sessionElement.classList.add("container-sesi");
 
-      const isDisabled = session.status === "Selesai";
+      const isDisabled =
+        session.status === "finished" || session.status === "Selesai";
 
       sessionElement.innerHTML = `
         <img src="${
-          session.psychologist_photo || "/src/public/beranda/man.png"
+          session.psychologist_profpic || "/src/public/beranda/man.png"
         }" alt="Foto Psikolog" class="session-photo" />
         <div class="info-sesi">
           <div class="info-text">
@@ -37,7 +38,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               ${session.psychologist_name || "-"}<br />
               ${session.schedule_date || "-"}<br />
               ${session.schedule_time || "-"}<br />
-              ${session.type === "on_demand" ? "Via Chat" : session.type || "-"}
+              <!-- Jika ada tipe konseling, tampilkan di sini -->
             </p>
           </div>
         </div>
@@ -47,7 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             type="button" 
             class="btn-konseling${isDisabled ? " disabled" : ""}"
             ${isDisabled ? "disabled" : ""}
-            data-counseling-id="${session.counseling_id}"
+            data-counseling-id="${session.id}"
           >
             KONSELING
           </button>
@@ -58,8 +59,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (!isDisabled && button) {
         button.addEventListener("click", () => {
-          // Simpan id sesi ke localStorage/sessionStorage jika perlu
-          localStorage.setItem("active_counseling_id", session.counseling_id);
+          localStorage.setItem("active_counseling_id", session.id);
 
           fetch("/src/templates/popupchat.html")
             .then((res) => {
