@@ -64,19 +64,20 @@ document.addEventListener("DOMContentLoaded", async () => {
               ${session.psychologist_name || "-"}<br />
               ${formattedScheduleDate}<br />
               ${formattedScheduleTime} WIB<br />
+              Via Chat
             </p>
           </div>
-        </div>
-        <div class="status-sesi">
-          <span class="status">${session.status || "-"}</span>
-          <button 
-            type="button" 
-            class="btn-konseling${isDisabled ? " disabled" : ""}"
-            ${isDisabled ? "disabled" : ""}
-            data-counseling-id="${session.id}"
-          >
-            KONSELING
-          </button>
+          <div class="status-sesi">
+            <span class="status">${session.status || "-"}</span>
+            <button 
+              type="button" 
+              class="btn-konseling"
+              ${isDisabled ? "disabled" : ""}
+              data-counseling-id="${session.id}"
+            >
+              KONSELING
+            </button>
+          </div>
         </div>
       `;
 
