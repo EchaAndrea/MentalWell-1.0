@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   try {
     const res = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/admin/psychologist/${psikologId}`,
+      `https://mentalwell10-api-production.up.railway.app/admin/psychologists/${psikologId}`,
       { headers: { Authorization: `Bearer ${TOKEN}` } }
     );
     const json = await res.json();
