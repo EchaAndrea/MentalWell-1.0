@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700&display=swap');
 
 * {
   padding: 0;
@@ -7,8 +7,8 @@
 }
 
 body {
-  font-family: "Inter", sans-serif;
-  background-color: #fafafa;
+  font-family: 'Inter', sans-serif;
+  background-color: #FAFAFA;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -32,21 +32,20 @@ h2 {
 
 .container-sesi {
   display: flex;
-  align-items: flex-start;
-  gap: 24px;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(4, 75, 151, 0.08);
-  padding: 24px;
-  margin-bottom: 24px;
+  align-items: center;
+  background-color: white;
+  padding: 20px;
+  border: 1px solid black;
+  border-radius: 10px;
+  width: 1110px;
+  margin-bottom: 30px;
 }
 
 .session-photo {
-  width: 80px;
-  height: 80px;
   border-radius: 50%;
-  object-fit: cover;
-  margin: 30px 30px 30px 10px;
+  width: 150px;
+  height: 150px;
+  margin: 30px 30px 30px 10px; 
   cursor: pointer;
 }
 
@@ -54,13 +53,12 @@ h2 {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .info-text p {
-  font-size: 1rem;
-  color: #044b97;
-  line-height: 1.5;
+  font-size: 20px;
+  line-height: 1.7;
   margin: 0 0 10px 10px;
   cursor: pointer;
 }
@@ -68,41 +66,43 @@ h2 {
 .status-sesi {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: flex-end;
-  gap: 8px;
+  min-width: 230px;
 }
 
 .status {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #044b97;
-  margin-bottom: 8px;
+  font-size: 22px;
+  margin-right: 35px;
 }
 
 .btn-konseling {
-  background: #044b97;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 20px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.2s;
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  color: white;
+  font-weight: bold;
+  background-color: #044B77;
   width: 230px;
   height: 44px;
+  cursor: pointer;
+  font-size: 18px;
   margin: 80px 20px 0 0;
 }
 
 .btn-konseling:hover {
-  background-color: #3ad0ea;
+  background-color: #3ad0ea; 
   color: #ffffff;
 }
 
-.btn-konseling:disabled,
-.btn-konseling.disabled {
-  background: #e0e0e0;
-  color: #aaa;
+.btn-konseling.disabled,
+.btn-konseling:disabled {
+  background-color: #7298a6;
   cursor: not-allowed;
+}
+
+.btn-konseling.disabled:hover,
+.btn-konseling:disabled:hover {
+  cursor: not-allowed; 
 }
 
 footer {
@@ -113,3 +113,4 @@ footer {
   text-align: center;
   margin-top: auto;
 }
+
