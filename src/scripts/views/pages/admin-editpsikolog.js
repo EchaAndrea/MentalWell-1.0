@@ -23,7 +23,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         headers: { Authorization: `Bearer ${TOKEN}` },
       }
     );
-    const json = await res.json();
+    let json;
+    try {
+      json = await res.json();
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "Gagal!",
+        text: "Format data server tidak valid.",
+      });
+      return;
+    }
     if (!res.ok || json.status !== "success") {
       Swal.fire({
         icon: "error",
