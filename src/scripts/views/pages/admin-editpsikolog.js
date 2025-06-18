@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
     const res = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/admin/psychologist/${psikologId}`,
+      `https://mentalwell10-api-production.up.railway.app/admin/psychologists/${psikologId}`,
       {
         headers: { Authorization: `Bearer ${TOKEN}` },
       }
