@@ -1,9 +1,9 @@
 const token = sessionStorage.getItem("authToken");
-const form = document.querySelector(".editadmin-form");
+const form = document.querySelector(".editpasien-form");
 
 document.addEventListener("DOMContentLoaded", async function () {
   if (!form) {
-    console.error("Form .editadmin-form tidak ditemukan!");
+    console.error("Form .editpasien-form tidak ditemukan!");
     return;
   }
   try {
