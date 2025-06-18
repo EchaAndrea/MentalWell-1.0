@@ -1,7 +1,7 @@
 const authToken = sessionStorage.getItem("authToken");
 const containerRiwayat = document.querySelector(".content-riwayat");
 
-fetch("https://mentalwell10-api-production.up.railway.app/counseling/review", {
+fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
   method: "GET",
   headers: {
     Authorization: `Bearer ${authToken}`,
