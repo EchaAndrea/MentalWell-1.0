@@ -421,6 +421,7 @@ class NavBarLogin extends HTMLElement {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log("Profile API response:", data); // Tambahkan ini
         const currentUser = data.result?.users || data.result || data;
         if (nicknameTag && photoUser) {
           nicknameTag.innerText = currentUser.nickname || "User";
@@ -433,6 +434,8 @@ class NavBarLogin extends HTMLElement {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
+        // Tambahkan alert untuk memastikan error terlihat
+        alert("Gagal mengambil data profil. Silakan cek koneksi atau token.");
       });
 
     // Dropdown event
