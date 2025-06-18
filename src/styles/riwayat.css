@@ -212,7 +212,8 @@ footer {
 .btn-konseling.disabled {
   background: #e0e0e0;
   color: #aaa;
-  cursor: not-allowed;
+  cursor: default; 
+  pointer-events: none; 
 }
 
 .btn-konseling:disabled:hover,
@@ -221,6 +222,3 @@ footer {
   color: #aaa;
 }
 
-.btn-konseling:hover:not(:disabled) {
-  background: #022e5c;
-}

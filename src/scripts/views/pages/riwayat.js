@@ -75,9 +75,16 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
           let buttonText = "";
           let buttonId = "";
 
+          // Cek apakah ulasan sudah terisi
+          const sudahUlasan = riwayat.review && riwayat.review.length > 0;
+
           if (riwayat.status === "finished") {
             buttonText = "ISI ULASAN";
             buttonId = "button-riwayat-ulasan";
+            if (sudahUlasan) {
+              buttonDisabled = "disabled";
+              buttonClass += " disabled";
+            }
           } else {
             buttonText = "KONSELING";
             buttonId = "button-riwayat-konseling";
