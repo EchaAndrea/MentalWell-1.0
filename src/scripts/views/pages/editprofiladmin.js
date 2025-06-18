@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
   try {
     const response = await fetch(
-      "https://mentalwell10-api-production.up.railway.app/my-data",
+      "https://mentalwell10-api-production.up.railway.app/profile",
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     );
     if (!response.ok) throw new Error("Unauthorized or server error");
     const data = await response.json();
-    const user = data.result?.users || data;
+    const user = data.data || data.result?.users || data;
 
     document.getElementById("profileimage").innerHTML = `
       <div id="imagePreviewContainer">

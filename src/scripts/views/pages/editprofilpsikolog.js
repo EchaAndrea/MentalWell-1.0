@@ -137,7 +137,7 @@ form.addEventListener("submit", async function (event) {
   });
 
   const response = await fetch(
-    "https://mentalwell10-api-production.up.railway.app/psychologist/profile", // pastikan endpoint sudah benar
+    "https://mentalwell10-api-production.up.railway.app/psychologist/profile", 
     {
       method: "PUT",
       headers: {
