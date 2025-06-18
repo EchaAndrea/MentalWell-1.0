@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     document.getElementById("nowa").value = user.phone_number || "";
     document.getElementById("tgllahir").value = user.birthdate || "";
     document.getElementById("gender").value = user.gender || "";
+    document.getElementById("emailHidden").value = user.email || "";
     document.getElementById("email").innerHTML = `<h4>${user.email || ""}</h4>`;
 
     document
@@ -78,7 +79,7 @@ form.addEventListener("submit", async function (event) {
   const gender = document.getElementById("gender").value;
   const imageInput = document.getElementById("inputImage");
   const image = imageInput ? imageInput.files[0] : null;
-  const email = document.getElementById("email").innerText.trim();
+  const email = document.getElementById("emailHidden").value;
   const passwordInput = document.getElementById("password"); // pastikan ada input password jika ingin support
   const password = passwordInput ? passwordInput.value : "";
 
