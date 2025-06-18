@@ -16,12 +16,32 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
   })
   .then((data) => {
     if (data && Array.isArray(data.counselings)) {
-      if (data.counselings.length === 0) {
+      let sessions = data.counselings;
+
+      const approved = sessions
+        .filter(
+          (s) => s.payment_status === "approved" && s.status !== "finished"
+        )
+        .sort((a, b) => new Date(b.schedule_date) - new Date(a.schedule_date));
+      const waiting = sessions
+        .filter((s) => s.status === "waiting")
+        .sort((a, b) => new Date(b.schedule_date) - new Date(a.schedule_date));
+      const failed = sessions
+        .filter((s) => s.status === "failed")
+        .sort((a, b) => new Date(b.schedule_date) - new Date(a.schedule_date));
+      const finished = sessions
+        .filter((s) => s.status === "finished")
+        .sort((a, b) => new Date(b.schedule_date) - new Date(a.schedule_date));
+
+      // Gabungkan sesuai urutan
+      sessions = [...approved, ...waiting, ...failed, ...finished];
+
+      if (sessions.length === 0) {
         const noDataElement = document.createElement("p");
         noDataElement.textContent = "Tidak ada riwayat konseling.";
         containerRiwayat.appendChild(noDataElement);
       } else {
-        data.counselings.forEach((riwayat) => {
+        sessions.forEach((riwayat) => {
           const riwayatElement = document.createElement("div");
           riwayatElement.classList.add("container-riwayat");
 
@@ -61,7 +81,6 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
           } else {
             buttonText = "KONSELING";
             buttonId = "button-riwayat-konseling";
-            // Disable jika status bukan approved atau status bukan waiting/failed
             if (
               riwayat.payment_status !== "approved" ||
               riwayat.status === "waiting" ||
@@ -110,7 +129,6 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
               (riwayat.status === "waiting" || riwayat.status === "failed")
             ) {
               btn.addEventListener("click", () => {
-                // Simpan id konseling ke localStorage/sessionStorage jika perlu
                 localStorage.setItem("active_counseling_id", riwayat.id);
                 // Tampilkan popup chat (gunakan kode popup chat dari sesi konseling)
                 fetch("/src/templates/popupchat.html")
