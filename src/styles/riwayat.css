@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700&display=swap");
 
 * {
   padding: 0;
@@ -6,8 +6,8 @@
 }
 
 body {
-  font-family: 'Inter', sans-serif;
-  background-color: #FAFAFA;
+  font-family: "Inter", sans-serif;
+  background-color: #fafafa;
   min-height: 100vh;
   flex: 1;
   display: flex;
@@ -23,11 +23,11 @@ main {
 }
 
 h2 {
-    font-weight: 400;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 128px 30px 30px 30px;
+  font-weight: 400;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 128px 30px 30px 30px;
 }
 
 .content-riwayat {
@@ -38,30 +38,30 @@ h2 {
 }
 
 .container-riwayat {
-    display: flex;
-    align-items: center;
-    padding: 20px;
-    border: 1px solid black;
-    border-radius: 10px;
-    width: 1110px;
-    height: 170px;
-    background-color: white;
-    margin-bottom: 30px;
-    position: relative;
-  }
-  
-#psychologPhoto {
-    border-radius: 50%;
-    width: 150px;
-    height: 150px;
-    margin: 30px 30px 30px 10px; 
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid black;
+  border-radius: 10px;
+  width: 1110px;
+  height: 170px;
+  background-color: white;
+  margin-bottom: 30px;
+  position: relative;
 }
-  
+
+#psychologPhoto {
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  margin: 30px 30px 30px 10px;
+  cursor: pointer;
+}
+
 .info-riwayat {
-    display: flex;
-    justify-content: space-between;
-    flex-grow: 1; 
+  display: flex;
+  justify-content: space-between;
+  flex-grow: 1;
 }
 
 .info-text p {
@@ -87,7 +87,7 @@ h2 {
   border-radius: 50px;
   color: white;
   font-weight: bold;
-  background-color: #044B77;
+  background-color: #044b77;
   width: 230px;
   height: 44px;
   cursor: pointer;
@@ -96,17 +96,17 @@ h2 {
 }
 
 .status-button button:hover {
-  background-color: #3ad0ea; 
+  background-color: #3ad0ea;
   color: #ffffff;
 }
 
 #button-riwayat-undone {
   background-color: #7298a6;
-  cursor: not-allowed; 
+  cursor: not-allowed;
 }
 
 #button-riwayat-undone:hover {
-  cursor: not-allowed; 
+  cursor: not-allowed;
 }
 
 /*
@@ -165,8 +165,8 @@ Ulasan
 }
 
 .container-ulasan .content-ulasan .btn-detail button {
-  background-color: #044B77; 
-  color: white; 
+  background-color: #044b77;
+  color: white;
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
@@ -178,11 +178,9 @@ Ulasan
 }
 
 .container-ulasan .content-ulasan .btn-detail button:hover {
-  background-color: #3ad0ea; 
+  background-color: #3ad0ea;
   color: #ffffff;
 }
-
-
 
 /*
 Footer
@@ -197,4 +195,26 @@ footer {
   margin-top: 2rem;
   text-align: center;
 }
-  
+
+.btn-konseling {
+  background: #044b97;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 40px;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 8px;
+}
+
+.btn-konseling:disabled,
+.btn-konseling.disabled {
+  background: #e0e0e0;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+.btn-konseling:hover:not(:disabled) {
+  background: #022e5c;
+}

@@ -48,6 +48,43 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
           else if (riwayat.status === "failed") formattedStatus = "Gagal";
           else formattedStatus = riwayat.status;
 
+          // Tentukan button dan aksi sesuai status
+          let buttonHTML = "";
+          let buttonClass = "btn-konseling";
+          let buttonDisabled = "";
+          let buttonText = "";
+          let buttonId = "";
+
+          if (riwayat.status === "finished") {
+            buttonText = "ISI ULASAN";
+            buttonClass += " btn-ulasan";
+            buttonId = "button-riwayat-ulasan";
+          } else if (
+            riwayat.payment_status === "approved" &&
+            (riwayat.status === "waiting" || riwayat.status === "failed")
+          ) {
+            buttonText = "KONSELING";
+            buttonId = "button-riwayat-konseling";
+          } else if (
+            riwayat.payment_status === "refunded" ||
+            riwayat.payment_status === "rejected"
+          ) {
+            buttonText = "KONSELING";
+            buttonDisabled = "disabled";
+            buttonClass += " disabled";
+            buttonId = "button-riwayat-disabled";
+          }
+
+          if (buttonText) {
+            buttonHTML = `<button 
+              type="button" 
+              class="${buttonClass}" 
+              id="${buttonId}"
+              data-counseling-id="${riwayat.id}"
+              ${buttonDisabled}
+            >${buttonText}</button>`;
+          }
+
           riwayatElement.innerHTML = `
             <img src="${riwayat.psychologist_profpic}" alt="Foto Psikolog" id="psychologPhoto" />
             <div class="info-riwayat">
@@ -56,13 +93,48 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
                   ${riwayat.psychologist_name}<br />
                   ${formattedScheduleDate}<br />
                   ${formattedScheduleTime} WIB<br />
+                  Via Chat
                 </p>
               </div>
               <div class="status-button">
                 <span class="status-riwayat">${formattedStatus}</span>
+                ${buttonHTML}
               </div>
             </div>
           `;
+
+          // Event untuk button
+          const btn = riwayatElement.querySelector("button");
+          if (btn) {
+            if (riwayat.status === "finished") {
+              btn.addEventListener("click", () => {
+                openUlasanPopup(riwayat.id, riwayat.status);
+              });
+            } else if (
+              riwayat.payment_status === "approved" &&
+              (riwayat.status === "waiting" || riwayat.status === "failed")
+            ) {
+              btn.addEventListener("click", () => {
+                // Simpan id konseling ke localStorage/sessionStorage jika perlu
+                localStorage.setItem("active_counseling_id", riwayat.id);
+                // Tampilkan popup chat (gunakan kode popup chat dari sesi konseling)
+                fetch("/src/templates/popupchat.html")
+                  .then((res) => {
+                    if (!res.ok) throw new Error("Gagal memuat popup chat");
+                    return res.text();
+                  })
+                  .then((html) => {
+                    const popupContainer =
+                      document.getElementById("popup-container");
+                    popupContainer.innerHTML = html;
+                    popupContainer.style.display = "flex";
+                    // Inisialisasi popup chat jika ada fungsi khusus
+                    if (typeof initPopup === "function") initPopup();
+                  })
+                  .catch((err) => alert(err.message));
+              });
+            }
+          }
 
           containerRiwayat.appendChild(riwayatElement);
         });
