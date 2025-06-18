@@ -15,15 +15,41 @@ document.addEventListener("DOMContentLoaded", async () => {
     const data = await res.json();
 
     // Ambil array sesi dari data.counselings sesuai response API terbaru
-    const sessions = data.counselings || [];
+    let sessions = data.counselings || [];
     if (sessions.length === 0) {
       sessionList.innerHTML = `<div class="alert alert-info">Belum ada sesi konseling.</div>`;
       return;
     }
 
+    // Urutkan: yang belum selesai di atas, yang finished di bawah
+    sessions = [
+      ...sessions.filter((s) => s.status !== "finished"),
+      ...sessions.filter((s) => s.status === "finished"),
+    ];
+
     sessions.forEach((session) => {
       const sessionElement = document.createElement("div");
       sessionElement.classList.add("container-sesi");
+
+      // Format tanggal seperti di riwayat
+      const scheduleDate = new Date(session.schedule_date);
+      const optionsSchedule = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      };
+      const formattedScheduleDate = scheduleDate.toLocaleDateString(
+        "id-ID",
+        optionsSchedule
+      );
+
+      let formattedScheduleTime = session.schedule_time
+        ? session.schedule_time
+            .replace(":", ".")
+            .replace("-", " - ")
+            .replace(":", ".")
+        : "-";
 
       const isDisabled =
         session.status === "finished" || session.status === "Selesai";
@@ -36,9 +62,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           <div class="info-text">
             <p>
               ${session.psychologist_name || "-"}<br />
-              ${session.schedule_date || "-"}<br />
-              ${session.schedule_time || "-"}<br />
-              <!-- Jika ada tipe konseling, tampilkan di sini -->
+              ${formattedScheduleDate}<br />
+              ${formattedScheduleTime} WIB<br />
             </p>
           </div>
         </div>
