@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     sessions.forEach((session) => {
       const sessionElement = document.createElement("div");
-      sessionElement.className = "container-riwayat";
+      sessionElement.classList.add("container-sesi");
 
       // Format tanggal seperti di riwayat
       const scheduleDate = new Date(session.schedule_date);
@@ -45,54 +45,41 @@ document.addEventListener("DOMContentLoaded", async () => {
       );
 
       let formattedScheduleTime = session.schedule_time
-        ? session.schedule_time
-            .replace(":", ".")
-            .replace("-", " - ")
-            .replace(":", ".")
+        ? session.schedule_time.replace(":", ".").replace("-", " - ").replace(":", ".")
         : "-";
+
+      const isDisabled =
+        session.status === "finished" || session.status === "Selesai";
 
       sessionElement.innerHTML = `
         <img src="${
           session.psychologist_profpic || "/src/public/beranda/man.png"
-        }" alt="Foto Psikolog" id="psychologPhoto" />
-        <div class="info-riwayat">
+        }" alt="Foto Psikolog" class="session-photo" />
+        <div class="info-sesi">
           <div class="info-text">
             <p>
               ${session.psychologist_name || "-"}<br />
               ${formattedScheduleDate}<br />
               ${formattedScheduleTime} WIB<br />
-              Via Chat
             </p>
           </div>
-          <div class="status-button">
-            <span class="status-riwayat">${
-              session.status === "finished"
-                ? "Selesai"
-                : session.status === "waiting"
-                ? "Menunggu"
-                : session.status === "failed"
-                ? "Gagal"
-                : session.status
-            }</span>
-            <button 
-              type="button" 
-              class="btn-konseling"
-              ${
-                session.status === "finished"
-                  ? "disabled id='button-riwayat-undone'"
-                  : ""
-              }
-              data-counseling-id="${session.id}"
-            >
-              KONSELING
-            </button>
-          </div>
+        </div>
+        <div class="status-sesi">
+          <span class="status">${session.status || "-"}</span>
+          <button 
+            type="button" 
+            class="btn-konseling${isDisabled ? " disabled" : ""}"
+            ${isDisabled ? "disabled" : ""}
+            data-counseling-id="${session.id}"
+          >
+            KONSELING
+          </button>
         </div>
       `;
 
       const button = sessionElement.querySelector(".btn-konseling");
 
-      if (button) {
+      if (!isDisabled && button) {
         button.addEventListener("click", () => {
           localStorage.setItem("active_counseling_id", session.id);
 
