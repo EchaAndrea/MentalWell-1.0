@@ -84,7 +84,9 @@ async function createRealtimeCounseling({
   hope_after,
   payment_proof_file, // File object dari input[type="file"]
 }) {
-  const url = `${endpoint}/realtime/counseling/${psychologist_id}`;
+  // Pastikan endpoint tidak ada slash di akhir
+  const cleanEndpoint = endpoint.replace(/\/$/, "");
+  const url = `https://mentalwell10-api-production.up.railway.app/counseling/${psychologist_id}`;
   const formData = new FormData();
   formData.append("occupation", occupation);
   formData.append("problem_description", problem_description);
