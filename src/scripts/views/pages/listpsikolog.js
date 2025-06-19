@@ -84,5 +84,5 @@ function redirectToPembayaran(id) {
 }
 
 function redirectToRealtime(id) {
-  window.location.href = `/jadwalrealtime.html?id=${id}&mode=chat`;
+  window.location.href = `/jadwalrealtime?id=${id}&mode=chat`;
 }
