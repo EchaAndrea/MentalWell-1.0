@@ -107,6 +107,7 @@ async function confirmPayment() {
       }
     );
     const data = await res.json();
+    console.log("API response:", data);
     if (data.status === "success") {
       const counselingId =
         data.newCounseling.counseling_id || data.newCounseling.id;
@@ -157,6 +158,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("nama").textContent = "Gagal memuat data psikolog";
     document.getElementById("harga").textContent = "";
   }
+  console.log("selected_psikolog:", localStorage.getItem("selected_psikolog"));
 });
 
 function showLoadingIndicator() {
