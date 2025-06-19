@@ -55,7 +55,9 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
 
         // Status mapping
         let formattedStatus = "";
-        if (
+        if (riwayat.payment_status === "refunded") {
+          formattedStatus = "Pengembalian Selesai";
+        } else if (
           riwayat.payment_status === "approved" &&
           riwayat.status !== "finished"
         ) {
@@ -65,8 +67,6 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
           riwayat.status === "failed"
         ) {
           formattedStatus = "Gagal";
-        } else if (riwayat.payment_status === "refunded") {
-          formattedStatus = "Pengembalian Selesai";
         } else if (riwayat.status === "finished") {
           formattedStatus = "Selesai";
         } else if (riwayat.status === "waiting") {
