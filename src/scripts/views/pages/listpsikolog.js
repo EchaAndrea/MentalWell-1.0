@@ -85,11 +85,12 @@ function redirectToPembayaran(id) {
 }
 
 function redirectToRealtime(id) {
-  // Cari data psikolog yang dipilih
+  // Ambil semua psikolog dari localStorage
   const allPsikolog = JSON.parse(localStorage.getItem("all_psikolog") || "[]");
-  const selected = allPsikolog.find((p) => p.id == id);
+  // Cari psikolog yang dipilih
+  const selected = allPsikolog.find((p) => String(p.id) === String(id));
   if (selected) {
     localStorage.setItem("selected_psikolog", JSON.stringify(selected));
   }
-  window.location.href = `/src/templates/jadwalrealtime.html?id=${id}&mode=chat`;
+  window.location.href = "/jadwalrealtime?id=" + id + "&mode=chat";
 }
