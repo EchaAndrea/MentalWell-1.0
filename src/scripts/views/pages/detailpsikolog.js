@@ -126,18 +126,13 @@ async function fetchPsychologistAvailability() {
 
 function updateButtonState(availability) {
   const btnDaftar = document.getElementById("btnDaftar");
-  if (!btnDaftar) return;
 
   if (availability === "available") {
-    btnDaftar.textContent = "Chat Sekarang";
-    btnDaftar.onclick = function () {
-      const urlParams = new URLSearchParams(window.location.search);
-      const id = urlParams.get("id");
-      window.location.href = `/jadwalkonseling-selesai?id=${id}&mode=chat`;
-    };
+    btnDaftar.disabled = false;
+    btnDaftar.classList.remove("disabled");
   } else {
-    btnDaftar.textContent = "Daftar Konseling";
-    btnDaftar.onclick = redirectToCounseling;
+    btnDaftar.disabled = true;
+    btnDaftar.classList.add("disabled");
   }
 }
 

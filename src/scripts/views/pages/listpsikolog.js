@@ -42,21 +42,18 @@ fetch(apiUrl, {
               }">
                 <p>${formattedketersediaan}</p>
               </div>
+              <div class="button-psikolog">
+                <button type="button" onclick="redirectToDetailPsychologist('${
+                  articleData.id
+                }')">${
+          articleData.availability === "available"
+            ? "Chat Sekarang"
+            : "Lihat Selengkapnya"
+        }</button>
+              </div>
             </div>
           </div>
         `;
-
-        // Tambahkan button Chat Sekarang jika available
-        const button = document.createElement("button");
-        if (articleData.availability === "available") {
-          button.textContent = "Chat Sekarang";
-          button.onclick = () => startRealtimeChat(articleData.id);
-        } else {
-          button.textContent = "Lihat Selengkapnya";
-          button.onclick = () => redirectToDetailPsychologist(articleData.id);
-        }
-        articleElement.appendChild(button);
-
         articleSection.appendChild(articleElement);
       });
     } else {
@@ -78,8 +75,4 @@ fetch(apiUrl, {
 
 function redirectToDetailPsychologist(id) {
   window.location.href = `/profilpsikolog?id=${id}`;
-}
-
-function startRealtimeChat(id) {
-  window.location.href = `/jadwalkonseling-selesai?id=${id}&mode=chat`;
 }
