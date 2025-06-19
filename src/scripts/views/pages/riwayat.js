@@ -143,7 +143,6 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
           } else if (
             riwayat.payment_status === "approved" &&
             riwayat.status !== "finished" &&
-            riwayat.status !== "waiting" &&
             riwayat.status !== "failed"
           ) {
             btn.addEventListener("click", () => {
@@ -151,7 +150,7 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
               localStorage.setItem(
                 "active_counseling_name",
                 riwayat.psychologist_name
-              ); // Tambahkan ini
+              );
               fetch("/src/templates/popupchat.html")
                 .then((res) => {
                   if (!res.ok) throw new Error("Gagal memuat popup chat");
