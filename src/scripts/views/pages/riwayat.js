@@ -91,12 +91,15 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
           }
         } else if (
           riwayat.payment_status === "approved" &&
-          riwayat.status !== "waiting" &&
+          riwayat.status !== "finished" &&
+          riwayat.payment_status !== "refunded" &&
+          riwayat.payment_status !== "rejected" &&
           riwayat.status !== "failed"
         ) {
+          // TERBAYAR: tombol aktif
           buttonText = "KONSELING";
           buttonId = "button-riwayat-konseling";
-          // Aktif (tidak disable)
+          // Tidak disable
         } else {
           buttonText = "KONSELING";
           buttonId = "button-riwayat-konseling";
