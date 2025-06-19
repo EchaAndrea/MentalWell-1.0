@@ -24,6 +24,11 @@ document.addEventListener("DOMContentLoaded", function () {
   if (nameDiv && targetName) {
     nameDiv.textContent = `Chat dengan: ${targetName}`;
   }
+  // Tambahan: isi header juga
+  const headerName = document.getElementById("namaPsikolog");
+  if (headerName && targetName) {
+    headerName.textContent = targetName;
+  }
 });
 
 window.toggleChat = function () {
