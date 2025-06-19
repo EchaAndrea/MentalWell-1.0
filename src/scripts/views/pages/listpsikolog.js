@@ -15,6 +15,7 @@ fetch(apiUrl, {
   .then((data) => {
     loadingIndicator.style.display = "none";
     if (data.status === "success") {
+      localStorage.setItem("all_psikolog", JSON.stringify(data.data || []));
       (data.data || []).forEach((articleData) => {
         const articleElement = document.createElement("div");
         articleElement.classList.add("content-psikolog");
@@ -84,5 +85,11 @@ function redirectToPembayaran(id) {
 }
 
 function redirectToRealtime(id) {
-  window.location.href = `/jadwalrealtime?id=${id}&mode=chat`;
+  // Cari data psikolog yang dipilih
+  const allPsikolog = JSON.parse(localStorage.getItem("all_psikolog") || "[]");
+  const selected = allPsikolog.find((p) => p.id == id);
+  if (selected) {
+    localStorage.setItem("selected_psikolog", JSON.stringify(selected));
+  }
+  window.location.href = `/src/templates/jadwalrealtime.html?id=${id}&mode=chat`;
 }
