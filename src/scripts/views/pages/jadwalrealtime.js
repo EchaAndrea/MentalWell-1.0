@@ -132,35 +132,16 @@ async function confirmPayment() {
 
 // Jalankan fungsi sesuai halaman
 document.addEventListener("DOMContentLoaded", function () {
-  // Ambil data psikolog dari localStorage
   const psikolog = JSON.parse(
     localStorage.getItem("selected_psikolog") || "{}"
   );
   if (psikolog && psikolog.id) {
     document.getElementById("foto-psikolog").src = psikolog.profile_image || "";
-    document.getElementById("foto-psikolog").alt =
-      psikolog.name || "Foto Psikolog";
     document.getElementById("nama").textContent = psikolog.name || "-";
     document.getElementById("harga").textContent = psikolog.price
       ? `Rp. ${parseInt(psikolog.price).toLocaleString("id-ID")}`
       : "";
-
-    // Tampilkan harga di detail pembayaran
-    document.getElementById("hargaKonseling").textContent = psikolog.price
-      ? `Rp. ${parseInt(psikolog.price).toLocaleString("id-ID")}`
-      : "Rp. 0";
-    // Biaya aplikasi dan total
-    const biayaAplikasi = 15000;
-    const total = (parseInt(psikolog.price) || 0) + biayaAplikasi;
-    document.getElementById(
-      "biayaAplikasi"
-    ).textContent = `Rp. ${biayaAplikasi.toLocaleString("id-ID")}`;
-    document.getElementById(
-      "totalPembayaran"
-    ).textContent = `Rp. ${total.toLocaleString("id-ID")}`;
-    document.getElementById(
-      "totalPembayaran2"
-    ).textContent = `Rp. ${total.toLocaleString("id-ID")}`;
+    // ...lanjutkan untuk detail pembayaran...
   } else {
     document.getElementById("nama").textContent = "Gagal memuat data psikolog";
     document.getElementById("harga").textContent = "";
