@@ -77,16 +77,13 @@ function scrollToBottom() {
 }
 
 async function createRealtimeCounseling({
-  endpoint,
   psychologist_id,
   occupation,
   problem_description,
   hope_after,
-  payment_proof_file, // File object dari input[type="file"]
+  payment_proof_file,
 }) {
-  // Pastikan endpoint tidak ada slash di akhir
-  const cleanEndpoint = endpoint.replace(/\/$/, "");
-  const url = `https://mentalwell10-api-production.up.railway.app/counseling/${psychologist_id}`;
+  const url = `https://mentalwell10-api-production.up.railway.app/realtime/counseling/${psychologist_id}`;
   const formData = new FormData();
   formData.append("occupation", occupation);
   formData.append("problem_description", problem_description);
@@ -106,14 +103,3 @@ async function createRealtimeCounseling({
     throw err;
   }
 }
-
-// Contoh penggunaan:
-// const paymentProofFile = document.getElementById("fileUpload").files[0];
-// createRealtimeCounseling({
-//   endpoint: "https://api.example.com",
-//   psychologist_id: 123,
-//   occupation: "mahasiswa",
-//   problem_description: "gangguan makan",
-//   hope_after: "bisa memiliki pola makan yang baik",
-//   payment_proof_file: paymentProofFile,
-// }).then(console.log).catch(console.error);
