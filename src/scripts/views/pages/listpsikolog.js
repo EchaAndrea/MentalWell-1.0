@@ -43,9 +43,11 @@ fetch(apiUrl, {
                 <p>${formattedketersediaan}</p>
               </div>
               <div class="button-psikolog">
-                <button type="button" onclick="redirectToDetailPsychologist('${
-                  articleData.id
-                }')">${
+                <button type="button" onclick="${
+                  articleData.availability === "available"
+                    ? `redirectToPembayaran('${articleData.id}')`
+                    : `redirectToDetailPsychologist('${articleData.id}')`
+                }">${
           articleData.availability === "available"
             ? "Chat Sekarang"
             : "Lihat Selengkapnya"
@@ -75,4 +77,8 @@ fetch(apiUrl, {
 
 function redirectToDetailPsychologist(id) {
   window.location.href = `/profilpsikolog?id=${id}`;
+}
+
+function redirectToPembayaran(id) {
+  window.location.href = `/jadwalkonseling-pembayaran?id=${id}&mode=chat`;
 }
