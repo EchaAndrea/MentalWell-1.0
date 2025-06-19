@@ -16,14 +16,7 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
   })
   .then((data) => {
     if (data && Array.isArray(data.counselings)) {
-      let sessions = data.counselings;
-
-      // urut sesuai (pemesanan)
-      const approved = sessions.filter((s) => s.payment_status === "approved");
-      const notApproved = sessions.filter(
-        (s) => s.payment_status !== "approved"
-      );
-      sessions = [...approved, ...notApproved];
+      let sessions = data.counselings; // urutan asli dari API (pemesanan)
 
       sessions.forEach((riwayat) => {
         const riwayatElement = document.createElement("div");
@@ -62,6 +55,11 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
         if (riwayat.status === "finished") {
           buttonText = "ISI ULASAN";
           buttonId = "button-riwayat-ulasan";
+          // Disable jika sudah pernah isi ulasan
+          if (riwayat.has_review) {
+            buttonDisabled = "disabled";
+            buttonClass += " disabled";
+          }
         } else {
           buttonText = "KONSELING";
           buttonId = "button-riwayat-konseling";
@@ -105,7 +103,7 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
         // Event untuk button
         const btn = riwayatElement.querySelector("button");
         if (btn) {
-          if (riwayat.status === "finished") {
+          if (riwayat.status === "finished" && !riwayat.has_review) {
             btn.addEventListener("click", () => {
               openUlasanPopup(riwayat.id, riwayat.status);
             });
