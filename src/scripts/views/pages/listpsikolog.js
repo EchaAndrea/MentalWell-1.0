@@ -45,7 +45,7 @@ fetch(apiUrl, {
               <div class="button-psikolog">
                 <button type="button" onclick="${
                   articleData.availability === "available"
-                    ? `redirectToPembayaran('${articleData.id}')`
+                    ? `redirectToRealtime('${articleData.id}')`
                     : `redirectToDetailPsychologist('${articleData.id}')`
                 }">${
           articleData.availability === "available"

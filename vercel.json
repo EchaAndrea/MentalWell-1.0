@@ -84,6 +84,10 @@
       "src": "/jadwalpsikolog",
       "dest": "/src/templates/jadwalpsikolog.html"
     },
+        {
+      "src": "/jadwalrealtime",
+      "dest": "/src/templates/jadwalrealtime.html"
+    },
     {
       "src": "/jadwalkonseling-isidata",
       "dest": "/src/templates/jadwalkonseling-isidata.html"
