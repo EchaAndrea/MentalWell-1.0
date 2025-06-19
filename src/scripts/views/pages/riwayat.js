@@ -16,7 +16,8 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
   })
   .then((data) => {
     if (data && Array.isArray(data.counselings)) {
-      let sessions = data.counselings; // urutan asli dari API (pemesanan)
+      // Urutkan berdasarkan id ASC (pemesanan awal ke terbaru)
+      let sessions = data.counselings.sort((a, b) => a.id - b.id);
 
       sessions.forEach((riwayat) => {
         const riwayatElement = document.createElement("div");
