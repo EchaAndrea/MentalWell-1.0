@@ -17,6 +17,13 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   }
+
+  // Tampilkan nama target di popup chat
+  const targetName = localStorage.getItem("active_counseling_name");
+  const nameDiv = document.getElementById("chatTargetName");
+  if (nameDiv && targetName) {
+    nameDiv.textContent = `Chat dengan: ${targetName}`;
+  }
 });
 
 window.toggleChat = function () {
@@ -42,7 +49,10 @@ window.sendMessage = function () {
     scrollToBottom();
 
     setTimeout(() => {
-      addChatBubble("Terima kasih sudah berbagi, saya akan bantu semampu saya.", "left");
+      addChatBubble(
+        "Terima kasih sudah berbagi, saya akan bantu semampu saya.",
+        "left"
+      );
       scrollToBottom();
     }, 800);
   }
@@ -60,4 +70,3 @@ function scrollToBottom() {
   const chatBody = document.getElementById("chatBody");
   chatBody.scrollTop = chatBody.scrollHeight;
 }
-

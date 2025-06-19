@@ -148,6 +148,10 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
           ) {
             btn.addEventListener("click", () => {
               localStorage.setItem("active_counseling_id", riwayat.id);
+              localStorage.setItem(
+                "active_counseling_name",
+                riwayat.psychologist_name
+              ); // Tambahkan ini
               fetch("/src/templates/popupchat.html")
                 .then((res) => {
                   if (!res.ok) throw new Error("Gagal memuat popup chat");
