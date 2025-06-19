@@ -10,10 +10,34 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const fileUpload = document.getElementById("fileUpload");
   if (fileUpload) {
-    fileUpload.addEventListener("change", function () {
+    fileUpload.addEventListener("change", async function () {
       if (this.files.length > 0) {
         addChatBubble(`📎 File dikirim: ${this.files[0].name}`, "right");
         scrollToBottom();
+
+        // --- Tambahan: Kirim file ke backend ---
+        try {
+          // Ganti value berikut sesuai kebutuhan (atau ambil dari input/form)
+          const psychologist_id =
+            localStorage.getItem("active_psychologist_id") || 1;
+          const occupation = "mahasiswa";
+          const problem_description = "gangguan makan";
+          const hope_after = "bisa memiliki pola makan yang baik";
+          const payment_proof_file = this.files[0];
+
+          const result = await createRealtimeCounseling({
+            psychologist_id,
+            occupation,
+            problem_description,
+            hope_after,
+            payment_proof_file,
+          });
+          addChatBubble("✅ Bukti pembayaran berhasil dikirim!", "left");
+          console.log(result);
+        } catch (err) {
+          addChatBubble("❌ Gagal mengirim bukti pembayaran.", "left");
+        }
+        // --- End tambahan ---
       }
     });
   }
@@ -83,6 +107,15 @@ async function createRealtimeCounseling({
   hope_after,
   payment_proof_file,
 }) {
+  if (
+    !psychologist_id ||
+    !occupation ||
+    !problem_description ||
+    !hope_after ||
+    !payment_proof_file
+  ) {
+    throw new Error("Semua field wajib diisi dan file harus dipilih.");
+  }
   const url = `https://mentalwell10-api-production.up.railway.app/realtime/counseling/${psychologist_id}`;
   const formData = new FormData();
   formData.append("occupation", occupation);
@@ -95,11 +128,13 @@ async function createRealtimeCounseling({
       method: "POST",
       body: formData,
     });
-    if (!response.ok) throw new Error("Gagal membuat counseling");
-    const data = await response.json();
-    return data;
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Gagal membuat counseling: ${errText}`);
+    }
+    return await response.json();
   } catch (err) {
-    console.error(err);
+    console.error("Error createRealtimeCounseling:", err);
     throw err;
   }
 }
