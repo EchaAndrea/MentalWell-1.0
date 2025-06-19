@@ -245,7 +245,7 @@ function sendCounselingData() {
 
 // Tahap 3: Pembayaran
 async function confirmPayment() {
-  const token = sessionStorage.getItem("authToken"); // Ubah ke sessionStorage
+  const token = sessionStorage.getItem("authToken"); 
   const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
   const problemData = JSON.parse(
     localStorage.getItem("counseling_problem") || "{}"
@@ -261,7 +261,7 @@ async function confirmPayment() {
   const psychologist_id = jadwal.psikolog_id || "1";
 
   const formData = new FormData();
-  formData.append("occupation", "Mahasiswa"); // Ganti jika ada input pekerjaan
+  formData.append("occupation", "Mahasiswa"); 
   formData.append("problem_description", problemData.problem || "");
   formData.append("hope_after", problemData.hope || "");
   formData.append("date", jadwal.tanggal || "");
