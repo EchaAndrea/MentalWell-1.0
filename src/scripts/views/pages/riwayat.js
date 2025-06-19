@@ -18,6 +18,20 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
     if (data && Array.isArray(data.counselings)) {
       let sessions = data.counselings;
 
+      // Urutkan: Terbayar paling atas, lalu lainnya
+      sessions.sort((a, b) => {
+        const getOrder = (item) => {
+          if (item.payment_status === "approved" && item.status !== "finished")
+            return 0; // Terbayar
+          if (item.status === "finished") return 1; // Selesai
+          if (item.payment_status === "rejected" || item.status === "failed")
+            return 2; // Gagal
+          if (item.payment_status === "refunded") return 3; // Pengembalian Selesai
+          return 4; // Lainnya
+        };
+        return getOrder(a) - getOrder(b);
+      });
+
       sessions.forEach((riwayat) => {
         const riwayatElement = document.createElement("div");
         riwayatElement.classList.add("container-riwayat");
@@ -41,15 +55,25 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
 
         // Status mapping
         let formattedStatus = "";
-        if (riwayat.payment_status === "approved") formattedStatus = "Terbayar";
-        else if (riwayat.payment_status === "rejected")
+        if (
+          riwayat.payment_status === "approved" &&
+          riwayat.status !== "finished"
+        ) {
+          formattedStatus = "Terbayar";
+        } else if (
+          riwayat.payment_status === "rejected" ||
+          riwayat.status === "failed"
+        ) {
           formattedStatus = "Gagal";
-        else if (riwayat.payment_status === "refunded")
+        } else if (riwayat.payment_status === "refunded") {
           formattedStatus = "Pengembalian Selesai";
-        else if (riwayat.status === "finished") formattedStatus = "Selesai";
-        else if (riwayat.status === "waiting") formattedStatus = "Menunggu";
-        else if (riwayat.status === "failed") formattedStatus = "Gagal";
-        else formattedStatus = riwayat.status;
+        } else if (riwayat.status === "finished") {
+          formattedStatus = "Selesai";
+        } else if (riwayat.status === "waiting") {
+          formattedStatus = "Menunggu";
+        } else {
+          formattedStatus = riwayat.status;
+        }
 
         // Button logic
         let buttonHTML = "";
@@ -61,23 +85,23 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
         if (riwayat.status === "finished") {
           buttonText = "ISI ULASAN";
           buttonId = "button-riwayat-ulasan";
-          // Disable jika sudah pernah isi ulasan
           if (riwayat.has_review) {
             buttonDisabled = "disabled";
             buttonClass += " disabled";
           }
+        } else if (
+          riwayat.payment_status === "approved" &&
+          riwayat.status !== "waiting" &&
+          riwayat.status !== "failed"
+        ) {
+          buttonText = "KONSELING";
+          buttonId = "button-riwayat-konseling";
+          // Aktif (tidak disable)
         } else {
           buttonText = "KONSELING";
           buttonId = "button-riwayat-konseling";
-          // Disable jika status bukan approved atau status waiting/failed
-          if (
-            riwayat.payment_status !== "approved" ||
-            riwayat.status === "waiting" ||
-            riwayat.status === "failed"
-          ) {
-            buttonDisabled = "disabled";
-            buttonClass += " disabled";
-          }
+          buttonDisabled = "disabled";
+          buttonClass += " disabled";
         }
 
         buttonHTML = `<button 
@@ -115,7 +139,9 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
             });
           } else if (
             riwayat.payment_status === "approved" &&
-            riwayat.status !== "finished"
+            riwayat.status !== "finished" &&
+            riwayat.status !== "waiting" &&
+            riwayat.status !== "failed"
           ) {
             btn.addEventListener("click", () => {
               localStorage.setItem("active_counseling_id", riwayat.id);
