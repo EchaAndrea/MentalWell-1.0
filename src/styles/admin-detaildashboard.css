@@ -42,13 +42,11 @@ body {
 .btn-refund {
   background-color: #ffc107;
   color: #212529;
-  border: none;
 }
 
 .btn-refund:hover {
   background-color: #ffcd39;
   color: #212529;
-  border: none;
 }
 
 footer {
