@@ -78,6 +78,39 @@
         </span>
       </div>
       <button class="rounded py-2 px-5 my-4 mb-4 d-flex mx-auto" onclick="redirectToIndex()">Kembali ke Beranda</button>
+
+      <!-- Button Mulai Chat, hanya tampil jika mode=chat -->
+      <button id="btnMulaiChat" class="rounded py-2 px-5 my-4 mb-4 d-flex mx-auto" style="display:none;" onclick="openChatPopup()">Mulai Chat</button>
+
+      <!-- Popup Chat (hidden by default) -->
+      <div id="chatPopupContainer" style="display:none; position:fixed; z-index:9999; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.3);">
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);">
+          <!-- Include popupchat.html content here, atau gunakan iframe jika ingin reuse -->
+          <div id="chatPopup"></div>
+        </div>
+      </div>
+
+      <script>
+        // Tampilkan button Mulai Chat jika mode=chat
+        document.addEventListener("DOMContentLoaded", function () {
+          const params = new URLSearchParams(window.location.search);
+          if (params.get("mode") === "chat") {
+            document.getElementById("btnMulaiChat").style.display = "block";
+          }
+        });
+
+        function openChatPopup() {
+          document.getElementById("chatPopupContainer").style.display = "block";
+          // Load popupchat.html ke dalam #chatPopup jika belum ada
+          if (!document.getElementById("chatPopup").innerHTML.trim()) {
+            fetch('/src/templates/popupchat.html')
+              .then(res => res.text())
+              .then(html => {
+                document.getElementById("chatPopup").innerHTML = html;
+              });
+          }
+        }
+      </script>
     </div>
   </main>
   <footer>
