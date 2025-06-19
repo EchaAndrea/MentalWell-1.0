@@ -82,3 +82,7 @@ function redirectToDetailPsychologist(id) {
 function redirectToPembayaran(id) {
   window.location.href = `/jadwalkonseling-pembayaran?id=${id}&mode=chat`;
 }
+
+function redirectToRealtime(id) {
+  window.location.href = `/jadwalrealtime.html?id=${id}&mode=chat`;
+}
