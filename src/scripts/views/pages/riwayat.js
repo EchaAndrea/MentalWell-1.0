@@ -39,8 +39,14 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
           .replace("-", " - ")
           .replace(":", ".");
 
+        // Status mapping
         let formattedStatus = "";
-        if (riwayat.status === "finished") formattedStatus = "Selesai";
+        if (riwayat.payment_status === "approved") formattedStatus = "Terbayar";
+        else if (riwayat.payment_status === "rejected")
+          formattedStatus = "Gagal";
+        else if (riwayat.payment_status === "refunded")
+          formattedStatus = "Pengembalian Selesai";
+        else if (riwayat.status === "finished") formattedStatus = "Selesai";
         else if (riwayat.status === "waiting") formattedStatus = "Menunggu";
         else if (riwayat.status === "failed") formattedStatus = "Gagal";
         else formattedStatus = riwayat.status;
