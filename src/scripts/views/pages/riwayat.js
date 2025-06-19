@@ -18,147 +18,122 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
     if (data && Array.isArray(data.counselings)) {
       let sessions = data.counselings;
 
-      const approved = sessions
-        .filter(
-          (s) => s.payment_status === "approved" && s.status !== "finished"
-        )
-        .sort((a, b) => new Date(b.schedule_date) - new Date(a.schedule_date));
-      const waiting = sessions
-        .filter((s) => s.status === "waiting")
-        .sort((a, b) => new Date(b.schedule_date) - new Date(a.schedule_date));
-      const failed = sessions
-        .filter((s) => s.status === "failed")
-        .sort((a, b) => new Date(b.schedule_date) - new Date(a.schedule_date));
-      const finished = sessions
-        .filter((s) => s.status === "finished")
-        .sort((a, b) => new Date(b.schedule_date) - new Date(a.schedule_date));
+      // urut sesuai (pemesanan)
+      const approved = sessions.filter((s) => s.payment_status === "approved");
+      const notApproved = sessions.filter(
+        (s) => s.payment_status !== "approved"
+      );
+      sessions = [...approved, ...notApproved];
 
-      // Gabungkan sesuai urutan
-      sessions = [...approved, ...waiting, ...failed, ...finished];
+      sessions.forEach((riwayat) => {
+        const riwayatElement = document.createElement("div");
+        riwayatElement.classList.add("container-riwayat");
 
-      if (sessions.length === 0) {
-        const noDataElement = document.createElement("p");
-        noDataElement.textContent = "Tidak ada riwayat konseling.";
-        containerRiwayat.appendChild(noDataElement);
-      } else {
-        sessions.forEach((riwayat) => {
-          const riwayatElement = document.createElement("div");
-          riwayatElement.classList.add("container-riwayat");
+        const scheduleDate = new Date(riwayat.schedule_date);
+        const optionsSchedule = {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        };
+        const formattedScheduleDate = scheduleDate.toLocaleDateString(
+          "id-ID",
+          optionsSchedule
+        );
 
-          const scheduleDate = new Date(riwayat.schedule_date);
-          const optionsSchedule = {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          };
-          const formattedScheduleDate = scheduleDate.toLocaleDateString(
-            "id-ID",
-            optionsSchedule
-          );
+        let formattedScheduleTime = riwayat.schedule_time
+          .replace(":", ".")
+          .replace("-", " - ")
+          .replace(":", ".");
 
-          let formattedScheduleTime = riwayat.schedule_time
-            .replace(":", ".")
-            .replace("-", " - ")
-            .replace(":", ".");
+        let formattedStatus = "";
+        if (riwayat.status === "finished") formattedStatus = "Selesai";
+        else if (riwayat.status === "waiting") formattedStatus = "Menunggu";
+        else if (riwayat.status === "failed") formattedStatus = "Gagal";
+        else formattedStatus = riwayat.status;
 
-          let formattedStatus = "";
-          if (riwayat.status === "finished") formattedStatus = "Selesai";
-          else if (riwayat.status === "waiting") formattedStatus = "Menunggu";
-          else if (riwayat.status === "failed") formattedStatus = "Gagal";
-          else formattedStatus = riwayat.status;
+        // Button logic
+        let buttonHTML = "";
+        let buttonClass = "btn-konseling";
+        let buttonDisabled = "";
+        let buttonText = "";
+        let buttonId = "";
 
-          // Tentukan button dan aksi sesuai status
-          let buttonHTML = "";
-          let buttonClass = "btn-konseling";
-          let buttonDisabled = "";
-          let buttonText = "";
-          let buttonId = "";
-
-          // Cek apakah ulasan sudah terisi
-          const sudahUlasan = riwayat.review && riwayat.review.length > 0;
-
-          if (riwayat.status === "finished") {
-            buttonText = "ISI ULASAN";
-            buttonId = "button-riwayat-ulasan";
-            if (sudahUlasan) {
-              buttonDisabled = "disabled";
-              buttonClass += " disabled";
-            }
-          } else {
-            buttonText = "KONSELING";
-            buttonId = "button-riwayat-konseling";
-            if (
-              riwayat.payment_status !== "approved" ||
-              riwayat.status === "waiting" ||
-              riwayat.status === "failed"
-            ) {
-              buttonDisabled = "disabled";
-              buttonClass += " disabled";
-            }
+        if (riwayat.status === "finished") {
+          buttonText = "ISI ULASAN";
+          buttonId = "button-riwayat-ulasan";
+        } else {
+          buttonText = "KONSELING";
+          buttonId = "button-riwayat-konseling";
+          // Disable jika status bukan approved atau status waiting/failed
+          if (
+            riwayat.payment_status !== "approved" ||
+            riwayat.status === "waiting" ||
+            riwayat.status === "failed"
+          ) {
+            buttonDisabled = "disabled";
+            buttonClass += " disabled";
           }
+        }
 
-          buttonHTML = `<button 
-            type="button" 
-            class="${buttonClass}" 
-            id="${buttonId}"
-            data-counseling-id="${riwayat.id}"
-            ${buttonDisabled}
-          >${buttonText}</button>`;
+        buttonHTML = `<button 
+          type="button" 
+          class="${buttonClass}" 
+          id="${buttonId}"
+          data-counseling-id="${riwayat.id}"
+          ${buttonDisabled}
+        >${buttonText}</button>`;
 
-          riwayatElement.innerHTML = `
-            <img src="${riwayat.psychologist_profpic}" alt="Foto Psikolog" id="psychologPhoto" />
-            <div class="info-riwayat">
-              <div class="info-text">
-                <p>
-                  ${riwayat.psychologist_name}<br />
-                  ${formattedScheduleDate}<br />
-                  ${formattedScheduleTime} WIB<br />
-                  Via Chat
-                </p>
-              </div>
-              <div class="status-button">
-                <span class="status-riwayat">${formattedStatus}</span>
-                ${buttonHTML}
-              </div>
+        riwayatElement.innerHTML = `
+          <img src="${riwayat.psychologist_profpic}" alt="Foto Psikolog" id="psychologPhoto" />
+          <div class="info-riwayat">
+            <div class="info-text">
+              <p>
+                ${riwayat.psychologist_name}<br />
+                ${formattedScheduleDate}<br />
+                ${formattedScheduleTime} WIB<br />
+                Via Chat
+              </p>
             </div>
-          `;
+            <div class="status-button">
+              <span class="status-riwayat">${formattedStatus}</span>
+              ${buttonHTML}
+            </div>
+          </div>
+        `;
 
-          // Event untuk button
-          const btn = riwayatElement.querySelector("button");
-          if (btn) {
-            if (riwayat.status === "finished") {
-              btn.addEventListener("click", () => {
-                openUlasanPopup(riwayat.id, riwayat.status);
-              });
-            } else if (
-              riwayat.payment_status === "approved" &&
-              (riwayat.status === "waiting" || riwayat.status === "failed")
-            ) {
-              btn.addEventListener("click", () => {
-                localStorage.setItem("active_counseling_id", riwayat.id);
-                // Tampilkan popup chat (gunakan kode popup chat dari sesi konseling)
-                fetch("/src/templates/popupchat.html")
-                  .then((res) => {
-                    if (!res.ok) throw new Error("Gagal memuat popup chat");
-                    return res.text();
-                  })
-                  .then((html) => {
-                    const popupContainer =
-                      document.getElementById("popup-container");
-                    popupContainer.innerHTML = html;
-                    popupContainer.style.display = "flex";
-                    // Inisialisasi popup chat jika ada fungsi khusus
-                    if (typeof initPopup === "function") initPopup();
-                  })
-                  .catch((err) => alert(err.message));
-              });
-            }
+        // Event untuk button
+        const btn = riwayatElement.querySelector("button");
+        if (btn) {
+          if (riwayat.status === "finished") {
+            btn.addEventListener("click", () => {
+              openUlasanPopup(riwayat.id, riwayat.status);
+            });
+          } else if (
+            riwayat.payment_status === "approved" &&
+            riwayat.status !== "finished"
+          ) {
+            btn.addEventListener("click", () => {
+              localStorage.setItem("active_counseling_id", riwayat.id);
+              fetch("/src/templates/popupchat.html")
+                .then((res) => {
+                  if (!res.ok) throw new Error("Gagal memuat popup chat");
+                  return res.text();
+                })
+                .then((html) => {
+                  const popupContainer =
+                    document.getElementById("popup-container");
+                  popupContainer.innerHTML = html;
+                  popupContainer.style.display = "flex";
+                  if (typeof initPopup === "function") initPopup();
+                })
+                .catch((err) => alert(err.message));
+            });
           }
+        }
 
-          containerRiwayat.appendChild(riwayatElement);
-        });
-      }
+        containerRiwayat.appendChild(riwayatElement);
+      });
     } else {
       console.error("Invalid data format received from the server.");
     }
