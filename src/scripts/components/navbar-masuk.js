@@ -364,7 +364,7 @@ class NavBarLogin extends HTMLElement {
                             <div class="riwayat-button" id="keluar-button">
                               <a class="riwayat" id="riwayat" href="#">
                                 <img src="/src/public/dropdown/histori.png" width="25px" height="25px">
-                                <span>Riwayat</span>
+                                <span>Sesi Konseling</span>
                               </a>
                             </div>
                             <div class="keluar-button" id="keluar-button">
