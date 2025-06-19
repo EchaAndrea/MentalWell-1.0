@@ -57,7 +57,6 @@ fetch(apiUrl, {
         `;
         articleSection.appendChild(articleElement);
       });
-      localStorage.setItem("all_psikolog", JSON.stringify(data.data || []));
     } else {
       loadingIndicator.style.display = "none";
       const errorElement = document.createElement("div");
@@ -84,12 +83,5 @@ function redirectToPembayaran(id) {
 }
 
 function redirectToRealtime(id) {
-  // Ambil semua psikolog dari localStorage
-  const allPsikolog = JSON.parse(localStorage.getItem("all_psikolog") || "[]");
-  // Cari psikolog yang dipilih
-  const selected = allPsikolog.find((p) => String(p.id) === String(id));
-  if (selected) {
-    localStorage.setItem("selected_psikolog", JSON.stringify(selected));
-  }
-  window.location.href = "/jadwalrealtime?id=" + id + "&mode=chat";
+  window.location.href = `/jadwalrealtime?id=${id}&mode=chat`;
 }

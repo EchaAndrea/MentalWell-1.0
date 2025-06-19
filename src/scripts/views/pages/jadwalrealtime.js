@@ -4,30 +4,14 @@ function getPsikologId() {
   return params.get("id") || "1";
 }
 
-// Fetch data psikolog
-async function fetchPsikolog(psikologId) {
-  const token = sessionStorage.getItem("authToken");
-  if (!token) {
-    throw new Error("Anda belum login. Silakan login terlebih dahulu.");
-  }
-  const res = await fetch(
-    `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}`,
-    {
-      headers: { Authorization: `Bearer ${token}` },
-    }
-  );
-  if (!res.ok) throw new Error("Gagal fetch data psikolog");
-  return await res.json();
-}
-
-// Tampilkan data psikolog di atas detail pembayaran
-async function tampilkanProfilPsikolog() {
-  let psikolog = JSON.parse(localStorage.getItem("selected_psikolog") || "{}");
-  if (!psikolog || !psikolog.id) {
-    // Fallback: fetch dari API
-    try {
-      const token =
-        localStorage.getItem("token") || sessionStorage.getItem("authToken");
+// Ambil data psikolog dari sessionStorage, fallback ke API jika tidak ada
+async function getPsikologData() {
+  let psikolog = {};
+  try {
+    psikolog = JSON.parse(sessionStorage.getItem("selected_psikolog") || "{}");
+    if (!psikolog || !psikolog.id) {
+      // Fallback: fetch dari API
+      const token = sessionStorage.getItem("authToken");
       const id = getPsikologId();
       const res = await fetch(
         `https://mentalwell10-api-production.up.railway.app/psychologists/${id}`,
@@ -35,10 +19,16 @@ async function tampilkanProfilPsikolog() {
       );
       const data = await res.json();
       psikolog = data.data || {};
-    } catch (e) {
-      // gagal fetch
     }
+  } catch (e) {
+    psikolog = {};
   }
+  return psikolog;
+}
+
+// Tampilkan data psikolog di atas detail pembayaran
+async function tampilkanProfilPsikolog() {
+  const psikolog = await getPsikologData();
   if (psikolog && psikolog.id) {
     document.getElementById("foto-psikolog").src = psikolog.profile_image || "";
     document.getElementById("foto-psikolog").alt =
@@ -72,11 +62,10 @@ async function tampilkanProfilPsikolog() {
 
 // Tahap 3: Pembayaran
 async function confirmPayment() {
-  const token =
-    localStorage.getItem("token") || sessionStorage.getItem("authToken");
-  const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
+  const token = sessionStorage.getItem("authToken");
+  const jadwal = JSON.parse(sessionStorage.getItem("jadwal") || "{}");
   const problemData = JSON.parse(
-    localStorage.getItem("counseling_problem") || "{}"
+    sessionStorage.getItem("counseling_problem") || "{}"
   );
   const buktiBayar = document.getElementById("buktiBayar")?.files[0];
 
@@ -107,11 +96,10 @@ async function confirmPayment() {
       }
     );
     const data = await res.json();
-    console.log("API response:", data);
     if (data.status === "success") {
       const counselingId =
         data.newCounseling.counseling_id || data.newCounseling.id;
-      localStorage.setItem("last_counseling_id", counselingId);
+      sessionStorage.setItem("last_counseling_id", counselingId);
 
       // 2. PUT update payment status
       const putRes = await fetch(
@@ -142,24 +130,8 @@ async function confirmPayment() {
   }
 }
 
-// Jalankan fungsi sesuai halaman
-document.addEventListener("DOMContentLoaded", function () {
-  const psikolog = JSON.parse(
-    localStorage.getItem("selected_psikolog") || "{}"
-  );
-  if (psikolog && psikolog.id) {
-    document.getElementById("foto-psikolog").src = psikolog.profile_image || "";
-    document.getElementById("nama").textContent = psikolog.name || "-";
-    document.getElementById("harga").textContent = psikolog.price
-      ? `Rp. ${parseInt(psikolog.price).toLocaleString("id-ID")}`
-      : "";
-    // ...lanjutkan untuk detail pembayaran...
-  } else {
-    document.getElementById("nama").textContent = "Gagal memuat data psikolog";
-    document.getElementById("harga").textContent = "";
-  }
-  console.log("selected_psikolog:", localStorage.getItem("selected_psikolog"));
-});
+// Jalankan fungsi saat halaman siap
+document.addEventListener("DOMContentLoaded", tampilkanProfilPsikolog);
 
 function showLoadingIndicator() {
   const el = document.getElementById("loading-indicator");
