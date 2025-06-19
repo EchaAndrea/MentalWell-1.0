@@ -258,11 +258,6 @@ class NavBarLogin extends HTMLElement {
             flex-direction: row; 
           }
 
-          .dropdown-content .sesikonseling-button {
-            display: flex;
-            flex-direction: row;
-          }
-
           .dropdown-content .riwayat-button {
             display: flex;
             flex-direction: row;
@@ -291,18 +286,6 @@ class NavBarLogin extends HTMLElement {
             cursor: pointer;
           }
 
-          .dropdown-content .sesikonseling-button:hover {
-            background-color: #044B97;
-            color: #fff;
-            cursor: pointer;
-          }
-
-          .dropdown-content .sesikonseling-button:hover {
-            background-color: #044B97;
-            color: #fff;
-            cursor: pointer;
-          }
-
           .dropdown-content .riwayat-button:hover {
             background-color: #044B97;
             color: #fff;
@@ -313,19 +296,6 @@ class NavBarLogin extends HTMLElement {
             background-color: #044B97;
             color: #fff;
             cursor: pointer;
-          }
-
-            .sesiKonseling {
-            border-bottom-left-radius: none;
-            display: flex;
-            align-items: center; 
-            text-decoration: none; 
-            color: black; 
-            padding: 12px 16px;
-          }
-
-          .sesiKonseling img {
-            margin-right: 8px;
           }
 
           .riwayat {
@@ -389,12 +359,6 @@ class NavBarLogin extends HTMLElement {
                               <a id="profilLink" class="profilLink" href="#">
                                 <img src="/src/public/dropdown/man.png" width="30px" height="30px"> 
                                 <span>Profil saya</span>
-                              </a>
-                            </div>
-                            <div class="sesikonseling-button" id="sesikonseling-button">
-                              <a class="sesiKonseling" id="sesiKonseling" href="#">
-                                <img src="/src/public/dropdown/calender.png" width="25px" height="25px">
-                                <span>Sesi Konseling</span>
                               </a>
                             </div>
                             <div class="riwayat-button" id="keluar-button">
@@ -461,7 +425,6 @@ class NavBarLogin extends HTMLElement {
 
     // Link events
     const profilLink = this.shadowRoot.getElementById("profilLink");
-    const sesiKonseling = this.shadowRoot.getElementById("sesiKonseling");
     const riwayat = this.shadowRoot.getElementById("riwayat");
     const keluar = this.shadowRoot.querySelector(".keluar");
 
@@ -474,12 +437,6 @@ class NavBarLogin extends HTMLElement {
       e.preventDefault();
       window.location.href = "/riwayat";
     });
-    if (sesiKonseling) {
-      sesiKonseling.addEventListener("click", (e) => {
-        e.preventDefault();
-        window.location.href = "/sesikonseling";
-      });
-    }
     keluar.addEventListener("click", (e) => {
       e.preventDefault();
       this.logout();
