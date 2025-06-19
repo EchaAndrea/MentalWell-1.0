@@ -1,6 +1,6 @@
 async function fetchConfirmedCounselingData() {
   try {
-    const token = sessionStorage.getItem("authToken"); // Ubah ke sessionStorage
+    const token = sessionStorage.getItem("authToken"); 
     const counseling_id = localStorage.getItem("last_counseling_id");
     if (!counseling_id) throw new Error("Counseling ID tidak ditemukan");
 

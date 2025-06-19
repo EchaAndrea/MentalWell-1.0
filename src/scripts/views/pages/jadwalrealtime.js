@@ -40,7 +40,8 @@ async function tampilkanProfilPsikolog() {
 
 // Tahap 3: Pembayaran
 async function confirmPayment() {
-  const token = sessionStorage.getItem("authToken");
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("authToken");
   const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
   const problemData = JSON.parse(
     localStorage.getItem("counseling_problem") || "{}"
@@ -52,7 +53,6 @@ async function confirmPayment() {
     return;
   }
 
-  // psychologist_id dari jadwal
   const psychologist_id =
     jadwal.psikolog_id || jadwal.psychologist_id || getPsikologId();
 
@@ -65,6 +65,7 @@ async function confirmPayment() {
   formData.append("payment_proof", buktiBayar);
 
   try {
+    // 1. POST counseling (upload bukti pembayaran)
     const res = await fetch(
       `https://mentalwell10-api-production.up.railway.app/counselings/${psychologist_id}`,
       {
@@ -75,12 +76,31 @@ async function confirmPayment() {
     );
     const data = await res.json();
     if (data.status === "success") {
-      localStorage.setItem(
-        "last_counseling_id",
-        data.newCounseling.counseling_id || data.newCounseling.id
+      const counselingId =
+        data.newCounseling.counseling_id || data.newCounseling.id;
+      localStorage.setItem("last_counseling_id", counselingId);
+
+      // 2. PUT update payment status
+      const putRes = await fetch(
+        `https://mentalwell10-api-production.up.railway.app/admin/counseling/${counselingId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ payment_status: "approved" }),
+        }
       );
-      // Redirect ke halaman selesai dengan mode chat
-      window.location.href = "/jadwalkonseling-selesai?mode=chat";
+      const putData = await putRes.json();
+
+      if (putData.status === "success") {
+        window.location.href = "/jadwalkonseling-selesai?mode=chat";
+      } else {
+        Swal.fire(
+          putData.message || "Pembayaran berhasil, tapi gagal update status."
+        );
+      }
     } else {
       Swal.fire(data.message || "Gagal mengirim pembayaran");
     }
