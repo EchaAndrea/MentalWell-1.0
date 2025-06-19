@@ -22,13 +22,24 @@ async function fetchPsikolog(psikologId) {
 
 // Tampilkan data psikolog di atas detail pembayaran
 async function tampilkanProfilPsikolog() {
-  try {
-    // Ambil dari localStorage
-    const psikolog = JSON.parse(
-      localStorage.getItem("selected_psikolog") || "{}"
-    );
-    if (!psikolog || !psikolog.id) throw new Error();
-
+  let psikolog = JSON.parse(localStorage.getItem("selected_psikolog") || "{}");
+  if (!psikolog || !psikolog.id) {
+    // Fallback: fetch dari API
+    try {
+      const token =
+        localStorage.getItem("token") || sessionStorage.getItem("authToken");
+      const id = getPsikologId();
+      const res = await fetch(
+        `https://mentalwell10-api-production.up.railway.app/psychologists/${id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const data = await res.json();
+      psikolog = data.data || {};
+    } catch (e) {
+      // gagal fetch
+    }
+  }
+  if (psikolog && psikolog.id) {
     document.getElementById("foto-psikolog").src = psikolog.profile_image || "";
     document.getElementById("foto-psikolog").alt =
       psikolog.name || "Foto Psikolog";
@@ -53,7 +64,7 @@ async function tampilkanProfilPsikolog() {
     document.getElementById(
       "totalPembayaran2"
     ).textContent = `Rp. ${total.toLocaleString("id-ID")}`;
-  } catch (e) {
+  } else {
     document.getElementById("nama").textContent = "Gagal memuat data psikolog";
     document.getElementById("harga").textContent = "";
   }
