@@ -55,27 +55,27 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-window.toggleChat = function () {
+window.openChat = function () {
   const popup = document.getElementById("chatPopup");
   const overlay = document.getElementById("chatOverlay");
-
-  // Jika popup sedang tampil, tutup popup & overlay
-  if (popup && popup.style.display === "flex") {
-    popup.style.display = "none";
-    if (overlay) overlay.style.display = "none";
-  } else {
-    // Jika popup belum tampil, buka popup & overlay
-    if (popup) popup.style.display = "flex";
-    if (overlay) overlay.style.display = "block";
-  }
+  if (popup) popup.style.display = "flex";
+  if (overlay) overlay.style.display = "block";
 };
 
-// Pastikan event listener overlay dipasang setelah DOM siap
+window.closeChat = function () {
+  const popup = document.getElementById("chatPopup");
+  const overlay = document.getElementById("chatOverlay");
+  if (popup) popup.style.display = "none";
+  if (overlay) overlay.style.display = "none";
+};
+
+// Hapus window.toggleChat dan event listener overlay yang lama
+// Ganti event listener overlay:
 document.addEventListener("DOMContentLoaded", function () {
   const overlay = document.getElementById("chatOverlay");
   if (overlay) {
     overlay.addEventListener("click", () => {
-      window.toggleChat();
+      window.closeChat();
     });
   }
 });
