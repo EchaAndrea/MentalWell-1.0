@@ -97,7 +97,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     const fotoEl = document.getElementById("foto-psikolog");
     if (fotoEl)
-      fotoEl.src = selectedPsikolog.photo || "/src/public/beranda/man.png";
+      fotoEl.src =
+        selectedPsikolog.profile_image || "/src/public/beranda/man.png";
 
     // Proses jadwal ke format { hari: [ {jam, booked}, ... ] }
     waktuJadwal = {};
