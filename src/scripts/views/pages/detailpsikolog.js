@@ -173,7 +173,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const urlParams = new URLSearchParams(window.location.search);
   const psikologId = urlParams.get("id");
 
-  // Modal hanya muncul saat tombol diklik
   if (btnDaftar) {
     btnDaftar.onclick = function () {
       const modal = new bootstrap.Modal(
@@ -183,7 +182,6 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   }
 
-  // Handler untuk pilihan di modal
   const btnChatSekarang = document.getElementById("btnChatSekarang");
   const btnJadwalkan = document.getElementById("btnJadwalkan");
 
