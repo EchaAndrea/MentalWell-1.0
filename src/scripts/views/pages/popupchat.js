@@ -61,11 +61,11 @@ window.toggleChat = function () {
   const overlay = document.getElementById("chatOverlay");
 
   if (popup.style.display === "flex") {
-    popup.style.display = "none";
     if (overlay) overlay.style.display = "none";
+    popup.style.display = "none";
   } else {
+    if (overlay) overlay.style.display = "block"; 
     popup.style.display = "flex";
-    if (overlay) overlay.style.display = "block";
     if (chatBody && chatBody.children.length === 0) {
       addChatBubble("Halo, ada yang bisa saya bantu?", "left");
     }
