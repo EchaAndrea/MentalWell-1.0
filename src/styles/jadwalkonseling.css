@@ -10,16 +10,6 @@ main {
   margin-top: 98px;
 }
 
-button {
-  background-color: #044b77;
-  border: none;
-  color: #fff;
-}
-
-button:hover {
-  background-color: #02bbdd;
-}
-
 .time.disabled {
   background-color: #ccc !important;
   color: #999 !important;
@@ -41,6 +31,21 @@ button:hover {
 .card.selected {
   background-color: #02bbdd;
   color: white;
+}
+
+button,
+.btn,
+.btn-kustom,
+.rounded {
+  transition: background 0.2s, color 0.2s;
+}
+button:hover,
+.btn:hover,
+.btn-kustom:hover,
+.rounded:hover {
+  background-color: #044b77 !important;
+  color: #fff !important;
+  border-color: #044b77 !important;
 }
 
 /*

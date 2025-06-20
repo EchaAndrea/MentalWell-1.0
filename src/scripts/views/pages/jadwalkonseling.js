@@ -164,7 +164,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       waktu,
       metode: "realtime",
       psikologId,
-      harga, 
+      harga,
     };
     localStorage.setItem("jadwal", JSON.stringify(jadwal));
   }
@@ -351,6 +351,26 @@ document.addEventListener("DOMContentLoaded", function () {
     if (h5s[1]) h5s[1].textContent = `Rp. ${total.toLocaleString("id-ID")}`;
     if (h5s[0])
       h5s[0].textContent = jadwal.virtual_account || "123 456 789 1011";
+  }
+
+  const btn = document.getElementById("btnKonfirmasiPembayaran");
+  if (btn) {
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      Swal.fire({
+        title: "Konfirmasi",
+        text: "Apakah Anda yakin sudah melakukan pembayaran?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#044b77",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sudah Bayar",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          confirmPayment(); // Panggil fungsi pembayaran asli
+        }
+      });
+    });
   }
 });
 
