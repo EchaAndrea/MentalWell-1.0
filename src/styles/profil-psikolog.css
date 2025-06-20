@@ -528,9 +528,17 @@ daftar
 .logo-slide-2 div.komentar-user {
   overflow: hidden;
   white-space: normal;
-  /* Prevent text from wrapping onto new lines */
   text-overflow: ellipsis;
-  /* Add ellipsis (...) to indicate truncated text */
+}
+
+.komentar-user h3 {
+  font-size: 1rem; 
+  font-weight: normal;
+  margin-bottom: 0.25rem;
+}
+
+.komentar-user p {
+  font-size: 1rem;
 }
 
 /*
@@ -559,8 +567,19 @@ footer {
   max-width: 100%;
   height: auto;
   transition: transform 0.3s ease-out;
+  justify-content: flex-end;
+  display: flex;
 }
 
 .modal.modal-bottom .modal-content {
   border-radius: 16px 16px 0 0;
+  margin: 0;
+  width: 100%;
+}
+
+#btnJadwalkan.btn-outline-primary:hover,
+#btnJadwalkan.btn-outline-primary:focus {
+  background-color: #044b77 !important;
+  color: #fff !important;
+  border-color: #044b77 !important;
 }
