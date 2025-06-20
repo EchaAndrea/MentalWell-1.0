@@ -152,11 +152,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       psikologId: urlParams.get("id"),
     };
     localStorage.setItem("jadwal", JSON.stringify(jadwal));
-
-    // Langsung redirect ke tahap berikutnya (misal permasalahan)
-    window.location.href =
-      "/jadwalkonseling-permasalahan?mode=chat&id=" + urlParams.get("id");
-    return; // Stop eksekusi kode di bawah
   }
 
   // Tampilkan jadwal
