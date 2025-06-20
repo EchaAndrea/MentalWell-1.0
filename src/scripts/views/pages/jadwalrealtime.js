@@ -18,6 +18,7 @@ async function getPsikologData() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const data = await res.json();
+      console.log("API response:", data);
       psikolog = data.data || {};
     }
   } catch (e) {
@@ -141,3 +142,7 @@ function hideLoadingIndicator() {
   const el = document.getElementById("loading-indicator");
   if (el) el.style.display = "none";
 }
+
+console.log("selected_psikolog:", sessionStorage.getItem("selected_psikolog"));
+console.log("authToken:", sessionStorage.getItem("authToken"));
+console.log("id:", getPsikologId());
