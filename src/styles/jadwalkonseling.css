@@ -37,8 +37,9 @@ button,
 .btn,
 .btn-kustom,
 .rounded {
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s, border 0.2s;
 }
+
 button:hover,
 .btn:hover,
 .btn-kustom:hover,
