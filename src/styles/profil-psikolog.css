@@ -142,8 +142,14 @@ main {
   margin: 10px 0 20px 50px;
 }
 
-.pengalaman-praktik h3,
+.pengalaman-praktik h3 {
+  font-size: 18px;
+  font-weight: bold;
+  padding-left: 10px;
+}
+
 .pengalaman-praktik p {
+  font-size: 18px;
   padding-left: 10px;
 }
 
@@ -531,7 +537,12 @@ daftar
   text-overflow: ellipsis;
 }
 
-.komentar-user h3,
+.komentar-user h3 {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
 .komentar-user p {
   font-size: 1rem;
   font-weight: normal;
@@ -567,6 +578,7 @@ footer {
   justify-content: flex-end;
   display: flex;
   pointer-events: none;
+  align-items: flex-end;
 }
 
 .modal.modal-bottom.show .modal-dialog {
