@@ -91,13 +91,20 @@ function convertTimeFormat(inputTime) {
 document.addEventListener("DOMContentLoaded", function () {
   const urlParams = new URLSearchParams(window.location.search);
   const mode = urlParams.get("mode");
-  const btnKonseling = document.getElementById("btnKonseling");
-  if (mode === "chat" && btnKonseling) {
-    btnKonseling.style.display = "block";
-    btnKonseling.onclick = function () {
-      // Tampilkan popup chat
-      window.toggleChat();
-    };
+  // Ambil button yang sudah ada (misal: id="btnKembali" atau cari dengan text)
+  const btnKembali = document.querySelector(
+    'button[onclick="redirectToIndex()"]'
+  );
+  if (btnKembali) {
+    if (mode === "chat") {
+      btnKembali.textContent = "Mulai Konseling";
+      btnKembali.onclick = function () {
+        window.location.href = "/riwayat"; 
+      };
+    } else {
+      btnKembali.textContent = "Kembali ke Beranda";
+      btnKembali.onclick = redirectToIndex;
+    }
   }
 });
 
