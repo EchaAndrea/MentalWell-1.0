@@ -58,11 +58,14 @@ document.addEventListener("DOMContentLoaded", function () {
 window.toggleChat = function () {
   const popup = document.getElementById("chatPopup");
   const chatBody = document.getElementById("chatBody");
+  const overlay = document.getElementById("chatOverlay");
 
   if (popup.style.display === "flex") {
     popup.style.display = "none";
+    if (overlay) overlay.style.display = "none";
   } else {
     popup.style.display = "flex";
+    if (overlay) overlay.style.display = "block";
     if (chatBody && chatBody.children.length === 0) {
       addChatBubble("Halo, ada yang bisa saya bantu?", "left");
     }
