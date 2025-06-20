@@ -136,9 +136,6 @@ function hideLoadingIndicator() {
   loadingIndicator.style.display = "none";
 }
 
-// Render artikel details ketika halaman dimuat
-renderArticleDetails();
-
 const logosContainer2 = document.querySelector(".logos-2");
 const originalLogosContainer2 = document.querySelector(".logos-2");
 const clone2 = originalLogosContainer2.cloneNode(true);
@@ -172,11 +169,11 @@ function redirectToDetailPsychologist(id) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Modal hanya muncul saat tombol diklik
   const btnDaftar = document.getElementById("btnDaftar");
   const urlParams = new URLSearchParams(window.location.search);
   const psikologId = urlParams.get("id");
 
+  // Modal hanya muncul saat tombol diklik
   if (btnDaftar) {
     btnDaftar.onclick = function () {
       const modal = new bootstrap.Modal(
@@ -201,6 +198,3 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   }
 });
-
-// Jalankan render detail
-document.addEventListener("DOMContentLoaded", renderArticleDetails);
