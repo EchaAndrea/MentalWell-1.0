@@ -1,17 +1,24 @@
+#chatOverlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+}
+
 #chatPopup {
-  position: fixed !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  width: 800px;
-  height: 650px;
-  margin: 0 !important;
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background: white;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  z-index: 9999 !important;
-  flex-direction: column !important;
-  overflow: hidden;
+  padding: 32px;
+  border-radius: 8px;
+  z-index: 1001;
 }
 
 .card-header {
@@ -58,15 +65,4 @@
 
 .chat-bubble.right {
   align-self: flex-end;
-}
-
-#chatOverlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
-  z-index: 1000;
 }

@@ -59,11 +59,11 @@ window.openChat = function () {
   document.getElementById("chatOverlay").style.display = "block";
   document.getElementById("chatPopup").style.display = "block";
 };
-
 window.closeChat = function () {
   document.getElementById("chatOverlay").style.display = "none";
   document.getElementById("chatPopup").style.display = "none";
 };
+document.getElementById("chatOverlay").onclick = window.closeChat;
 
 document.addEventListener("DOMContentLoaded", function () {
   const overlay = document.getElementById("chatOverlay");
