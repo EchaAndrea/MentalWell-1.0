@@ -132,18 +132,36 @@ async function fetchPsychologistSchedule(psychologistId) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const mode = urlParams.get("mode");
   const jadwalData = JSON.parse(localStorage.getItem("jadwal"));
-  if (!jadwalData) {
-    alert("Data jadwal tidak ditemukan. Silakan pilih jadwal terlebih dahulu.");
-    window.location.href = "jadwalpsikolog.html";
-    return;
+
+  let jadwal = jadwalData;
+  if (mode === "chat") {
+    // Mode realtime: isi tanggal & waktu sekarang
+    const now = new Date();
+    const pad = (n) => n.toString().padStart(2, "0");
+    const tanggal = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(
+      now.getDate()
+    )}`;
+    const waktu = `${pad(now.getHours())}:${pad(now.getMinutes())}-${pad(
+      now.getHours() + 1
+    )}:${pad(now.getMinutes())}`;
+    jadwal = {
+      ...jadwal,
+      tanggal,
+      waktu,
+      metode: "realtime",
+      psikologId: urlParams.get("id"),
+    };
+    localStorage.setItem("jadwal", JSON.stringify(jadwal));
   }
 
   // Tampilkan jadwal
   document.getElementById("selectedDate").textContent = formatTanggalIndo(
-    jadwalData.tanggal
+    jadwal.tanggal
   );
-  document.getElementById("selectedTime").textContent = jadwalData.waktu;
+  document.getElementById("selectedTime").textContent = jadwal.waktu;
 
   // Ambil data user
   const user = await fetchUserProfile();
@@ -245,7 +263,7 @@ function sendCounselingData() {
 
 // Tahap 3: Pembayaran
 async function confirmPayment() {
-  const token = sessionStorage.getItem("authToken"); 
+  const token = sessionStorage.getItem("authToken");
   const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
   const problemData = JSON.parse(
     localStorage.getItem("counseling_problem") || "{}"
@@ -261,7 +279,7 @@ async function confirmPayment() {
   const psychologist_id = jadwal.psikolog_id || "1";
 
   const formData = new FormData();
-  formData.append("occupation", "Mahasiswa"); 
+  formData.append("occupation", "Mahasiswa");
   formData.append("problem_description", problemData.problem || "");
   formData.append("hope_after", problemData.hope || "");
   formData.append("date", jadwal.tanggal || "");

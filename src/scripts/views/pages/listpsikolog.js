@@ -42,15 +42,17 @@ fetch(apiUrl, {
                 <p>${formattedketersediaan}</p>
               </div>
               <div class="button-psikolog">
-                <button type="button" onclick="${
-                  articleData.availability === "available"
-                    ? `redirectToRealtime('${articleData.id}')`
-                    : `redirectToDetailPsychologist('${articleData.id}')`
-                }">${
-          articleData.availability === "available"
-            ? "Chat Sekarang"
-            : "Lihat Selengkapnya"
-        }</button>
+                <button type="button" onclick="redirectToDetailPsychologist('${
+                  articleData.id
+                }', '${
+          articleData.availability === "available" ? "chat" : ""
+        }')">
+                  ${
+                    articleData.availability === "available"
+                      ? "Chat Sekarang"
+                      : "Lihat Selengkapnya"
+                  }
+                </button>
               </div>
             </div>
           </div>
@@ -75,8 +77,11 @@ fetch(apiUrl, {
     articleSection.appendChild(errorElement);
   });
 
-function redirectToDetailPsychologist(id) {
-  window.location.href = `/profilpsikolog?id=${id}`;
+function redirectToDetailPsychologist(id, mode = "") {
+  // mode bisa "chat" atau ""
+  window.location.href = `/profilpsikolog?id=${id}${
+    mode ? `&mode=${mode}` : ""
+  }`;
 }
 
 function redirectToPembayaran(id) {
