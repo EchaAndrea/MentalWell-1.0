@@ -25,16 +25,9 @@ async function renderArticleDetails() {
     if (!articleId) return;
 
     const articleData = await fetchArticleById(articleId);
-    console.log("API response:", articleData);
-
-    // Perbaikan di sini!
-    if (!articleData || !articleData.id) {
-      alert("Data psikolog tidak ditemukan.");
-      const btnDaftar = document.getElementById("btnDaftar");
-      if (btnDaftar) btnDaftar.style.display = "none";
-      return;
-    }
-    const psikolog = articleData;
+    // Jika API return {id:..., name:...}
+    const psikolog =
+      articleData && articleData.id ? articleData : articleData.data || {};
 
     // Render foto
     const fotopsikolog = document.getElementById("psychologProfile");
@@ -114,61 +107,10 @@ async function renderArticleDetails() {
   }
 }
 
-// Jalankan saat halaman siap
-document.addEventListener("DOMContentLoaded", renderArticleDetails);
-
-function updateButtonState(availability) {
-  const btnDaftar = document.getElementById("btnDaftar");
-  if (!btnDaftar) return;
-  btnDaftar.disabled = false;
-  btnDaftar.classList.remove("disabled");
-}
-
-function showLoadingIndicator() {
-  // Get loading indicator element and show it
-  const loadingIndicator = document.getElementById("loading-indicator");
-  loadingIndicator.style.display = "block";
-}
-
-function hideLoadingIndicator() {
-  // Hide loading indicator
-  const loadingIndicator = document.getElementById("loading-indicator");
-  loadingIndicator.style.display = "none";
-}
-
-const logosContainer2 = document.querySelector(".logos-2");
-const originalLogosContainer2 = document.querySelector(".logos-2");
-const clone2 = originalLogosContainer2.cloneNode(true);
-originalLogosContainer2.parentNode.insertBefore(
-  clone2,
-  originalLogosContainer2.nextSibling
-);
-
-let scrollAmount2 = 0;
-const scrollSpeed2 = 2;
-
-function scroll2() {
-  scrollAmount2 += scrollSpeed2;
-  originalLogosContainer2.scrollLeft = scrollAmount2;
-
-  // Reset to the beginning when it reaches the end
-  if (
-    scrollAmount2 >=
-    originalLogosContainer2.scrollWidth - originalLogosContainer2.clientWidth
-  ) {
-    scrollAmount2 = 0;
-  }
-
-  requestAnimationFrame(scroll2);
-}
-
-scroll2();
-
-function redirectToDetailPsychologist(id) {
-  window.location.href = `/jadwalpsikolog?id=${psikologId}`;
-}
-
+// Satu event listener saja untuk semua interaksi
 document.addEventListener("DOMContentLoaded", function () {
+  renderArticleDetails();
+
   const btnDaftar = document.getElementById("btnDaftar");
   const urlParams = new URLSearchParams(window.location.search);
   const psikologId = urlParams.get("id");
