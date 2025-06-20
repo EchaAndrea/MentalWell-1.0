@@ -347,3 +347,28 @@ function hideLoadingIndicator() {
   const el = document.getElementById("loading-indicator");
   if (el) el.style.display = "none";
 }
+
+async function showPsychologistProfile() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const psikologId = urlParams.get("id");
+  if (!psikologId) return;
+
+  try {
+    const res = await fetch(
+      `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}`
+    );
+    const data = await res.json();
+    const psikolog = data.data;
+    const fotoEl = document.getElementById("psychologProfile");
+    if (fotoEl && psikolog.profile_image) {
+      fotoEl.src = psikolog.profile_image;
+      fotoEl.alt = psikolog.name || "Foto Psikolog";
+    }
+  } catch (e) {
+    // Optional: tampilkan foto default jika error
+    const fotoEl = document.getElementById("psychologProfile");
+    if (fotoEl) fotoEl.src = "/src/public/beranda/man.png";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", showPsychologistProfile);
