@@ -182,12 +182,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function initPopup() {
     const closeBtn = popupContainer.querySelector(
-      "button[onclick='toggleChat()']"
+      "button[onclick='window.toggleChat()'],button[onclick='toggleChat()']"
     );
     if (closeBtn) {
       closeBtn.addEventListener("click", () => {
-        popupContainer.style.display = "none";
-        popupContainer.innerHTML = "";
+        window.toggleChat(); // hanya panggil toggleChat, JANGAN ubah display/innerHTML popupContainer manual!
       });
     }
 
