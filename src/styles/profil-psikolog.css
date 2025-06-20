@@ -143,7 +143,7 @@ main {
 }
 
 .pengalaman-praktik h3,
-p {
+.pengalaman-praktik p {
   padding-left: 10px;
 }
 
@@ -531,14 +531,11 @@ daftar
   text-overflow: ellipsis;
 }
 
-.komentar-user h3 {
-  font-size: 1rem; 
-  font-weight: normal;
-  margin-bottom: 0.25rem;
-}
-
+.komentar-user h3,
 .komentar-user p {
   font-size: 1rem;
+  font-weight: normal;
+  margin-bottom: 0.25rem;
 }
 
 /*
@@ -563,20 +560,29 @@ footer {
   left: 0;
   right: 0;
   margin: 0;
-  width: 100%;
-  max-width: 100%;
+  width: 100vw;
+  max-width: 100vw;
   height: auto;
   transition: transform 0.3s ease-out;
   justify-content: flex-end;
   display: flex;
+  pointer-events: none;
+}
+
+.modal.modal-bottom.show .modal-dialog {
+  pointer-events: auto;
 }
 
 .modal.modal-bottom .modal-content {
   border-radius: 16px 16px 0 0;
   margin: 0;
-  width: 100%;
+  width: 100vw;
+  max-width: 100vw;
+  box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.15);
 }
 
+#btnChatSekarang.btn-outline-primary:hover,
+#btnChatSekarang.btn-outline-primary:focus,
 #btnJadwalkan.btn-outline-primary:hover,
 #btnJadwalkan.btn-outline-primary:focus {
   background-color: #044b77 !important;
