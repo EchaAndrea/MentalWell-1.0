@@ -136,7 +136,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   const mode = urlParams.get("mode");
 
   if (mode === "chat") {
-    // Otomatis set jadwal realtime
+    const psikologId = urlParams.get("id");
+    // Fetch harga psikolog
+    let harga = 0;
+    try {
+      const res = await fetch(
+        `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}`
+      );
+      const data = await res.json();
+      const psikolog = data.data || data;
+      harga = psikolog.price || 0;
+    } catch (e) {
+      harga = 0;
+    }
+
+    // Otomatis set jadwal realtime + harga
     const now = new Date();
     const pad = (n) => n.toString().padStart(2, "0");
     const tanggal = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(
@@ -149,7 +163,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       tanggal,
       waktu,
       metode: "realtime",
-      psikologId: urlParams.get("id"),
+      psikologId,
+      harga, 
     };
     localStorage.setItem("jadwal", JSON.stringify(jadwal));
   }
