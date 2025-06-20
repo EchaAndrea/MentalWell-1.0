@@ -57,20 +57,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
 window.toggleChat = function () {
   const popup = document.getElementById("chatPopup");
-  const chatBody = document.getElementById("chatBody");
   const overlay = document.getElementById("chatOverlay");
 
-  const isOpen = popup && popup.style.display === "flex";
-
-  if (isOpen) {
+  // Jika popup sedang tampil, tutup popup & overlay
+  if (popup && popup.style.display === "flex") {
+    popup.style.display = "none";
     if (overlay) overlay.style.display = "none";
-    if (popup) popup.style.display = "none";
   } else {
-    if (overlay) overlay.style.display = "block";
+    // Jika popup belum tampil, buka popup & overlay
     if (popup) popup.style.display = "flex";
-    if (chatBody && chatBody.children.length === 0) {
-      addChatBubble("Halo, ada yang bisa saya bantu?", "left");
-    }
+    if (overlay) overlay.style.display = "block";
   }
 };
 
