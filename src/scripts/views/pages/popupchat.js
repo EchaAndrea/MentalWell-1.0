@@ -61,16 +61,22 @@ window.toggleChat = function () {
   const overlay = document.getElementById("chatOverlay");
 
   if (popup.style.display === "flex") {
+    // Tutup popup: overlay hilang
     if (overlay) overlay.style.display = "none";
     popup.style.display = "none";
   } else {
-    if (overlay) overlay.style.display = "block"; 
+    // Buka popup: overlay tampil
+    if (overlay) overlay.style.display = "block";
     popup.style.display = "flex";
     if (chatBody && chatBody.children.length === 0) {
       addChatBubble("Halo, ada yang bisa saya bantu?", "left");
     }
   }
 };
+
+document.getElementById("chatOverlay")?.addEventListener("click", () => {
+  window.toggleChat();
+});
 
 window.sendMessage = function () {
   const input = document.getElementById("chatInput");

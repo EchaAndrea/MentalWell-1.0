@@ -139,9 +139,9 @@ Content Atur Konseling
   border: 1px solid black;
   border-radius: 20px;
   margin: 30px 50px;
-  min-height: 100px; /* ganti dari height ke min-height */
+  min-height: 100px; 
   padding: 30px;
-  overflow-y: auto; /* tambahkan ini */
+  overflow-y: auto; 
 }
 
 .deskripsi-konseling h3 {
@@ -152,9 +152,9 @@ Content Atur Konseling
   border: 1px solid black;
   border-radius: 20px;
   margin: 0 50px 30px 50px;
-  min-height: 100px; /* ganti dari height ke min-height */
+  min-height: 100px; 
   padding: 30px;
-  overflow-y: auto; /* tambahkan ini */
+  overflow-y: auto; 
 }
 
 .baru {
