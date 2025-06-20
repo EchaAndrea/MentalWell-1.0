@@ -53,6 +53,7 @@ async function fetchCounselingDetail(id, TOKEN) {
     document.getElementById("statusPembayaran").textContent = statusText(
       c.payment_status
     );
+    console.log("Harga Paket dari API:", c.price, typeof c.price);
     document.getElementById("hargaPaket").textContent = c.price
       ? `Rp${c.price}`
       : "-";
