@@ -160,14 +160,31 @@ document.addEventListener("DOMContentLoaded", function () {
   const mode = urlParams.get("mode");
   const psikologId = urlParams.get("id");
 
+  // Hanya tampilkan tombol jika available
+  // (atau atur di renderArticleDetails sesuai availability)
+
   if (btnDaftar) {
     btnDaftar.onclick = function () {
-      if (mode === "chat") {
-        // Redirect ke file HTML yang benar
-        window.location.href = `/src/templates/jadwalkonseling-isidata.html?mode=chat&id=${psikologId}`;
-      } else {
-        window.location.href = `/src/templates/jadwalpsikolog.html?id=${psikologId}`;
-      }
+      // Tampilkan modal pilihan
+      const modal = new bootstrap.Modal(
+        document.getElementById("modalPilihKonseling")
+      );
+      modal.show();
+    };
+  }
+
+  // Handler untuk pilihan di modal
+  const btnChatSekarang = document.getElementById("btnChatSekarang");
+  const btnJadwalkan = document.getElementById("btnJadwalkan");
+
+  if (btnChatSekarang) {
+    btnChatSekarang.onclick = function () {
+      window.location.href = `/jadwalkonseling-isidata?id=${psikologId}&mode=chat`;
+    };
+  }
+  if (btnJadwalkan) {
+    btnJadwalkan.onclick = function () {
+      window.location.href = `/jadwalpsikolog?id=${psikologId}`;
     };
   }
 });
