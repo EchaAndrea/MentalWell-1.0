@@ -8,7 +8,7 @@
 
 body {
   font-family: "Inter", sans-serif;
-  background-color: white;
+  background-color: #f8f9fa;
   min-height: 100vh;
   flex: 1;
   display: flex;
