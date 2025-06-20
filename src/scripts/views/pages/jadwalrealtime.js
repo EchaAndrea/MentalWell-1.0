@@ -8,19 +8,15 @@ function getPsikologId() {
 async function getPsikologData() {
   let psikolog = {};
   try {
-    psikolog = JSON.parse(sessionStorage.getItem("selected_psikolog") || "{}");
-    if (!psikolog || !psikolog.id) {
-      // Fallback: fetch dari API
-      const token = sessionStorage.getItem("authToken");
-      const id = getPsikologId();
-      const res = await fetch(
-        `https://mentalwell10-api-production.up.railway.app/psychologists/${id}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      const data = await res.json();
-      console.log("API response:", data);
-      psikolog = data.data || {};
-    }
+    const token = sessionStorage.getItem("authToken");
+    const id = getPsikologId();
+    const res = await fetch(
+      `https://mentalwell10-api-production.up.railway.app/psychologists/${id}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    const data = await res.json();
+    console.log("API response:", data);
+    psikolog = data.data || {};
   } catch (e) {
     psikolog = {};
   }
@@ -129,6 +125,17 @@ async function confirmPayment() {
   } catch (e) {
     Swal.fire("Gagal mengirim pembayaran");
   }
+}
+
+function redirectToRealtime(id) {
+  const allPsikolog = JSON.parse(
+    sessionStorage.getItem("all_psikolog") || "[]"
+  );
+  const selected = allPsikolog.find((p) => String(p.id) === String(id));
+  if (selected) {
+    sessionStorage.setItem("selected_psikolog", JSON.stringify(selected));
+  }
+  window.location.href = "/jadwalrealtime?id=" + id + "&mode=chat";
 }
 
 // Jalankan fungsi saat halaman siap
