@@ -56,27 +56,19 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 window.openChat = function () {
-  const popup = document.getElementById("chatPopup");
-  const overlay = document.getElementById("chatOverlay");
-  if (popup) popup.style.display = "flex";
-  if (overlay) overlay.style.display = "block";
+  document.getElementById("chatOverlay").style.display = "block";
+  document.getElementById("chatPopup").style.display = "block";
 };
 
 window.closeChat = function () {
-  const popup = document.getElementById("chatPopup");
-  const overlay = document.getElementById("chatOverlay");
-  if (popup) popup.style.display = "none";
-  if (overlay) overlay.style.display = "none";
+  document.getElementById("chatOverlay").style.display = "none";
+  document.getElementById("chatPopup").style.display = "none";
 };
 
-// Hapus window.toggleChat dan event listener overlay yang lama
-// Ganti event listener overlay:
 document.addEventListener("DOMContentLoaded", function () {
   const overlay = document.getElementById("chatOverlay");
   if (overlay) {
-    overlay.addEventListener("click", () => {
-      window.closeChat();
-    });
+    overlay.addEventListener("click", window.closeChat);
   }
 });
 
