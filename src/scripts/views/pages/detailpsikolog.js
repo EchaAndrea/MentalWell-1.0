@@ -27,28 +27,30 @@ async function renderArticleDetails() {
     // Ambil data dari API
     const articleData = await fetchArticleById(articleId);
 
+    // --- AMBIL DATA DARI .data ---
+    const psikolog = articleData.data;
+
     // Render foto
     const fotopsikolog = document.getElementById("psychologProfile");
-    if (fotopsikolog) fotopsikolog.src = articleData.profile_image;
+    if (fotopsikolog) fotopsikolog.src = psikolog.profile_image;
 
     // Render nama dan bio
     const datapsikolog = document.querySelector(".data-psikolog h2");
-    if (datapsikolog) datapsikolog.textContent = articleData.name;
+    if (datapsikolog) datapsikolog.textContent = psikolog.name;
 
     const biodatapsikolog = document.getElementById("biodata-psikolog");
-    if (biodatapsikolog)
-      biodatapsikolog.innerHTML = `<p>${articleData.bio}</p>`;
+    if (biodatapsikolog) biodatapsikolog.innerHTML = `<p>${psikolog.bio}</p>`;
 
     // Render pengalaman praktik
     const pengalamanpraktik = document.getElementById("praktik");
     if (pengalamanpraktik)
-      pengalamanpraktik.textContent = articleData.experience || "-";
+      pengalamanpraktik.textContent = psikolog.experience || "-";
 
     // Render topik keahlian
     const topicList = document.getElementById("topiclist");
     if (topicList) {
-      if (articleData.topics && articleData.topics.length > 0) {
-        topicList.innerHTML = articleData.topics
+      if (psikolog.topics && psikolog.topics.length > 0) {
+        topicList.innerHTML = psikolog.topics
           .map((topic) => `<li>${topic.name}</li>`)
           .join("");
       } else {
@@ -60,8 +62,8 @@ async function renderArticleDetails() {
     const userReviewsContainer = document.getElementById("userReviews");
     const ulasanPengguna = document.getElementById("ulasan-pengguna");
     if (userReviewsContainer && ulasanPengguna) {
-      if (articleData.reviews && articleData.reviews.length > 0) {
-        userReviewsContainer.innerHTML = articleData.reviews
+      if (psikolog.reviews && psikolog.reviews.length > 0) {
+        userReviewsContainer.innerHTML = psikolog.reviews
           .map(
             (review) => `
             <div class="isi-ulasan">
@@ -85,13 +87,20 @@ async function renderArticleDetails() {
     const availabilityTimes = document.getElementById("availabilityTimes");
     if (availabilityTimes) {
       availabilityTimes.innerHTML =
-        articleData.availability === "available"
+        psikolog.availability === "available"
           ? "<span class='jadwal-hijau'>Tersedia</span>"
           : "<span class='jadwal-merah'>Tidak Tersedia</span>";
     }
 
-    // Update button state sesuai availability
-    updateButtonState(articleData.availability);
+    // --- TAMPILKAN/HILANGKAN BUTTON DAFTAR KONSELING SESUAI STATUS ---
+    const btnDaftar = document.getElementById("btnDaftar");
+    if (btnDaftar) {
+      if (psikolog.availability === "available") {
+        btnDaftar.style.display = "block";
+      } else {
+        btnDaftar.style.display = "none";
+      }
+    }
   } catch (error) {
     console.error("Error rendering article details:", error);
   }
@@ -155,17 +164,13 @@ function redirectToDetailPsychologist(id) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+  // Modal hanya muncul saat tombol diklik
   const btnDaftar = document.getElementById("btnDaftar");
   const urlParams = new URLSearchParams(window.location.search);
-  const mode = urlParams.get("mode");
   const psikologId = urlParams.get("id");
-
-  // Hanya tampilkan tombol jika available
-  // (atau atur di renderArticleDetails sesuai availability)
 
   if (btnDaftar) {
     btnDaftar.onclick = function () {
-      // Tampilkan modal pilihan
       const modal = new bootstrap.Modal(
         document.getElementById("modalPilihKonseling")
       );
@@ -188,3 +193,6 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   }
 });
+
+// Jalankan render detail
+document.addEventListener("DOMContentLoaded", renderArticleDetails);
