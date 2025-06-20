@@ -54,14 +54,18 @@ async function fetchCounselingDetail(id, TOKEN) {
       c.payment_status
     );
     console.log("Harga Paket dari API:", c.price, typeof c.price);
+
+    // Set harga aplikasi tetap 15000
+    const appFee = 15000;
     document.getElementById("hargaPaket").textContent = c.price
-      ? `Rp${c.price}`
+      ? `Rp. ${c.price}`
       : "-";
-    document.getElementById("hargaAplikasi").textContent = c.app_fee
-      ? `Rp${c.app_fee}`
-      : "-";
-    document.getElementById("totalHarga").textContent = c.total_price
-      ? `Rp${c.total_price}`
+    document.getElementById("hargaAplikasi").textContent = `Rp. ${appFee}`;
+
+    // Hitung total harga
+    const total = (c.price ? Number(c.price) : 0) + appFee;
+    document.getElementById("totalHarga").textContent = total
+      ? `Rp. ${total}`
       : "-";
     document.getElementById("imgBuktiBayar").src = c.payment_proof || "";
 
