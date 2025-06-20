@@ -188,11 +188,10 @@ document.addEventListener("DOMContentLoaded", function () {
   if (btnDaftar) {
     btnDaftar.onclick = function () {
       if (mode === "chat") {
-        // Langsung ke halaman isi data (jadwalkonseling) dengan mode chat
-        window.location.href = `/jadwalkonseling?mode=chat&id=${psikologId}`;
+        // Redirect ke file HTML yang benar
+        window.location.href = `/src/templates/jadwalkonseling-isidata.html?mode=chat&id=${psikologId}`;
       } else {
-        // Alur biasa (jadwalkan)
-        window.location.href = `/jadwalpsikolog?id=${psikologId}`;
+        window.location.href = `/src/templates/jadwalpsikolog.html?id=${psikologId}`;
       }
     };
   }
