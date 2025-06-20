@@ -175,12 +175,6 @@ function scroll2() {
 
 scroll2();
 
-// Add an event listener to the Daftar Konseling button
-const daftarKonselingButton = document.getElementById("btnDaftar");
-if (daftarKonselingButton) {
-  daftarKonselingButton.addEventListener("click", redirectToCounseling);
-}
-
 function redirectToDetailPsychologist(id) {
   window.location.href = `/jadwalpsikolog?id=${psikologId}`;
 }
@@ -195,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
     btnDaftar.onclick = function () {
       if (mode === "chat") {
         // Langsung ke halaman isi data (jadwalkonseling) dengan mode chat
-        window.location.href = `/jadwalkonseling?mode=chat&id=${psikologId}`;
+        window.location.href = `/jadwalkonseling-isi data?mode=chat&id=${psikologId}`;
       } else {
         // Alur biasa (jadwalkan)
         window.location.href = `/jadwalkonseling?id=${psikologId}`;
