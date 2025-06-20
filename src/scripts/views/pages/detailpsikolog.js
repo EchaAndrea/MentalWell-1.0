@@ -27,13 +27,14 @@ async function renderArticleDetails() {
     const articleData = await fetchArticleById(articleId);
     console.log("API response:", articleData);
 
-    if (!articleData || articleData.status !== "success" || !articleData.data) {
+    // Perbaikan di sini!
+    if (!articleData || !articleData.id) {
       alert("Data psikolog tidak ditemukan.");
       const btnDaftar = document.getElementById("btnDaftar");
       if (btnDaftar) btnDaftar.style.display = "none";
       return;
     }
-    const psikolog = articleData.data;
+    const psikolog = articleData;
 
     // Render foto
     const fotopsikolog = document.getElementById("psychologProfile");
