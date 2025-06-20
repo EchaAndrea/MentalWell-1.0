@@ -162,7 +162,6 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
                   popupContainer.innerHTML = html;
                   popupContainer.style.display = "flex";
                   if (typeof initPopup === "function") initPopup();
-                  window.toggleChat(); 
                 })
                 .catch((err) => alert(err.message));
             });
