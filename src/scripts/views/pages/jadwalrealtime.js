@@ -1,3 +1,6 @@
+import "bootstrap/dist/css/bootstrap.min.css";
+import Swal from "sweetalert2";
+
 // Ambil ID psikolog dari query string (?id=1) atau default 1
 function getPsikologId() {
   const params = new URLSearchParams(window.location.search);

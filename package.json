@@ -14,7 +14,8 @@
     "style-loader": "^4.0.0"
   },
   "dependencies": {
+    "bootstrap": "^5.3.7",
     "html-webpack-plugin": "^5.6.3",
-    "sweetalert2": "^11.19.1"
+    "sweetalert2": "^11.22.0"
   }
 }
