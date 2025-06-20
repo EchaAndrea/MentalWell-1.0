@@ -91,15 +91,15 @@ function convertTimeFormat(inputTime) {
 document.addEventListener("DOMContentLoaded", function () {
   const urlParams = new URLSearchParams(window.location.search);
   const mode = urlParams.get("mode");
-  // Ambil button yang sudah ada (misal: id="btnKembali" atau cari dengan text)
   const btnKembali = document.querySelector(
     'button[onclick="redirectToIndex()"]'
   );
   if (btnKembali) {
+    btnKembali.removeAttribute("onclick"); 
     if (mode === "chat") {
       btnKembali.textContent = "Mulai Konseling";
       btnKembali.onclick = function () {
-        window.location.href = "/riwayat"; 
+        window.location.href = "/riwayat";
       };
     } else {
       btnKembali.textContent = "Kembali ke Beranda";
