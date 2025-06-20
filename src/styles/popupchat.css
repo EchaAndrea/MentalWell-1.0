@@ -1,17 +1,18 @@
 #chatPopup {
   display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
   width: 800px;
   height: 650px;
+  margin: 0 !important;
   background: white;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
+  z-index: 9999 !important;
+  display: flex !important;
+  flex-direction: column !important;
   overflow: hidden;
 }
 
@@ -63,11 +64,11 @@
 
 #chatOverlay {
   display: none;
-  position: fixed;
+  position: fixed !important;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 999;
+  z-index: 9998 !important;
+  background: rgba(0, 0, 0, 0.2);
 }
