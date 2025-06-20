@@ -4,28 +4,10 @@ function getPsikologId() {
   return params.get("id") || "1";
 }
 
-// Ambil data psikolog dari sessionStorage, fallback ke API jika tidak ada
-async function getPsikologData() {
-  let psikolog = {};
-  try {
-    const token = sessionStorage.getItem("authToken");
-    const id = getPsikologId();
-    const res = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/psychologists/${id}`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    const data = await res.json();
-    console.log("API response:", data);
-    psikolog = data.data || {};
-  } catch (e) {
-    psikolog = {};
-  }
-  return psikolog;
-}
-
-// Tampilkan data psikolog di atas detail pembayaran
-async function tampilkanProfilPsikolog() {
-  const psikolog = await getPsikologData();
+function tampilkanProfilPsikolog() {
+  const psikolog = JSON.parse(
+    sessionStorage.getItem("selected_psikolog") || "{}"
+  );
   if (psikolog && psikolog.id) {
     document.getElementById("foto-psikolog").src = psikolog.profile_image || "";
     document.getElementById("foto-psikolog").alt =
