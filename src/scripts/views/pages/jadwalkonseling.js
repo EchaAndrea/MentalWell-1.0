@@ -313,6 +313,16 @@ async function confirmPayment() {
   formData.append("payment_proof", buktiBayar);
 
   try {
+    // Tampilkan loading SweetAlert
+    Swal.fire({
+      title: "Memproses pembayaran...",
+      text: "Mohon tunggu sebentar.",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
     const res = await fetch(
       `https://mentalwell10-api-production.up.railway.app/counselings/${psychologist_id}`,
       {
@@ -329,13 +339,19 @@ async function confirmPayment() {
       );
       const urlParams = new URLSearchParams(window.location.search);
       const mode = urlParams.get("mode");
-      window.location.href = `/jadwalkonseling-selesai?id=${
-        jadwal.psikologId || jadwal.psikolog_id
-      }${mode ? `&mode=${mode}` : ""}`;
+      // Tutup loading dan redirect setelah sedikit delay
+      setTimeout(() => {
+        Swal.close();
+        window.location.href = `/jadwalkonseling-selesai?id=${
+          jadwal.psikologId || jadwal.psikolog_id
+        }${mode ? `&mode=${mode}` : ""}`;
+      }, 1000); // 1 detik delay, bisa diubah sesuai kebutuhan
     } else {
+      Swal.close();
       Swal.fire(data.message || "Gagal mengirim pembayaran");
     }
   } catch (e) {
+    Swal.close();
     Swal.fire("Gagal mengirim pembayaran");
   }
 }
