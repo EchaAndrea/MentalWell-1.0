@@ -126,14 +126,9 @@ async function fetchPsychologistAvailability() {
 
 function updateButtonState(availability) {
   const btnDaftar = document.getElementById("btnDaftar");
-
-  if (availability === "available") {
-    btnDaftar.disabled = false;
-    btnDaftar.classList.remove("disabled");
-  } else {
-    btnDaftar.disabled = true;
-    btnDaftar.classList.add("disabled");
-  }
+  if (!btnDaftar) return;
+  btnDaftar.disabled = false;
+  btnDaftar.classList.remove("disabled");
 }
 
 function showLoadingIndicator() {
