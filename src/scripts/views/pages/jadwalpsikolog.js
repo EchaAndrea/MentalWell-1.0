@@ -268,7 +268,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         })
       );
 
-      window.location.href = `/src/templates/jadwalkonseling-isidata.html?id=${psikologId}`;
+      window.location.href = `/jadwalkonseling-isidata.html?id=${psikologId}`;
     });
   } catch (err) {
     alert("Gagal mengambil data psikolog atau jadwal: " + err.message);
