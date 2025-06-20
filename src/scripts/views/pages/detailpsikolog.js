@@ -186,10 +186,20 @@ function redirectToDetailPsychologist(id) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  const someElement = document.getElementById("someId");
-  if (someElement) {
-    someElement.addEventListener("click", function () {
-      // aksi
-    });
+  const btnDaftar = document.getElementById("btnDaftar");
+  const urlParams = new URLSearchParams(window.location.search);
+  const mode = urlParams.get("mode");
+  const psikologId = urlParams.get("id");
+
+  if (btnDaftar) {
+    btnDaftar.onclick = function () {
+      if (mode === "chat") {
+        // Langsung ke halaman isi data (jadwalkonseling) dengan mode chat
+        window.location.href = `/jadwalkonseling?mode=chat&id=${psikologId}`;
+      } else {
+        // Alur biasa (jadwalkan)
+        window.location.href = `/jadwalkonseling?id=${psikologId}`;
+      }
+    };
   }
 });

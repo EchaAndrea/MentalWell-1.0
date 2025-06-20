@@ -134,11 +134,9 @@ async function fetchPsychologistSchedule(psychologistId) {
 document.addEventListener("DOMContentLoaded", async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const mode = urlParams.get("mode");
-  const jadwalData = JSON.parse(localStorage.getItem("jadwal"));
 
-  let jadwal = jadwalData;
   if (mode === "chat") {
-    // Mode realtime: isi tanggal & waktu sekarang
+    // Otomatis set jadwal realtime
     const now = new Date();
     const pad = (n) => n.toString().padStart(2, "0");
     const tanggal = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(
@@ -147,21 +145,26 @@ document.addEventListener("DOMContentLoaded", async () => {
     const waktu = `${pad(now.getHours())}:${pad(now.getMinutes())}-${pad(
       now.getHours() + 1
     )}:${pad(now.getMinutes())}`;
-    jadwal = {
-      ...jadwal,
+    const jadwal = {
       tanggal,
       waktu,
       metode: "realtime",
       psikologId: urlParams.get("id"),
     };
     localStorage.setItem("jadwal", JSON.stringify(jadwal));
+
+    // Langsung redirect ke tahap berikutnya (misal permasalahan)
+    window.location.href =
+      "/jadwalkonseling-permasalahan?mode=chat&id=" + urlParams.get("id");
+    return; // Stop eksekusi kode di bawah
   }
 
   // Tampilkan jadwal
+  const jadwalData = JSON.parse(localStorage.getItem("jadwal"));
   document.getElementById("selectedDate").textContent = formatTanggalIndo(
-    jadwal.tanggal
+    jadwalData.tanggal
   );
-  document.getElementById("selectedTime").textContent = jadwal.waktu;
+  document.getElementById("selectedTime").textContent = jadwalData.waktu;
 
   // Ambil data user
   const user = await fetchUserProfile();
