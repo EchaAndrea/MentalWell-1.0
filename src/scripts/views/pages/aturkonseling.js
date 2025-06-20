@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
   btnKonseling.addEventListener("click", () => {
     // Ambil nama pasien dari elemen biodata
     const namaPasien = biodataPasien.querySelector("h2")?.textContent || "-";
-    localStorage.setItem("active_counseling_name", namaPasien); 
+    localStorage.setItem("active_counseling_id", counselingId); 
     fetch(chatUrl)
       .then((res) => {
         if (!res.ok) throw new Error("Gagal memuat halaman popup chat");
