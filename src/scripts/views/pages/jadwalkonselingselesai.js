@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function () {
     'button[onclick="redirectToIndex()"]'
   );
   if (btnKembali) {
-    btnKembali.removeAttribute("onclick"); 
+    btnKembali.removeAttribute("onclick");
     if (mode === "chat") {
       btnKembali.textContent = "Mulai Konseling";
       btnKembali.onclick = function () {
@@ -109,3 +109,8 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 populateHTMLWithData();
+
+// Di confirmPayment()
+window.location.href = `/jadwalkonseling-selesai?id=${
+  jadwal.psikologId || jadwal.psikolog_id
+}${mode ? `&mode=${mode}` : ""}`;

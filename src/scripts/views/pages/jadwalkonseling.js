@@ -258,10 +258,14 @@ async function populateUserData() {
 }
 
 function redirectToCounseling2() {
-  window.location.href = "/jadwalkonseling-permasalahan";
+  const urlParams = new URLSearchParams(window.location.search);
+  const id = urlParams.get("id");
+  const mode = urlParams.get("mode");
+  window.location.href = `/jadwalkonseling-permasalahan?id=${id}${
+    mode ? `&mode=${mode}` : ""
+  }`;
 }
 
-// Tahap 2: Permasalahan
 function sendCounselingData() {
   const problem = document.getElementById("descriptionTextarea")?.value.trim();
   const hope = document.getElementById("hopeAfterTextarea")?.value.trim();
@@ -275,8 +279,12 @@ function sendCounselingData() {
     return;
   }
 
-  localStorage.setItem("counseling_problem", JSON.stringify({ problem, hope }));
-  window.location.href = "/jadwalkonseling-pembayaran";
+  const urlParams = new URLSearchParams(window.location.search);
+  const id = urlParams.get("id");
+  const mode = urlParams.get("mode");
+  window.location.href = `/jadwalkonseling-pembayaran?id=${id}${
+    mode ? `&mode=${mode}` : ""
+  }`;
 }
 
 // Tahap 3: Pembayaran
@@ -319,7 +327,11 @@ async function confirmPayment() {
         "last_counseling_id",
         data.newCounseling.counseling_id || data.newCounseling.id
       );
-      window.location.href = "/jadwalkonseling-selesai";
+      const urlParams = new URLSearchParams(window.location.search);
+      const mode = urlParams.get("mode");
+      window.location.href = `/jadwalkonseling-selesai?id=${
+        jadwal.psikologId || jadwal.psikolog_id
+      }${mode ? `&mode=${mode}` : ""}`;
     } else {
       Swal.fire(data.message || "Gagal mengirim pembayaran");
     }
