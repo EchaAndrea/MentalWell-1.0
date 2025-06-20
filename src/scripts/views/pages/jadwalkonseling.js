@@ -156,10 +156,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Tampilkan jadwal
   const jadwalData = JSON.parse(localStorage.getItem("jadwal"));
-  document.getElementById("selectedDate").textContent = formatTanggalIndo(
-    jadwalData.tanggal
-  );
-  document.getElementById("selectedTime").textContent = jadwalData.waktu;
+
+  const selectedDateEl = document.getElementById("selectedDate");
+  if (selectedDateEl) {
+    selectedDateEl.textContent = formatTanggalIndo(jadwalData.tanggal);
+  }
+  const selectedTimeEl = document.getElementById("selectedTime");
+  if (selectedTimeEl) {
+    selectedTimeEl.textContent = jadwalData.waktu;
+  }
 
   // Ambil data user
   const user = await fetchUserProfile();
