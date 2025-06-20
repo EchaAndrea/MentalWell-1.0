@@ -138,26 +138,6 @@ document.addEventListener("DOMContentLoaded", async function () {
       tanggalContainer.appendChild(btn);
     }
 
-    const hariList = [
-      "Senin",
-      "Selasa",
-      "Rabu",
-      "Kamis",
-      "Jumat",
-      "Sabtu",
-      "Minggu",
-    ];
-    for (const hari of hariList) {
-      if (waktuJadwal[hari] && waktuJadwal[hari].length > 0) {
-        const btn = document.createElement("button");
-        btn.className = "btn btn-outline-secondary tanggal-item";
-        btn.textContent = hari;
-        btn.title = hari;
-        btn.addEventListener("click", () => selectTanggal(hari, btn));
-        tanggalContainer.appendChild(btn);
-      }
-    }
-
     // Klik icon kalender untuk buka date picker
     btnCalendar.addEventListener("click", () => {
       if (tanggalPicker.showPicker) {
@@ -197,7 +177,25 @@ document.addEventListener("DOMContentLoaded", async function () {
     async function renderWaktu() {
       waktuContainer.innerHTML = "";
 
-      const waktuList = waktuJadwal[selectedTanggal] || [];
+      // 1. Cek jadwal harian (by date)
+      let waktuList = waktuJadwal[selectedTanggal] || [];
+
+      // 2. Jika tidak ada, cek jadwal mingguan (by day)
+      if (waktuList.length === 0) {
+        // Ambil hari dari tanggal (0=minggu, 1=senin,...)
+        const hariList = [
+          "Minggu",
+          "Senin",
+          "Selasa",
+          "Rabu",
+          "Kamis",
+          "Jumat",
+          "Sabtu",
+        ];
+        const dateObj = new Date(selectedTanggal);
+        const hari = hariList[dateObj.getDay()];
+        waktuList = waktuJadwal[hari] || [];
+      }
 
       if (waktuList.length === 0) {
         waktuContainer.innerHTML = `<p class="text-muted">Tidak ada jadwal tersedia</p>`;
@@ -214,7 +212,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         let booked = true;
         try {
           const availRes = await fetch(
-            `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}/schedules/availability?date=${selectedTanggal}&time=${encodeURIComponent(
+            `https://mentalwell10-api-production.up.railway.app/psychologists/${getPsikologId()}/schedules/availability?date=${selectedTanggal}&time=${encodeURIComponent(
               jam
             )}`,
             {
