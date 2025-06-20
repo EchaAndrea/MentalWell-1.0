@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700&display=swap");
 
 * {
   padding: 0;
@@ -6,7 +6,7 @@
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   background-color: #fafafa;
   min-height: 100vh;
   flex: 1;
@@ -498,7 +498,7 @@ daftar
   top: 0;
   width: 250px;
   height: 100%;
-  content: '';
+  content: "";
 }
 
 .logos-2:hover .logo-slide-2 {
@@ -533,7 +533,6 @@ daftar
   /* Add ellipsis (...) to indicate truncated text */
 }
 
-
 /*
 Footer
 */
@@ -547,4 +546,21 @@ footer {
   background-color: #02bbdd;
   color: #fff;
   text-align: center;
+}
+
+/* Bottom sheet style for Bootstrap modal */
+.modal.modal-bottom .modal-dialog {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  transition: transform 0.3s ease-out;
+}
+
+.modal.modal-bottom .modal-content {
+  border-radius: 16px 16px 0 0;
 }

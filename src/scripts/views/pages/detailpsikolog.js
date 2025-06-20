@@ -91,13 +91,15 @@ async function renderArticleDetails() {
           : "<span class='jadwal-merah'>Tidak Tersedia</span>";
     }
 
-    // --- TAMPILKAN/HILANGKAN BUTTON DAFTAR KONSELING SESUAI STATUS ---
+    // --- BUTTON DAFTAR KONSELING SESUAI STATUS ---
     const btnDaftar = document.getElementById("btnDaftar");
     if (btnDaftar) {
+      btnDaftar.dataset.status = psikolog.availability;
       if (psikolog.availability === "available") {
         btnDaftar.style.display = "block";
       } else {
-        btnDaftar.style.display = "none";
+        btnDaftar.style.display = "block"; 
+        btnDaftar.textContent = "Jadwalkan Konseling";
       }
     }
   } catch (error) {
@@ -117,10 +119,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (btnDaftar) {
     btnDaftar.onclick = function () {
-      const modal = new bootstrap.Modal(
-        document.getElementById("modalPilihKonseling")
-      );
-      modal.show();
+      // Cek status available dari atribut data-status
+      if (btnDaftar.dataset.status === "available") {
+        const modalEl = document.getElementById("modalPilihKonseling");
+        // Tambahkan class modal-bottom
+        modalEl.classList.add("modal-bottom");
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+      } else {
+        // Jika tidak tersedia, langsung redirect ke jadwal psikolog
+        window.location.href = `/jadwalpsikolog?id=${psikologId}`;
+      }
     };
   }
 
