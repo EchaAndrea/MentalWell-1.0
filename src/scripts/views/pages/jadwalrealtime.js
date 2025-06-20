@@ -13,6 +13,10 @@ function tampilkanProfilPsikolog() {
     document.getElementById("foto-psikolog").alt =
       psikolog.name || "Foto Psikolog";
     document.getElementById("nama").textContent = psikolog.name || "-";
+    document.getElementById("topik").textContent =
+      psikolog.topics && psikolog.topics.length
+        ? psikolog.topics.map((t) => t.name).join(", ")
+        : "-";
     document.getElementById("harga").textContent = psikolog.price
       ? `Rp. ${parseInt(psikolog.price).toLocaleString("id-ID")}`
       : "";
