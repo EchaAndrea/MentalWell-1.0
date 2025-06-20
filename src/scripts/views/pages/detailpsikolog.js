@@ -26,29 +26,29 @@ async function renderArticleDetails() {
 
     // Ambil data dari API
     const articleData = await fetchArticleById(articleId);
+    const psikolog = articleData.data; // <-- ambil objek data
 
     // Render foto
     const fotopsikolog = document.getElementById("psychologProfile");
-    if (fotopsikolog) fotopsikolog.src = articleData.profile_image;
+    if (fotopsikolog) fotopsikolog.src = psikolog.profile_image;
 
     // Render nama dan bio
     const datapsikolog = document.querySelector(".data-psikolog h2");
-    if (datapsikolog) datapsikolog.textContent = articleData.name;
+    if (datapsikolog) datapsikolog.textContent = psikolog.name;
 
     const biodatapsikolog = document.getElementById("biodata-psikolog");
-    if (biodatapsikolog)
-      biodatapsikolog.innerHTML = `<p>${articleData.bio}</p>`;
+    if (biodatapsikolog) biodatapsikolog.innerHTML = `<p>${psikolog.bio}</p>`;
 
     // Render pengalaman praktik
     const pengalamanpraktik = document.getElementById("praktik");
     if (pengalamanpraktik)
-      pengalamanpraktik.textContent = articleData.experience || "-";
+      pengalamanpraktik.textContent = psikolog.experience || "-";
 
     // Render topik keahlian
     const topicList = document.getElementById("topiclist");
     if (topicList) {
-      if (articleData.topics && articleData.topics.length > 0) {
-        topicList.innerHTML = articleData.topics
+      if (psikolog.topics && psikolog.topics.length > 0) {
+        topicList.innerHTML = psikolog.topics
           .map((topic) => `<li>${topic.name}</li>`)
           .join("");
       } else {
@@ -60,8 +60,8 @@ async function renderArticleDetails() {
     const userReviewsContainer = document.getElementById("userReviews");
     const ulasanPengguna = document.getElementById("ulasan-pengguna");
     if (userReviewsContainer && ulasanPengguna) {
-      if (articleData.reviews && articleData.reviews.length > 0) {
-        userReviewsContainer.innerHTML = articleData.reviews
+      if (psikolog.reviews && psikolog.reviews.length > 0) {
+        userReviewsContainer.innerHTML = psikolog.reviews
           .map(
             (review) => `
             <div class="isi-ulasan">
@@ -85,13 +85,13 @@ async function renderArticleDetails() {
     const availabilityTimes = document.getElementById("availabilityTimes");
     if (availabilityTimes) {
       availabilityTimes.innerHTML =
-        articleData.availability === "available"
+        psikolog.availability === "available"
           ? "<span class='jadwal-hijau'>Tersedia</span>"
           : "<span class='jadwal-merah'>Tidak Tersedia</span>";
     }
 
     // Update button state sesuai availability
-    updateButtonState(articleData.availability);
+    updateButtonState(psikolog.availability);
   } catch (error) {
     console.error("Error rendering article details:", error);
   }
