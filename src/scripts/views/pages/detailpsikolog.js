@@ -37,6 +37,16 @@ async function renderArticleDetails() {
     const datapsikolog = document.querySelector(".data-psikolog h2");
     if (datapsikolog) datapsikolog.textContent = psikolog.name;
 
+    // Render harga
+    const hargaPsikolog = document.getElementById("harga-psikolog");
+    if (hargaPsikolog)
+      hargaPsikolog.innerHTML = psikolog.price
+        ? `<span class="harga">Rp${psikolog.price.toLocaleString(
+            "id-ID"
+          )}</span>`
+        : "";
+
+    // Render bio
     const biodatapsikolog = document.getElementById("biodata-psikolog");
     if (biodatapsikolog) biodatapsikolog.innerHTML = `<p>${psikolog.bio}</p>`;
 
@@ -98,7 +108,7 @@ async function renderArticleDetails() {
       if (psikolog.availability === "available") {
         btnDaftar.style.display = "block";
       } else {
-        btnDaftar.style.display = "block"; 
+        btnDaftar.style.display = "block";
         btnDaftar.textContent = "Jadwalkan Konseling";
       }
     }
