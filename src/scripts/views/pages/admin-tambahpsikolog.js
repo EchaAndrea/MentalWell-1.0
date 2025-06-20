@@ -107,8 +107,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const schedules = [];
     for (let i = 0; i < jamMulaiArr.length; i++) {
       if (hariArr[i]) {
-        const time = `${jamMulaiArr[i]} - ${jamSelesaiArr[i]}`;
-        schedules.push({ day: hariArr[i].toLowerCase(), time });
+        schedules.push({
+          day: hariArr[i].toLowerCase(),
+          start_time: jamMulaiArr[i],
+          end_time: jamSelesaiArr[i],
+        });
       }
     }
 
