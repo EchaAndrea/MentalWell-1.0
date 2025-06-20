@@ -60,14 +60,18 @@ window.toggleChat = function () {
   const chatBody = document.getElementById("chatBody");
   const overlay = document.getElementById("chatOverlay");
 
-  if (popup.style.display === "flex") {
-    // Tutup popup: overlay hilang
+  // Cek status popup, gunakan visibility daripada display agar animasi lebih halus (opsional)
+  const isOpen =
+    popup && (popup.style.display === "flex" || popup.style.display === "");
+
+  if (isOpen) {
+    // Tutup popup dan overlay
     if (overlay) overlay.style.display = "none";
-    popup.style.display = "none";
+    if (popup) popup.style.display = "none";
   } else {
-    // Buka popup: overlay tampil
+    // Buka popup dan overlay
     if (overlay) overlay.style.display = "block";
-    popup.style.display = "flex";
+    if (popup) popup.style.display = "flex";
     if (chatBody && chatBody.children.length === 0) {
       addChatBubble("Halo, ada yang bisa saya bantu?", "left");
     }
