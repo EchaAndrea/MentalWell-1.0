@@ -100,30 +100,6 @@ async function renderArticleDetails() {
 // Jalankan saat halaman siap
 document.addEventListener("DOMContentLoaded", renderArticleDetails);
 
-async function fetchPsychologistAvailability() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const psychologistId = urlParams.get("id");
-  if (!psychologistId) {
-    // Jangan fetch jika id tidak ada
-    return;
-  }
-  const url = `https://mentalwell10-api-production.up.railway.app/availability/psychologist/${psychologistId}`;
-
-  try {
-    showLoadingIndicator();
-    const response = await fetch(url);
-    const data = await response.json();
-
-    // Update the button state directly based on availability
-    updateButtonState(data.availability);
-    hideLoadingIndicator();
-  } catch (error) {
-    console.error(error);
-    // Handle the error as needed
-    hideLoadingIndicator();
-  }
-}
-
 function updateButtonState(availability) {
   const btnDaftar = document.getElementById("btnDaftar");
   if (!btnDaftar) return;
@@ -145,7 +121,6 @@ function hideLoadingIndicator() {
 
 // Render artikel details ketika halaman dimuat
 renderArticleDetails();
-fetchPsychologistAvailability();
 
 const logosContainer2 = document.querySelector(".logos-2");
 const originalLogosContainer2 = document.querySelector(".logos-2");
