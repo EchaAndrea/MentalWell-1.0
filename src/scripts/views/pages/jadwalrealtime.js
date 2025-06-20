@@ -153,3 +153,59 @@ function hideLoadingIndicator() {
 console.log("selected_psikolog:", sessionStorage.getItem("selected_psikolog"));
 console.log("authToken:", sessionStorage.getItem("authToken"));
 console.log("id:", getPsikologId());
+
+async function fetchPsikologDetail(id) {
+  const token =
+    sessionStorage.getItem("authToken") || localStorage.getItem("token");
+  const res = await fetch(
+    `https://mentalwell10-api-production.up.railway.app/psychologists/${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Origin: "https://mentalwell-10-frontend.vercel.app",
+      },
+    }
+  );
+  const data = await res.json();
+  return data;
+}
+
+// Contoh penggunaan:
+const id = 1; // atau ambil dari URL
+fetchPsikologDetail(id).then((data) => {
+  if (data.status === "success") {
+    // data.data berisi detail psikolog, termasuk harga
+    console.log(data.data);
+    // contoh: data.data.price
+  } else {
+    console.log("Gagal fetch data psikolog:", data.message);
+  }
+});
+
+async function updatePaymentStatus(counselingId) {
+  const token =
+    sessionStorage.getItem("authToken") || localStorage.getItem("token");
+  const res = await fetch(
+    `https://mentalwell10-api-production.up.railway.app/admin/counseling/${counselingId}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        Origin: "https://mentalwell-10-frontend.vercel.app",
+      },
+      body: JSON.stringify({ payment_status: "approved" }),
+    }
+  );
+  const data = await res.json();
+  return data;
+}
+
+// Contoh penggunaan:
+updatePaymentStatus(9).then((data) => {
+  if (data.status === "success") {
+    console.log("Status pembayaran berhasil diupdate!");
+  } else {
+    console.log("Gagal update status pembayaran:", data.message);
+  }
+});
