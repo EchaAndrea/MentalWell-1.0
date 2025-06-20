@@ -53,8 +53,8 @@ async function fetchCounselingDetail(id, TOKEN) {
     document.getElementById("statusPembayaran").textContent = statusText(
       c.payment_status
     );
-    document.getElementById("hargaPaket").textContent = c.package_price
-      ? `Rp${c.package_price}`
+    document.getElementById("hargaPaket").textContent = c.price
+      ? `Rp${c.price}`
       : "-";
     document.getElementById("hargaAplikasi").textContent = c.app_fee
       ? `Rp${c.app_fee}`
