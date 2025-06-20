@@ -60,16 +60,12 @@ window.toggleChat = function () {
   const chatBody = document.getElementById("chatBody");
   const overlay = document.getElementById("chatOverlay");
 
-  // Cek status popup, gunakan visibility daripada display agar animasi lebih halus (opsional)
-  const isOpen =
-    popup && (popup.style.display === "flex" || popup.style.display === "");
+  const isOpen = popup && popup.style.display === "flex";
 
   if (isOpen) {
-    // Tutup popup dan overlay
     if (overlay) overlay.style.display = "none";
     if (popup) popup.style.display = "none";
   } else {
-    // Buka popup dan overlay
     if (overlay) overlay.style.display = "block";
     if (popup) popup.style.display = "flex";
     if (chatBody && chatBody.children.length === 0) {
@@ -78,8 +74,14 @@ window.toggleChat = function () {
   }
 };
 
-document.getElementById("chatOverlay")?.addEventListener("click", () => {
-  window.toggleChat();
+// Pastikan event listener overlay dipasang setelah DOM siap
+document.addEventListener("DOMContentLoaded", function () {
+  const overlay = document.getElementById("chatOverlay");
+  if (overlay) {
+    overlay.addEventListener("click", () => {
+      window.toggleChat();
+    });
+  }
 });
 
 window.sendMessage = function () {
