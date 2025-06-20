@@ -99,9 +99,21 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (fotoEl)
       fotoEl.src = selectedPsikolog.photo || "/src/public/beranda/man.png";
 
-    // Proses jadwal ke format { tanggal: [ {jam, booked}, ... ] }
+    // Proses jadwal ke format { hari: [ {jam, booked}, ... ] }
     waktuJadwal = {};
-    // Hanya jadwal yang punya field 'date' (bukan 'day')
+
+    // Jadwal mingguan (dari admin)
+    const jadwalWithDay = jadwalArr.filter((item) => item.day);
+    for (const item of jadwalWithDay) {
+      const jam = `${item.start_time?.slice(0, 5) || ""}-${
+        item.end_time?.slice(0, 5) || ""
+      }`;
+      const hari = item.day.charAt(0).toUpperCase() + item.day.slice(1); // Kapitalisasi
+      if (!waktuJadwal[hari]) waktuJadwal[hari] = [];
+      waktuJadwal[hari].push({ jam, id: item.id });
+    }
+
+    // Jadwal harian (jika ada)
     const jadwalWithDate = jadwalArr.filter((item) => item.date);
     for (const item of jadwalWithDate) {
       const jam = `${item.start_time?.slice(0, 5) || ""}-${
@@ -124,6 +136,26 @@ document.addEventListener("DOMContentLoaded", async function () {
       btn.title = tglStr;
       btn.addEventListener("click", () => selectTanggal(tglStr, btn));
       tanggalContainer.appendChild(btn);
+    }
+
+    const hariList = [
+      "Senin",
+      "Selasa",
+      "Rabu",
+      "Kamis",
+      "Jumat",
+      "Sabtu",
+      "Minggu",
+    ];
+    for (const hari of hariList) {
+      if (waktuJadwal[hari] && waktuJadwal[hari].length > 0) {
+        const btn = document.createElement("button");
+        btn.className = "btn btn-outline-secondary tanggal-item";
+        btn.textContent = hari;
+        btn.title = hari;
+        btn.addEventListener("click", () => selectTanggal(hari, btn));
+        tanggalContainer.appendChild(btn);
+      }
     }
 
     // Klik icon kalender untuk buka date picker
