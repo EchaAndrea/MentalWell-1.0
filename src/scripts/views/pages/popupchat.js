@@ -41,6 +41,10 @@ window.initPopupChat = function () {
     const message = input.value.trim();
     if (!message) return;
     const conversationId = localStorage.getItem("active_conversation_id");
+    if (!conversationId) {
+      alert("conversation_id tidak ditemukan di localStorage!");
+      return;
+    }
     const senderRole = localStorage.getItem("active_role");
     const senderId = parseInt(localStorage.getItem("active_user_id"), 10);
     const id = generateId();
@@ -156,4 +160,11 @@ function subscribeToMessages(conversationId) {
       }
     )
     .subscribe();
+}
+
+const urlParams = new URLSearchParams(window.location.search);
+const conversationId = urlParams.get("conversation_id");
+if (conversationId) {
+  localStorage.setItem("active_conversation_id", conversationId);
+  window.initPopupChat();
 }
