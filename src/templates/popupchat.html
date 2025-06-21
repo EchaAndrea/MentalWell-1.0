@@ -19,27 +19,25 @@
       <div class="popup-header">
         <div id="namaPsikolog">Nama</div>
         <button class="btn-close-popup" type="button">
-          <img
-            src="/src/public/chat/close.png"
-            alt="Close"
-          />
+          <img src="/src/public/chat/close.png" alt="Close" />
         </button>
       </div>
       <div class="popup-body" id="chatBody"></div>
       <div class="popup-footer">
         <label for="fileUpload" class="btn-add-file">
-          <img src="/src/public/chat/add.png" alt="Add" style="width: 20px" />
+          <img src="/src/public/chat/add.png" alt="Add" />
         </label>
+        <input type="file" id="fileUpload" hidden />
+
         <input
           type="text"
           id="chatInput"
           class="input-message"
           placeholder="Tulis pesan..."
         />
-        <input type="file" id="fileUpload" hidden />
 
         <button class="btn-send" id="sendBtn" type="button">
-          <img src="/src/public/chat/send.png" alt="Send" style="width: 20px" />
+          <img src="/src/public/chat/send.png" alt="Send" />
         </button>
       </div>
     </div>

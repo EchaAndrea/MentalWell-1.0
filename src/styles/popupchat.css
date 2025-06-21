@@ -77,6 +77,15 @@
   cursor: pointer;
 }
 
+.btn-close-popup img,
+.btn-add-file img,
+.btn-send img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
+}
+
 .card-header {
   background-color: #00bcd4;
   color: white;
