@@ -1,5 +1,6 @@
 const authToken = sessionStorage.getItem("authToken");
 const containerRiwayat = document.querySelector(".content-riwayat");
+const popupContainer = document.getElementById("popup-container");
 
 fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
   method: "GET",
@@ -164,7 +165,7 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
                   // Tambahkan script module popupchat.js secara dinamis
                   const script = document.createElement("script");
                   script.type = "module";
-                  script.src = "/src/scripts/views/pages/popupchat.js"; 
+                  script.src = "/src/scripts/views/pages/popupchat.js";
                   script.onload = () => {
                     if (window.initPopupChat) window.initPopupChat();
                   };
