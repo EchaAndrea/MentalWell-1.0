@@ -179,7 +179,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const overlay = document.getElementById("chatOverlay");
         if (overlay) overlay.style.display = "block";
 
-        // Tambahkan script module popupchat.js secara dinamis
+        // Hapus script module popupchat.js yang sudah ada
+        document
+          .querySelectorAll(
+            'script[src="/src/scripts/views/pages/popupchat.js"]'
+          )
+          .forEach((s) => s.remove());
+
+        // Inject script module popupchat.js
         const script = document.createElement("script");
         script.type = "module";
         script.src = "/src/scripts/views/pages/popupchat.js";
