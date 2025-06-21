@@ -181,6 +181,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Tambahkan script module popupchat.js secara dinamis
         const script = document.createElement("script");
+        script.type = "module";
+        script.src = "/src/scripts/views/pages/popupchat.js";
         script.onload = () => {
           if (window.initPopupChat) window.initPopupChat();
         };

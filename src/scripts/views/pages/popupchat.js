@@ -87,6 +87,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (closeBtn) {
       closeBtn.addEventListener("click", window.closeChat);
     }
+
+    const counselingId = localStorage.getItem("active_counseling_id");
+    loadMessages(counselingId);
+    subscribeToMessages(counselingId);
   };
 
   // Inisialisasi otomatis jika popup sudah ada di DOM
@@ -143,16 +147,3 @@ function subscribeToMessages(counselingId) {
     )
     .subscribe();
 }
-
-// Setelah inject HTML popup
-const script = document.createElement("script");
-script.type = "module"; // <-- WAJIB!
-script.src = "/src/scripts/views/pages/popupchat.js";
-script.onload = () => {
-  if (window.initPopupChat) window.initPopupChat();
-};
-document.body.appendChild(script);
-
-const counselingId = localStorage.getItem("active_counseling_id");
-loadMessages(counselingId);
-subscribeToMessages(counselingId);
