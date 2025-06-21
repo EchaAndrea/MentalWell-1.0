@@ -65,24 +65,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
 
-  // Pastikan script sudah dimuat, lalu panggil inisialisasi
-  if (window.initPopupChat) window.initPopupChat();
-  else {
-    // Jika script belum sempat dimuat, tunggu sebentar
-    setTimeout(() => {
-      if (window.initPopupChat) window.initPopupChat();
-    }, 100);
-  }
-
-  // Jika popup dimuat langsung, inisialisasi otomatis
+  // Inisialisasi otomatis jika popup sudah ada di DOM
   if (document.getElementById("chatInput")) {
     window.initPopupChat();
   }
-
-  // Setelah innerHTML popup
-  popupContainer.innerHTML = html;
-  popupContainer.style.display = "flex";
-  const overlay = document.getElementById("chatOverlay");
-  if (overlay) overlay.style.display = "block";
-  if (window.initPopupChat) window.initPopupChat();
 });
