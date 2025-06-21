@@ -90,6 +90,10 @@ fetch(
       statusDropdown.value = "belum_selesai";
       statusDropdown.disabled = false;
     }
+
+    // Simpan conversation_id ke localStorage
+    const conversationId = counseling.conversation_id;
+    localStorage.setItem("active_conversation_id", conversationId);
   })
   .catch((error) => {
     loadingIndicator.style.display = "none";
