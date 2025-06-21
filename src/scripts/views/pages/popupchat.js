@@ -5,8 +5,7 @@ const supabaseKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpZ2R5cXN5cGV0b3ppY2l1aGVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg1NzkzNjQsImV4cCI6MjA1NDE1NTM2NH0.ctFsP3ITmiPKJz9RHEkwxdHSKV-E1urbMqcXYui9Gt8";
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// HAPUS document.addEventListener("DOMContentLoaded", ...)
-// LANGSUNG deklarasi window.initPopupChat
+// deklarasi window.initPopupChat
 window.initPopupChat = function () {
   // Set nama psikolog/pasien
   const role = localStorage.getItem("active_role");
@@ -37,7 +36,10 @@ window.initPopupChat = function () {
     const input = document.getElementById("chatInput");
     const message = input.value.trim();
     if (!message) return;
-    const counselingId = localStorage.getItem("active_counseling_id");
+    const counselingId = parseInt(
+      localStorage.getItem("active_counseling_id"),
+      10
+    );
     const senderRole = localStorage.getItem("active_role"); // 'pasien' atau 'psikolog'
     const senderName =
       senderRole === "psikolog"
@@ -96,6 +98,7 @@ window.initPopupChat = function () {
 };
 
 async function loadMessages(counselingId) {
+  counselingId = parseInt(counselingId, 10);
   const { data, error } = await supabase
     .from("messages")
     .select("*")
@@ -117,8 +120,13 @@ async function loadMessages(counselingId) {
   }
 }
 
+let chatChannel = null;
+
 function subscribeToMessages(counselingId) {
-  supabase
+  if (chatChannel) {
+    chatChannel.unsubscribe();
+  }
+  chatChannel = supabase
     .channel("messages")
     .on(
       "postgres_changes",
