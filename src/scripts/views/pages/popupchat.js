@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
       sendBtn.addEventListener("click", window.sendMessage);
     }
 
-    const closeBtn = document.querySelector(".btn-close");
+    const closeBtn = document.querySelector(".btn-close-popup");
     if (closeBtn) {
       closeBtn.addEventListener("click", window.closeChat);
     }
