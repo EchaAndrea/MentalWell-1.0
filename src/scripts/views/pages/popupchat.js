@@ -161,10 +161,3 @@ function subscribeToMessages(conversationId) {
     )
     .subscribe();
 }
-
-const urlParams = new URLSearchParams(window.location.search);
-const conversationId = urlParams.get("conversation_id");
-if (conversationId) {
-  localStorage.setItem("active_conversation_id", conversationId);
-  window.initPopupChat();
-}
