@@ -60,26 +60,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
 
-  const popupContainer = document.getElementById("popupContainer");
-  const html = `
-    <div id="chatOverlay" class="chat-overlay" style="display: flex;"></div>
-    <div id="chatPopup" class="chat-popup" style="display: flex;">
-      <div class="chat-header">
-        <h5 id="namaPsikolog">Nama Psikolog</h5>
-        <button onclick="closeChat()" class="close-button">X</button>
-      </div>
-      <div id="chatBody" class="chat-body"></div>
-      <div class="chat-footer">
-        <input id="chatInput" type="text" placeholder="Ketik pesan...">
-        <input id="fileUpload" type="file" style="display:none;">
-        <button onclick="sendMessage()" class="send-button">Kirim</button>
-      </div>
-    </div>
-  `;
-
-  popupContainer.innerHTML = html;
-  popupContainer.style.display = "flex";
-
   // Pastikan script sudah dimuat, lalu panggil inisialisasi
   if (window.initPopupChat) window.initPopupChat();
   else {
