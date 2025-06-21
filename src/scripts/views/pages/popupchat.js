@@ -15,12 +15,11 @@ document.addEventListener("DOMContentLoaded", function () {
     window.closeChat = function () {
       document.getElementById("chatPopup").style.display = "none";
       document.getElementById("chatOverlay").style.display = "none";
-      // Jika ingin benar-benar menghilangkan popup:
-      // const popupContainer = document.getElementById("popup-container");
-      // if (popupContainer) {
-      //   popupContainer.innerHTML = "";
-      //   popupContainer.style.display = "none";
-      // }
+      const popupContainer = document.getElementById("popup-container");
+      if (popupContainer) {
+        popupContainer.innerHTML = "";
+        popupContainer.style.display = "none";
+      }
     };
 
     // Fungsi untuk mengirim pesan
@@ -79,4 +78,11 @@ document.addEventListener("DOMContentLoaded", function () {
   if (document.getElementById("chatInput")) {
     window.initPopupChat();
   }
+
+  // Setelah innerHTML popup
+  popupContainer.innerHTML = html;
+  popupContainer.style.display = "flex";
+  const overlay = document.getElementById("chatOverlay");
+  if (overlay) overlay.style.display = "block";
+  if (window.initPopupChat) window.initPopupChat();
 });

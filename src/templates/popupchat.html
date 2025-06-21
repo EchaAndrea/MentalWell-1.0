@@ -13,27 +13,23 @@
   <body
     class="d-flex justify-content-center align-items-center bg-light min-vh-100"
   >
+    <div id="popup-container"></div>
     <div id="chatOverlay"></div>
     <div
       id="chatPopup"
       class="card shadow-lg"
-      style="width: 800px; height: 650px"
+      style="width: 900px; height: 700px"
     >
       <div
         class="card-header d-flex justify-content-between align-items-center bg-info text-white"
       >
         <div id="namaPsikolog">Nama</div>
-        <button class="btn-close-chat" onclick="window.closeChat()"></button>
       </div>
 
       <div
         class="card-body overflow-auto d-flex flex-column gap-2"
         id="chatBody"
       >
-        <div
-          id="chatTargetName"
-          style="font-weight: bold; margin-bottom: 8px"
-        ></div>
       </div>
 
       <div class="card-footer bg-info d-flex align-items-center gap-2">
@@ -54,14 +50,5 @@
         </button>
       </div>
     </div>
-
-    <script>
-      // Setelah popup dimasukkan ke DOM
-      const script = document.createElement("script");
-      script.src = "/src/scripts/views/pages/popupchat.js";
-      document.body.appendChild(script);
-
-      if (window.initPopupChat) window.initPopupChat();
-    </script>
   </body>
 </html>

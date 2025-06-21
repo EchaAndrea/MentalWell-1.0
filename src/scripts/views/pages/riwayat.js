@@ -159,8 +159,9 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
                   const popupContainer =
                     document.getElementById("popup-container");
                   popupContainer.innerHTML = html;
-                  popupContainer.style.display = "flex"; // atau "block"
-                  // Setelah HTML masuk, inisialisasi popup
+                  popupContainer.style.display = "flex";
+                  const overlay = document.getElementById("chatOverlay");
+                  if (overlay) overlay.style.display = "block";
                   if (window.initPopupChat) window.initPopupChat();
                 })
                 .catch((err) => alert(err.message));

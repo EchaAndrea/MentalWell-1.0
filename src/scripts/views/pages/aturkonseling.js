@@ -175,6 +175,8 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((html) => {
         popupContainer.innerHTML = html;
         popupContainer.style.display = "flex";
+        const overlay = document.getElementById("chatOverlay");
+        if (overlay) overlay.style.display = "block";
         if (window.initPopupChat) window.initPopupChat();
       })
       .catch((err) => alert(err.message));
