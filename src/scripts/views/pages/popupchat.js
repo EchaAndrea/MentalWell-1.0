@@ -32,24 +32,26 @@ window.initPopupChat = function () {
   };
 
   // Fungsi untuk mengirim pesan
+  function generateId() {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+  }
+
   window.sendMessage = async function () {
     const input = document.getElementById("chatInput");
     const message = input.value.trim();
     if (!message) return;
-    const conversationId = localStorage.getItem("active_counseling_id"); // conversation_id = varchar
+    const conversationId = localStorage.getItem("active_counseling_id");
     const senderRole = localStorage.getItem("active_role");
-    const senderId = parseInt(localStorage.getItem("active_user_id"), 10); // pastikan ada di localStorage
-    const senderName =
-      senderRole === "psikolog"
-        ? localStorage.getItem("active_psychologist_name")
-        : localStorage.getItem("active_patient_name");
+    const senderId = parseInt(localStorage.getItem("active_user_id"), 10);
+    const id = generateId(); 
     const { error } = await supabase.from("messages").insert([
       {
+        id: id,
         conversation_id: conversationId,
         sender_id: senderId,
         sender_role: senderRole,
         content: message,
-        type: "text", // atau sesuai kebutuhan
+        type: "text",
         sent_at: new Date().toISOString(),
         is_read: false,
       },
