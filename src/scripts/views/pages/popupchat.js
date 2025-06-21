@@ -43,7 +43,7 @@ window.initPopupChat = function () {
     const conversationId = localStorage.getItem("active_counseling_id");
     const senderRole = localStorage.getItem("active_role");
     const senderId = parseInt(localStorage.getItem("active_user_id"), 10);
-    const id = generateId(); 
+    const id = generateId();
     const { error } = await supabase.from("messages").insert([
       {
         id: id,
@@ -100,6 +100,7 @@ window.initPopupChat = function () {
   }
 
   const counselingId = localStorage.getItem("active_counseling_id");
+  console.log("conversation_id yang dikirim:", counselingId);
   loadMessages(counselingId);
   subscribeToMessages(counselingId);
 };
