@@ -65,6 +65,11 @@
       </div>
     </div>
 
-    <script src="/src/scripts/views/pages/popupchat.js"></script>
+    <script>
+      // Setelah popup dimasukkan ke DOM
+      const script = document.createElement("script");
+      script.src = "/src/scripts/views/pages/popupchat.js";
+      document.body.appendChild(script);
+    </script>
   </body>
 </html>
