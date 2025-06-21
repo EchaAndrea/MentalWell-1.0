@@ -75,6 +75,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
     }
+
+    const sendBtn = document.getElementById("sendBtn");
+    if (sendBtn) {
+      sendBtn.addEventListener("click", window.sendMessage);
+    }
   };
 
   // Inisialisasi otomatis jika popup sudah ada di DOM
