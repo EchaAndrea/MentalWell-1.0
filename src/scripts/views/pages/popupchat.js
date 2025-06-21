@@ -161,25 +161,3 @@ function subscribeToMessages(conversationId) {
     )
     .subscribe();
 }
-
-// Setelah counseling berhasil dibuat dan dapat counseling_id:
-const counselingId = response.newCounseling.counseling_id;
-
-// Panggil API detail counseling untuk dapat conversation_id
-fetch(
-  `https://mentalwell10-api-production.up.railway.app/counseling/${counselingId}`,
-  {
-    headers: {
-      Authorization: `Bearer ${authToken}`,
-      "Content-Type": "application/json",
-    },
-  }
-)
-  .then((res) => res.json())
-  .then((data) => {
-    const conversationId = data.counseling.conversation_id;
-    // Simpan ke localStorage
-    localStorage.setItem("active_conversation_id", conversationId);
-    // Baru buka popup chat
-    // ...kode buka popup chat...
-  });

@@ -27,6 +27,7 @@ fetch(
   {
     headers: {
       Authorization: `Bearer ${authToken}`,
+      "Content-Type": "application/json",
     },
   }
 )
@@ -202,3 +203,19 @@ document.addEventListener("DOMContentLoaded", () => {
       .catch((err) => alert(err.message));
   });
 });
+
+fetch(
+  `https://mentalwell10-api-production.up.railway.app/psychologist/counseling/${counselingId}`,
+  {
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+      "Content-Type": "application/json",
+    },
+  }
+)
+  .then((res) => res.json())
+  .then((data) => {
+    const conversationId = data.counseling.conversation_id;
+    localStorage.setItem("active_conversation_id", conversationId);
+    // Baru buka popup chat/modal jika perlu
+  });

@@ -197,3 +197,25 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
     }
   })
   .catch((error) => console.error("Error fetching data from API:", error));
+
+// Setelah counseling berhasil dibuat dan dapat counseling_id:
+const counselingId = response.newCounseling.counseling_id;
+
+// Fetch detail counseling untuk dapat conversation_id
+fetch(
+  `https://mentalwell10-api-production.up.railway.app/counseling/${counselingId}`,
+  {
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+      "Content-Type": "application/json",
+    },
+  }
+)
+  .then((res) => res.json())
+  .then((data) => {
+    const conversationId = data.counseling.conversation_id;
+    localStorage.setItem("active_conversation_id", conversationId);
+    // Baru buka popup chat/modal
+    // Misal:
+    // showPopupChat();
+  });
