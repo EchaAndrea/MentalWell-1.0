@@ -15,6 +15,11 @@ document.addEventListener("DOMContentLoaded", function () {
     window.closeChat = function () {
       document.getElementById("chatPopup").style.display = "none";
       document.getElementById("chatOverlay").style.display = "none";
+      // Jika ingin benar-benar menghilangkan popup:
+      // const popupContainer = document.getElementById("popup-container");
+      // if (popupContainer) {
+      //   popupContainer.innerHTML = "";
+      //   popupContainer.style.display = "none";
       // }
     };
 
