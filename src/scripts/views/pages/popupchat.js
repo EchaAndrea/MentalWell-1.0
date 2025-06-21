@@ -55,4 +55,9 @@ document.addEventListener("DOMContentLoaded", function () {
         chatBody.scrollTop = chatBody.scrollHeight;
       }
     });
+
+  // Setelah innerHTML
+  const script = document.createElement("script");
+  script.src = "/src/scripts/views/pages/popupchat.js";
+  document.body.appendChild(script);
 });
