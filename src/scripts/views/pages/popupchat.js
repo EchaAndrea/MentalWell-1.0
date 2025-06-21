@@ -1,142 +1,44 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const input = document.getElementById("chatInput");
-  if (input) {
-    input.addEventListener("keypress", function (e) {
-      if (e.key === "Enter") {
-        sendMessage();
-      }
-    });
-  }
+// Dummy: Set nama psikolog
+document.getElementById("namaPsikolog").textContent = "Dr. Andi Psikolog";
 
-  const fileUpload = document.getElementById("fileUpload");
-  if (fileUpload) {
-    fileUpload.addEventListener("change", async function () {
-      if (this.files.length > 0) {
-        addChatBubble(`📎 File dikirim: ${this.files[0].name}`, "right");
-        scrollToBottom();
-
-        // --- Tambahan: Kirim file ke backend ---
-        try {
-          // Ganti value berikut sesuai kebutuhan (atau ambil dari input/form)
-          const psychologist_id =
-            localStorage.getItem("active_psychologist_id") || 1;
-          const occupation = "mahasiswa";
-          const problem_description = "gangguan makan";
-          const hope_after = "bisa memiliki pola makan yang baik";
-          const payment_proof_file = this.files[0];
-
-          const result = await createRealtimeCounseling({
-            psychologist_id,
-            occupation,
-            problem_description,
-            hope_after,
-            payment_proof_file,
-          });
-          addChatBubble("✅ Bukti pembayaran berhasil dikirim!", "left");
-          console.log(result);
-        } catch (err) {
-          addChatBubble("❌ Gagal mengirim bukti pembayaran.", "left");
-        }
-        // --- End tambahan ---
-      }
-    });
-  }
-
-  // Tampilkan nama target di popup chat
-  const targetName = localStorage.getItem("active_counseling_name");
-  const nameDiv = document.getElementById("chatTargetName");
-  if (nameDiv && targetName) {
-    nameDiv.textContent = `Chat dengan: ${targetName}`;
-  }
-  // Tambahan: isi header juga
-  const headerName = document.getElementById("namaPsikolog");
-  if (headerName && targetName) {
-    headerName.textContent = targetName;
-  }
-});
-
-window.openChat = function () {
-  document.getElementById("chatOverlay").style.display = "block";
-  document.getElementById("chatPopup").style.display = "block";
-};
+// Fungsi untuk menutup chat popup
 window.closeChat = function () {
-  document.getElementById("chatOverlay").style.display = "none";
   document.getElementById("chatPopup").style.display = "none";
+  document.getElementById("chatOverlay").style.display = "none";
 };
 
-document.addEventListener("DOMContentLoaded", function () {
-  const overlay = document.getElementById("chatOverlay");
-  if (overlay) {
-    overlay.addEventListener("click", window.closeChat);
-  }
-});
-
+// Fungsi untuk mengirim pesan
 window.sendMessage = function () {
   const input = document.getElementById("chatInput");
   const message = input.value.trim();
-  if (message !== "") {
-    addChatBubble(message, "right");
-    input.value = "";
-    scrollToBottom();
+  if (!message) return;
 
-    setTimeout(() => {
-      addChatBubble(
-        "Terima kasih sudah berbagi, saya akan bantu semampu saya.",
-        "left"
-      );
-      scrollToBottom();
-    }, 800);
-  }
+  const chatBody = document.getElementById("chatBody");
+  const msgDiv = document.createElement("div");
+  msgDiv.className = "alert alert-primary p-2 mb-1 align-self-end";
+  msgDiv.textContent = message;
+  chatBody.appendChild(msgDiv);
+
+  input.value = "";
+  chatBody.scrollTop = chatBody.scrollHeight;
 };
 
-function addChatBubble(text, position) {
-  const chatBody = document.getElementById("chatBody");
-  const bubble = document.createElement("div");
-  bubble.className = `chat-bubble ${position}`;
-  bubble.textContent = text;
-  chatBody.appendChild(bubble);
-}
-
-function scrollToBottom() {
-  const chatBody = document.getElementById("chatBody");
-  chatBody.scrollTop = chatBody.scrollHeight;
-}
-
-async function createRealtimeCounseling({
-  psychologist_id,
-  occupation,
-  problem_description,
-  hope_after,
-  payment_proof_file,
-}) {
-  if (
-    !psychologist_id ||
-    !occupation ||
-    !problem_description ||
-    !hope_after ||
-    !payment_proof_file
-  ) {
-    throw new Error("Semua field wajib diisi dan file harus dipilih.");
+// Enter untuk kirim pesan
+document.getElementById("chatInput").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    window.sendMessage();
   }
-  const url = `https://mentalwell10-api-production.up.railway.app/realtime/counseling/${psychologist_id}`;
-  const formData = new FormData();
-  formData.append("occupation", occupation);
-  formData.append("problem_description", problem_description);
-  formData.append("hope_after", hope_after);
-  formData.append("payment_proof", payment_proof_file);
+});
 
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      body: formData,
-    });
-    if (!response.ok) {
-      const errText = await response.text();
-      throw new Error(`Gagal membuat counseling: ${errText}`);
-    }
-    return await response.json();
-  } catch (err) {
-    console.error("Error createRealtimeCounseling:", err);
-    throw err;
+// Optional: Preview nama file yang diupload
+document.getElementById("fileUpload").addEventListener("change", function (e) {
+  const file = e.target.files[0];
+  if (file) {
+    const chatBody = document.getElementById("chatBody");
+    const fileDiv = document.createElement("div");
+    fileDiv.className = "alert alert-secondary p-2 mb-1 align-self-end";
+    fileDiv.textContent = `File: ${file.name}`;
+    chatBody.appendChild(fileDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
   }
-}
+});
