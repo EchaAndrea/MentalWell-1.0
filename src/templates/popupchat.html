@@ -15,20 +15,10 @@
   >
     <div id="popup-container"></div>
     <div id="chatOverlay"></div>
-    <div
-      id="chatPopup"
-      class="card shadow-lg"
-      style="width: 900px; height: 700px"
-    >
-      <div
-        class="card-header d-flex justify-content-between align-items-center bg-info text-white"
-      >
+    <div id="chatPopupCustom">
+      <div class="popup-header">
         <div id="namaPsikolog">Nama</div>
-        <button
-          class="btn btn-light btn-sm"
-          onclick="window.closeChat()"
-          style="border: none; background: none"
-        >
+        <button class="btn-close-popup" onclick="window.closeChat()">
           <img
             src="/src/public/chat/close.png"
             alt="Close"
@@ -36,26 +26,20 @@
           />
         </button>
       </div>
-
-      <div
-        class="card-body overflow-auto d-flex flex-column gap-2"
-        id="chatBody"
-      ></div>
-
-      <div class="card-footer bg-info d-flex align-items-center gap-2">
-        <label for="fileUpload" class="btn btn-light btn-sm m-0">
+      <div class="popup-body" id="chatBody"></div>
+      <div class="popup-footer">
+        <label for="fileUpload" class="btn-add-file">
           <img src="/src/public/chat/add.png" alt="Add" style="width: 20px" />
         </label>
-
         <input
           type="text"
           id="chatInput"
-          class="form-control"
+          class="input-message"
           placeholder="Tulis pesan..."
         />
         <input type="file" id="fileUpload" hidden />
 
-        <button class="btn btn-light btn-sm" onclick="sendMessage()">
+        <button class="btn-send" onclick="sendMessage()">
           <img src="/src/public/chat/send.png" alt="Send" style="width: 20px" />
         </button>
       </div>
