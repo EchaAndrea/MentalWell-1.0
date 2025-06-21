@@ -1,3 +1,9 @@
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabaseUrl = "https://xxxx.supabase.co"; // ganti dengan URL projectmu
+const supabaseKey = "public-anon-key"; // ganti dengan anon/public key projectmu
+const supabase = createClient(supabaseUrl, supabaseKey);
+
 document.addEventListener("DOMContentLoaded", function () {
   window.initPopupChat = function () {
     // Set nama psikolog/pasien
@@ -23,19 +29,25 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     // Fungsi untuk mengirim pesan
-    window.sendMessage = function () {
+    window.sendMessage = async function () {
       const input = document.getElementById("chatInput");
       const message = input.value.trim();
       if (!message) return;
-
-      const chatBody = document.getElementById("chatBody");
-      const msgDiv = document.createElement("div");
-      msgDiv.className = "alert alert-primary p-2 mb-1 align-self-end";
-      msgDiv.textContent = message;
-      chatBody.appendChild(msgDiv);
-
+      const counselingId = localStorage.getItem("active_counseling_id");
+      const senderRole = localStorage.getItem("active_role"); // 'pasien' atau 'psikolog'
+      const senderName =
+        senderRole === "psikolog"
+          ? localStorage.getItem("active_psychologist_name")
+          : localStorage.getItem("active_patient_name");
+      await supabase.from("messages").insert([
+        {
+          counseling_id: counselingId,
+          sender_role: senderRole,
+          sender_name: senderName,
+          message: message,
+        },
+      ]);
       input.value = "";
-      chatBody.scrollTop = chatBody.scrollHeight;
     };
 
     // Enter untuk kirim pesan
@@ -70,3 +82,56 @@ document.addEventListener("DOMContentLoaded", function () {
     window.initPopupChat();
   }
 });
+
+async function loadMessages(counselingId) {
+  const { data, error } = await supabase
+    .from("messages")
+    .select("*")
+    .eq("counseling_id", counselingId)
+    .order("created_at", { ascending: true });
+  if (data) {
+    const chatBody = document.getElementById("chatBody");
+    chatBody.innerHTML = "";
+    data.forEach((msg) => {
+      const msgDiv = document.createElement("div");
+      msgDiv.className =
+        msg.sender_role === "pasien"
+          ? "alert alert-primary p-2 mb-1 align-self-end"
+          : "alert alert-secondary p-2 mb-1 align-self-start";
+      msgDiv.textContent = msg.message;
+      chatBody.appendChild(msgDiv);
+    });
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+}
+
+function subscribeToMessages(counselingId) {
+  supabase
+    .channel("messages")
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "messages",
+        filter: `counseling_id=eq.${counselingId}`,
+      },
+      (payload) => {
+        const msg = payload.new;
+        const chatBody = document.getElementById("chatBody");
+        const msgDiv = document.createElement("div");
+        msgDiv.className =
+          msg.sender_role === "pasien"
+            ? "alert alert-primary p-2 mb-1 align-self-end"
+            : "alert alert-secondary p-2 mb-1 align-self-start";
+        msgDiv.textContent = msg.message;
+        chatBody.appendChild(msgDiv);
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }
+    )
+    .subscribe();
+}
+
+const counselingId = localStorage.getItem("active_counseling_id");
+loadMessages(counselingId);
+subscribeToMessages(counselingId);
