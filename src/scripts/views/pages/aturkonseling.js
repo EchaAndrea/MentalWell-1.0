@@ -164,9 +164,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const chatUrl = "/src/templates/popupchat.html"; // URL file chat popup
 
   btnKonseling.addEventListener("click", () => {
-    // Ambil nama pasien dari elemen biodata
     const namaPasien = biodataPasien.querySelector("h2")?.textContent || "-";
-    localStorage.setItem("active_counseling_id", counselingId); 
+    localStorage.setItem("active_counseling_id", counselingId);
+    localStorage.setItem("active_patient_name", namaPasien); // TAMBAHKAN INI
     fetch(chatUrl)
       .then((res) => {
         if (!res.ok) throw new Error("Gagal memuat halaman popup chat");

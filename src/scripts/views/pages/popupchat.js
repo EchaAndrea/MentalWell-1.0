@@ -1,6 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Dummy: Set nama psikolog
-  document.getElementById("namaPsikolog").textContent = "Dr. Andi Psikolog";
+  // Ambil nama dari localStorage
+  const role = localStorage.getItem("active_role");
+  let nama = "Nama";
+  if (role === "psikolog") {
+    nama = localStorage.getItem("active_patient_name") || "Pasien";
+  } else {
+    nama = localStorage.getItem("active_psychologist_name") || "Psikolog";
+  }
+  const namaPsikolog = document.getElementById("namaPsikolog");
+  if (namaPsikolog) namaPsikolog.textContent = nama;
 
   // Fungsi untuk menutup chat popup
   window.closeChat = function () {
