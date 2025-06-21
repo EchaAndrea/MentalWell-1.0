@@ -167,6 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const namaPasien = biodataPasien.querySelector("h2")?.textContent || "-";
     localStorage.setItem("active_counseling_id", counselingId);
     localStorage.setItem("active_patient_name", namaPasien);
+    localStorage.setItem("active_role", "psikolog");
     fetch(chatUrl)
       .then((res) => {
         if (!res.ok) throw new Error("Gagal memuat halaman popup chat");
@@ -177,7 +178,13 @@ document.addEventListener("DOMContentLoaded", () => {
         popupContainer.style.display = "flex";
         const overlay = document.getElementById("chatOverlay");
         if (overlay) overlay.style.display = "block";
-        if (window.initPopupChat) window.initPopupChat();
+
+        // Tambahkan script module popupchat.js secara dinamis
+        const script = document.createElement("script");
+        script.onload = () => {
+          if (window.initPopupChat) window.initPopupChat();
+        };
+        document.body.appendChild(script);
       })
       .catch((err) => alert(err.message));
   });

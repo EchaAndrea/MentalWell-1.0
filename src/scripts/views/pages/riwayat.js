@@ -156,13 +156,16 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
               fetch("/src/templates/popupchat.html")
                 .then((res) => res.text())
                 .then((html) => {
-                  const popupContainer =
-                    document.getElementById("popup-container");
                   popupContainer.innerHTML = html;
                   popupContainer.style.display = "flex";
                   const overlay = document.getElementById("chatOverlay");
                   if (overlay) overlay.style.display = "block";
-                  if (window.initPopupChat) window.initPopupChat();
+
+                  // Tambahkan script module popupchat.js secara dinamis
+                  const script = document.createElement("script");
+                  script.type = "module";
+                  script.src = "/src/js/popupchat.js";
+                  document.body.appendChild(script);
                 })
                 .catch((err) => alert(err.message));
             });

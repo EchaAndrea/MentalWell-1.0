@@ -19,8 +19,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Fungsi untuk menutup chat popup
     window.closeChat = function () {
-      document.getElementById("chatPopup").style.display = "none";
-      document.getElementById("chatOverlay").style.display = "none";
+      const chatPopup = document.getElementById("chatPopupCustom");
+      if (chatPopup) chatPopup.style.display = "none";
+      const chatOverlay = document.getElementById("chatOverlay");
+      if (chatOverlay) chatOverlay.style.display = "none";
       const popupContainer = document.getElementById("popup-container");
       if (popupContainer) {
         popupContainer.innerHTML = "";
@@ -80,6 +82,11 @@ document.addEventListener("DOMContentLoaded", function () {
     if (sendBtn) {
       sendBtn.addEventListener("click", window.sendMessage);
     }
+
+    const closeBtn = document.querySelector(".btn-close-popup");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", window.closeChat);
+    }
   };
 
   // Inisialisasi otomatis jika popup sudah ada di DOM
@@ -136,6 +143,15 @@ function subscribeToMessages(counselingId) {
     )
     .subscribe();
 }
+
+// Setelah inject HTML popup
+const script = document.createElement("script");
+script.type = "module"; // <-- WAJIB!
+script.src = "/src/scripts/views/pages/popupchat.js";
+script.onload = () => {
+  if (window.initPopupChat) window.initPopupChat();
+};
+document.body.appendChild(script);
 
 const counselingId = localStorage.getItem("active_counseling_id");
 loadMessages(counselingId);
