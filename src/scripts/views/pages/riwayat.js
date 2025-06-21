@@ -158,7 +158,26 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
                     document.getElementById("popup-container");
                   popupContainer.innerHTML = html;
                   popupContainer.style.display = "flex";
-                  if (typeof window.openChat === "function") window.openChat();
+
+                  // Cari script popupchat.js di dalam popup, atau tambahkan jika belum ada
+                  let script = document.querySelector(
+                    'script[src="/src/scripts/popupchat.js"]'
+                  );
+                  if (!script) {
+                    script = document.createElement("script");
+                    script.src = "/src/scripts/popupchat.js";
+                    script.onload = () => {
+                      if (typeof window.openChat === "function")
+                        window.openChat();
+                    };
+                    document.body.appendChild(script);
+                  } else {
+                    // Jika sudah ada, tunggu sebentar lalu panggil openChat
+                    setTimeout(() => {
+                      if (typeof window.openChat === "function")
+                        window.openChat();
+                    }, 100);
+                  }
                 })
                 .catch((err) => alert(err.message));
             });
