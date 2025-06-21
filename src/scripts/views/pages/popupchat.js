@@ -56,8 +56,10 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-  // Setelah innerHTML
+  // Setelah popup masuk ke DOM, load script popupchat.js
   const script = document.createElement("script");
   script.src = "/src/scripts/views/pages/popupchat.js";
   document.body.appendChild(script);
+
+  console.log(document.getElementById("chatInput")); // Harusnya bukan null
 });
