@@ -33,18 +33,19 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   // Enter untuk kirim pesan
-  document
-    .getElementById("chatInput")
-    .addEventListener("keydown", function (e) {
+  const chatInput = document.getElementById("chatInput");
+  if (chatInput) {
+    chatInput.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
         window.sendMessage();
       }
     });
+  }
 
   // Optional: Preview nama file yang diupload
-  document
-    .getElementById("fileUpload")
-    .addEventListener("change", function (e) {
+  const fileUpload = document.getElementById("fileUpload");
+  if (fileUpload) {
+    fileUpload.addEventListener("change", function (e) {
       const file = e.target.files[0];
       if (file) {
         const chatBody = document.getElementById("chatBody");
@@ -55,11 +56,8 @@ document.addEventListener("DOMContentLoaded", function () {
         chatBody.scrollTop = chatBody.scrollHeight;
       }
     });
+  }
 
-  // Setelah popup masuk ke DOM, load script popupchat.js
-  const script = document.createElement("script");
-  script.src = "/src/scripts/views/pages/popupchat.js";
-  document.body.appendChild(script);
-
-  console.log(document.getElementById("chatInput")); // Harusnya bukan null
+  // Debug log
+  console.log("chatInput:", document.getElementById("chatInput"));
 });
