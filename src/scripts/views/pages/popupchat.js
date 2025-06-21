@@ -40,7 +40,7 @@ window.initPopupChat = function () {
     const input = document.getElementById("chatInput");
     const message = input.value.trim();
     if (!message) return;
-    const conversationId = localStorage.getItem("active_counseling_id");
+    const conversationId = "c4b08962-1d4a-46a8-946c-95e20a0318aa";
     const senderRole = localStorage.getItem("active_role");
     const senderId = parseInt(localStorage.getItem("active_user_id"), 10);
     const id = generateId();
