@@ -36,23 +36,28 @@ window.initPopupChat = function () {
     const input = document.getElementById("chatInput");
     const message = input.value.trim();
     if (!message) return;
-    const counselingId = parseInt(
-      localStorage.getItem("active_counseling_id"),
-      10
-    );
-    const senderRole = localStorage.getItem("active_role"); // 'pasien' atau 'psikolog'
+    const conversationId = localStorage.getItem("active_counseling_id"); // conversation_id = varchar
+    const senderRole = localStorage.getItem("active_role");
+    const senderId = parseInt(localStorage.getItem("active_user_id"), 10); // pastikan ada di localStorage
     const senderName =
       senderRole === "psikolog"
         ? localStorage.getItem("active_psychologist_name")
         : localStorage.getItem("active_patient_name");
-    await supabase.from("messages").insert([
+    const { error } = await supabase.from("messages").insert([
       {
-        counseling_id: counselingId,
+        conversation_id: conversationId,
+        sender_id: senderId,
         sender_role: senderRole,
-        sender_name: senderName,
-        message: message,
+        content: message,
+        type: "text", // atau sesuai kebutuhan
+        sent_at: new Date().toISOString(),
+        is_read: false,
       },
     ]);
+    if (error) {
+      alert("Gagal mengirim pesan: " + error.message);
+      console.error(error);
+    }
     input.value = "";
   };
 
@@ -97,13 +102,12 @@ window.initPopupChat = function () {
   subscribeToMessages(counselingId);
 };
 
-async function loadMessages(counselingId) {
-  counselingId = parseInt(counselingId, 10);
+async function loadMessages(conversationId) {
   const { data, error } = await supabase
     .from("messages")
     .select("*")
-    .eq("counseling_id", counselingId)
-    .order("created_at", { ascending: true });
+    .eq("conversation_id", conversationId)
+    .order("sent_at", { ascending: true });
   if (data) {
     const chatBody = document.getElementById("chatBody");
     chatBody.innerHTML = "";
@@ -113,7 +117,7 @@ async function loadMessages(counselingId) {
         msg.sender_role === "pasien"
           ? "alert alert-primary p-2 mb-1 align-self-end"
           : "alert alert-secondary p-2 mb-1 align-self-start";
-      msgDiv.textContent = msg.message;
+      msgDiv.textContent = msg.content;
       chatBody.appendChild(msgDiv);
     });
     chatBody.scrollTop = chatBody.scrollHeight;
@@ -122,7 +126,7 @@ async function loadMessages(counselingId) {
 
 let chatChannel = null;
 
-function subscribeToMessages(counselingId) {
+function subscribeToMessages(conversationId) {
   if (chatChannel) {
     chatChannel.unsubscribe();
   }
@@ -134,7 +138,7 @@ function subscribeToMessages(counselingId) {
         event: "INSERT",
         schema: "public",
         table: "messages",
-        filter: `counseling_id=eq.${counselingId}`,
+        filter: `conversation_id=eq.${conversationId}`,
       },
       (payload) => {
         const msg = payload.new;
@@ -144,7 +148,7 @@ function subscribeToMessages(counselingId) {
           msg.sender_role === "pasien"
             ? "alert alert-primary p-2 mb-1 align-self-end"
             : "alert alert-secondary p-2 mb-1 align-self-start";
-        msgDiv.textContent = msg.message;
+        msgDiv.textContent = msg.content;
         chatBody.appendChild(msgDiv);
         chatBody.scrollTop = chatBody.scrollHeight;
       }
