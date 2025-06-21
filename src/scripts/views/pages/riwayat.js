@@ -164,7 +164,10 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
                   // Tambahkan script module popupchat.js secara dinamis
                   const script = document.createElement("script");
                   script.type = "module";
-                  script.src = "/src/js/popupchat.js";
+                  script.src = "/src/scripts/views/pages/popupchat.js"; 
+                  script.onload = () => {
+                    if (window.initPopupChat) window.initPopupChat();
+                  };
                   document.body.appendChild(script);
                 })
                 .catch((err) => alert(err.message));
