@@ -67,6 +67,7 @@
   outline: none;
 }
 
+.btn-close,
 .btn-add-file,
 .btn-send {
   background: #fff;

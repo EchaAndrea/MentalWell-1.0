@@ -13,18 +13,10 @@
   <body
     class="d-flex justify-content-center align-items-center bg-light min-vh-100"
   >
-    <div id="popup-container"></div>
-    <div id="chatOverlay"></div>
-    <div id="chatPopupCustom">
+    <div id="chatPopupCustom" class="popup-chat">
       <div class="popup-header">
-        <div id="namaPsikolog">Nama</div>
-        <button class="btn-close-popup">
-          <img
-            src="/src/public/chat/close.png"
-            alt="Close"
-            style="width: 24px; height: 24px"
-          />
-        </button>
+        <button class="btn-close" type="button">×</button>
+        <span id="namaPsikolog"></span>
       </div>
       <div class="popup-body" id="chatBody"></div>
       <div class="popup-footer">
