@@ -177,7 +177,6 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
                     };
                     document.body.appendChild(script);
                   } else {
-                    // Jika sudah ada, tunggu sebentar lalu panggil openChat
                     setTimeout(() => {
                       if (typeof window.openChat === "function")
                         window.openChat();
