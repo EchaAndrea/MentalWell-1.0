@@ -58,6 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
     }
+    const closeBtn = popupContainer.querySelector(".btn-close-chat");
   };
 
   // Pastikan script sudah dimuat, lalu panggil inisialisasi

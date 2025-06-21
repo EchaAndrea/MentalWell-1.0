@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
   btnKonseling.addEventListener("click", () => {
     const namaPasien = biodataPasien.querySelector("h2")?.textContent || "-";
     localStorage.setItem("active_counseling_id", counselingId);
-    localStorage.setItem("active_patient_name", namaPasien); // TAMBAHKAN INI
+    localStorage.setItem("active_patient_name", namaPasien);
     fetch(chatUrl)
       .then((res) => {
         if (!res.ok) throw new Error("Gagal memuat halaman popup chat");
@@ -175,41 +175,8 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((html) => {
         popupContainer.innerHTML = html;
         popupContainer.style.display = "flex";
-        initPopup();
+        if (window.initPopupChat) window.initPopupChat();
       })
       .catch((err) => alert(err.message));
   });
-
-  function initPopup() {
-    const closeBtn = popupContainer.querySelector(
-      "button[onclick='toggleChat()']"
-    );
-    if (closeBtn) {
-      closeBtn.addEventListener("click", () => {
-        popupContainer.style.display = "none";
-        popupContainer.innerHTML = "";
-      });
-    }
-
-    const input = popupContainer.querySelector("#chatInput");
-    if (input) {
-      input.addEventListener("keypress", function (e) {
-        if (e.key === "Enter") {
-          sendMessage();
-        }
-      });
-    }
-  }
 });
-
-// Di halaman utama, misal riwayat.js
-document.getElementById("btnKonseling").onclick = function () {
-  fetch("/src/templates/popupchat.html")
-    .then((res) => res.text())
-    .then((html) => {
-      const popupContainer = document.getElementById("popup-container");
-      popupContainer.innerHTML = html;
-      popupContainer.style.display = "flex";
-      if (window.initPopupChat) window.initPopupChat();
-    });
-};

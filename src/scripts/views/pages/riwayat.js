@@ -175,15 +175,3 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
     }
   })
   .catch((error) => console.error("Error fetching data from API:", error));
-
-// Di halaman utama, misal riwayat.js
-document.getElementById("btnKonseling").onclick = function () {
-  fetch("/src/templates/popupchat.html")
-    .then((res) => res.text())
-    .then((html) => {
-      const popupContainer = document.getElementById("popup-container");
-      popupContainer.innerHTML = html;
-      popupContainer.style.display = "flex";
-      if (window.initPopupChat) window.initPopupChat();
-    });
-};
