@@ -157,7 +157,7 @@ statusDropdown.addEventListener("change", () => {
     });
 });
 
-// Popup chat (tidak diubah)
+// Popup chat
 document.addEventListener("DOMContentLoaded", () => {
   const btnKonseling = document.getElementById("btnKonseling");
   const popupContainer = document.getElementById("popup-container");
@@ -201,3 +201,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 });
+
+// Di halaman utama, misal riwayat.js
+document.getElementById("btnKonseling").onclick = function () {
+  fetch("/src/templates/popupchat.html")
+    .then((res) => res.text())
+    .then((html) => {
+      const popupContainer = document.getElementById("popup-container");
+      popupContainer.innerHTML = html;
+      popupContainer.style.display = "flex";
+      if (window.initPopupChat) window.initPopupChat();
+    });
+};

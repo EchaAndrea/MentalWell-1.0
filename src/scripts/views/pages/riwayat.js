@@ -154,34 +154,14 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
               );
               localStorage.setItem("active_patient_name", riwayat.patient_name);
               fetch("/src/templates/popupchat.html")
-                .then((res) => {
-                  if (!res.ok) throw new Error("Gagal memuat popup chat");
-                  return res.text();
-                })
+                .then((res) => res.text())
                 .then((html) => {
                   const popupContainer =
                     document.getElementById("popup-container");
                   popupContainer.innerHTML = html;
-                  popupContainer.style.display = "flex";
-
-                  // Cari script popupchat.js di dalam popup, atau tambahkan jika belum ada
-                  let script = document.querySelector(
-                    'script[src="/src/scripts/views/pages/popupchat.js"]'
-                  );
-                  if (!script) {
-                    script = document.createElement("script");
-                    script.src = "/src/scripts/views/pages/popupchat.js";
-                    script.onload = () => {
-                      if (typeof window.openChat === "function")
-                        window.openChat();
-                    };
-                    document.body.appendChild(script);
-                  } else {
-                    setTimeout(() => {
-                      if (typeof window.openChat === "function")
-                        window.openChat();
-                    }, 100);
-                  }
+                  popupContainer.style.display = "flex"; // atau "block"
+                  // Setelah HTML masuk, inisialisasi popup
+                  if (window.initPopupChat) window.initPopupChat();
                 })
                 .catch((err) => alert(err.message));
             });
@@ -195,3 +175,15 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
     }
   })
   .catch((error) => console.error("Error fetching data from API:", error));
+
+// Di halaman utama, misal riwayat.js
+document.getElementById("btnKonseling").onclick = function () {
+  fetch("/src/templates/popupchat.html")
+    .then((res) => res.text())
+    .then((html) => {
+      const popupContainer = document.getElementById("popup-container");
+      popupContainer.innerHTML = html;
+      popupContainer.style.display = "flex";
+      if (window.initPopupChat) window.initPopupChat();
+    });
+};
