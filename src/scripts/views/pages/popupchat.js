@@ -88,4 +88,9 @@ document.addEventListener("DOMContentLoaded", function () {
       if (window.initPopupChat) window.initPopupChat();
     }, 100);
   }
+
+  // Jika popup dimuat langsung, inisialisasi otomatis
+  if (document.getElementById("chatInput")) {
+    window.initPopupChat();
+  }
 });
