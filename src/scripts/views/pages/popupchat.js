@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
   window.initPopupChat = function () {
-    // Ambil nama dari localStorage
+    // Set nama psikolog/pasien
     const role = localStorage.getItem("active_role");
     let nama = "Nama";
     if (role === "psikolog") {
@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
     window.closeChat = function () {
       document.getElementById("chatPopup").style.display = "none";
       document.getElementById("chatOverlay").style.display = "none";
+      // }
     };
 
     // Fungsi untuk mengirim pesan
@@ -58,7 +59,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
     }
-    const closeBtn = popupContainer.querySelector(".btn-close-chat");
   };
 
   // Pastikan script sudah dimuat, lalu panggil inisialisasi
