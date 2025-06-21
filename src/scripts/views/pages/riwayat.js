@@ -166,11 +166,11 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
 
                   // Cari script popupchat.js di dalam popup, atau tambahkan jika belum ada
                   let script = document.querySelector(
-                    'script[src="/src/scripts/popupchat.js"]'
+                    'script[src="/src/scripts/views/pages/popupchat.js"]'
                   );
                   if (!script) {
                     script = document.createElement("script");
-                    script.src = "/src/scripts/popupchat.js";
+                    script.src = "/src/scripts/views/pages/popupchat.js";
                     script.onload = () => {
                       if (typeof window.openChat === "function")
                         window.openChat();
