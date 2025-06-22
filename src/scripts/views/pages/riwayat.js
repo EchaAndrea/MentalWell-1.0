@@ -182,13 +182,24 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
                       counseling.patient_name || ""
                     );
                   } else {
+                    // Tampilkan pesan jika conversation_id tidak ada
+                    Swal.fire({
+                      icon: "warning",
+                      title: "Tidak Bisa Membuka Chat",
+                      text: "Sesi chat ini belum memiliki conversation_id. Silakan hubungi admin.",
+                    });
                     return;
                   }
 
-                  console.log(
-                    "Mau buka popup chat, conversationId:",
-                    conversationId
-                  );
+                  // Pastikan popupContainer ada
+                  if (!popupContainer) {
+                    Swal.fire({
+                      icon: "error",
+                      title: "Popup Error",
+                      text: "Elemen popup-container tidak ditemukan di halaman.",
+                    });
+                    return;
+                  }
 
                   fetch("/src/templates/popupchat.html")
                     .then((res) => res.text())
@@ -201,23 +212,34 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
                       // Hapus script module popupchat.js yang sudah ada
                       document
                         .querySelectorAll(
-                          'script[src="/src/scripts/views/pages/popupchat.js"]'
+                          'script[src^="/src/scripts/views/pages/popupchat.js"]'
                         )
                         .forEach((s) => s.remove());
 
-                      // Inject script module popupchat.js
+                      // Inject script module popupchat.js dengan query unik agar tidak cache
                       const script = document.createElement("script");
                       script.type = "module";
-                      script.src = "/src/scripts/views/pages/popupchat.js";
+                      script.src =
+                        "/src/scripts/views/pages/popupchat.js?t=" + Date.now();
                       script.onload = () => {
                         if (window.initPopupChat) window.initPopupChat();
                       };
                       document.body.appendChild(script);
                     })
-                    .catch((err) => alert(err.message));
+                    .catch((err) => {
+                      Swal.fire({
+                        icon: "error",
+                        title: "Gagal Memuat Chat",
+                        text: err.message,
+                      });
+                    });
                 })
                 .catch((err) => {
-                  alert("Gagal mengambil detail counseling.");
+                  Swal.fire({
+                    icon: "error",
+                    title: "Gagal mengambil detail counseling.",
+                    text: err.message,
+                  });
                   console.error(err);
                 });
             });
