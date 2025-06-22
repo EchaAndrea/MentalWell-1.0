@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       tanggal,
       waktu,
       metode: "realtime",
-      psychologist_id: psikologId, 
+      psychologist_id: psikologId,
       harga,
     };
     localStorage.setItem("jadwal", JSON.stringify(jadwal));
@@ -291,6 +291,13 @@ function sendCounselingData() {
 async function confirmPayment() {
   const token = sessionStorage.getItem("authToken");
   const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
+  const psychologist_id = jadwal.psychologist_id;
+
+  if (!psychologist_id) {
+    Swal.fire("Psikolog tidak ditemukan. Silakan ulangi proses pemesanan.");
+    return;
+  }
+
   const problemData = JSON.parse(
     localStorage.getItem("counseling_problem") || "{}"
   );
@@ -300,9 +307,6 @@ async function confirmPayment() {
     Swal.fire("Upload bukti pembayaran terlebih dahulu.");
     return;
   }
-
-  // psychologist_id dari jadwal
-  const psychologist_id = jadwal.psychologist_id; // Hapus fallback ke "1"
 
   const formData = new FormData();
   formData.append("occupation", "Mahasiswa");
@@ -360,9 +364,19 @@ async function confirmPayment() {
 document.addEventListener("DOMContentLoaded", function () {
   const path = window.location.pathname;
 
-  // Jalankan hanya di halaman pembayaran
   if (path.includes("jadwalkonseling-pembayaran")) {
     const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
+    if (!jadwal.psychologist_id) {
+      Swal.fire({
+        icon: "error",
+        title: "Data tidak lengkap",
+        text: "Silakan ulangi proses pemesanan dari awal.",
+      }).then(() => {
+        window.location.href = "/listpsikolog"; // Atau halaman awal pemesanan
+      });
+      return;
+    }
+
     const harga = parseInt(jadwal.harga) || 0;
     const biayaAplikasi = 15000;
     const total = harga + biayaAplikasi;
@@ -435,3 +449,5 @@ async function showPsychologistProfile() {
 }
 
 document.addEventListener("DOMContentLoaded", showPsychologistProfile);
+console.log("jadwal:", jadwal);
+console.log("psychologist_id:", psychologist_id);
