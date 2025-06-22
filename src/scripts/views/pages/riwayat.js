@@ -157,7 +157,18 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
 
               // Simpan conversation_id ke localStorage
               const conversationId = riwayat.conversation_id;
-              localStorage.setItem("active_conversation_id", conversationId);
+              if (
+                conversationId &&
+                conversationId !== "null" &&
+                conversationId !== "undefined"
+              ) {
+                localStorage.setItem("active_conversation_id", conversationId);
+              } else {
+                alert(
+                  "Sesi chat ini belum memiliki conversation_id. Silakan hubungi admin."
+                );
+                return;
+              }
 
               fetch("/src/templates/popupchat.html")
                 .then((res) => res.text())
