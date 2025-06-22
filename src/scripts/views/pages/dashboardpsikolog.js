@@ -1,10 +1,10 @@
 const authToken = sessionStorage.getItem("authToken");
 
-const statusDropdown = document.getElementById('statusDropdown2');
-const tableBody = document.querySelector('tbody');
-const loadingIndicator = document.getElementById('loading-indicator');
+const statusDropdown = document.getElementById("statusDropdown2");
+const tableBody = document.querySelector("tbody");
+const loadingIndicator = document.getElementById("loading-indicator");
 
-loadingIndicator.style.display = 'block';
+loadingIndicator.style.display = "block";
 
 // Fungsi redirect ke detail konseling (hanya chat)
 const redirectToCounselingDetail = (counselingId) => {
@@ -17,8 +17,8 @@ statusDropdown.addEventListener("change", () => {
   const selectedValue = statusDropdown.value;
 
   Swal.fire({
-    title: 'Memuat...',
-    text: 'Harap tunggu sejenak. Status ketersediaan anda akan segera berubah ',
+    title: "Memuat...",
+    text: "Harap tunggu sejenak. Status ketersediaan anda akan segera berubah ",
     allowOutsideClick: false,
     showCancelButton: false,
     showConfirmButton: false,
@@ -27,19 +27,23 @@ statusDropdown.addEventListener("change", () => {
     },
   });
 
-  fetch("https://mentalwell10-api-production.up.railway.app/psychologist/availability", {
-    method: "PUT",
-    headers: {
-      Authorization: `Bearer ${authToken}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ availability: selectedValue }),
-  })
+  fetch(
+    "https://mentalwell10-api-production.up.railway.app/psychologist/availability",
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ availability: selectedValue }),
+    }
+  )
     .then((response) => response.json())
     .then((data) => {
       Swal.close();
       if (data.status === "success") {
-        const formattedValue = selectedValue === "unavailable" ? "Tidak Tersedia" : "Tersedia";
+        const formattedValue =
+          selectedValue === "unavailable" ? "Tidak Tersedia" : "Tersedia";
         Swal.fire({
           title: `Berhasil Mengubah Ketersediaan Menjadi ${formattedValue}!`,
           icon: "success",
@@ -77,14 +81,17 @@ tableBody.addEventListener("click", (event) => {
 
 // Fetch daftar konseling (hanya chat)
 function fetchCounselings() {
-  fetch("https://mentalwell10-api-production.up.railway.app/psychologist/counselings", {
-    headers: {
-      Authorization: `Bearer ${authToken}`,
-    },
-  })
+  fetch(
+    "https://mentalwell10-api-production.up.railway.app/psychologist/counselings",
+    {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    }
+  )
     .then((response) => response.json())
     .then((data) => {
-      loadingIndicator.style.display = 'none';
+      loadingIndicator.style.display = "none";
       if (data.status !== "success") throw new Error(data.message);
 
       // Set status dropdown sesuai availability (jika ada di response)
@@ -108,7 +115,8 @@ function fetchCounselings() {
         dateCell.textContent = formatDate(counseling.schedule_date);
         timeCell.textContent = counseling.schedule_time;
         typeCell.textContent = "Chat";
-        statusCell.textContent = counseling.status === "finished" ? "Selesai" : "Belum Selesai";
+        statusCell.textContent =
+          counseling.status === "finished" ? "Selesai" : "Belum Selesai";
 
         const actionImage = document.createElement("img");
         actionImage.src = "/src/public/dashboard/tulis.png";
@@ -117,20 +125,82 @@ function fetchCounselings() {
         actionCell.appendChild(actionImage);
       });
     })
-    .catch(error => {
-      loadingIndicator.style.display = 'none';
+    .catch((error) => {
+      loadingIndicator.style.display = "none";
       Swal.fire({
         title: "Gagal Memuat Data",
         text: error.message || "Terjadi kesalahan koneksi.",
         icon: "error",
       });
-      console.error('Error during data fetching:', error);
+      console.error("Error during data fetching:", error);
     });
 }
 
+function fetchAvailability() {
+  fetch(
+    "https://mentalwell10-api-production.up.railway.app/psychologist/availability",
+    {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    }
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.status === "success" && data.availability) {
+        statusDropdown.value = data.availability; // "available" atau "unavailable"
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching availability:", error);
+    });
+}
+
+// Panggil sebelum fetchCounselings
+fetchAvailability();
 fetchCounselings();
 
 function formatDate(dateString) {
   const options = { year: "numeric", month: "long", day: "numeric" };
   return new Date(dateString).toLocaleDateString("id-ID", options);
+}
+
+function updateCounselingStatus(counselingId, newStatus) {
+  fetch(
+    `https://mentalwell10-api-production.up.railway.app/psychologist/counseling/${counselingId}/status`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: newStatus }),
+    }
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.status === "success") {
+        Swal.fire({
+          title: "Status berhasil diubah!",
+          icon: "success",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+        fetchCounselings(); // Refresh tabel
+      } else {
+        Swal.fire({
+          title: "Gagal!",
+          text: data.message || "Gagal mengubah status.",
+          icon: "error",
+        });
+      }
+    })
+    .catch((error) => {
+      Swal.fire({
+        title: "Error",
+        text: "Terjadi kesalahan koneksi.",
+        icon: "error",
+      });
+      console.error("Error update counseling status:", error);
+    });
 }
