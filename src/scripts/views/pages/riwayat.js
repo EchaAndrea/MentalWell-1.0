@@ -182,9 +182,6 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
                       counseling.patient_name || ""
                     );
                   } else {
-                    alert(
-                      "Sesi chat ini belum memiliki conversation_id. Silakan hubungi admin."
-                    );
                     return;
                   }
 
