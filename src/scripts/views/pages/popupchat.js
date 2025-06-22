@@ -58,7 +58,8 @@ window.initPopupChat = function () {
         sender_id: senderId,
         sender_role: senderRole,
         content: message,
-        sent_at: new Date().toISOString(), 
+        type: "text", 
+        sent_at: new Date().toISOString(),
         is_read: false,
       },
     ]);
