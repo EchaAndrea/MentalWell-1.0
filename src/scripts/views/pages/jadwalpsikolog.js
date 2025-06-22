@@ -265,6 +265,7 @@ document.addEventListener("DOMContentLoaded", async function () {
           harga: selectedPsikolog.price,
           tanggal: selectedTanggal,
           waktu: selectedWaktu,
+          psychologist_id: selectedPsikolog.id, // <-- TAMBAHKAN INI!
         })
       );
 
