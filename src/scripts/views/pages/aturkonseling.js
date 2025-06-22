@@ -224,3 +224,24 @@ fetch(
     localStorage.setItem("active_conversation_id", conversationId);
     // Baru buka popup chat/modal jika perlu
   });
+
+const btn = document.getElementById("btnKonseling");
+btn.addEventListener("click", () => {
+  const counselingId = btn.getAttribute("data-counseling-id");
+  fetch(
+    `https://mentalwell10-api-production.up.railway.app/counseling/${counselingId}`,
+    {
+      headers: { Authorization: `Bearer ${authToken}` },
+    }
+  )
+    .then((res) => res.json())
+    .then((data) => {
+      const conversationId = data.counseling.conversation_id;
+      if (conversationId) {
+        localStorage.setItem("active_conversation_id", conversationId);
+        // lanjutkan buka popup chat
+      } else {
+        alert("conversation_id tidak ditemukan di data counseling!");
+      }
+    });
+});
