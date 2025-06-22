@@ -481,7 +481,7 @@ document.addEventListener("DOMContentLoaded", function () {
   async function confirmRealtimeCounseling() {
     const token = sessionStorage.getItem("authToken");
     const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
-    const psychologist_id = jadwal.psycholog_id;
+    const psychologist_id = jadwal.psychologist_id;
 
     const problemData = JSON.parse(
       localStorage.getItem("counseling_problem") || "{}"
