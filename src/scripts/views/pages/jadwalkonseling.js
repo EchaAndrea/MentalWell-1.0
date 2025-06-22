@@ -416,26 +416,31 @@ document.addEventListener("DOMContentLoaded", function () {
       h5s[0].textContent = jadwal.virtual_account || "123 456 789 1011";
   }
 
-  const btn = document.getElementById("btnKonfirmasiPembayaran");
-  if (btn) {
-    btn.addEventListener("click", function (e) {
-      e.preventDefault();
-      Swal.fire({
-        title: "Konfirmasi",
-        text: "Apakah Anda yakin sudah melakukan pembayaran?",
-        icon: "question",
-        showCancelButton: true,
-        confirmButtonColor: "#044b77",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Sudah Bayar",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          confirmPayment(); // Panggil fungsi pembayaran asli
+const btn = document.getElementById("btnKonfirmasiPembayaran");
+if (btn) {
+  btn.addEventListener("click", function (e) {
+    e.preventDefault();
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get("mode");
+    Swal.fire({
+      title: "Konfirmasi",
+      text: "Apakah Anda yakin sudah melakukan pembayaran?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#044b77",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sudah Bayar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (mode === "chat" || mode === "realtime") {
+          confirmRealtimeCounseling();
+        } else {
+          confirmPayment();
         }
-      });
+      }
     });
-  }
-});
+  });
+}
 
 function showLoadingIndicator() {
   const el = document.getElementById("loading-indicator");
@@ -470,3 +475,83 @@ async function showPsychologistProfile() {
 }
 
 document.addEventListener("DOMContentLoaded", showPsychologistProfile);
+
+async function confirmRealtimeCounseling() {
+  const token = sessionStorage.getItem("authToken");
+  const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
+  const psychologist_id = jadwal.psychologist_id;
+
+  const problemData = JSON.parse(
+    localStorage.getItem("counseling_problem") || "{}"
+  );
+
+  if (!psychologist_id) {
+    Swal.fire("Psikolog tidak ditemukan. Silakan ulangi proses pemesanan.");
+    return;
+  }
+
+  // FormData untuk realtime (tanpa bukti bayar)
+  const formData = new FormData();
+  formData.append("occupation", "mahasiswa");
+  formData.append("problem_description", problemData.problem || "");
+  formData.append("hope_after", problemData.hope || "");
+
+  try {
+    Swal.fire({
+      title: "Memproses permintaan konseling...",
+      text: "Mohon tunggu sebentar.",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    const res = await fetch(
+      `https://mentalwell10-api-production.up.railway.app/realtime/counseling/${psychologist_id}`,
+      {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      }
+    );
+    const data = await res.json();
+    if (data.status === "success") {
+      localStorage.setItem(
+        "last_counseling_id",
+        data.newCounseling.counseling_id || data.newCounseling.id
+      );
+      // Ambil counseling detail untuk dapat conversation_id
+      fetch(
+        `https://mentalwell10-api-production.up.railway.app/counseling/${
+          data.newCounseling.counseling_id || data.newCounseling.id
+        }`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+        .then((res) => res.json())
+        .then((detail) => {
+          const conversation_id = detail.counseling.conversation_id;
+          if (conversation_id) {
+            localStorage.setItem("active_conversation_id", conversation_id);
+          }
+          // Redirect ke halaman selesai
+          const urlParams = new URLSearchParams(window.location.search);
+          const mode = urlParams.get("mode");
+          setTimeout(() => {
+            Swal.close();
+            window.location.href = `/jadwalkonseling-selesai?id=${psychologist_id}${
+              mode ? `&mode=${mode}` : ""
+            }`;
+          }, 1000);
+        });
+    } else {
+      Swal.close();
+      Swal.fire(data.message || "Gagal mengirim permintaan konseling");
+    }
+  } catch (e) {
+    Swal.close();
+    Swal.fire("Gagal mengirim permintaan konseling");
+  }
+}
+})
