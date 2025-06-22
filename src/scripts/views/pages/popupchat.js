@@ -31,11 +31,12 @@ window.initPopupChat = function () {
     }
   };
 
-  // Fungsi untuk mengirim pesan
+  // Fungsi untuk generate ID unik
   function generateId() {
     return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
   }
 
+  // Fungsi untuk mengirim pesan
   window.sendMessage = async function () {
     const input = document.getElementById("chatInput");
     const message = input.value.trim();
@@ -48,6 +49,8 @@ window.initPopupChat = function () {
     const senderRole = localStorage.getItem("active_role");
     const senderId = parseInt(localStorage.getItem("active_user_id"), 10);
     const id = generateId();
+
+    // Hanya kirim field yang ADA di tabel messages
     const { error } = await supabase.from("messages").insert([
       {
         id: id,
@@ -102,7 +105,13 @@ window.initPopupChat = function () {
     closeBtn.addEventListener("click", window.closeChat);
   }
 
+  // Pastikan conversationId valid sebelum load chat
   const conversationId = localStorage.getItem("active_conversation_id");
+  console.log("conversationId:", conversationId); // Debug
+  if (!conversationId || conversationId === "undefined") {
+    alert("conversation_id tidak ditemukan di localStorage!");
+    return;
+  }
   loadMessages(conversationId);
   subscribeToMessages(conversationId);
 };
