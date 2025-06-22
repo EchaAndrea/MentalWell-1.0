@@ -296,17 +296,16 @@ async function confirmPayment() {
   const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
   const psychologist_id = jadwal.psychologist_id;
 
-  console.log("jadwal:", jadwal);
-  console.log("psychologist_id:", psychologist_id);
+  const problemData = JSON.parse(
+    localStorage.getItem("counseling_problem") || "{}"
+  );
+  console.log("problemData di pembayaran:", problemData); // Tambahkan ini
 
   if (!psychologist_id) {
     Swal.fire("Psikolog tidak ditemukan. Silakan ulangi proses pemesanan.");
     return;
   }
 
-  const problemData = JSON.parse(
-    localStorage.getItem("counseling_problem") || "{}"
-  );
   const buktiBayar = document.getElementById("buktiBayar")?.files[0];
 
   if (!buktiBayar) {
