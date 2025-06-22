@@ -80,9 +80,13 @@ loginForm.addEventListener("submit", async (event) => {
       const token = responseData.token;
       const userRole = responseData.role;
       const userName = responseData.name;
+      const userId = responseData.id;
 
       // Setelah login berhasil
       sessionStorage.setItem("authToken", token);
+      localStorage.setItem("active_user_id", userId); 
+      localStorage.setItem("active_role", userRole); 
+      localStorage.setItem("active_user_name", userName); 
 
       setTimeout(async () => {
         await Swal.fire({
