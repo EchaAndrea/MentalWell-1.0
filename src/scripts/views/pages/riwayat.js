@@ -149,7 +149,7 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
             btn.addEventListener("click", () => {
               // Ambil detail counseling by id
               fetch(
-                `https://mentalwell10-api-production.up.railway.app/counseling/${counselingId}`,
+                `https://mentalwell10-api-production.up.railway.app/counseling/${riwayat.id}`,
                 {
                   method: "GET",
                   headers: {
@@ -185,10 +185,9 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
                     return;
                   }
 
-                  console.log(
-                    "Mau buka popup chat, conversationId:",
-                    conversationId
-                  );
+                  // Pastikan popupContainer kosong sebelum isi baru
+                  popupContainer.innerHTML = "";
+                  popupContainer.style.display = "flex";
 
                   fetch("/src/templates/popupchat.html")
                     .then((res) => res.text())
@@ -198,17 +197,18 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
                       const overlay = document.getElementById("chatOverlay");
                       if (overlay) overlay.style.display = "block";
 
-                      // Hapus script module popupchat.js yang sudah ada
+                      // Hapus semua script popupchat.js yang sudah ada (pakai ^ agar semua versi terhapus)
                       document
                         .querySelectorAll(
-                          'script[src="/src/scripts/views/pages/popupchat.js"]'
+                          'script[src^="/src/scripts/views/pages/popupchat.js"]'
                         )
                         .forEach((s) => s.remove());
 
-                      // Inject script module popupchat.js
+                      // Inject script popupchat.js dengan query unik agar tidak cache
                       const script = document.createElement("script");
                       script.type = "module";
-                      script.src = "/src/scripts/views/pages/popupchat.js";
+                      script.src =
+                        "/src/scripts/views/pages/popupchat.js?t=" + Date.now();
                       script.onload = () => {
                         if (window.initPopupChat) window.initPopupChat();
                       };
