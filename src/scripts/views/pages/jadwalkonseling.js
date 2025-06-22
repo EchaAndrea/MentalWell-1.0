@@ -42,6 +42,15 @@ async function fetchUserProfile() {
   }
 }
 
+function showLoadingIndicator() {
+  const el = document.getElementById("loading-indicator");
+  if (el) el.style.display = "block";
+}
+function hideLoadingIndicator() {
+  const el = document.getElementById("loading-indicator");
+  if (el) el.style.display = "none";
+}
+
 async function populateFormFields() {
   try {
     showLoadingIndicator();
@@ -442,15 +451,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
     });
-  }
-
-  function showLoadingIndicator() {
-    const el = document.getElementById("loading-indicator");
-    if (el) el.style.display = "block";
-  }
-  function hideLoadingIndicator() {
-    const el = document.getElementById("loading-indicator");
-    if (el) el.style.display = "none";
   }
 
   async function showPsychologistProfile() {
