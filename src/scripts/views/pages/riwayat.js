@@ -185,9 +185,10 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
                     return;
                   }
 
-                  // Pastikan popupContainer kosong sebelum isi baru
-                  popupContainer.innerHTML = "";
-                  popupContainer.style.display = "flex";
+                  console.log(
+                    "Mau buka popup chat, conversationId:",
+                    conversationId
+                  );
 
                   fetch("/src/templates/popupchat.html")
                     .then((res) => res.text())
@@ -197,18 +198,17 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
                       const overlay = document.getElementById("chatOverlay");
                       if (overlay) overlay.style.display = "block";
 
-                      // Hapus semua script popupchat.js yang sudah ada (pakai ^ agar semua versi terhapus)
+                      // Hapus script module popupchat.js yang sudah ada
                       document
                         .querySelectorAll(
-                          'script[src^="/src/scripts/views/pages/popupchat.js"]'
+                          'script[src="/src/scripts/views/pages/popupchat.js"]'
                         )
                         .forEach((s) => s.remove());
 
-                      // Inject script popupchat.js dengan query unik agar tidak cache
+                      // Inject script module popupchat.js
                       const script = document.createElement("script");
                       script.type = "module";
-                      script.src =
-                        "/src/scripts/views/pages/popupchat.js?t=" + Date.now();
+                      script.src = "/src/scripts/views/pages/popupchat.js";
                       script.onload = () => {
                         if (window.initPopupChat) window.initPopupChat();
                       };
