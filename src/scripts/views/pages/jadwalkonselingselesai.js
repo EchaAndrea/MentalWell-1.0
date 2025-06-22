@@ -109,8 +109,3 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 populateHTMLWithData();
-
-// Di confirmPayment()
-window.location.href = `/jadwalkonseling-selesai?id=${jadwal.psychologist_id}${
-  mode ? `&mode=${mode}` : ""
-}`;
