@@ -185,6 +185,11 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
                     return;
                   }
 
+                  console.log(
+                    "Mau buka popup chat, conversationId:",
+                    conversationId
+                  );
+
                   fetch("/src/templates/popupchat.html")
                     .then((res) => res.text())
                     .then((html) => {
@@ -226,3 +231,5 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
     }
   })
   .catch((error) => console.error("Error fetching data from API:", error));
+
+console.log("Popup chat HTML loaded");
