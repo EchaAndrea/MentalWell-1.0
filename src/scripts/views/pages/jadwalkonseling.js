@@ -280,6 +280,9 @@ function sendCounselingData() {
     return;
   }
 
+  // SIMPAN ke localStorage sebelum redirect
+  localStorage.setItem("counseling_problem", JSON.stringify({ problem, hope }));
+
   const urlParams = new URLSearchParams(window.location.search);
   const id = urlParams.get("id");
   const mode = urlParams.get("mode");
