@@ -345,15 +345,31 @@ async function confirmPayment() {
         "last_counseling_id",
         data.newCounseling.counseling_id || data.newCounseling.id
       );
-      const urlParams = new URLSearchParams(window.location.search);
-      const mode = urlParams.get("mode");
-      // Tutup loading dan redirect setelah sedikit delay
-      setTimeout(() => {
-        Swal.close();
-        window.location.href = `/jadwalkonseling-selesai?id=${psychologist_id}${
-          mode ? `&mode=${mode}` : ""
-        }`;
-      }, 1000); // 1 detik delay, bisa diubah sesuai kebutuhan
+      // Ambil counseling detail untuk dapat conversation_id
+      fetch(
+        `https://mentalwell10-api-production.up.railway.app/counseling/${
+          data.newCounseling.counseling_id || data.newCounseling.id
+        }`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+        .then((res) => res.json())
+        .then((detail) => {
+          const conversation_id = detail.counseling.conversation_id;
+          if (conversation_id) {
+            localStorage.setItem("active_conversation_id", conversation_id);
+          }
+          // Redirect ke halaman selesai
+          const urlParams = new URLSearchParams(window.location.search);
+          const mode = urlParams.get("mode");
+          setTimeout(() => {
+            Swal.close();
+            window.location.href = `/jadwalkonseling-selesai?id=${psychologist_id}${
+              mode ? `&mode=${mode}` : ""
+            }`;
+          }, 1000);
+        });
     } else {
       Swal.close();
       Swal.fire(data.message || "Gagal mengirim pembayaran");
