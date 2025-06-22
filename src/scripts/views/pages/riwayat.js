@@ -156,7 +156,7 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
               localStorage.setItem("active_patient_name", riwayat.patient_name);
 
               // Simpan conversation_id ke localStorage
-              const conversationId = counseling.conversation_id;
+              const conversationId = riwayat.conversation_id;
               localStorage.setItem("active_conversation_id", conversationId);
 
               fetch("/src/templates/popupchat.html")
@@ -195,4 +195,3 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
     }
   })
   .catch((error) => console.error("Error fetching data from API:", error));
-
