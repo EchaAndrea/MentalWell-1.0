@@ -155,10 +155,8 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
               );
               localStorage.setItem("active_patient_name", riwayat.patient_name);
 
-              // Setelah dapat data counseling dari API:
-              const conversationId = riwayat.conversation_id;
-
-              // Simpan ke localStorage
+              // Simpan conversation_id ke localStorage
+              const conversationId = counseling.conversation_id;
               localStorage.setItem("active_conversation_id", conversationId);
 
               fetch("/src/templates/popupchat.html")
