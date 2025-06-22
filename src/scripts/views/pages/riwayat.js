@@ -147,54 +147,77 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
             riwayat.status !== "failed"
           ) {
             btn.addEventListener("click", () => {
-              localStorage.setItem("active_counseling_id", riwayat.id);
-              localStorage.setItem("active_role", "pasien");
-              localStorage.setItem(
-                "active_psychologist_name",
-                riwayat.psychologist_name
-              );
-              localStorage.setItem("active_patient_name", riwayat.patient_name);
+              // Ambil detail counseling by id
+              fetch(
+                `https://mentalwell10-api-production.up.railway.app/counseling/${riwayat.id}`,
+                {
+                  method: "GET",
+                  headers: {
+                    Authorization: `Bearer ${authToken}`,
+                    "Content-Type": "application/json",
+                  },
+                }
+              )
+                .then((res) => res.json())
+                .then((detail) => {
+                  const counseling = detail.counseling;
+                  const conversationId = counseling.conversation_id;
+                  if (
+                    conversationId &&
+                    conversationId !== "null" &&
+                    conversationId !== "undefined"
+                  ) {
+                    localStorage.setItem(
+                      "active_conversation_id",
+                      conversationId
+                    );
+                    localStorage.setItem("active_counseling_id", counseling.id);
+                    localStorage.setItem("active_role", "pasien");
+                    localStorage.setItem(
+                      "active_psychologist_name",
+                      counseling.psychologist_name
+                    );
+                    localStorage.setItem(
+                      "active_patient_name",
+                      counseling.patient_name || ""
+                    );
+                  } else {
+                    alert(
+                      "Sesi chat ini belum memiliki conversation_id. Silakan hubungi admin."
+                    );
+                    return;
+                  }
 
-              // Simpan conversation_id ke localStorage
-              const conversationId = riwayat.conversation_id;
-              if (
-                conversationId &&
-                conversationId !== "null" &&
-                conversationId !== "undefined"
-              ) {
-                localStorage.setItem("active_conversation_id", conversationId);
-              } else {
-                alert(
-                  "Sesi chat ini belum memiliki conversation_id. Silakan hubungi admin."
-                );
-                return;
-              }
+                  fetch("/src/templates/popupchat.html")
+                    .then((res) => res.text())
+                    .then((html) => {
+                      popupContainer.innerHTML = html;
+                      popupContainer.style.display = "flex";
+                      const overlay = document.getElementById("chatOverlay");
+                      if (overlay) overlay.style.display = "block";
 
-              fetch("/src/templates/popupchat.html")
-                .then((res) => res.text())
-                .then((html) => {
-                  popupContainer.innerHTML = html;
-                  popupContainer.style.display = "flex";
-                  const overlay = document.getElementById("chatOverlay");
-                  if (overlay) overlay.style.display = "block";
+                      // Hapus script module popupchat.js yang sudah ada
+                      document
+                        .querySelectorAll(
+                          'script[src="/src/scripts/views/pages/popupchat.js"]'
+                        )
+                        .forEach((s) => s.remove());
 
-                  // Hapus script module popupchat.js yang sudah ada
-                  document
-                    .querySelectorAll(
-                      'script[src="/src/scripts/views/pages/popupchat.js"]'
-                    )
-                    .forEach((s) => s.remove());
-
-                  // Inject script module popupchat.js
-                  const script = document.createElement("script");
-                  script.type = "module";
-                  script.src = "/src/scripts/views/pages/popupchat.js";
-                  script.onload = () => {
-                    if (window.initPopupChat) window.initPopupChat();
-                  };
-                  document.body.appendChild(script);
+                      // Inject script module popupchat.js
+                      const script = document.createElement("script");
+                      script.type = "module";
+                      script.src = "/src/scripts/views/pages/popupchat.js";
+                      script.onload = () => {
+                        if (window.initPopupChat) window.initPopupChat();
+                      };
+                      document.body.appendChild(script);
+                    })
+                    .catch((err) => alert(err.message));
                 })
-                .catch((err) => alert(err.message));
+                .catch((err) => {
+                  alert("Gagal mengambil detail counseling.");
+                  console.error(err);
+                });
             });
           }
         }
