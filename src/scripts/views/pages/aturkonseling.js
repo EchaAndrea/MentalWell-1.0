@@ -94,7 +94,12 @@ fetch(
 
     // Simpan conversation_id ke localStorage
     const conversationId = counseling.conversation_id;
-    localStorage.setItem("active_conversation_id", conversationId);
+    if (conversationId) {
+      localStorage.setItem("active_conversation_id", conversationId);
+      console.log("conversation_id yang akan disimpan:", conversationId);
+    } else {
+      alert("conversation_id tidak ditemukan di data counseling!");
+    }
   })
   .catch((error) => {
     loadingIndicator.style.display = "none";

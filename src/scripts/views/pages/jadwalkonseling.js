@@ -337,15 +337,30 @@ async function confirmPayment() {
         "last_counseling_id",
         data.newCounseling.counseling_id || data.newCounseling.id
       );
-      const urlParams = new URLSearchParams(window.location.search);
-      const mode = urlParams.get("mode");
-      // Tutup loading dan redirect setelah sedikit delay
-      setTimeout(() => {
-        Swal.close();
-        window.location.href = `/jadwalkonseling-selesai?id=${
-          jadwal.psikologId || jadwal.psikolog_id
-        }${mode ? `&mode=${mode}` : ""}`;
-      }, 1000); // 1 detik delay, bisa diubah sesuai kebutuhan
+
+      // Tambahkan: fetch detail counseling untuk dapat conversation_id
+      fetch(
+        `https://mentalwell10-api-production.up.railway.app/counseling/${data.newCounseling.counseling_id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+        .then((res) => res.json())
+        .then((detail) => {
+          const conversationId = detail.counseling.conversation_id;
+          if (conversationId) {
+            localStorage.setItem("active_conversation_id", conversationId);
+          }
+          // Setelah ini baru redirect
+          const urlParams = new URLSearchParams(window.location.search);
+          const mode = urlParams.get("mode");
+          setTimeout(() => {
+            Swal.close();
+            window.location.href = `/jadwalkonseling-selesai?id=${
+              jadwal.psikologId || jadwal.psikolog_id
+            }${mode ? `&mode=${mode}` : ""}`;
+          }, 1000);
+        });
     } else {
       Swal.close();
       Swal.fire(data.message || "Gagal mengirim pembayaran");
