@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       tanggal,
       waktu,
       metode: "realtime",
-      psikologId,
+      psychologist_id: psikologId, 
       harga,
     };
     localStorage.setItem("jadwal", JSON.stringify(jadwal));
@@ -197,7 +197,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     phone_number: user.phone_number,
     gender: user.gender,
     occupation: user.occupation,
-    psikologId: jadwalData.psikologId, // pastikan field ini ada!
+    psychologist_id: jadwalData.psychologist_id, // Ganti dari psikologId
     schedule_date: jadwalData.tanggal,
     schedule_time: jadwalData.waktu,
     type: jadwalData.metode || "scheduled",
@@ -302,7 +302,7 @@ async function confirmPayment() {
   }
 
   // psychologist_id dari jadwal
-  const psychologist_id = jadwal.psikolog_id || "1";
+  const psychologist_id = jadwal.psychologist_id; // Hapus fallback ke "1"
 
   const formData = new FormData();
   formData.append("occupation", "Mahasiswa");
@@ -342,9 +342,9 @@ async function confirmPayment() {
       // Tutup loading dan redirect setelah sedikit delay
       setTimeout(() => {
         Swal.close();
-        window.location.href = `/jadwalkonseling-selesai?id=${
-          jadwal.psikologId || jadwal.psikolog_id
-        }${mode ? `&mode=${mode}` : ""}`;
+        window.location.href = `/jadwalkonseling-selesai?id=${psychologist_id}${
+          mode ? `&mode=${mode}` : ""
+        }`;
       }, 1000); // 1 detik delay, bisa diubah sesuai kebutuhan
     } else {
       Swal.close();
