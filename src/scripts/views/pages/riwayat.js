@@ -149,7 +149,7 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
             btn.addEventListener("click", () => {
               // Ambil detail counseling by id
               fetch(
-                `https://mentalwell10-api-production.up.railway.app/counseling/${riwayat.id}`,
+                `https://mentalwell10-api-production.up.railway.app/counseling/${counselingId}`,
                 {
                   method: "GET",
                   headers: {
