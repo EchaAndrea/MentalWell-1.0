@@ -167,6 +167,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       harga,
     };
     localStorage.setItem("jadwal", JSON.stringify(jadwal));
+    console.log("Jadwal disimpan:", jadwal);
   }
 
   // Tampilkan jadwal
@@ -292,6 +293,9 @@ async function confirmPayment() {
   const token = sessionStorage.getItem("authToken");
   const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
   const psychologist_id = jadwal.psychologist_id;
+
+  console.log("jadwal:", jadwal);
+  console.log("psychologist_id:", psychologist_id);
 
   if (!psychologist_id) {
     Swal.fire("Psikolog tidak ditemukan. Silakan ulangi proses pemesanan.");
@@ -449,5 +453,3 @@ async function showPsychologistProfile() {
 }
 
 document.addEventListener("DOMContentLoaded", showPsychologistProfile);
-console.log("jadwal:", jadwal);
-console.log("psychologist_id:", psychologist_id);
