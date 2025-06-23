@@ -398,13 +398,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (path.includes("jadwalkonseling-pembayaran")) {
     const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
-    if (!jadwal.psycholog_id) {
+    if (!jadwal.psychologist_id) {
       Swal.fire({
         icon: "error",
         title: "Data tidak lengkap",
         text: "Silakan ulangi proses pemesanan dari awal.",
       }).then(() => {
-        window.location.href = "/listpsikolog"; // Atau halaman awal pemesanan
+        window.location.href = "/listpsikolog";
       });
       return;
     }
