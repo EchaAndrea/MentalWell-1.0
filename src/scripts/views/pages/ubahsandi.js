@@ -20,7 +20,7 @@ ubahsandiForm.addEventListener("submit", async (event) => {
 
   try {
     const response = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/ubah-sandi/reset-password?token=${token}`,
+      `https://mentalwell10-api-production.up.railway.app/reset-password?token=${token}`,
       {
         method: "POST",
         headers: {
