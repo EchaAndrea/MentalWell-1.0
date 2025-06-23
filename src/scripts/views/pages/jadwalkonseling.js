@@ -150,18 +150,6 @@ async function submitCounseling() {
       return;
     }
     formData.append("payment_proof", buktiBayar);
-  } else if (mode === "realtime") {
-    const now = new Date();
-    const pad = (n) => n.toString().padStart(2, "0");
-    const tanggal = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(
-      now.getDate()
-    )}`;
-    const end = new Date(now.getTime() + 60 * 60 * 1000);
-    const waktu = `${pad(now.getHours())}:${pad(now.getMinutes())}-${pad(
-      end.getHours()
-    )}:${pad(end.getMinutes())}`;
-    formData.append("date", tanggal);
-    formData.append("time", waktu);
   } else {
     // Untuk realtime, payment_proof kosong (Blob kosong)
     formData.append(
