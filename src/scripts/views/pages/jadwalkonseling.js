@@ -1,205 +1,3 @@
-async function fetchCounselingData() {
-  try {
-    const articleId = new URLSearchParams(window.location.search).get("id");
-    const token = sessionStorage.getItem("authToken");
-
-    const response = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/counselings/patient`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Something's wrong");
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching counseling data:", error);
-    throw error;
-  }
-}
-
-function showLoadingIndicator() {
-  const el = document.getElementById("loading-indicator");
-  if (el) el.style.display = "block";
-}
-function hideLoadingIndicator() {
-  const el = document.getElementById("loading-indicator");
-  if (el) el.style.display = "none";
-}
-
-async function populateFormFields() {
-  try {
-    showLoadingIndicator();
-
-    const user = await fetchUserProfile();
-    if (!user) throw new Error("User data not found");
-
-    const fullNameInput = document.querySelector(
-      'input[placeholder="Nama Lengkap"]'
-    );
-    const nicknameInput = document.querySelector(
-      'input[placeholder="Nama Panggilan"]'
-    );
-    const birthdateInput = document.querySelector(
-      'input[placeholder="01-02-2023"]'
-    );
-    const genderInput = document.querySelector(
-      'input[placeholder="Jenis Kelamin"]'
-    );
-    const phoneNumberInput = document.querySelector(
-      'input[placeholder="08123456789"]'
-    );
-
-    // Format tanggal lahir ke yyyy-mm-dd (atau format lain sesuai kebutuhan)
-    const formattedBirthdate = user.birthdate
-      ? new Date(user.birthdate).toISOString().split("T")[0]
-      : "";
-
-    // Normalisasi gender
-    let formattedGender = "";
-    if (user.gender) {
-      if (user.gender.toLowerCase().includes("laki")) {
-        formattedGender = "Laki-laki";
-      } else if (user.gender.toLowerCase().includes("perempuan")) {
-        formattedGender = "Perempuan";
-      } else {
-        formattedGender = user.gender;
-      }
-    }
-
-    // Isi form
-    if (fullNameInput) fullNameInput.value = user.name || "";
-    if (nicknameInput) nicknameInput.value = user.nickname || "";
-    if (birthdateInput) birthdateInput.value = formattedBirthdate || "";
-    if (genderInput) genderInput.value = formattedGender || "";
-    if (phoneNumberInput) phoneNumberInput.value = user.phone_number || "";
-
-    hideLoadingIndicator();
-  } catch (error) {
-    console.error("Error populating form fields:", error);
-    hideLoadingIndicator();
-  }
-}
-
-populateFormFields();
-
-let counselingData = {};
-
-function saveDataToSessionStorage() {
-  // Retrieve existing data from sessionStorage
-  const existingDataString = sessionStorage.getItem("counselingData");
-  const existingData = existingDataString ? JSON.parse(existingDataString) : {};
-
-  // Merge existing data with new data
-  const newData = { ...existingData, ...counselingData };
-
-  // Save the merged data back to sessionStorage
-  sessionStorage.setItem("counselingData", JSON.stringify(newData));
-}
-
-function getPsychologistIdFromUrl() {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get("id");
-}
-
-async function fetchPsychologistSchedule(psychologistId) {
-  const url = `https://mentalwell10-api-production.up.railway.app/schedule/psychologist/${psychologistId}`;
-
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error(error);
-    // Handle the error as needed
-    return null;
-  }
-}
-
-document.addEventListener("DOMContentLoaded", async () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const mode = urlParams.get("mode");
-
-  if (mode === "chat") {
-    const psikologId = urlParams.get("id");
-    // Fetch harga psikolog
-    let harga = 0;
-    try {
-      const res = await fetch(
-        `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}`
-      );
-      const data = await res.json();
-      const psikolog = data.data || data;
-      harga = psikolog.price || 0;
-    } catch (e) {
-      harga = 0;
-    }
-
-    // Otomatis set jadwal realtime + harga
-    const now = new Date();
-    const pad = (n) => n.toString().padStart(2, "0");
-    const tanggal = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(
-      now.getDate()
-    )}`;
-    const waktu = `${pad(now.getHours())}:${pad(now.getMinutes())}-${pad(
-      now.getHours() + 1
-    )}:${pad(now.getMinutes())}`;
-    const jadwal = {
-      tanggal,
-      waktu,
-      metode: "realtime",
-      psychologist_id: psikologId,
-      harga,
-    };
-    localStorage.setItem("jadwal", JSON.stringify(jadwal));
-    console.log("Jadwal disimpan:", jadwal);
-  }
-
-  // Tampilkan jadwal
-  const jadwalData = JSON.parse(localStorage.getItem("jadwal"));
-
-  const selectedDateEl = document.getElementById("selectedDate");
-  if (selectedDateEl) {
-    selectedDateEl.textContent = formatTanggalIndo(jadwalData.tanggal);
-  }
-  const selectedTimeEl = document.getElementById("selectedTime");
-  if (selectedTimeEl) {
-    selectedTimeEl.textContent = jadwalData.waktu;
-  }
-
-  // Ambil data user
-  const user = await fetchUserProfile();
-  if (!user) {
-    alert("Gagal mengambil data user, silakan login ulang.");
-    window.location.href = "/src/templates/login.html";
-    return;
-  }
-
-  // Simpan ke sessionStorage untuk tahap berikutnya
-  const counselingData = {
-    name: user.name,
-    nickname: user.nickname,
-    birthdate: user.birthdate,
-    phone_number: user.phone_number,
-    gender: user.gender,
-    occupation: user.occupation,
-    psychologist_id: jadwalData.psychologist_id, // Ganti dari psikologId
-    schedule_date: jadwalData.tanggal,
-    schedule_time: jadwalData.waktu,
-    type: jadwalData.metode || "scheduled",
-  };
-  sessionStorage.setItem("counselingData", JSON.stringify(counselingData));
-
-  // Setelah fetch user dari /my-data
-  localStorage.setItem("user_data", JSON.stringify(user));
-});
-
 // Helper: Format tanggal ke Indonesia
 function formatTanggalIndo(tanggalStr) {
   if (!tanggalStr) return "-";
@@ -253,7 +51,7 @@ async function populateFormFields() {
       'input[placeholder="01-02-2023"]'
     );
     const genderInput = document.querySelector(
-      'input[placeholder="laki-Laki"]'
+      'input[placeholder="laki-Laki"],input[placeholder="Jenis Kelamin"]'
     );
     const phoneNumberInput = document.querySelector(
       'input[placeholder="08123456789"]'
@@ -288,7 +86,8 @@ async function populateFormFields() {
 }
 
 function redirectToCounseling2() {
-  window.location.href = '/jadwalkonseling-permasalahan' + window.location.search;
+  window.location.href =
+    "/jadwalkonseling-permasalahan" + window.location.search;
 }
 
 // Tahap 2: Permasalahan (simpan ke localStorage)
@@ -335,7 +134,10 @@ async function submitCounseling() {
   }
 
   const formData = new FormData();
-  formData.append("occupation", "mahasiswa");
+  formData.append(
+    "occupation",
+    mode === "scheduled" ? "Mahasiswa" : "mahasiswa"
+  );
   formData.append("problem_description", problemData.problem);
   formData.append("hope_after", problemData.hope);
 
@@ -353,7 +155,7 @@ async function submitCounseling() {
     formData.append(
       "payment_proof",
       new Blob([], { type: "application/octet-stream" }),
-      ""
+      "empty.txt"
     );
   }
 
@@ -383,26 +185,12 @@ async function submitCounseling() {
         "last_counseling_id",
         data.newCounseling.counseling_id || data.newCounseling.id
       );
-      // Ambil counseling detail untuk dapat conversation_id
-      fetch(
-        `https://mentalwell10-api-production.up.railway.app/counseling/${
-          data.newCounseling.counseling_id || data.newCounseling.id
-        }`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
-        .then((res) => res.json())
-        .then((detail) => {
-          const conversation_id = detail.counseling.conversation_id;
-          if (conversation_id) {
-            localStorage.setItem("active_conversation_id", conversation_id);
-          }
-          setTimeout(() => {
-            Swal.close();
-            window.location.href = `/jadwalkonseling-selesai?id=${psychologist_id}${
-              mode ? `&mode=${mode}` : ""
-            }`;
-          }, 1000);
-        });
+      setTimeout(() => {
+        Swal.close();
+        window.location.href = `/jadwalkonseling-selesai?id=${psychologist_id}${
+          mode ? `&mode=${mode}` : ""
+        }`;
+      }, 1000);
     } else {
       Swal.close();
       Swal.fire(data.message || "Gagal mengirim permintaan konseling");
@@ -434,10 +222,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Tahap 2: Permasalahan (jadwalkonseling-permasalahan)
-  if (path.includes("jadwalkonseling-permasalahan")) {
-    // Tidak perlu fetch, hanya ambil input user
-    // Panggil sendCounselingData() pada tombol submit
-  }
+  // (tidak perlu fetch apapun)
 
   // Tahap 3: Pembayaran (jadwalkonseling-pembayaran)
   if (path.includes("jadwalkonseling-pembayaran")) {
