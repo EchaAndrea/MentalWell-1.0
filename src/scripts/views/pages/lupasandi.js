@@ -4,7 +4,7 @@ lupasandiForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const email = document.getElementById("email").value;
-  const token = localStorage.getItem("token"); 
+  const token = localStorage.getItem("adminToken"); 
 
   try {
     const response = await fetch(
