@@ -363,6 +363,7 @@ async function confirmPayment() {
         }
       );
       const detail = await detailRes.json();
+      console.log("Counseling detail:", detail);
       const conversation_id = detail.counseling.conversation_id;
 
       if (conversation_id) {
