@@ -10,7 +10,7 @@ lupasandiForm.addEventListener('submit', async (event) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ISI_TOKEN_ADMIN_DI_SINI', // Langsung di sini
+        'Authorization': 'Bearer ${token}',
       },
       body: JSON.stringify({ email }),
     });
