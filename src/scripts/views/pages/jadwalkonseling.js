@@ -296,9 +296,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       const tanggal = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(
         now.getDate()
       )}`;
+      const end = new Date(now.getTime() + 60 * 60 * 1000);
       const waktu = `${pad(now.getHours())}:${pad(now.getMinutes())}-${pad(
-        now.getHours() + 1
-      )}:${pad(now.getMinutes())}`;
+        end.getHours()
+      )}:${pad(end.getMinutes())}`;
       const jadwal = {
         tanggal,
         waktu,
