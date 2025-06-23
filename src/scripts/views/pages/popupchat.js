@@ -166,7 +166,8 @@ function subscribeToMessages(conversationId) {
           10
         );
         const msgDiv = document.createElement("div");
-        if (msg.sender_id === activeUserId) {
+        // Samakan tipe data!
+        if (Number(msg.sender_id) === activeUserId) {
           msgDiv.className = "alert alert-primary p-2 mb-1 align-self-end";
         } else {
           msgDiv.className = "alert alert-secondary p-2 mb-1 align-self-start";
