@@ -207,7 +207,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     phone_number: user.phone_number,
     gender: user.gender,
     occupation: user.occupation,
-    psychologist_id: jadwalData.psychologist_id, // Ganti dari psikologId
+    psychologist_id: jadwalData.psychologist_id, 
     schedule_date: jadwalData.tanggal,
     schedule_time: jadwalData.waktu,
     type: jadwalData.metode || "scheduled",
@@ -308,7 +308,7 @@ async function confirmPayment() {
   const problemData = JSON.parse(
     localStorage.getItem("counseling_problem") || "{}"
   );
-  console.log("problemData di pembayaran:", problemData); // Tambahkan ini
+  console.log("problemData di pembayaran:", problemData); 
 
   if (!psychologist_id) {
     Swal.fire("Psikolog tidak ditemukan. Silakan ulangi proses pemesanan.");
@@ -344,7 +344,7 @@ async function confirmPayment() {
     });
 
     const res = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/counselings/${psychologist_id}`,
+      `https://mentalwell10-api-production.up.railway.app/realtime/counseling/${psychologist_id}`,
       {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
