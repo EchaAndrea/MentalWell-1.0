@@ -1,29 +1,25 @@
-const resetPasswordForm = document.getElementById('reset-password-form');
+const lupasandiForm = document.getElementById('lupasandi-form');
 
-resetPasswordForm.addEventListener('submit', async (event) => {
+lupasandiForm.addEventListener('submit', async (event) => {
   event.preventDefault();
 
-  const token = document.getElementById('token').value; // Ambil token dari input
-  const newPassword = document.getElementById('new_password').value;
-  const confirmPassword = document.getElementById('confirm_password').value;
+  const email = document.getElementById('email').value;
 
   try {
-    const response = await fetch(`https://mentalwell10-api-production.up.railway.app/reset-password?token=${token}`, {
+    const response = await fetch('https://mentalwell10-api-production.up.railway.app/forgot-password', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer ISI_TOKEN_ADMIN_DI_SINI', // Langsung di sini
       },
-      body: JSON.stringify({
-        new_password: newPassword,
-        confirm_password: confirmPassword,
-      }),
+      body: JSON.stringify({ email }),
     });
 
     const responseData = await response.json();
 
     if (response.ok) {
       Swal.fire({
-        title: 'Berhasil Reset Password!',
+        title: 'Berhasil Mengirim Email!',
         text: responseData.message,
         icon: 'success',
         timer: 2000,
@@ -31,7 +27,7 @@ resetPasswordForm.addEventListener('submit', async (event) => {
       });
     } else {
       Swal.fire({
-        title: 'Gagal Reset Password!',
+        title: 'Gagal Mengirim Email!',
         text: responseData.message || 'Silahkan Coba Lagi',
         icon: 'error',
         showConfirmButton: true,
@@ -40,7 +36,7 @@ resetPasswordForm.addEventListener('submit', async (event) => {
   } catch (error) {
     console.error('Error during reset password:', error);
     await Swal.fire({
-      title: 'Gagal Reset Password!',
+      title: 'Gagal Mengirim Email!',
       text: 'Silahkan Coba Lagi',
       icon: 'error',
       showConfirmButton: true,

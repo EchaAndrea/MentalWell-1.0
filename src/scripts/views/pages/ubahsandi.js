@@ -2,7 +2,6 @@ const urlParams = new URLSearchParams(window.location.search);
 const token = urlParams.get("token");
 
 if (!token) {
-  console.error(`Token doesn't exist`);
   Swal.fire({
     title: "Gagal!",
     text: "Tautan Ubah Kata Sandi Tidak Valid",
@@ -17,46 +16,48 @@ ubahsandiForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const newPassword = document.getElementById("sandibaru").value;
-  const newPasswordConfirmation = document.getElementById("konfirmasi").value;
-
-  const formData = {
-    newPassword,
-    newPasswordConfirmation,
-  };
+  const confirmPassword = document.getElementById("konfirmasi").value;
 
   try {
     const response = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/reset-password?token=yl1pf312grwsr8ans5th${token}`,
+      `https://mentalwell10-api-production.up.railway.app/reset-password?token=${token}`,
       {
-        method: "PUT",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          new_password: newPassword,
+          confirm_password: confirmPassword,
+        }),
       }
     );
+
+    const responseData = await response.json();
 
     if (response.ok) {
       Swal.fire({
         title: "Ubah Sandi Berhasil!",
-        text: "Anda Bisa Masuk Sekarang",
+        text: responseData.message,
         icon: "success",
         showConfirmButton: true,
       });
-
       window.location.href = "https://mentalwell-10-frontend.vercel.app/";
     } else {
-      const responseData = await response.json();
-      const errorMessage = responseData.message || "Error occured";
       Swal.fire({
         title: "Gagal!",
-        text: `Ubah Sandi Gagal!`,
+        text: responseData.message || "Ubah Sandi Gagal!",
         icon: "error",
         showConfirmButton: true,
       });
     }
   } catch (error) {
     console.error("Password reset error:", error);
-    alert("Error during password reset. Try again");
+    Swal.fire({
+      title: "Gagal!",
+      text: "Terjadi kesalahan. Silahkan coba lagi.",
+      icon: "error",
+      showConfirmButton: true,
+    });
   }
 });
