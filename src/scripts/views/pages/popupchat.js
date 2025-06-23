@@ -129,10 +129,11 @@ async function loadMessages(conversationId) {
     const activeUserId = parseInt(localStorage.getItem("active_user_id"), 10);
     data.forEach((msg) => {
       const msgDiv = document.createElement("div");
-      if (msg.sender_id === activeUserId) {
-        msgDiv.className = "alert alert-primary p-2 mb-1 align-self-end";
+      // Pastikan tipe data sama (number)
+      if (Number(msg.sender_id) === activeUserId) {
+        msgDiv.className = "alert alert-primary p-2 mb-1 align-self-end"; // kanan
       } else {
-        msgDiv.className = "alert alert-secondary p-2 mb-1 align-self-start";
+        msgDiv.className = "alert alert-secondary p-2 mb-1 align-self-start"; // kiri
       }
       msgDiv.textContent = msg.content;
       chatBody.appendChild(msgDiv);
