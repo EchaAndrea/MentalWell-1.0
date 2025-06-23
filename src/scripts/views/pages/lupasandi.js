@@ -1,52 +1,49 @@
-const lupasandiForm = document.getElementById('lupasandi-form')
+const resetPasswordForm = document.getElementById('reset-password-form');
 
-lupasandiForm.addEventListener('submit', async (event) => {
+resetPasswordForm.addEventListener('submit', async (event) => {
   event.preventDefault();
 
-  const email = document.getElementById('email').value;
-
-  const formData = {
-    email,
-  };
+  const token = document.getElementById('token').value; // Ambil token dari input
+  const newPassword = document.getElementById('new_password').value;
+  const confirmPassword = document.getElementById('confirm_password').value;
 
   try {
-    const response = await fetch('https://mentalwell10-api-production.up.railway.app/forgot-password', {
+    const response = await fetch(`https://mentalwell10-api-production.up.railway.app/reset-password?token=${token}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify({
+        new_password: newPassword,
+        confirm_password: confirmPassword,
+      }),
     });
 
-    if (response.ok) {
-      const responseData = await response.json();
-      Swal.fire({
-        title: 'Berhasil Mengirim Email!',
-        text: 'Tautan untuk Mengubah Kata Sandi Telah Dikirim ke Email Anda!',
-        icon: 'success',
-        timer: 2000, 
-        showConfirmButton: false, 
-      });
+    const responseData = await response.json();
 
+    if (response.ok) {
+      Swal.fire({
+        title: 'Berhasil Reset Password!',
+        text: responseData.message,
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false,
+      });
     } else {
-      const responseData = await response.json();
-      const errorMessage = responseData.message || 'Error occurred';
-      alert(`Request failed: ${errorMessage}`)
-      await Swal.fire({
-        title: 'Gagal Mengirim Email!',
-        text: 'Silahkan Coba Lagi',
+      Swal.fire({
+        title: 'Gagal Reset Password!',
+        text: responseData.message || 'Silahkan Coba Lagi',
         icon: 'error',
         showConfirmButton: true,
       });
-
     }
   } catch (error) {
     console.error('Error during reset password:', error);
     await Swal.fire({
-      title: 'Gagal Mengirim Email!',
+      title: 'Gagal Reset Password!',
       text: 'Silahkan Coba Lagi',
       icon: 'error',
       showConfirmButton: true,
     });
   }
-})
+});

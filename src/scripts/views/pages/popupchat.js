@@ -130,9 +130,9 @@ async function loadMessages(conversationId) {
     data.forEach((msg) => {
       const msgDiv = document.createElement("div");
       if (Number(msg.sender_id) === activeUserId) {
-        msgDiv.className = "alert alert-primary p-2 mb-1 align-self-end"; // kanan
+        msgDiv.className = "alert alert-primary p-2 mb-1 align-self-end"; 
       } else {
-        msgDiv.className = "alert alert-secondary p-2 mb-1 align-self-start"; // kiri
+        msgDiv.className = "alert alert-secondary p-2 mb-1 align-self-start"; 
       }
       msgDiv.textContent = msg.content;
       chatBody.appendChild(msgDiv);
