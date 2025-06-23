@@ -119,10 +119,25 @@ async function submitCounseling() {
   const token = sessionStorage.getItem("authToken");
   const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
   const psychologist_id = jadwal.psychologist_id;
-  const mode = jadwal.metode; // "realtime" atau "scheduled"
+  const mode = jadwal.metode;
   const problemData = JSON.parse(
     localStorage.getItem("counseling_problem") || "{}"
   );
+
+  if (mode === "realtime") {
+    const now = new Date();
+    const pad = (n) => n.toString().padStart(2, "0");
+    const tanggal = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(
+      now.getDate()
+    )}`;
+    const end = new Date(now.getTime() + 60 * 60 * 1000);
+    const waktu = `${pad(now.getHours())}:${pad(now.getMinutes())}-${pad(
+      end.getHours()
+    )}:${pad(end.getMinutes())}`;
+    jadwal.tanggal = tanggal;
+    jadwal.waktu = waktu;
+    localStorage.setItem("jadwal", JSON.stringify(jadwal));
+  }
 
   if (!psychologist_id) {
     Swal.fire("Psikolog tidak ditemukan. Silakan ulangi proses pemesanan.");
@@ -222,8 +237,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Tahap 2: Permasalahan (jadwalkonseling-permasalahan)
-  // (tidak perlu fetch apapun)
-
+  
   // Tahap 3: Pembayaran (jadwalkonseling-pembayaran)
   if (path.includes("jadwalkonseling-pembayaran")) {
     const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
@@ -310,5 +324,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       localStorage.setItem("jadwal", JSON.stringify(jadwal));
       console.log("Jadwal disimpan:", jadwal);
     }
+  } else if (mode === "realtime") {
+    const now = new Date();
+    const pad = (n) => n.toString().padStart(2, "0");
+    const tanggal = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(
+      now.getDate()
+    )}`;
+    const end = new Date(now.getTime() + 60 * 60 * 1000);
+    const waktu = `${pad(now.getHours())}:${pad(now.getMinutes())}-${pad(
+      end.getHours()
+    )}:${pad(end.getMinutes())}`;
+    // Update localStorage jadwal
+    jadwal.tanggal = tanggal;
+    jadwal.waktu = waktu;
+    localStorage.setItem("jadwal", JSON.stringify(jadwal));
   }
 });
