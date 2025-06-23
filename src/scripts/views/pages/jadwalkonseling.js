@@ -355,16 +355,43 @@ async function confirmPayment() {
         data.newCounseling.counseling_id || data.newCounseling.id;
       localStorage.setItem("last_counseling_id", counselingId);
 
-      // GET counseling detail untuk dapat conversation_id
-      const detailRes = await fetch(
+      // 1. Coba fetch detail counseling
+      let detailRes = await fetch(
         `https://mentalwell10-api-production.up.railway.app/counseling/${counselingId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      const detail = await detailRes.json();
-      console.log("Counseling detail:", detail);
-      const conversation_id = detail.counseling.conversation_id;
+      let detail = await detailRes.json();
+      let conversation_id = detail.counseling.conversation_id;
+
+      // 2. Jika conversation_id masih null, buat conversation manual dari FE
+      if (!conversation_id) {
+        // Ambil id pasien dan psikolog
+        const patient_id = detail.counseling.patient_id;
+        const psychologist_id = detail.counseling.psychologist_id;
+
+        // POST conversation baru
+        const convRes = await fetch(
+          "https://mentalwell10-api-production.up.railway.app/conversations",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              counseling_id: counselingId,
+              patient_id: patient_id,
+              psychologist_id: psychologist_id,
+            }),
+          }
+        );
+        const convData = await convRes.json();
+        conversation_id = convData.conversation_id || convData.id;
+
+        // Optional: update counseling detail jika perlu
+      }
 
       if (conversation_id) {
         localStorage.setItem("active_conversation_id", conversation_id);
