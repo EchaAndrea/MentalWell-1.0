@@ -126,12 +126,14 @@ async function loadMessages(conversationId) {
   if (data) {
     const chatBody = document.getElementById("chatBody");
     chatBody.innerHTML = "";
+    const activeUserId = parseInt(localStorage.getItem("active_user_id"), 10);
     data.forEach((msg) => {
       const msgDiv = document.createElement("div");
-      msgDiv.className =
-        msg.sender_role === "pasien"
-          ? "alert alert-primary p-2 mb-1 align-self-end"
-          : "alert alert-secondary p-2 mb-1 align-self-start";
+      if (msg.sender_id === activeUserId) {
+        msgDiv.className = "alert alert-primary p-2 mb-1 align-self-end";
+      } else {
+        msgDiv.className = "alert alert-secondary p-2 mb-1 align-self-start";
+      }
       msgDiv.textContent = msg.content;
       chatBody.appendChild(msgDiv);
     });
@@ -158,11 +160,16 @@ function subscribeToMessages(conversationId) {
       (payload) => {
         const msg = payload.new;
         const chatBody = document.getElementById("chatBody");
+        const activeUserId = parseInt(
+          localStorage.getItem("active_user_id"),
+          10
+        );
         const msgDiv = document.createElement("div");
-        msgDiv.className =
-          msg.sender_role === "pasien"
-            ? "alert alert-primary p-2 mb-1 align-self-end"
-            : "alert alert-secondary p-2 mb-1 align-self-start";
+        if (msg.sender_id === activeUserId) {
+          msgDiv.className = "alert alert-primary p-2 mb-1 align-self-end";
+        } else {
+          msgDiv.className = "alert alert-secondary p-2 mb-1 align-self-start";
+        }
         msgDiv.textContent = msg.content;
         chatBody.appendChild(msgDiv);
         chatBody.scrollTop = chatBody.scrollHeight;
