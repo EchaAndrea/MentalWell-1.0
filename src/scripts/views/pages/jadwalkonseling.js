@@ -398,7 +398,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (path.includes("jadwalkonseling-pembayaran")) {
     const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
-    if (!jadwal.psychologist_id) {
+    if (!jadwal.psycholog_id) {
       Swal.fire({
         icon: "error",
         title: "Data tidak lengkap",
@@ -501,6 +501,12 @@ document.addEventListener("DOMContentLoaded", function () {
     formData.append("occupation", "mahasiswa");
     formData.append("problem_description", problemData.problem);
     formData.append("hope_after", problemData.hope);
+    // Tambahkan baris berikut jika backend tetap butuh payment_proof (meski kosong)
+    formData.append(
+      "payment_proof",
+      new Blob([], { type: "application/octet-stream" }),
+      ""
+    );
 
     try {
       Swal.fire({
@@ -521,6 +527,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       );
       const data = await res.json();
+      console.log("Realtime counseling response:", data);
       if (data.status === "success") {
         localStorage.setItem(
           "last_counseling_id",
