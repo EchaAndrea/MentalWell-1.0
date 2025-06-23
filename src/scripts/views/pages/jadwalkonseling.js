@@ -50,7 +50,7 @@ async function populateFormFields() {
       'input[placeholder="01-02-2023"]'
     );
     const genderInput = document.querySelector(
-      'input[placeholder="laki-Laki"]'
+      'input[placeholder="Jenis Kelamin"]'
     );
     const phoneNumberInput = document.querySelector(
       'input[placeholder="08123456789"]'
@@ -285,6 +285,10 @@ async function populateFormFields() {
   } catch (error) {
     console.error("Error populating form fields:", error);
   }
+}
+
+function redirectToCounseling2() {
+  window.location.href = '/jadwalkonseling-permasalahan' + window.location.search;
 }
 
 // Tahap 2: Permasalahan (simpan ke localStorage)
