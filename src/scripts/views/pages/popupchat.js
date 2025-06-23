@@ -132,7 +132,7 @@ async function loadMessages(conversationId) {
       if (Number(msg.sender_id) === activeUserId) {
         msgDiv.className = "alert alert-primary p-2 mb-1 align-self-end"; 
       } else {
-        msgDiv.className = "alert alert-secondary p-2 mb-1 align-self-start"; 
+        msgDiv.className = "alert alert-secondary p-2 mb-1 align-self-start";
       }
       msgDiv.textContent = msg.content;
       chatBody.appendChild(msgDiv);

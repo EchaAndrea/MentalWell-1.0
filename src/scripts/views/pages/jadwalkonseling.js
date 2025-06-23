@@ -333,7 +333,6 @@ async function confirmPayment() {
   console.log("FormData:", [...formData.entries()]);
 
   try {
-    // Tampilkan loading SweetAlert
     Swal.fire({
       title: "Memproses pembayaran...",
       text: "Mohon tunggu sebentar.",
@@ -404,7 +403,7 @@ document.addEventListener("DOMContentLoaded", function () {
         title: "Data tidak lengkap",
         text: "Silakan ulangi proses pemesanan dari awal.",
       }).then(() => {
-        window.location.href = "/listpsikolog"; // Atau halaman awal pemesanan
+        window.location.href = "/listpsikolog"; 
       });
       return;
     }
