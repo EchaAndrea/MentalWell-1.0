@@ -207,7 +207,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     phone_number: user.phone_number,
     gender: user.gender,
     occupation: user.occupation,
-    psychologist_id: jadwalData.psychologist_id, 
+    psychologist_id: jadwalData.psychologist_id,
     schedule_date: jadwalData.tanggal,
     schedule_time: jadwalData.waktu,
     type: jadwalData.metode || "scheduled",
@@ -308,7 +308,7 @@ async function confirmPayment() {
   const problemData = JSON.parse(
     localStorage.getItem("counseling_problem") || "{}"
   );
-  console.log("problemData di pembayaran:", problemData); 
+  console.log("problemData di pembayaran:", problemData);
 
   if (!psychologist_id) {
     Swal.fire("Psikolog tidak ditemukan. Silakan ulangi proses pemesanan.");
@@ -368,19 +368,23 @@ async function confirmPayment() {
       )
         .then((res) => res.json())
         .then((detail) => {
+          console.log("Counseling detail:", detail);
           const conversation_id = detail.counseling.conversation_id;
           if (conversation_id) {
             localStorage.setItem("active_conversation_id", conversation_id);
-          }
-          // Redirect ke halaman selesai
-          const urlParams = new URLSearchParams(window.location.search);
-          const mode = urlParams.get("mode");
-          setTimeout(() => {
+            // Redirect ke halaman selesai
+            const urlParams = new URLSearchParams(window.location.search);
+            const mode = urlParams.get("mode");
+            setTimeout(() => {
+              Swal.close();
+              window.location.href = `/jadwalkonseling-selesai?id=${psychologist_id}${
+                mode ? `&mode=${mode}` : ""
+              }`;
+            }, 1000);
+          } else {
             Swal.close();
-            window.location.href = `/jadwalkonseling-selesai?id=${psychologist_id}${
-              mode ? `&mode=${mode}` : ""
-            }`;
-          }, 1000);
+            Swal.fire("Gagal mendapatkan conversation_id. Silakan coba lagi.");
+          }
         });
     } else {
       Swal.close();
@@ -398,7 +402,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (path.includes("jadwalkonseling-pembayaran")) {
     const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
-    if (!jadwal.psychologist_id) {
+    if (!jadwal.psycholog_id) {
       Swal.fire({
         icon: "error",
         title: "Data tidak lengkap",
