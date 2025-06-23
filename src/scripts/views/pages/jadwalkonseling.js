@@ -207,7 +207,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     phone_number: user.phone_number,
     gender: user.gender,
     occupation: user.occupation,
-    psychologist_id: jadwalData.psychologist_id,
+    psychologist_id: jadwalData.psychologist_id, 
     schedule_date: jadwalData.tanggal,
     schedule_time: jadwalData.waktu,
     type: jadwalData.metode || "scheduled",
@@ -308,6 +308,7 @@ async function confirmPayment() {
   const problemData = JSON.parse(
     localStorage.getItem("counseling_problem") || "{}"
   );
+  console.log("problemData di pembayaran:", problemData); 
 
   if (!psychologist_id) {
     Swal.fire("Psikolog tidak ditemukan. Silakan ulangi proses pemesanan.");
@@ -329,7 +330,10 @@ async function confirmPayment() {
   formData.append("time", jadwal.waktu || "");
   formData.append("payment_proof", buktiBayar);
 
+  console.log("FormData:", [...formData.entries()]);
+
   try {
+    // Tampilkan loading SweetAlert
     Swal.fire({
       title: "Memproses pembayaran...",
       text: "Mohon tunggu sebentar.",
@@ -339,9 +343,8 @@ async function confirmPayment() {
       },
     });
 
-    // POST counseling realtime
     const res = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/realtime/counseling/${psychologist_id}`,
+      `https://mentalwell10-api-production.up.railway.app/counselings/${psychologist_id}`,
       {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
@@ -349,65 +352,36 @@ async function confirmPayment() {
       }
     );
     const data = await res.json();
-
     if (data.status === "success") {
-      const counselingId =
-        data.newCounseling.counseling_id || data.newCounseling.id;
-      localStorage.setItem("last_counseling_id", counselingId);
-
-      // 1. Coba fetch detail counseling
-      let detailRes = await fetch(
-        `https://mentalwell10-api-production.up.railway.app/counseling/${counselingId}`,
+      localStorage.setItem(
+        "last_counseling_id",
+        data.newCounseling.counseling_id || data.newCounseling.id
+      );
+      // Ambil counseling detail untuk dapat conversation_id
+      fetch(
+        `https://mentalwell10-api-production.up.railway.app/counseling/${
+          data.newCounseling.counseling_id || data.newCounseling.id
+        }`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
-      );
-      let detail = await detailRes.json();
-      let conversation_id = detail.counseling.conversation_id;
-
-      // 2. Jika conversation_id masih null, buat conversation manual dari FE
-      if (!conversation_id) {
-        // Ambil id pasien dan psikolog
-        const patient_id = detail.counseling.patient_id;
-        const psychologist_id = detail.counseling.psychologist_id;
-
-        // POST conversation baru
-        const convRes = await fetch(
-          "https://mentalwell10-api-production.up.railway.app/conversations",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              counseling_id: counselingId,
-              patient_id: patient_id,
-              psychologist_id: psychologist_id,
-            }),
+      )
+        .then((res) => res.json())
+        .then((detail) => {
+          const conversation_id = detail.counseling.conversation_id;
+          if (conversation_id) {
+            localStorage.setItem("active_conversation_id", conversation_id);
           }
-        );
-        const convData = await convRes.json();
-        conversation_id = convData.conversation_id || convData.id;
-
-        // Optional: update counseling detail jika perlu
-      }
-
-      if (conversation_id) {
-        localStorage.setItem("active_conversation_id", conversation_id);
-        // Redirect ke halaman selesai
-        const urlParams = new URLSearchParams(window.location.search);
-        const mode = urlParams.get("mode");
-        setTimeout(() => {
-          Swal.close();
-          window.location.href = `/jadwalkonseling-selesai?id=${psychologist_id}${
-            mode ? `&mode=${mode}` : ""
-          }`;
-        }, 1000);
-      } else {
-        Swal.close();
-        Swal.fire("Gagal mendapatkan conversation_id. Silakan coba lagi.");
-      }
+          // Redirect ke halaman selesai
+          const urlParams = new URLSearchParams(window.location.search);
+          const mode = urlParams.get("mode");
+          setTimeout(() => {
+            Swal.close();
+            window.location.href = `/jadwalkonseling-selesai?id=${psychologist_id}${
+              mode ? `&mode=${mode}` : ""
+            }`;
+          }, 1000);
+        });
     } else {
       Swal.close();
       Swal.fire(data.message || "Gagal mengirim pembayaran");
