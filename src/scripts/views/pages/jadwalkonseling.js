@@ -77,7 +77,12 @@ async function confirmPayment() {
 
     const data = await res.json();
     if (data.status === "success") {
-      const counseling_id = data.newCounseling.id;
+      const counseling_id = data.newCounseling?.id;
+      if (!counseling_id) {
+        Swal.close();
+        Swal.fire("Gagal mendapatkan ID konseling.");
+        return;
+      }
       localStorage.setItem("last_counseling_id", counseling_id);
 
       const detail = await fetch(
