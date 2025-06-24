@@ -115,6 +115,9 @@ async function confirmPayment() {
 
 // POST counseling realtime
 async function createRealtimeCounseling() {
+  console.log("jadwal:", jadwal);
+  console.log("psychologist_id:", psychologist_id);
+  console.log("problemData:", problemData);
   const token = sessionStorage.getItem("authToken");
   const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
   const psychologist_id = jadwal.psychologist_id;
@@ -151,6 +154,7 @@ async function createRealtimeCounseling() {
     );
 
     const data = await res.json();
+    console.log("Realtime counseling response:", data);
     if (data.status === "success") {
       const counseling_id = data.newCounseling.id;
       localStorage.setItem("last_counseling_id", counseling_id);
@@ -210,6 +214,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       harga = data.data?.price || 0;
     } catch {}
 
+    if (mode === "chat" || mode === "realtime") {
     const jadwal = {
       tanggal,
       waktu,
