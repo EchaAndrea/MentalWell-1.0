@@ -164,13 +164,13 @@ main {
 .topik-keahlian p {
   font-size: 21px;
   font-weight: bold;
-  margin-bottom: 4px; 
+  margin-bottom: 4px;
 }
 
 .topik-keahlian ul {
   font-size: 19px;
   margin-left: 20px;
-  margin-top: 0; 
+  margin-top: 0;
 }
 
 .container-ulasan {
@@ -205,9 +205,9 @@ main {
   height: 100px;
 }
 
-#userReviews {
+.userReviews {
   display: flex;
-  overflow-x: auto;    /* WAJIB: biar bisa di-scroll JS */
+  overflow-x: auto; /* WAJIB: biar bisa di-scroll JS */
   white-space: nowrap; /* Biar isi berjajar horizontal */
   scroll-behavior: smooth;
   gap: 1rem;
@@ -221,6 +221,9 @@ main {
   margin: 60px 40px 30px 40px;
   width: 400px;
   height: 150px;
+  flex: 0 0 auto; /* Biar tidak wrap ke bawah */
+  width: 350px; /* Atur sesuai kebutuhan */
+  margin-right: 1rem;
 }
 
 .isi-ulasan h3 {
