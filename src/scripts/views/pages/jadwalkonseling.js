@@ -394,6 +394,89 @@ async function confirmPayment() {
   }
 }
 
+async function createRealtimeCounseling() {
+  const token = sessionStorage.getItem("authToken");
+  const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
+  const psychologist_id = jadwal.psychologist_id;
+  const problemData = JSON.parse(
+    localStorage.getItem("counseling_problem") || "{}"
+  );
+  const buktiBayar = document.getElementById("buktiBayar")?.files[0];
+
+  if (!psychologist_id) {
+    Swal.fire("Psikolog tidak ditemukan. Silakan ulangi proses pemesanan.");
+    return;
+  }
+  if (!buktiBayar) {
+    Swal.fire("Upload bukti pembayaran terlebih dahulu.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("occupation", "mahasiswa"); // atau ambil dari user jika ada
+  formData.append("problem_description", problemData.problem || "");
+  formData.append("hope_after", problemData.hope || "");
+  formData.append("payment_proof", buktiBayar);
+
+  try {
+    Swal.fire({
+      title: "Memproses pembayaran...",
+      text: "Mohon tunggu sebentar.",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    const res = await fetch(
+      `https://mentalwell10-api-production.up.railway.app/realtime/counseling/${psychologist_id}`,
+      {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      }
+    );
+    const data = await res.json();
+    if (data.status === "success") {
+      localStorage.setItem(
+        "last_counseling_id",
+        data.newCounseling.counseling_id || data.newCounseling.id
+      );
+      // Ambil conversation_id jika ada
+      fetch(
+        `https://mentalwell10-api-production.up.railway.app/counseling/${
+          data.newCounseling.counseling_id || data.newCounseling.id
+        }`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+        .then((res) => res.json())
+        .then((detail) => {
+          const conversation_id = detail.counseling.conversation_id;
+          if (conversation_id) {
+            localStorage.setItem("active_conversation_id", conversation_id);
+          }
+          // Redirect ke halaman selesai
+          const urlParams = new URLSearchParams(window.location.search);
+          const mode = urlParams.get("mode");
+          setTimeout(() => {
+            Swal.close();
+            window.location.href = `/jadwalkonseling-selesai?id=${psychologist_id}${
+              mode ? `&mode=${mode}` : ""
+            }`;
+          }, 1000);
+        });
+    } else {
+      Swal.close();
+      Swal.fire(data.message || "Gagal mengirim pembayaran");
+    }
+  } catch (e) {
+    Swal.close();
+    Swal.fire("Gagal mengirim pembayaran");
+  }
+}
+
 // Jalankan fungsi sesuai halaman
 document.addEventListener("DOMContentLoaded", function () {
   const path = window.location.pathname;
