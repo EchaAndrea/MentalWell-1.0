@@ -127,20 +127,16 @@ async function loadMessages(conversationId) {
     const chatBody = document.getElementById("chatBody");
     chatBody.innerHTML = "";
     const activeUserId = parseInt(localStorage.getItem("active_user_id"), 10);
-    const partnerId = parseInt(localStorage.getItem("active_partner_id"), 10);
-    console.log("active_user_id", activeUserId, "active_partner_id", partnerId);
-    console.log("data messages", data);
     data.forEach((msg) => {
       const msgDiv = document.createElement("div");
       if (Number(msg.sender_id) === activeUserId) {
-        // Pesan dari user aktif (kanan)
-        msgDiv.className = "chat-bubble right";
-      } else if (Number(msg.sender_id) === partnerId) {
-        // Pesan dari lawan chat (kiri)
-        msgDiv.className = "chat-bubble left";
+        // Bubble kanan, warna biru muda
+        msgDiv.className = "alert alert-primary p-2 mb-1 align-self-end";
+        msgDiv.style.backgroundColor = "#d1e7ff"; // biru muda
       } else {
-        // Pesan dari sistem/unknown (opsional)
-        msgDiv.className = "chat-bubble";
+        // Bubble kiri, warna hijau muda
+        msgDiv.className = "alert alert-success p-2 mb-1 align-self-start";
+        msgDiv.style.backgroundColor = "#d4edda"; // hijau muda
       }
       msgDiv.textContent = msg.content;
       chatBody.appendChild(msgDiv);
@@ -172,30 +168,18 @@ function subscribeToMessages(conversationId) {
           localStorage.getItem("active_user_id"),
           10
         );
-        const partnerId = parseInt(
-          localStorage.getItem("active_partner_id"),
-          10
-        );
         const msgDiv = document.createElement("div");
         // Samakan tipe data!
         if (Number(msg.sender_id) === activeUserId) {
-          msgDiv.className = "chat-bubble right";
-        } else if (Number(msg.sender_id) === partnerId) {
-          msgDiv.className = "chat-bubble left";
+          msgDiv.className = "alert alert-primary p-2 mb-1 align-self-end";
+          msgDiv.style.backgroundColor = "#d1e7ff";
         } else {
-          msgDiv.className = "chat-bubble";
+          msgDiv.className = "alert alert-success p-2 mb-1 align-self-start";
+          msgDiv.style.backgroundColor = "#d4edda";
         }
         msgDiv.textContent = msg.content;
         chatBody.appendChild(msgDiv);
         chatBody.scrollTop = chatBody.scrollHeight;
-        console.log(
-          "msg.sender_id",
-          msg.sender_id,
-          "==",
-          activeUserId,
-          "||",
-          partnerId
-        );
       }
     )
     .subscribe();

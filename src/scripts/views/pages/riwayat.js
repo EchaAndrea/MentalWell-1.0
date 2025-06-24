@@ -181,14 +181,6 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
                       "active_patient_name",
                       counseling.patient_name || ""
                     );
-                    localStorage.setItem(
-                      "active_user_id",
-                      counseling.patient_id
-                    ); // ID pasien (user login)
-                    localStorage.setItem(
-                      "active_partner_id",
-                      counseling.psychologist_id
-                    ); // ID psikolog (lawan chat)
                   } else {
                     return;
                   }

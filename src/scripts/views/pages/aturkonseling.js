@@ -95,8 +95,6 @@ fetch(
     // Simpan conversation_id ke localStorage
     const conversationId = counseling.conversation_id;
     localStorage.setItem("active_conversation_id", conversationId);
-    localStorage.setItem("active_user_id", counseling.patient_id); // ID pasien (user login)
-    localStorage.setItem("active_partner_id", counseling.psychologist_id); // ID psikolog (lawan chat)
 
     console.log("counseling data:", counseling);
     console.log("deskripsiKonseling:", deskripsiKonseling);
