@@ -19,20 +19,7 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
     if (data && Array.isArray(data.counselings)) {
       let sessions = data.counselings;
 
-      // Urutkan: Terbayar paling atas, lalu lainnya
-      sessions.sort((a, b) => {
-        const getOrder = (item) => {
-          if (item.payment_status === "approved" && item.status !== "finished")
-            return 0; // Terbayar
-          if (item.status === "finished") return 1; // Selesai
-          if (item.payment_status === "rejected" || item.status === "failed")
-            return 2; // Gagal
-          if (item.payment_status === "refunded") return 3; // Pengembalian Selesai
-          return 4; // Lainnya
-        };
-        return getOrder(a) - getOrder(b);
-      });
-
+      // Tidak ada sorting, langsung tampilkan sesuai urutan dari backend
       sessions.forEach((riwayat) => {
         const riwayatElement = document.createElement("div");
         riwayatElement.classList.add("container-riwayat");
