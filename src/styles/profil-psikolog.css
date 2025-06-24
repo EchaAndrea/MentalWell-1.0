@@ -526,17 +526,6 @@ daftar
   margin-bottom: 0rem;
 }
 
-.logo-slide-2 div#userReviews {
-  display: flex;
-  overflow: hidden;
-  /* Ensure that the content stays in one line */
-  margin: 0 1rem;
-  /* Adjust margin as needed */
-  height: 15rem;
-  flex-wrap: wrap;
-  word-wrap: break-word;
-}
-
 .logo-slide-2 div.komentar-user {
   overflow: hidden;
   white-space: normal;
