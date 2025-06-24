@@ -153,6 +153,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         `https://mentalwell10-api-production.up.railway.app/realtime/counseling/${psikologId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      if (res.status === 404) {
+        alert("Psikolog belum tersedia untuk konseling realtime.");
+        return;
+      }
+      if (!res.ok) {
+        alert("Terjadi kesalahan server. Silakan coba lagi.");
+        return;
+      }
       const data = await res.json();
       if (data.status === "success" && data.counseling) {
         // Simpan counseling_id dan conversation_id ke localStorage
@@ -421,7 +429,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (path.includes("jadwalkonseling-pembayaran")) {
     const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
-    if (!jadwal.psychologist_id) {
+    if (!jadwal.psycholog_id) {
       Swal.fire({
         icon: "error",
         title: "Data tidak lengkap",
