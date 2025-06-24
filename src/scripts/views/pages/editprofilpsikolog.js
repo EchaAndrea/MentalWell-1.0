@@ -29,12 +29,14 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Isi field lain
     document.getElementById("email").innerHTML = `<h4>${data.email || ""}</h4>`;
-    document.getElementById("namapanggilan").value = data.nickname || "";
-    document.getElementById("nowa").value = data.phone_number || "";
+    document.getElementById("nama").value = data.name || "";
+    document.getElementById("nickname").value = data.nickname || "";
+    document.getElementById("nohp").value = data.phone_number || "";
     document.getElementById("tgllahir").value = data.birthdate || "";
     document.getElementById("gender").value = data.gender || "";
     document.getElementById("bio").value = data.bio || "";
     document.getElementById("pengalaman").value = data.experience || "";
+    document.getElementById("profile_image").value = data.image || "";
 
     // Topik keahlian (checkbox)
     const expertiseCheckboxes = document.querySelectorAll(
@@ -81,8 +83,9 @@ function previewImage(event) {
 form.addEventListener("submit", async function (event) {
   event.preventDefault();
 
-  const newName = document.getElementById("namapanggilan").value;
-  const newPhone_number = document.getElementById("nowa").value;
+  const newName = document.getElementById("nama").value;
+  const newNickname = document.getElementById("nickname").value;
+  const newPhone_number = document.getElementById("nohp").value;
   const newBirthdate = document.getElementById("tgllahir").value;
   const newGender = document.getElementById("gender").value;
   const newBio = document.getElementById("bio").value;
