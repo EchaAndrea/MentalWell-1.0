@@ -483,7 +483,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (path.includes("jadwalkonseling-pembayaran")) {
     const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
-    if (!jadwal.psychologist_id) {
+    if (!jadwal.psycholog_id) {
       Swal.fire({
         icon: "error",
         title: "Data tidak lengkap",
@@ -526,7 +526,13 @@ document.addEventListener("DOMContentLoaded", function () {
         confirmButtonText: "Sudah Bayar",
       }).then((result) => {
         if (result.isConfirmed) {
-          confirmPayment();
+          const urlParams = new URLSearchParams(window.location.search);
+          const mode = urlParams.get("mode");
+          if (mode === "realtime") {
+            createRealtimeCounseling();
+          } else {
+            confirmPayment();
+          }
         }
       });
     });
