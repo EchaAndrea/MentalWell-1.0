@@ -29,14 +29,12 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Isi field lain
     document.getElementById("email").innerHTML = `<h4>${data.email || ""}</h4>`;
-    document.getElementById("name").value = data.name || "";
-    document.getElementById("nickname").value = data.nickname || "";
-    document.getElementById("phone_number").value = data.phone_number || "";
-    document.getElementById("birthdate").value = data.birthdate || "";
+    document.getElementById("namapanggilan").value = data.nickname || "";
+    document.getElementById("nowa").value = data.phone_number || "";
+    document.getElementById("tgllahir").value = data.birthdate || "";
     document.getElementById("gender").value = data.gender || "";
     document.getElementById("bio").value = data.bio || "";
-    document.getElementById("experience").value = data.experience || "";
-    document.getElementById("profile_image").value = data.profile_image || "";
+    document.getElementById("pengalaman").value = data.experience || "";
 
     // Topik keahlian (checkbox)
     const expertiseCheckboxes = document.querySelectorAll(
@@ -83,28 +81,23 @@ function previewImage(event) {
 form.addEventListener("submit", async function (event) {
   event.preventDefault();
 
-  // Variabel boleh pakai awalan new
-  const newName = document.getElementById("name").value;
-  const newNickname = document.getElementById("nickname").value;
-  const newPhone_number = document.getElementById("phone_number").value;
-  const newBirthdate = document.getElementById("birthdate").value;
+  const newName = document.getElementById("namapanggilan").value;
+  const newPhone_number = document.getElementById("nowa").value;
+  const newBirthdate = document.getElementById("tgllahir").value;
   const newGender = document.getElementById("gender").value;
   const newBio = document.getElementById("bio").value;
-  const newExperience = document.getElementById("experience").value;
+  const newExperience = document.getElementById("pengalaman").value;
   const image = document.getElementById("inputImage").files[0];
   const formData = new FormData();
 
-  // Field FormData HARUS sesuai field API
-  formData.append("name", newName);
-  formData.append("nickname", newNickname);
-  formData.append("phone_number", newPhone_number);
-  formData.append("birthdate", newBirthdate);
-  formData.append("gender", newGender);
-  formData.append("bio", newBio);
-  formData.append("experience", newExperience);
-  if (image) formData.append("profile_image", image);
+  formData.append("newName", newName);
+  formData.append("newPhone_number", newPhone_number);
+  formData.append("newBirthdate", newBirthdate);
+  formData.append("newGender", newGender);
+  formData.append("newBio", newBio);
+  formData.append("newExperience", newExperience);
+  formData.append("profile_image", image);
 
-  // Topik keahlian
   const expertiseCheckboxes = document.querySelectorAll(
     'input[name="topik"]:checked'
   );
@@ -124,8 +117,13 @@ form.addEventListener("submit", async function (event) {
     } else if (checkbox.value == "kecenderungan_bunuh_diri") {
       topicId = 6;
     }
-    formData.append("topics", topicId);
+
+    formData.append("newTopics", topicId);
   });
+
+  for (const pair of formData.entries()) {
+    // console.log(pair[0] + ': ' + pair[1]);
+  }
 
   Swal.fire({
     title: "Memuat...",
@@ -150,7 +148,10 @@ form.addEventListener("submit", async function (event) {
   );
 
   if (response.ok) {
+    // console.log(response);
+
     Swal.close();
+
     Swal.fire({
       title: "Profil Berhasil Diubah",
       icon: "success",
