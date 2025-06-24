@@ -483,7 +483,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (path.includes("jadwalkonseling-pembayaran")) {
     const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
-    if (!jadwal.psycholog_id) {
+    if (!jadwal.psychologist_id) {
       Swal.fire({
         icon: "error",
         title: "Data tidak lengkap",
