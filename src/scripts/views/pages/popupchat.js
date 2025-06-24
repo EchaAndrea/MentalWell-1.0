@@ -127,14 +127,18 @@ async function loadMessages(conversationId) {
     const chatBody = document.getElementById("chatBody");
     chatBody.innerHTML = "";
     const activeUserId = parseInt(localStorage.getItem("active_user_id"), 10);
+    const partnerId = parseInt(localStorage.getItem("active_partner_id"), 10);
     data.forEach((msg) => {
       const msgDiv = document.createElement("div");
       if (Number(msg.sender_id) === activeUserId) {
-        // Bubble kanan (user aktif)
+        // Pesan dari user aktif (kanan)
         msgDiv.className = "chat-bubble right";
-      } else {
-        // Bubble kiri (lawan bicara)
+      } else if (Number(msg.sender_id) === partnerId) {
+        // Pesan dari lawan chat (kiri)
         msgDiv.className = "chat-bubble left";
+      } else {
+        // Pesan dari sistem/unknown (opsional)
+        msgDiv.className = "chat-bubble";
       }
       msgDiv.textContent = msg.content;
       chatBody.appendChild(msgDiv);
@@ -166,12 +170,18 @@ function subscribeToMessages(conversationId) {
           localStorage.getItem("active_user_id"),
           10
         );
+        const partnerId = parseInt(
+          localStorage.getItem("active_partner_id"),
+          10
+        );
         const msgDiv = document.createElement("div");
         // Samakan tipe data!
         if (Number(msg.sender_id) === activeUserId) {
           msgDiv.className = "chat-bubble right";
-        } else {
+        } else if (Number(msg.sender_id) === partnerId) {
           msgDiv.className = "chat-bubble left";
+        } else {
+          msgDiv.className = "chat-bubble";
         }
         msgDiv.textContent = msg.content;
         chatBody.appendChild(msgDiv);
