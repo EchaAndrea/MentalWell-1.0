@@ -128,6 +128,8 @@ async function loadMessages(conversationId) {
     chatBody.innerHTML = "";
     const activeUserId = parseInt(localStorage.getItem("active_user_id"), 10);
     const partnerId = parseInt(localStorage.getItem("active_partner_id"), 10);
+    console.log("active_user_id", activeUserId, "active_partner_id", partnerId);
+    console.log("data messages", data);
     data.forEach((msg) => {
       const msgDiv = document.createElement("div");
       if (Number(msg.sender_id) === activeUserId) {
@@ -186,6 +188,14 @@ function subscribeToMessages(conversationId) {
         msgDiv.textContent = msg.content;
         chatBody.appendChild(msgDiv);
         chatBody.scrollTop = chatBody.scrollHeight;
+        console.log(
+          "msg.sender_id",
+          msg.sender_id,
+          "==",
+          activeUserId,
+          "||",
+          partnerId
+        );
       }
     )
     .subscribe();
