@@ -130,13 +130,11 @@ async function loadMessages(conversationId) {
     data.forEach((msg) => {
       const msgDiv = document.createElement("div");
       if (Number(msg.sender_id) === activeUserId) {
-        // Bubble kanan, warna biru muda
-        msgDiv.className = "alert alert-primary p-2 mb-1 align-self-end";
-        msgDiv.style.backgroundColor = "#d1e7ff"; // biru muda
+        // Bubble kanan (user aktif)
+        msgDiv.className = "chat-bubble right";
       } else {
-        // Bubble kiri, warna hijau muda
-        msgDiv.className = "alert alert-success p-2 mb-1 align-self-start";
-        msgDiv.style.backgroundColor = "#d4edda"; // hijau muda
+        // Bubble kiri (lawan bicara)
+        msgDiv.className = "chat-bubble left";
       }
       msgDiv.textContent = msg.content;
       chatBody.appendChild(msgDiv);
@@ -171,11 +169,9 @@ function subscribeToMessages(conversationId) {
         const msgDiv = document.createElement("div");
         // Samakan tipe data!
         if (Number(msg.sender_id) === activeUserId) {
-          msgDiv.className = "alert alert-primary p-2 mb-1 align-self-end";
-          msgDiv.style.backgroundColor = "#d1e7ff";
+          msgDiv.className = "chat-bubble right";
         } else {
-          msgDiv.className = "alert alert-success p-2 mb-1 align-self-start";
-          msgDiv.style.backgroundColor = "#d4edda";
+          msgDiv.className = "chat-bubble left";
         }
         msgDiv.textContent = msg.content;
         chatBody.appendChild(msgDiv);
