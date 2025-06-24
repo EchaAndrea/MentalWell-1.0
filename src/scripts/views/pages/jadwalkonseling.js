@@ -143,37 +143,6 @@ async function fetchPsychologistSchedule(psychologistId) {
 document.addEventListener("DOMContentLoaded", async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const mode = urlParams.get("mode");
-  const psikologId = urlParams.get("id");
-
-  if (mode === "chat") {
-    // Fetch counseling realtime
-    try {
-      const token = sessionStorage.getItem("authToken");
-      const res = await fetch(
-        `https://mentalwell10-api-production.up.railway.app/realtime/counseling/${psikologId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      if (res.status === 404) {
-        alert("Psikolog belum tersedia untuk konseling realtime.");
-        return;
-      }
-      if (!res.ok) {
-        alert("Terjadi kesalahan server. Silakan coba lagi.");
-        return;
-      }
-      const data = await res.json();
-      if (data.status === "success" && data.counseling) {
-        // Simpan counseling_id dan conversation_id ke localStorage
-        localStorage.setItem("last_counseling_id", data.counseling.id);
-        localStorage.setItem(
-          "active_conversation_id",
-          data.counseling.conversation_id
-        );
-      }
-    } catch (e) {
-      // Optional: tampilkan error
-    }
-  }
 
   if (mode === "chat") {
     const psikologId = urlParams.get("id");
@@ -238,7 +207,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     phone_number: user.phone_number,
     gender: user.gender,
     occupation: user.occupation,
-    psychologist_id: jadwalData.psychologist_id, // Ganti dari psikologId
+    psychologist_id: jadwalData.psychologist_id, 
     schedule_date: jadwalData.tanggal,
     schedule_time: jadwalData.waktu,
     type: jadwalData.metode || "scheduled",
@@ -339,7 +308,7 @@ async function confirmPayment() {
   const problemData = JSON.parse(
     localStorage.getItem("counseling_problem") || "{}"
   );
-  console.log("problemData di pembayaran:", problemData); // Tambahkan ini
+  console.log("problemData di pembayaran:", problemData); 
 
   if (!psychologist_id) {
     Swal.fire("Psikolog tidak ditemukan. Silakan ulangi proses pemesanan.");
@@ -364,7 +333,6 @@ async function confirmPayment() {
   console.log("FormData:", [...formData.entries()]);
 
   try {
-    // Tampilkan loading SweetAlert
     Swal.fire({
       title: "Memproses pembayaran...",
       text: "Mohon tunggu sebentar.",
@@ -429,13 +397,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (path.includes("jadwalkonseling-pembayaran")) {
     const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
-    if (!jadwal.psycholog_id) {
+    if (!jadwal.psychologist_id) {
       Swal.fire({
         icon: "error",
         title: "Data tidak lengkap",
         text: "Silakan ulangi proses pemesanan dari awal.",
       }).then(() => {
-        window.location.href = "/listpsikolog"; // Atau halaman awal pemesanan
+        window.location.href = "/listpsikolog"; 
       });
       return;
     }
