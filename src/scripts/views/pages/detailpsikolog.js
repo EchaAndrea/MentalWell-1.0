@@ -97,9 +97,35 @@ async function renderArticleDetails() {
       btnDaftar.dataset.status = psikolog.availability;
       if (psikolog.availability === "available") {
         btnDaftar.style.display = "block";
+        btnDaftar.textContent = "Konseling";
+        btnDaftar.onclick = function () {
+          // Tampilkan modal pilihan
+          const modalEl = document.getElementById("modalPilihKonseling");
+          modalEl.classList.add("modal-bottom");
+          const modal = new bootstrap.Modal(modalEl);
+          modal.show();
+
+          // Pilihan Chat Sekarang
+          const btnChatSekarang = document.getElementById("btnChatSekarang");
+          if (btnChatSekarang) {
+            btnChatSekarang.onclick = function () {
+              window.location.href = `/jadwalkonseling-isidata?id=${psikolog.id}&mode=chat`;
+            };
+          }
+          // Pilihan Jadwalkan
+          const btnJadwalkan = document.getElementById("btnJadwalkan");
+          if (btnJadwalkan) {
+            btnJadwalkan.onclick = function () {
+              window.location.href = `/jadwalpsikolog?id=${psikolog.id}`;
+            };
+          }
+        };
       } else {
         btnDaftar.style.display = "block";
         btnDaftar.textContent = "Jadwalkan Konseling";
+        btnDaftar.onclick = function () {
+          window.location.href = `/jadwalpsikolog?id=${psikolog.id}`;
+        };
       }
     }
   } catch (error) {

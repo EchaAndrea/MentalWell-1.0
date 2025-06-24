@@ -143,6 +143,29 @@ async function fetchPsychologistSchedule(psychologistId) {
 document.addEventListener("DOMContentLoaded", async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const mode = urlParams.get("mode");
+  const psikologId = urlParams.get("id");
+
+  if (mode === "chat") {
+    // Fetch counseling realtime
+    try {
+      const token = sessionStorage.getItem("authToken");
+      const res = await fetch(
+        `https://mentalwell10-api-production.up.railway.app/realtime/counseling/${psikologId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const data = await res.json();
+      if (data.status === "success" && data.counseling) {
+        // Simpan counseling_id dan conversation_id ke localStorage
+        localStorage.setItem("last_counseling_id", data.counseling.id);
+        localStorage.setItem(
+          "active_conversation_id",
+          data.counseling.conversation_id
+        );
+      }
+    } catch (e) {
+      // Optional: tampilkan error
+    }
+  }
 
   if (mode === "chat") {
     const psikologId = urlParams.get("id");
