@@ -275,6 +275,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 });
 
+// Button untuk mengirim data counseling
 function redirectToCounseling2() {
   // Ambil parameter id & mode dari URL
   const params = new URLSearchParams(window.location.search);
@@ -283,6 +284,32 @@ function redirectToCounseling2() {
 
   // Redirect ke halaman permasalahan, bawa id & mode
   window.location.href = `/jadwalkonseling-permasalahan?id=${id}${
+    mode ? `&mode=${mode}` : ""
+  }`;
+}
+
+function sendCounselingData() {
+  const description = document
+    .getElementById("descriptionTextarea")
+    ?.value.trim();
+  const hope = document.getElementById("hopeAfterTextarea")?.value.trim();
+
+  if (!description || !hope) {
+    Swal.fire("Mohon isi deskripsi masalah dan harapan Anda.");
+    return;
+  }
+
+  // Simpan ke localStorage untuk digunakan di halaman berikutnya
+  localStorage.setItem(
+    "counseling_problem",
+    JSON.stringify({ problem: description, hope: hope })
+  );
+
+  // Redirect ke halaman pembayaran, bawa id & mode
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+  const mode = params.get("mode");
+  window.location.href = `/jadwalkonseling-pembayaran?id=${id}${
     mode ? `&mode=${mode}` : ""
   }`;
 }
