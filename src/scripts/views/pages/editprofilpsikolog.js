@@ -29,7 +29,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Isi field lain
     document.getElementById("email").innerHTML = `<h4>${data.email || ""}</h4>`;
-    document.getElementById("namalengkap").value = data.name || "";
     document.getElementById("namapanggilan").value = data.nickname || "";
     document.getElementById("nowa").value = data.phone_number || "";
     document.getElementById("tgllahir").value = data.birthdate || "";
@@ -82,27 +81,49 @@ function previewImage(event) {
 form.addEventListener("submit", async function (event) {
   event.preventDefault();
 
-  // Tambahkan id="namalengkap" pada input Nama Lengkap di HTML
-  const name = document.getElementById("namalengkap").value;
-  const nickname = document.getElementById("namapanggilan").value;
-  const phone_number = document.getElementById("nowa").value;
-  const birthdate = document.getElementById("tgllahir").value;
-  const gender = document.getElementById("gender").value;
-  const bio = document.getElementById("bio").value;
-  const experience = document.getElementById("pengalaman").value;
+  const newName = document.getElementById("namapanggilan").value;
+  const newPhone_number = document.getElementById("nowa").value;
+  const newBirthdate = document.getElementById("tgllahir").value;
+  const newGender = document.getElementById("gender").value;
+  const newBio = document.getElementById("bio").value;
+  const newExperience = document.getElementById("pengalaman").value;
   const image = document.getElementById("inputImage").files[0];
   const formData = new FormData();
 
-  formData.append("name", name);
-  formData.append("nickname", nickname);
-  formData.append("phone_number", phone_number);
-  formData.append("birthdate", birthdate);
-  formData.append("gender", gender);
-  formData.append("bio", bio);
-  formData.append("experience", experience);
-  if (image) formData.append("profile_image", image);
+  formData.append("newName", newName);
+  formData.append("newPhone_number", newPhone_number);
+  formData.append("newBirthdate", newBirthdate);
+  formData.append("newGender", newGender);
+  formData.append("newBio", newBio);
+  formData.append("newExperience", newExperience);
+  formData.append("profile_image", image);
 
-  // ...topik keahlian jika perlu...
+  const expertiseCheckboxes = document.querySelectorAll(
+    'input[name="topik"]:checked'
+  );
+
+  expertiseCheckboxes.forEach((checkbox) => {
+    let topicId;
+    if (checkbox.value == "adiksi") {
+      topicId = 1;
+    } else if (checkbox.value == "anak_dan_remaja") {
+      topicId = 2;
+    } else if (checkbox.value == "trauma") {
+      topicId = 3;
+    } else if (checkbox.value == "seksualitas") {
+      topicId = 4;
+    } else if (checkbox.value == "fobia") {
+      topicId = 5;
+    } else if (checkbox.value == "kecenderungan_bunuh_diri") {
+      topicId = 6;
+    }
+
+    formData.append("newTopics", topicId);
+  });
+
+  for (const pair of formData.entries()) {
+    // console.log(pair[0] + ': ' + pair[1]);
+  }
 
   Swal.fire({
     title: "Memuat...",
@@ -116,7 +137,7 @@ form.addEventListener("submit", async function (event) {
   });
 
   const response = await fetch(
-    "https://mentalwell10-api-production.up.railway.app/psychologist/profile",
+    "https://mentalwell10-api-production.up.railway.app/psychologist/profile", 
     {
       method: "PUT",
       headers: {
@@ -127,7 +148,10 @@ form.addEventListener("submit", async function (event) {
   );
 
   if (response.ok) {
+    // console.log(response);
+
     Swal.close();
+
     Swal.fire({
       title: "Profil Berhasil Diubah",
       icon: "success",
