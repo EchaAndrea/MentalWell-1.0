@@ -82,7 +82,8 @@ function previewImage(event) {
 form.addEventListener("submit", async function (event) {
   event.preventDefault();
 
-  const name = document.getElementById("namalengkap").value; // tambahkan id di input nama lengkap
+  // Tambahkan id="namalengkap" pada input Nama Lengkap di HTML
+  const name = document.getElementById("namalengkap").value;
   const nickname = document.getElementById("namapanggilan").value;
   const phone_number = document.getElementById("nowa").value;
   const birthdate = document.getElementById("tgllahir").value;
@@ -135,6 +136,7 @@ form.addEventListener("submit", async function (event) {
     });
     location.reload();
   } else {
+    const errorMessage = await response.text();
     Swal.fire({
       title: "Gagal!",
       text: "Profil Gagal Diubah, Format File Harus .JPG",
