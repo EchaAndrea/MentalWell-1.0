@@ -83,6 +83,7 @@ function previewImage(event) {
 form.addEventListener("submit", async function (event) {
   event.preventDefault();
 
+  // Variabel boleh pakai awalan new
   const newName = document.getElementById("name").value;
   const newNickname = document.getElementById("nickname").value;
   const newPhone_number = document.getElementById("phone_number").value;
@@ -90,18 +91,20 @@ form.addEventListener("submit", async function (event) {
   const newGender = document.getElementById("gender").value;
   const newBio = document.getElementById("bio").value;
   const newExperience = document.getElementById("experience").value;
-  const Image = document.getElementById("inputImage").files[0];
+  const image = document.getElementById("inputImage").files[0];
   const formData = new FormData();
 
-  formData.append("newName", newName);
-  formData.append("newNickname", newNickname);
-  formData.append("newPhone_number", newPhone_number);
-  formData.append("newBirthdate", newBirthdate);
-  formData.append("newGender", newGender);
-  formData.append("newBio", newBio);
-  formData.append("newExperience", newExperience);
-  formData.append("profile_image", image);
+  // Field FormData HARUS sesuai field API
+  formData.append("name", newName);
+  formData.append("nickname", newNickname);
+  formData.append("phone_number", newPhone_number);
+  formData.append("birthdate", newBirthdate);
+  formData.append("gender", newGender);
+  formData.append("bio", newBio);
+  formData.append("experience", newExperience);
+  if (image) formData.append("profile_image", image);
 
+  // Topik keahlian
   const expertiseCheckboxes = document.querySelectorAll(
     'input[name="topik"]:checked'
   );
@@ -121,13 +124,8 @@ form.addEventListener("submit", async function (event) {
     } else if (checkbox.value == "kecenderungan_bunuh_diri") {
       topicId = 6;
     }
-
-    formData.append("newTopics", topicId);
+    formData.append("topics", topicId);
   });
-
-  for (const pair of formData.entries()) {
-    // console.log(pair[0] + ': ' + pair[1]);
-  }
 
   Swal.fire({
     title: "Memuat...",
@@ -152,10 +150,7 @@ form.addEventListener("submit", async function (event) {
   );
 
   if (response.ok) {
-    // console.log(response);
-
     Swal.close();
-
     Swal.fire({
       title: "Profil Berhasil Diubah",
       icon: "success",
