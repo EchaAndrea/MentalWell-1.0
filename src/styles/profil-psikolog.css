@@ -164,13 +164,13 @@ main {
 .topik-keahlian p {
   font-size: 21px;
   font-weight: bold;
-  margin-bottom: 4px;
+  margin-bottom: 4px; 
 }
 
 .topik-keahlian ul {
   font-size: 19px;
   margin-left: 20px;
-  margin-top: 0;
+  margin-top: 0; 
 }
 
 .container-ulasan {
@@ -206,24 +206,20 @@ main {
 }
 
 .userReviews {
-  display: flex;
-  overflow-x: auto; /* WAJIB: biar bisa di-scroll JS */
-  white-space: nowrap; /* Biar isi berjajar horizontal */
-  scroll-behavior: smooth;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
   gap: 1rem;
+  /* Adjust the gap as needed */
 }
 
 .isi-ulasan {
-  display: inline-block;
+  display: flex;
   flex-direction: row;
   border: 1px solid black;
   border-radius: 20px;
   margin: 60px 40px 30px 40px;
   width: 400px;
   height: 150px;
-  flex: 0 0 auto; /* Biar tidak wrap ke bawah */
-  width: 350px; /* Atur sesuai kebutuhan */
-  margin-right: 1rem;
 }
 
 .isi-ulasan h3 {
@@ -255,7 +251,10 @@ main {
 
 #btnDaftar.disabled {
   background-color: #ccc;
+  /* Change to your desired disabled button color */
   color: #999;
+  /* Change to your desired text color for disabled button */
+  /* Add any additional styling for the disabled state */
   cursor: default;
 }
 
@@ -528,13 +527,13 @@ daftar
 
 .logo-slide-2 div#userReviews {
   display: flex;
-  overflow-x: auto; /* WAJIB: biar bisa di-scroll JS */
-  white-space: nowrap; /* Biar isi berjajar horizontal */
+  overflow: hidden;
+  /* Ensure that the content stays in one line */
   margin: 0 1rem;
+  /* Adjust margin as needed */
   height: 15rem;
-  flex-wrap: nowrap; /* Jangan wrap ke bawah */
-  word-wrap: normal;
-  scroll-behavior: smooth;
+  flex-wrap: wrap;
+  word-wrap: break-word;
 }
 
 .logo-slide-2 div.komentar-user {
