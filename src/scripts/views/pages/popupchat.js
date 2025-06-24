@@ -168,6 +168,13 @@ function subscribeToMessages(conversationId) {
         );
         const msgDiv = document.createElement("div");
         // Samakan tipe data!
+        const activeUserId = Number(localStorage.getItem("active_user_id")); // pastikan Number
+        console.log(
+          "msg.sender_id:",
+          Number(msg.sender_id),
+          "activeUserId:",
+          activeUserId
+        );
         if (Number(msg.sender_id) === activeUserId) {
           msgDiv.className = "chat-bubble right";
         } else {
