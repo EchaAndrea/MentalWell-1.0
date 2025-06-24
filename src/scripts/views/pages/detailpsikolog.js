@@ -82,6 +82,30 @@ async function renderArticleDetails() {
       }
     }
 
+  // Auto-scroll horizontal untuk ulasan userReviews
+  let scrollAmount2 = 0;
+  const scrollSpeed2 = 1.5;
+
+  function scroll2() {
+    const originalLogosContainer2 = document.getElementById("userReviews");
+    if (!originalLogosContainer2) return;
+    scrollAmount2 += scrollSpeed2;
+    originalLogosContainer2.scrollLeft = scrollAmount2;
+
+    if (
+      scrollAmount2 >=
+      originalLogosContainer2.scrollWidth - originalLogosContainer2.clientWidth
+    ) {
+      scrollAmount2 = 0;
+    }
+
+    requestAnimationFrame(scroll2);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(scroll2, 1000); // beri jeda agar ulasan sudah terisi
+  });
+
     // Render ketersediaan (availability)
     const availabilityTimes = document.getElementById("availabilityTimes");
     if (availabilityTimes) {
