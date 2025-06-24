@@ -82,6 +82,7 @@ async function renderArticleDetails() {
       }
     }
 
+    // Scroll otomatis horizontal untuk ulasan
     let scrollAmount2 = 0;
     const scrollSpeed2 = 1.5;
     function scroll2() {
@@ -96,10 +97,15 @@ async function renderArticleDetails() {
       }
       requestAnimationFrame(scroll2);
     }
-    if (userReviewsContainer && psikolog.reviews && psikolog.reviews.length > 0) {
+    if (
+      userReviewsContainer &&
+      psikolog.reviews &&
+      psikolog.reviews.length > 0 &&
+      userReviewsContainer.scrollWidth > userReviewsContainer.clientWidth
+    ) {
       setTimeout(scroll2, 500); // pastikan sudah terisi
     }
-    
+
     // Render ketersediaan (availability)
     const availabilityTimes = document.getElementById("availabilityTimes");
     if (availabilityTimes) {
