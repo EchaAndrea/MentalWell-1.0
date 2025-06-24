@@ -162,13 +162,12 @@ function subscribeToMessages(conversationId) {
       (payload) => {
         const msg = payload.new;
         const chatBody = document.getElementById("chatBody");
-        const activeUserId = Number(localStorage.getItem("active_user_id")); // hanya deklarasi sekali
-        console.log(
-          "msg.sender_id:",
-          Number(msg.sender_id),
-          "activeUserId:",
-          activeUserId
+        const activeUserId = parseInt(
+          localStorage.getItem("active_user_id"),
+          10
         );
+        const msgDiv = document.createElement("div");
+        // Samakan tipe data!
         if (Number(msg.sender_id) === activeUserId) {
           msgDiv.className = "chat-bubble right";
         } else {
