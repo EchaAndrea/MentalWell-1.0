@@ -207,7 +207,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     phone_number: user.phone_number,
     gender: user.gender,
     occupation: user.occupation,
-    psychologist_id: jadwalData.psychologist_id, 
+    psychologist_id: jadwalData.psychologist_id,
     schedule_date: jadwalData.tanggal,
     schedule_time: jadwalData.waktu,
     type: jadwalData.metode || "scheduled",
@@ -308,7 +308,7 @@ async function confirmPayment() {
   const problemData = JSON.parse(
     localStorage.getItem("counseling_problem") || "{}"
   );
-  console.log("problemData di pembayaran:", problemData); 
+  console.log("problemData di pembayaran:", problemData);
 
   if (!psychologist_id) {
     Swal.fire("Psikolog tidak ditemukan. Silakan ulangi proses pemesanan.");
@@ -330,6 +330,9 @@ async function confirmPayment() {
   formData.append("time", jadwal.waktu || "");
   formData.append("payment_proof", buktiBayar);
 
+  console.log("psychologist_id:", psychologist_id);
+  console.log("problemData:", problemData);
+  console.log("jadwal:", jadwal);
   console.log("FormData:", [...formData.entries()]);
 
   try {
@@ -403,7 +406,7 @@ document.addEventListener("DOMContentLoaded", function () {
         title: "Data tidak lengkap",
         text: "Silakan ulangi proses pemesanan dari awal.",
       }).then(() => {
-        window.location.href = "/listpsikolog"; 
+        window.location.href = "/listpsikolog";
       });
       return;
     }
