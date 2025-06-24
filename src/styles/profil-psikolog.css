@@ -214,7 +214,7 @@ main {
 }
 
 .isi-ulasan {
-  display: flex;
+  display: inline-block;
   flex-direction: row;
   border: 1px solid black;
   border-radius: 20px;
@@ -524,6 +524,17 @@ daftar
   animation: 15s slide infinite linear;
   flex-shrink: 0;
   margin-bottom: 0rem;
+}
+
+.logo-slide-2 div#userReviews {
+  display: flex;
+  overflow-x: auto; /* WAJIB: biar bisa di-scroll JS */
+  white-space: nowrap; /* Biar isi berjajar horizontal */
+  margin: 0 1rem;
+  height: 15rem;
+  flex-wrap: nowrap; /* Jangan wrap ke bawah */
+  word-wrap: normal;
+  scroll-behavior: smooth;
 }
 
 .logo-slide-2 div.komentar-user {
