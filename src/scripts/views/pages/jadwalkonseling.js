@@ -323,3 +323,4 @@ function sendCounselingData() {
     mode ? `&mode=${mode}` : ""
   }`;
 }
+})
