@@ -83,23 +83,24 @@ function previewImage(event) {
 form.addEventListener("submit", async function (event) {
   event.preventDefault();
 
-  const newName = document.getElementById("nama").value;
-  const newNickname = document.getElementById("nickname").value;
-  const newPhone_number = document.getElementById("nohp").value;
-  const newBirthdate = document.getElementById("tgllahir").value;
-  const newGender = document.getElementById("gender").value;
-  const newBio = document.getElementById("bio").value;
-  const newExperience = document.getElementById("pengalaman").value;
+  const name = document.getElementById("nama").value;
+  const nickname = document.getElementById("nickname").value;
+  const phone_number = document.getElementById("nohp").value;
+  const birthdate = document.getElementById("tgllahir").value;
+  const gender = document.getElementById("gender").value;
+  const bio = document.getElementById("bio").value;
+  const experience = document.getElementById("pengalaman").value;
   const image = document.getElementById("inputImage").files[0];
   const formData = new FormData();
 
-  formData.append("newName", newName);
-  formData.append("newPhone_number", newPhone_number);
-  formData.append("newBirthdate", newBirthdate);
-  formData.append("newGender", newGender);
-  formData.append("newBio", newBio);
-  formData.append("newExperience", newExperience);
-  formData.append("profile_image", image);
+  formData.append("name", name);
+  formData.append("nickname", nickname);
+  formData.append("phone_number", phone_number);
+  formData.append("birthdate", birthdate);
+  formData.append("gender", gender);
+  formData.append("bio", bio);
+  formData.append("experience", experience);
+  if (image) formData.append("profile_image", image);
 
   const expertiseCheckboxes = document.querySelectorAll(
     'input[name="topik"]:checked'
@@ -121,12 +122,8 @@ form.addEventListener("submit", async function (event) {
       topicId = 6;
     }
 
-    formData.append("newTopics", topicId);
+    formData.append("topics", topicId);
   });
-
-  for (const pair of formData.entries()) {
-    // console.log(pair[0] + ': ' + pair[1]);
-  }
 
   Swal.fire({
     title: "Memuat...",
@@ -140,7 +137,7 @@ form.addEventListener("submit", async function (event) {
   });
 
   const response = await fetch(
-    "https://mentalwell10-api-production.up.railway.app/psychologist/profile", 
+    "https://mentalwell10-api-production.up.railway.app/psychologist/profile",
     {
       method: "PUT",
       headers: {
@@ -151,10 +148,7 @@ form.addEventListener("submit", async function (event) {
   );
 
   if (response.ok) {
-    // console.log(response);
-
     Swal.close();
-
     Swal.fire({
       title: "Profil Berhasil Diubah",
       icon: "success",
