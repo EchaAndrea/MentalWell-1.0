@@ -297,6 +297,7 @@ function redirectToCounseling2() {
     mode ? `&mode=${mode}` : ""
   }`;
 }
+window.redirectToCounseling2 = redirectToCounseling2;
 
 function sendCounselingData() {
   const description = document
@@ -323,4 +324,3 @@ function sendCounselingData() {
     mode ? `&mode=${mode}` : ""
   }`;
 }
-})
