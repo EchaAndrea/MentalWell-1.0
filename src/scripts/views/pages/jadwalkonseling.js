@@ -283,7 +283,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       });
     });
   }
-});
+};
 
 // Button untuk mengirim data counseling
 function redirectToCounseling2() {
