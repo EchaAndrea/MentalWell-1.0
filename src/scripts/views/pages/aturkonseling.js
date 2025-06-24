@@ -177,8 +177,6 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("active_counseling_id", counselingId);
     localStorage.setItem("active_patient_name", namaPasien);
     localStorage.setItem("active_role", "psikolog");
-    localStorage.setItem("active_user_id", counseling.psychologist_id);
-    localStorage.setItem("active_partner_id", counseling.patient_id);
     fetch(chatUrl)
       .then((res) => {
         if (!res.ok) throw new Error("Gagal memuat halaman popup chat");
