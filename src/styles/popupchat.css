@@ -120,15 +120,16 @@
   border-radius: 18px;
   padding: 10px 16px;
   max-width: 65%;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   font-size: 1rem;
   word-break: break-word;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+  border: none;
 }
 
 .chat-bubble.left {
   align-self: flex-start;
-  background: #f1f0f0;
+  background: #f1f0f0; /* abu muda */
   color: #222;
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 18px;
@@ -138,7 +139,7 @@
 
 .chat-bubble.right {
   align-self: flex-end;
-  background: #d1e7ff;
+  background: #d1e7ff; /* biru muda */
   color: #044b77;
   border-bottom-right-radius: 4px;
   border-bottom-left-radius: 18px;
