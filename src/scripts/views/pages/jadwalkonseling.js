@@ -62,7 +62,7 @@ async function confirmPayment() {
 
     const data = await res.json();
     if (data.status === "success") {
-      const counseling_id = data.newCounseling?.counseling_id; // FIXED HERE
+      const counseling_id = data.newCounseling?.counseling_id; 
       if (!counseling_id) {
         Swal.close();
         Swal.fire("Gagal mendapatkan ID konseling.");

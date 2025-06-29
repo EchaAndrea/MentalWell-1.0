@@ -46,7 +46,7 @@ async function fetchPsikologData() {
         nama: item.name,
         email: item.email,
         topik: "-", // Tidak ada field topics di response, jadi default "-"
-        aktif: item.availability === "available",
+        status: item.availability === "available",
         password: "********", // Tidak ada password dari BE
       }));
       filteredData = [...psikologData];
@@ -127,7 +127,7 @@ function renderTable() {
         <td>${p.email}</td>
         <td>${p.password}</td>
         <td>${p.topik}</td>
-        <td>${p.aktif ? "Aktif" : "Nonaktif"}</td>
+        <td>${p.status ? "Aktif" : "Nonaktif"}</td>
         <td>
           <a href="/src/templates/admin-lihatpsikolog.html?id=${
             p.id
