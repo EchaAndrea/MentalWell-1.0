@@ -92,6 +92,38 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
+    // Validasi nomor telepon
+    let phoneNumber = form.nowa.value.trim();
+
+    // Konversi nomor telepon ke format yang benar
+    if (phoneNumber.startsWith("08")) {
+      phoneNumber = "628" + phoneNumber.substring(2);
+    } else if (phoneNumber.startsWith("+628")) {
+      phoneNumber = phoneNumber.substring(1);
+    } else if (phoneNumber.startsWith("8")) {
+      phoneNumber = "62" + phoneNumber;
+    } else if (!phoneNumber.startsWith("628")) {
+      Swal.fire({
+        icon: "error",
+        title: "Format Nomor Telepon Salah!",
+        text: "Nomor telepon harus dimulai dengan 08, 8, +628, atau 628. Contoh: 08111111111",
+      });
+      return;
+    }
+
+    // Validasi panjang nomor telepon (10-15 karakter)
+    if (phoneNumber.length < 10 || phoneNumber.length > 15) {
+      Swal.fire({
+        icon: "error",
+        title: "Panjang Nomor Telepon Salah!",
+        text: "Nomor telepon harus antara 10-15 karakter setelah diformat ke 628...",
+      });
+      return;
+    }
+
+    // Update form value dengan format yang benar
+    form.nowa.value = phoneNumber;
+
     // Ambil data jadwal (HANYA HARI)
     const hariArr = Array.from(
       form.querySelectorAll('select[name="hari[]"]')
@@ -125,7 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
     formData.append("name", form.nama.value.trim());
     formData.append("nickname", form.nickname.value.trim());
     formData.append("email", form.email.value.trim());
-    formData.append("phone_number", form.nowa.value.trim());
+    formData.append("phone_number", phoneNumber);
     formData.append("birthdate", form.tanggallahir.value.trim());
     formData.append("gender", form.jeniskelamin.value.trim());
     formData.append("bio", form.bio.value.trim());
@@ -142,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("- name:", form.nama.value.trim());
     console.log("- nickname:", form.nickname.value.trim());
     console.log("- email:", form.email.value.trim());
-    console.log("- phone_number:", form.nowa.value.trim());
+    console.log("- phone_number:", phoneNumber);
     console.log("- birthdate:", form.tanggallahir.value.trim());
     console.log("- gender:", form.jeniskelamin.value.trim());
     console.log("- bio:", form.bio.value.trim());
@@ -150,8 +182,12 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("- price:", form.harga.value.trim());
     console.log("- topics:", topics);
     console.log("- schedules:", schedules);
+    console.log("- schedules JSON:", JSON.stringify(schedules));
     console.log("- password length:", form.password.value.trim().length);
-    console.log("- profile_image:", inputGambar.files[0] ? inputGambar.files[0].name : "none");
+    console.log(
+      "- profile_image:",
+      inputGambar.files[0] ? inputGambar.files[0].name : "none"
+    );
 
     try {
       const res = await fetch(`${ENDPOINT}/admin/psychologist`, {
@@ -159,7 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: { Authorization: `Bearer ${TOKEN}` },
         body: formData,
       });
-      
+
       let json;
       try {
         json = await res.json();
@@ -188,12 +224,13 @@ document.addEventListener("DOMContentLoaded", () => {
         namaFileInput.value = "";
       } else {
         console.error("Server error:", json);
-        const errorMessage = json.message || json.error || "Gagal menambahkan data psikolog";
-        Swal.fire({ 
-          icon: "error", 
-          title: "Gagal!", 
+        const errorMessage =
+          json.message || json.error || "Gagal menambahkan data psikolog";
+        Swal.fire({
+          icon: "error",
+          title: "Gagal!",
           text: errorMessage,
-          footer: json.details ? `Detail: ${JSON.stringify(json.details)}` : ""
+          footer: json.details ? `Detail: ${JSON.stringify(json.details)}` : "",
         });
       }
     } catch (err) {
