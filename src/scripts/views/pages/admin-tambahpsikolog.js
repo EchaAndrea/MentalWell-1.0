@@ -235,23 +235,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
 
-      let json;
-      try {
-        json = await res.json();
-      } catch (parseError) {
-        console.error("Error parsing JSON response:", parseError);
-        Swal.fire({
-          icon: "error",
-          title: "Gagal!",
-          text: "Format response server tidak valid.",
-        });
-        return;
-      }
-
+      const result = await res.json();
       console.log("Response status:", res.status);
-      console.log("Response data:", json);
+      console.log("Response data:", result);
 
-      if (res.ok && json.status === "success") {
+      // Sederhanakan penanganan response seperti pada tambah artikel
+      if (res.ok && result.status === "success") {
         Swal.fire({
           icon: "success",
           title: "Berhasil!",
@@ -265,7 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
         Swal.fire({
           icon: "error",
           title: "Gagal!",
-          text: json.message || "Terjadi kesalahan saat menambahkan data.",
+          text: result.message || "Terjadi kesalahan saat menambahkan data.",
         });
       }
     } catch (err) {
