@@ -256,20 +256,16 @@ document.addEventListener("DOMContentLoaded", () => {
           icon: "success",
           title: "Berhasil!",
           text: "Data psikolog berhasil ditambahkan.",
-        }).then(
-          () => (window.location.href = "/src/templates/admin-psikolog.html")
-        );
+        }).then(() => {
+          window.location.href = "/src/templates/admin-psikolog.html";
+        });
         form.reset();
         namaFileInput.value = "";
       } else {
-        console.error("Server error:", json);
-        const errorMessage =
-          json.message || json.error || "Gagal menambahkan data psikolog";
         Swal.fire({
           icon: "error",
           title: "Gagal!",
-          text: errorMessage,
-          footer: json.details ? `Detail: ${JSON.stringify(json.details)}` : "",
+          text: json.message || "Terjadi kesalahan saat menambahkan data.",
         });
       }
     } catch (err) {
