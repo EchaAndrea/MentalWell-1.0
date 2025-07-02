@@ -152,42 +152,62 @@ document.addEventListener("DOMContentLoaded", () => {
       form.querySelectorAll('input[name="keahlian"]:checked')
     ).map((cb) => Number(cb.value));
 
-    // Siapkan FormData sesuai urutan field
-    const formData = new FormData();
-    formData.append("name", form.nama.value.trim());
-    formData.append("nickname", form.nickname.value.trim());
-    formData.append("email", form.email.value.trim());
-    formData.append("phone_number", phoneNumber);
-    formData.append("birthdate", form.tanggallahir.value.trim());
-    formData.append("gender", form.jeniskelamin.value.trim());
-    formData.append("bio", form.bio.value.trim());
-    formData.append("experience", form.pengalaman.value.trim());
-    formData.append("price", form.harga.value.trim());
-    formData.append("topics", JSON.stringify(topics));
-    formData.append("schedules", JSON.stringify(schedules));
-    formData.append("password", form.password.value.trim());
-    if (inputGambar.files[0])
-      formData.append("profile_image", inputGambar.files[0]);
+    // Validasi minimal satu topik dipilih
+    if (topics.length === 0) {
+      Swal.fire({
+        icon: "error",
+        title: "Topik Keahlian Belum Dipilih!",
+        text: "Pilih minimal satu topik keahlian untuk psikolog.",
+      });
+      return;
+    }
+
+    // Validasi minimal satu jadwal
+    if (schedules.length === 0) {
+      Swal.fire({
+        icon: "error",
+        title: "Jadwal Belum Diisi!",
+        text: "Isi minimal satu jadwal praktek untuk psikolog.",
+      });
+      return;
+    }
+
+    // Siapkan data untuk dikirim
+    const requestData = {
+      name: form.nama.value.trim(),
+      nickname: form.nickname.value.trim(),
+      email: form.email.value.trim(),
+      phone_number: phoneNumber,
+      birthdate: form.tanggallahir.value.trim(),
+      gender: form.jeniskelamin.value.trim(),
+      bio: form.bio.value.trim(),
+      experience: form.pengalaman.value.trim(),
+      price: parseInt(form.harga.value.trim()),
+      topics: topics,
+      schedules: schedules,
+      password: form.password.value.trim(),
+    };
 
     // Debug logging
-    console.log("Data yang akan dikirim:");
-    console.log("- name:", form.nama.value.trim());
-    console.log("- nickname:", form.nickname.value.trim());
-    console.log("- email:", form.email.value.trim());
-    console.log("- phone_number:", phoneNumber);
-    console.log("- birthdate:", form.tanggallahir.value.trim());
-    console.log("- gender:", form.jeniskelamin.value.trim());
-    console.log("- bio:", form.bio.value.trim());
-    console.log("- experience:", form.pengalaman.value.trim());
-    console.log("- price:", form.harga.value.trim());
-    console.log("- topics:", topics);
-    console.log("- schedules:", schedules);
-    console.log("- schedules JSON:", JSON.stringify(schedules));
-    console.log("- password length:", form.password.value.trim().length);
-    console.log(
-      "- profile_image:",
-      inputGambar.files[0] ? inputGambar.files[0].name : "none"
-    );
+    console.log("Data yang akan dikirim (JSON):");
+    console.log(JSON.stringify(requestData, null, 2));
+
+    // Siapkan FormData untuk file upload
+    const formData = new FormData();
+
+    // Tambahkan semua field sebagai JSON string untuk konsistensi
+    Object.keys(requestData).forEach((key) => {
+      if (typeof requestData[key] === "object") {
+        formData.append(key, JSON.stringify(requestData[key]));
+      } else {
+        formData.append(key, requestData[key].toString());
+      }
+    });
+
+    // Tambahkan file jika ada
+    if (inputGambar.files[0]) {
+      formData.append("profile_image", inputGambar.files[0]);
+    }
 
     try {
       const res = await fetch(`${ENDPOINT}/admin/psychologist`, {
