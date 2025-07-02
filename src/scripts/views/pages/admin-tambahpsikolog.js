@@ -137,14 +137,46 @@ document.addEventListener("DOMContentLoaded", () => {
     if (inputGambar.files[0])
       formData.append("profile_image", inputGambar.files[0]);
 
+    // Debug logging
+    console.log("Data yang akan dikirim:");
+    console.log("- name:", form.nama.value.trim());
+    console.log("- nickname:", form.nickname.value.trim());
+    console.log("- email:", form.email.value.trim());
+    console.log("- phone_number:", form.nowa.value.trim());
+    console.log("- birthdate:", form.tanggallahir.value.trim());
+    console.log("- gender:", form.jeniskelamin.value.trim());
+    console.log("- bio:", form.bio.value.trim());
+    console.log("- experience:", form.pengalaman.value.trim());
+    console.log("- price:", form.harga.value.trim());
+    console.log("- topics:", topics);
+    console.log("- schedules:", schedules);
+    console.log("- password length:", form.password.value.trim().length);
+    console.log("- profile_image:", inputGambar.files[0] ? inputGambar.files[0].name : "none");
+
     try {
       const res = await fetch(`${ENDPOINT}/admin/psychologist`, {
         method: "POST",
         headers: { Authorization: `Bearer ${TOKEN}` },
         body: formData,
       });
-      const json = await res.json();
-      if (json.status === "success") {
+      
+      let json;
+      try {
+        json = await res.json();
+      } catch (parseError) {
+        console.error("Error parsing JSON response:", parseError);
+        Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Format response server tidak valid.",
+        });
+        return;
+      }
+
+      console.log("Response status:", res.status);
+      console.log("Response data:", json);
+
+      if (res.ok && json.status === "success") {
         Swal.fire({
           icon: "success",
           title: "Berhasil!",
@@ -155,9 +187,17 @@ document.addEventListener("DOMContentLoaded", () => {
         form.reset();
         namaFileInput.value = "";
       } else {
-        Swal.fire({ icon: "error", title: "Gagal!", text: json.message });
+        console.error("Server error:", json);
+        const errorMessage = json.message || json.error || "Gagal menambahkan data psikolog";
+        Swal.fire({ 
+          icon: "error", 
+          title: "Gagal!", 
+          text: errorMessage,
+          footer: json.details ? `Detail: ${JSON.stringify(json.details)}` : ""
+        });
       }
     } catch (err) {
+      console.error("Network error:", err);
       Swal.fire({
         icon: "error",
         title: "Gagal!",
