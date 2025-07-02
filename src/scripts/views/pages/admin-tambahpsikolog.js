@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("formArtikel");
+  const form = document.getElementById("formPsikolog");
   const inputGambar = document.getElementById("gambar");
   const namaFileInput = document.getElementById("namaFile");
   const jadwalContainer = document.getElementById("jadwalContainer");
@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
     formData.append("name", form.nama.value.trim());
     formData.append("nickname", form.nickname.value.trim());
     formData.append("email", form.email.value.trim());
-    formData.append("phone_number", form.nohp.value.trim());
+    formData.append("phone_number", form.nowa.value.trim());
     formData.append("birthdate", form.tanggallahir.value.trim());
     formData.append("gender", form.jeniskelamin.value.trim());
     formData.append("bio", form.bio.value.trim());

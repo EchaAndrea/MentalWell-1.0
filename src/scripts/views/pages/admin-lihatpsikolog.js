@@ -33,12 +33,12 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     const data = json.data;
     // Isi form
-    const form = document.getElementById("formArtikel");
+    const form = document.getElementById("formPsikolog");
     form.nama.value = data.name || "";
     form.nickname.value = data.nickname || "";
     form.email.value = data.email || "";
     form.password.value = "********";
-    form.nohp.value = data.phone_number || "";
+    form.nowa.value = data.phone_number || "";
     form.tanggallahir.value = data.birthdate || "";
     form.jeniskelamin.value = data.gender || "";
     form.pengalaman.value = data.experience || "";

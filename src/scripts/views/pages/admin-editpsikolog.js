@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     form.nama.value = data.name || "";
     form.nickname.value = data.nickname || "";
     form.email.value = data.email || "";
-    form.nohp.value = data.phone_number || "";
+    form.nowa.value = data.phone_number || "";
     form.tanggallahir.value = data.birthdate || "";
     form.jeniskelamin.value = data.gender || "";
     form.pengalaman.value = data.experience || "";
@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     formData.append("name", form.nama.value.trim());
     formData.append("nickname", form.nickname.value.trim());
     formData.append("email", form.email.value.trim());
-    formData.append("phone_number", form.nohp.value.trim());
+    formData.append("phone_number", form.nowa.value.trim());
     formData.append("birthdate", form.tanggallahir.value.trim());
     formData.append("gender", form.jeniskelamin.value.trim());
     formData.append("bio", form.bio.value.trim());
