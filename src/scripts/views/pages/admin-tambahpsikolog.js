@@ -192,29 +192,48 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("Data yang akan dikirim (JSON):");
     console.log(JSON.stringify(requestData, null, 2));
 
-    // Siapkan FormData untuk file upload
-    const formData = new FormData();
-
-    // Tambahkan semua field sebagai JSON string untuk konsistensi
-    Object.keys(requestData).forEach((key) => {
-      if (typeof requestData[key] === "object") {
-        formData.append(key, JSON.stringify(requestData[key]));
-      } else {
-        formData.append(key, requestData[key].toString());
-      }
-    });
-
-    // Tambahkan file jika ada
-    if (inputGambar.files[0]) {
-      formData.append("profile_image", inputGambar.files[0]);
-    }
-
     try {
-      const res = await fetch(`${ENDPOINT}/admin/psychologist`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${TOKEN}` },
-        body: formData,
-      });
+      let res, responseData;
+
+      // Jika ada file gambar, gunakan FormData
+      if (inputGambar.files[0]) {
+        const formData = new FormData();
+
+        // Tambahkan data non-array/object sebagai string biasa
+        formData.append("name", requestData.name);
+        formData.append("nickname", requestData.nickname);
+        formData.append("email", requestData.email);
+        formData.append("phone_number", requestData.phone_number);
+        formData.append("birthdate", requestData.birthdate);
+        formData.append("gender", requestData.gender);
+        formData.append("bio", requestData.bio);
+        formData.append("experience", requestData.experience);
+        formData.append("price", requestData.price.toString());
+        formData.append("password", requestData.password);
+
+        // Array/object tetap sebagai JSON string
+        formData.append("topics", JSON.stringify(requestData.topics));
+        formData.append("schedules", JSON.stringify(requestData.schedules));
+        formData.append("profile_image", inputGambar.files[0]);
+
+        console.log("Mengirim dengan FormData (ada file)");
+        res = await fetch(`${ENDPOINT}/admin/psychologist`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${TOKEN}` },
+          body: formData,
+        });
+      } else {
+        // Jika tidak ada file, kirim sebagai JSON murni
+        console.log("Mengirim sebagai JSON (tanpa file)");
+        res = await fetch(`${ENDPOINT}/admin/psychologist`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestData),
+        });
+      }
 
       let json;
       try {
