@@ -41,7 +41,7 @@ async function fetchCounselings() {
 }
 
 function renderTable() {
-  const tbody = document.getElementById("psikologTableBody");
+  const tbody = document.getElementById("konselingTableBody");
   tbody.innerHTML = "";
 
   // Pastikan rowsPerPage bertipe number

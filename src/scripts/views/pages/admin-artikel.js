@@ -84,7 +84,7 @@ function changePage(page) {
 }
 
 function renderTable() {
-  const tbody = document.getElementById("psikologTableBody");
+  const tbody = document.getElementById("artikelTableBody");
   if (!tbody) return;
 
   // Pastikan rowsPerPage bertipe number
