@@ -45,8 +45,6 @@ async function fetchCounselingDetail(id, TOKEN) {
       c.patient_email || "-";
     document.getElementById("tanggalKonseling").textContent = c.schedule_date;
     document.getElementById("waktuKonseling").textContent = c.schedule_time;
-    document.getElementById("metodePembayaran").textContent =
-      c.payment_method || "-";
     document.getElementById("tanggalPembayaran").textContent = c.created_at
       ? c.created_at.split("T")[0]
       : "-";
@@ -83,7 +81,7 @@ async function fetchCounselingDetail(id, TOKEN) {
       alert("Sesi gagal, hanya bisa Tolak atau Refund.");
     }
   } catch (err) {
-    alert("Gagal memuat detail konseling");
+    alert("Gagal memuat detail konseling");zzzz
   }
 }
 

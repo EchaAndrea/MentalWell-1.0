@@ -13,29 +13,16 @@
 
   <body>
     <navbar-admin id="admin"></navbar-admin>
-
+    <main>
     <div class="container my-4">
       <div class="row mb-3">
         <div class="col-12 d-flex justify-content-between align-items-center">
           <h5 class="mb-0">
-            <img
-              src="/src/public/admin/artikel.png"
-              alt="icon"
-              width="20"
-              class="me-2"
-            />
+            <img src="/src/public/admin/artikel.png" alt="icon" width="20" class="me-2"/>
             <strong>Artikel</strong>
           </h5>
-          <a
-            href="/src/templates/admin-tambahartikel.html"
-            class="btn btn-primary"
-          >
-            <img
-              src="/src/public/admin/tambah.png"
-              alt="Tambah"
-              width="16"
-              class="me-1"
-            />
+          <a href="/src/templates/admin-tambahartikel.html" class="btn btn-primary">
+            <img src="/src/public/admin/tambah.png" alt="Tambah" width="16" class="me-1"/>
             Tambah Baru
           </a>
         </div>
@@ -54,21 +41,12 @@
           </div>
 
           <div class="input-group" style="width: 250px">
-            <input
-              type="text"
-              class="form-control"
-              id="searchInput"
-              placeholder="Pencarian"
-            />
+            <input type="text" class="form-control" id="searchInput" placeholder="Pencarian"/>
             <button class="btn cari-btn" onclick="handleSearch()">
               <img src="/src/public/admin/cari.png" alt="Cari" width="16" />
             </button>
             <button class="btn refresh-btn" onclick="resetTable()">
-              <img
-                src="/src/public/admin/refresh.png"
-                alt="Refresh"
-                width="16"
-              />
+              <img src="/src/public/admin/refresh.png" alt="Refresh" width="16"/>
             </button>
           </div>
         </div>
@@ -96,44 +74,31 @@
       <div class="row mb-3">
         <div class="col-12">
           <button class="btn btn-danger" onclick="hapusYangDipilih()">
-            <img
-              src="/src/public/admin/hapus.png"
-              alt="Hapus"
-              width="16"
-              class="me-1"
-            />
+            <img src="/src/public/admin/hapus.png" alt="Hapus" width="16" class="me-1"/>
             Hapus Yang Dipilih
           </button>
         </div>
       </div>
 
       <div class="row mb-4">
-        <div
-          class="col-12 d-flex justify-content-between align-items-center flex-wrap"
-        >
-          <select
-            class="form-select form-select-sm w-auto"
-            id="rowsPerPage"
-            onchange="updateRowsPerPage()"
-          >
+        <div class="col-12 d-flex justify-content-between align-items-center flex-wrap">
+          <select class="form-select form-select-sm w-auto" id="rowsPerPage" onchange="updateRowsPerPage()">
             <option value="10">10 baris</option>
             <option value="25">25 baris</option>
             <option value="50">50 baris</option>
             <option value="100">100 baris</option>
             <option value="all">Semuanya</option>
           </select>
-
           <nav>
             <ul class="pagination mb-0"></ul>
           </nav>
         </div>
       </div>
     </div>
-
+    </main>
     <footer>
       <span>&copy; 2025 MentalWell, Hak Cipta Dilindungi.</span>
     </footer>
-
     <script src="/src/scripts/views/pages/admin-artikel.js"></script>
   </body>
 </html>
