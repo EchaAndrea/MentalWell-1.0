@@ -3,150 +3,71 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/src/styles/listpsikolog.css" />
+    <link rel="stylesheet" href="/src/styles/tentangkami.css" />
     <title>MentalWell 1.0</title>
     <link rel="icon" href="/src/public/logo/logoicon.png" type="image/x-icon" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script
-      type="module"
-      src="/src/scripts/components/navbar-user.js"
-      defer
-    ></script>
-    <script
-      type="module"
-      src="/src/scripts/components/navbar-masuk.js"
-      defer
-    ></script>
+    <script type="module" src="/src/scripts/components/navbar-user.js" defer></script>
+    <script type="module" src="/src/scripts/components/navbar-masuk.js" defer></script>
   </head>
 
   <body>
-    <!-- navbar components -->
     <navbar-masuk id="masuk"></navbar-masuk>
-    <div id="overlay" class="overlay" onclick="closeLoginPopup()"></div>
-    <div class="login-container" id="login-container">
-      <div class="login-title">
-        <h2>Masuk</h2>
-        <p>Belum punya akun? <a href="#" id="popupDaftar" onclick="openDaftarPopup()">Daftar</a></p>
-      </div>
-      <form class="login-form" id="login-form">
-        <div class="form-control">
-          <input class="form-input" type="email" id="emaillogin" name="emaillogin" placeholder="Masukkan Email" required />
-        </div>
-        <div class="form-control">
-          <i class="far fa-eye eye" onclick="togglePasswordLoginVisibility()"></i>
-          <input class="form-input" type="text" id="loginpassword" name="loginpassword" placeholder="Masukkan Kata Sandi" required />
-        </div>
-        <p><a href="/src/templates/lupasandi.html">Lupa kata sandi</a></p>
-        <button class="submit-btn" type="submit">Masuk</button>
-      </form>
-    </div>
-    <div id="overly" class="overly" onclick="closeDaftarPopup()"></div>
-    <div class="daftar-container" id="daftar-container">
-      <div class="daftar-title">
-        <h2>Daftar</h2>
-        <p>Sudah punya akun? <a href="#" onclick="openLoginPopup()">Masuk</a></p>
-      </div>
-      <form class="daftar-form" id="daftar-form">
-        <div class="form-control">
-          <input class="form-input" type="email" id="email" name="email" placeholder="Email" required />
-        </div>
-        <div class="form-control">
-          <input class="form-input" type="notelp" id="notelp" name="notelp" placeholder="Nomor Handphone" required />
-        </div>
-        <div class="form-control">
-          <i class="far fa-eye eye" onclick="togglePasswordVisibility()"></i>
-          <input class="form-input" type="password" id="passworddaftar" name="passworddaftar" placeholder="Kata Sandi" required />
-        </div>
-        <div class="form-control">
-          <i class="far fa-eye eye confpassword" onclick="toggleConfirmasiPasswordVisibility()"></i>
-          <input class="form-input" type="password" id="confpassword" name="password" placeholder="Konfirmasi Kata Sandi" required />
-        </div>
-        <button class="submit-btn" type="submit">Daftar</button>
-      </form>
-    </div>
     <main>
       <section class="tentangkami">
         <h2>Tentang Kami</h2>
         <div class="img-tentangkami">
           <img src="/src/public/profil/rafiki.png" alt="Gambar Logo" />
           <p class="highlight-text">
-            MentalWell adalah platform kesehatan mental yang inovatif, bertujuan
-            memberikan akses mudah dan terpercaya ke layanan penyuluhan dan
-            konseling psikologis secara daring.<br /><br />
-            MentalWell dirancang untuk mendukung kesejahteraan emosional dengan
-            menyediakan sesi konseling daring yang membantu pengguna menjalani
-            perjalanan kesehatan mental mereka.
+            MentalWell adalah platform kesehatan mental yang inovatif, bertujuan memberikan akses mudah dan terpercaya ke layanan penyuluhan dan konseling psikologis secara daring.<br /><br />
+            MentalWell dirancang untuk mendukung kesejahteraan emosional dengan menyediakan sesi konseling daring yang membantu pengguna menjalani perjalanan kesehatan mental mereka.
           </p>
         </div>
       </section>
 
-      <!-- Tim Pengembang -->
-      <section class="team-wrapper">
-        <h3>Tim Pengembang</h3>
-        <div class="team-container">
-          <!-- Profil 1 -->
-          <div class="team-member">
-            <img src="/src/public/profil/echa.jpg" alt="Foto Echa" />
-            <div class="info">
-              <h4>Echa Andrea Gustiar</h4>
-              <p>Universitas Lampung</p>
-              <p>Frontend Web Developer</p>
-              <div class="social-icons">
-                <a
-                  href="https://www.linkedin.com/in/echa-andrea-gustiar"
-                  target="_blank"
-                  rel="noopener"
-                >
-                  <img
-                    src="/src/public/profil/linkedin-icon.png"
-                    alt="LinkedIn"
-                  />
-                </a>
-                <a
-                  href="https://github.com/EchaAndrea"
-                  target="_blank"
-                  rel="noopener"
-                >
-                  <img src="/src/public/profil/github-icon.png" alt="GitHub" />
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Profil 2 -->
-          <div class="team-member">
-            <img src="/src/public/profil/anin.jpg" alt="Foto Anin" />
-            <div class="info">
-              <h4>Anindya Kinarya</h4>
-              <p>Universitas Lampung</p>
-              <p>Backend Web Developer</p>
-              <div class="social-icons">
-                <a
-                  href="https://www.linkedin.com/in/anindya-kinarya"
-                  target="_blank"
-                  rel="noopener"
-                >
-                  <img
-                    src="/src/public/profil/linkedin-icon.png"
-                    alt="LinkedIn"
-                  />
-                </a>
-                <a
-                  href="https://github.com/Anindyakinarya"
-                  target="_blank"
-                  rel="noopener"
-                >
-                  <img src="/src/public/profil/github-icon.png" alt="GitHub" />
-                </a>
-              </div>
-            </div>
-          </div>
+<!-- Tim Pengembang -->
+<section class="team-wrapper">
+  <h3>Tim Pengembang</h3>
+  <div class="team-container">
+    <!-- Profil 1 -->
+    <div class="team-member">
+      <img src="/src/public/profil/echa.jpg" alt="Foto Echa" />
+      <div class="info">
+        <h4>Echa Andrea Gustiar</h4>
+        <p>Universitas Lampung</p>
+        <p>Frontend Web Developer</p>
+        <div class="social-icons">
+          <a href="https://www.linkedin.com/in/echa-andrea-gustiar" target="_blank" rel="noopener">
+            <img src="/src/public/profil/linkedin-icon.png" alt="LinkedIn" />
+          </a>
+          <a href="https://github.com/EchaAndrea" target="_blank" rel="noopener">
+            <img src="/src/public/profil/github-icon.png" alt="GitHub" />
+          </a>
         </div>
-      </section>
+      </div>
+    </div>
+
+    <!-- Profil 2 -->
+    <div class="team-member">
+      <img src="/src/public/profil/anin.jpg" alt="Foto Anin" />
+      <div class="info">
+        <h4>Anindya Kinarya</h4>
+        <p>Universitas Lampung</p>
+        <p>Backend Web Developer</p>
+        <div class="social-icons">
+          <a href="https://www.linkedin.com/in/anindya-kinarya" target="_blank" rel="noopener">
+            <img src="/src/public/profil/linkedin-icon.png" alt="LinkedIn" />
+          </a>
+          <a href="https://github.com/Anindyakinarya" target="_blank" rel="noopener">
+            <img src="/src/public/profil/github-icon.png" alt="GitHub" />
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
     </main>
     <footer>
       <span> 2025 MentalWell, Hak Cipta Dilindungi. </span>

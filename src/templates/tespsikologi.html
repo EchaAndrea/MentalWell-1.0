@@ -1,29 +1,30 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MentalWell 1.0</title>
-    <link rel="icon" href="/src/public/logo/logoicon.png" type="image/x-icon" />
+    <!-- Bootstrap CSS -->
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/src/styles/tespsikologi.css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script
-      type="module"
-      src="/src/scripts/components/navbar-user.js"
-      defer
-    ></script>
+    <link rel="icon" href="/src/public/logo/logoicon.png" type="image/x-icon" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      integrity="sha512-..."
+      crossorigin="anonymous"
+    />
     <script
       type="module"
       src="/src/scripts/components/navbar-masuk.js"
       defer
     ></script>
+    <script type="module" src="/src/scripts/components/navbar-user.js"></script>
   </head>
-
   <body>
     <!-- navbar components -->
     <navbar-masuk id="masuk"></navbar-masuk>
@@ -31,15 +32,33 @@
     <div class="login-container" id="login-container">
       <div class="login-title">
         <h2>Masuk</h2>
-        <p>Belum punya akun? <a href="#" id="popupDaftar" onclick="openDaftarPopup()">Daftar</a></p>
+        <p>
+          Belum punya akun?
+          <a href="#" id="popupDaftar" onclick="openDaftarPopup()">Daftar</a>
+        </p>
       </div>
       <form class="login-form" id="login-form">
-        <div class="form-control">
-          <input class="form-input" type="email" id="emaillogin" name="emaillogin" placeholder="Masukkan Email" required />
-        </div>
-        <div class="form-control">
-          <i class="far fa-eye eye" onclick="togglePasswordLoginVisibility()"></i>
-          <input class="form-input" type="text" id="loginpassword" name="loginpassword" placeholder="Masukkan Kata Sandi" required />
+        <input
+          class="form-input"
+          type="email"
+          id="emaillogin"
+          name="emaillogin"
+          placeholder="Masukkan Email"
+          required
+        />
+        <div class="password-container">
+          <input
+            class="form-input"
+            type="password"
+            id="loginpassword"
+            name="loginpassword"
+            placeholder="Masukkan Kata Sandi"
+            required
+          />
+          <i
+            class="far fa-eye eye"
+            onclick="togglePasswordLoginVisibility()"
+          ></i>
         </div>
         <p><a href="/src/templates/lupasandi.html">Lupa kata sandi</a></p>
         <button class="submit-btn" type="submit">Masuk</button>
@@ -49,130 +68,140 @@
     <div class="daftar-container" id="daftar-container">
       <div class="daftar-title">
         <h2>Daftar</h2>
-        <p>Sudah punya akun? <a href="#" onclick="openLoginPopup()">Masuk</a></p>
+        <p>
+          Sudah punya akun? <a href="#" onclick="openLoginPopup()">Masuk</a>
+        </p>
       </div>
       <form class="daftar-form" id="daftar-form">
-        <div class="form-control">
-          <input class="form-input" type="email" id="email" name="email" placeholder="Email" required />
-        </div>
-        <div class="form-control">
-          <input class="form-input" type="notelp" id="notelp" name="notelp" placeholder="Nomor Handphone" required />
-        </div>
-        <div class="form-control">
+        <input
+          class="form-input"
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Email"
+          required
+        />
+        <input
+          class="form-input"
+          type="tel"
+          id="notelp"
+          name="notelp"
+          placeholder="Nomor Handphone"
+          required
+        />
+        <div class="password-container">
+          <input
+            class="form-input"
+            type="password"
+            id="passworddaftar"
+            name="passworddaftar"
+            placeholder="Kata Sandi"
+            required
+          />
           <i class="far fa-eye eye" onclick="togglePasswordVisibility()"></i>
-          <input class="form-input" type="password" id="passworddaftar" name="passworddaftar" placeholder="Kata Sandi" required />
         </div>
-        <div class="form-control">
-          <i class="far fa-eye eye confpassword" onclick="toggleConfirmasiPasswordVisibility()"></i>
-          <input class="form-input" type="password" id="confpassword" name="password" placeholder="Konfirmasi Kata Sandi" required />
+        <div class="password-container">
+          <input
+            class="form-input"
+            type="password"
+            id="confpassword"
+            name="password"
+            placeholder="Konfirmasi Kata Sandi"
+            required
+          />
+          <i
+            class="far fa-eye eye confpassword"
+            onclick="toggleConfirmasiPasswordVisibility()"
+          ></i>
         </div>
         <button class="submit-btn" type="submit">Daftar</button>
       </form>
     </div>
-    <main class="container py-5" id="form-section">
+    <main class="container-fluid py-5" style="margin-top: 80px">
       <!-- Halaman 1: Form -->
-      <div id="page1">
-        <div class="row align-items-center">
-          <div class="col-md-6 text-center">
-            <img
-              src="/src/public/tespsikologi/mediasi.png"
-              alt="Tes Psikologi"
-              class="img-fluid mb-4"
-            />
-          </div>
-          <div class="col-md-6">
-            <h4 class="fw-bold">Tes Psikologi</h4>
-            <p>
-              Tes ini menggunakan instrumen SRQ-29 untuk membantu menilai
-              kondisi kesehatan mentalmu, termasuk tanda-tanda awal seperti
-              kecemasan, stres, dan gejala emosional lainnya. Dengan memahami
-              hasilnya, kamu bisa lebih sadar terhadap kondisi psikologis dan
-              mengambil langkah yang tepat jika diperlukan. Yuk, mulai tesnya
-              dan kenali dirimu lebih dalam!
-            </p>
-            <form>
-              <div class="mb-3">
-                <label for="nama" class="form-label fw-bold"
-                  >Nama Lengkap</label
-                >
-                <input
-                  type="text"
-                  id="nama"
-                  class="form-control"
-                  placeholder="Nama Lengkap"
+      <div
+        class="d-flex flex-column align-items-center justify-content-center"
+        style="min-height: 80vh"
+      >
+        <div class="row justify-content-center w-100">
+          <div class="col-12 col-md-10 col-lg-8">
+            <div class="row align-items-center">
+              <!-- Gambar di sebelah kiri -->
+              <div class="col-12 col-lg-6 text-center mb-4 mb-lg-0">
+                <img
+                  src="/src/public/tespsikologi/mediasi.png"
+                  alt="Tes Psikologi"
+                  class="img-fluid"
+                  style="max-width: 400px"
                 />
               </div>
-              <div class="mb-3">
-                <label for="usia" class="form-label fw-bold">Usia</label>
-                <input
-                  type="number"
-                  id="usia"
-                  class="form-control"
-                  placeholder="Usia"
-                />
-              </div>
-              <div class="mb-3">
-                <label for="gender" class="form-label fw-bold"
-                  >Jenis Kelamin</label
+              <!-- Form di sebelah kanan -->
+              <div class="col-12 col-lg-6">
+                <div
+                  class="card shadow-sm border-0"
+                  style="border-radius: 20px"
                 >
-                <select id="gender" class="form-control">
-                  <option value="">Pilih</option>
-                  <option value="Laki-laki">Laki-laki</option>
-                  <option value="Perempuan">Perempuan</option>
-                </select>
+                  <div class="card-body p-4">
+                    <h4 class="fw-bold mb-3 text-center">Tes Psikologi</h4>
+                    <p class="text-center text-muted mb-4">
+                      Tes ini digunakan untuk menilai kondisi emosional dan
+                      mental seseorang, termasuk seberapa tinggi tingkat stres
+                      yang dialami. Memahami tingkat stres dapat membantumu
+                      menemukan cara yang lebih efektif untuk mengatasinya. Yuk,
+                      coba tes ini dan pahami lebih dalam keadaan psikologismu!
+                    </p>
+                    <form>
+                      <div class="mb-3">
+                        <label for="nama" class="form-label fw-bold"
+                          >Nama Lengkap</label
+                        >
+                        <input
+                          type="text"
+                          id="nama"
+                          class="form-control"
+                          placeholder="Nama Lengkap"
+                          style="border-radius: 50px; height: 50px"
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <label for="usia" class="form-label fw-bold"
+                          >Usia</label
+                        >
+                        <input
+                          type="number"
+                          id="usia"
+                          class="form-control"
+                          placeholder="Usia"
+                          style="border-radius: 50px; height: 50px"
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <label for="gender" class="form-label fw-bold"
+                          >Jenis Kelamin</label
+                        >
+                        <select
+                          id="gender"
+                          class="form-select"
+                          style="border-radius: 50px; height: 50px"
+                        >
+                          <option value="">Jenis Kelamin</option>
+                          <option value="Laki-laki">Laki-laki</option>
+                          <option value="Perempuan">Perempuan</option>
+                        </select>
+                      </div>
+                      <button
+                        type="button"
+                        class="btn btn-primary w-100 rounded-pill py-2 fs-5 fw-bold"
+                        onclick="startTest()"
+                        style="height: 50px"
+                      >
+                        Selanjutnya
+                      </button>
+                    </form>
+                  </div>
+                </div>
               </div>
-              <button
-                type="button"
-                class="btn btn-primary w-100 rounded-pill"
-                onclick="startTest()"
-              >
-                Selanjutnya
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-
-      <!-- Halaman 2: Pertanyaan -->
-      <div id="page2" style="display: none">
-        <div class="card px-4 py-4 ms-md-4">
-          <h5 class="fw-bold mb-3 ms-3">Pertanyaan</h5>
-          <form id="quiz-form" class="ms-2"></form>
-          <div class="mt-3 px-3 px-md-0">
-            <button
-              class="btn btn-primary w-100 rounded-pill"
-              onclick="showResult()"
-            >
-              Cek Hasil
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Halaman 3: Hasil -->
-      <div id="page3" style="display: none">
-        <div class="card px-4 py-4 mx-auto" style="max-width: 800px">
-          <div class="text-center mb-4">
-            <img
-              src="/src/public/tespsikologi/growth.png"
-              alt="Hasil Tes"
-              class="img-fluid mb-4"
-              style="max-width: 300px"
-            />
-          </div>
-          <div class="text-center">
-            <h4 class="fw-bold">Hasil Tes Psikologi</h4>
-            <p class="text-muted mb-2">Instrumen SRQ-29</p>
-            <p
-              id="result-text"
-              class="fw-semibold text-dark mt-3 px-3 mx-3"
-            ></p>
-            <a
-              href="/src/templates/listpsikolog.html"
-              class="btn btn-primary rounded-pill px-5 mt-2 mb-3"
-            >
-              Cari Bantuan
-            </a>
+            </div>
           </div>
         </div>
       </div>
@@ -183,5 +212,7 @@
     <script src="/src/scripts/views/pages/tespsikologi.js"></script>
     <script src="/src/scripts/views/pages/daftar.js"></script>
     <script src="/src/scripts/views/pages/login.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
