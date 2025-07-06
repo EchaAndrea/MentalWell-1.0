@@ -15,238 +15,6 @@ body {
 }
 
 /*
-Login Popup Styles
-*/
-.overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-}
-
-.login-container {
-  background-color: #fff;
-  border-radius: 15px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  width: 400px;
-  height: 400px;
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1001;
-}
-
-.login-container .login-title {
-  margin-bottom: 40px;
-  color: #333;
-}
-
-.login-container .login-title h2 {
-  margin-bottom: 1rem;
-}
-
-.login-container .login-title p {
-  font-size: 16px;
-}
-
-.login-container .login-title p a {
-  text-decoration: none;
-  color: #044b77;
-}
-
-.login-container .login-title p a:hover {
-  text-decoration: underline;
-}
-
-.login-container .login-form {
-  display: flex;
-  flex-direction: column;
-  margin-top: -1rem;
-}
-
-.login-container .login-form .form-control {
-  margin-bottom: 1rem;
-  display: flex;
-  justify-content: center;
-  position: relative;
-}
-
-.login-container .login-form .form-control .form-input {
-  display: flex;
-  border: 1px solid #ccc;
-  border-radius: 50px;
-  font-size: 16px;
-  padding-left: 20px;
-  padding-right: 20px;
-  width: 320px;
-  align-items: center;
-  height: 44px;
-}
-
-.login-container .login-form .form-control .eye {
-  position: absolute;
-  right: 30px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  color: #666;
-}
-
-.login-container .login-form .form-input {
-  border: none;
-}
-
-.login-container .login-form p {
-  text-align: end;
-  margin-right: 3px;
-  margin-top: -8px;
-}
-
-.login-container .login-form p a {
-  text-decoration: none;
-  color: grey;
-}
-
-.login-container .login-form p a:hover {
-  text-decoration: none;
-  color: blue;
-}
-
-.login-container .login-form .submit-btn {
-  border: 1px solid #ccc;
-  border-radius: 50px;
-  font-size: 20px;
-  margin-top: 4rem;
-  color: white;
-  font-weight: bold;
-  background-color: #044b77;
-  width: 360px;
-  height: 44px;
-  cursor: pointer;
-}
-
-.login-container .login-form .submit-btn:hover {
-  background-color: #3ad0ea;
-  color: #ffffff;
-}
-
-/*
-Daftar Popup Styles
-*/
-.overly {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-}
-
-.daftar-container {
-  background-color: #fff;
-  border-radius: 15px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  width: 400px;
-  height: 490px;
-  display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1001;
-  flex-direction: column;
-  align-items: center;
-}
-
-.daftar-container .daftar-title {
-  margin-bottom: 20px;
-  color: #333;
-  margin-top: 2.5rem;
-}
-
-.daftar-container .daftar-title h2 {
-  margin-bottom: 1rem;
-}
-
-.daftar-container .daftar-title p a {
-  text-decoration: none;
-  color: #044b77;
-}
-
-.daftar-container .daftar-title p a:hover {
-  text-decoration: underline;
-}
-
-.daftar-container .daftar-form {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.daftar-container .daftar-form .form-control {
-  margin-bottom: 1rem;
-  display: flex;
-  position: relative;
-}
-
-.daftar-container .daftar-form .form-control .form-input {
-  display: flex;
-  border: 1px solid #ccc;
-  border-radius: 50px;
-  font-size: 16px;
-  padding-left: 20px;
-  padding-right: 20px;
-  width: 310px;
-  align-items: center;
-  height: 44px;
-}
-
-.daftar-container .daftar-form .form-control .eye {
-  position: absolute;
-  right: 30px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  color: #666;
-}
-
-.daftar-container .daftar-form .form-input {
-  border: none;
-}
-
-.daftar-container .daftar-form .submit-btn {
-  border: 1px solid #ccc;
-  border-radius: 50px;
-  font-size: 20px;
-  margin-top: 2rem;
-  color: white;
-  font-weight: bold;
-  background-color: #044b77;
-  width: 350px;
-  height: 44px;
-  cursor: pointer;
-}
-
-.daftar-container .daftar-form .submit-btn:hover {
-  background-color: #3ad0ea;
-  color: #ffffff;
-}
-
-/*
 Tentang Kami
 */
 .tentangkami {
@@ -358,5 +126,240 @@ footer {
   width: 100%;
   background-color: #02bbdd;
   color: #fff;
+  text-align: center;
+}
+
+*
+login 
+*/
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.login-container {
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 400px;
+  height: 400px;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 20%;
+  left: 38%;
+  z-index: 1;
+}
+
+.login-container .login-title {
+  margin-bottom: 40px;
+  color: #333;
+}
+
+.login-container .login-title h2 {
+  margin-bottom: 1rem;
+}
+
+.login-container .login-title p {
+  font-size: 16px;
+}
+
+.login-container .login-title p a {
+  text-decoration: none;
+}
+
+.login-container .login-form {
+  display: flex;
+  flex-direction: column;
+  margin-top: -1rem;
+}
+
+.login-container .login-form .form-control {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.login-container .login-form .form-control .form-input {
+  display: flex;
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  font-size: 16px;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 320px;
+  align-items: center;
+  height: 44px;
+}
+
+.login-container .login-form .form-control .eye {
+  position: absolute;
+  margin-left: 300px;
+  margin-top: 15px;
+}
+
+.login-container .login-form .form-input {
+  border: none;
+}
+
+.login-container .login-form p {
+  text-align: end;
+  margin-right: 3px;
+  margin-top: -8px;
+}
+
+.login-container .login-form p a {
+  text-decoration: none;
+  color: grey;
+}
+
+.login-container .login-form p a:hover {
+  text-decoration: none;
+  color: blue;
+}
+
+.login-container .login-form .submit-btn {
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  font-size: 20px;
+  margin-top: 4rem;
+  color: white;
+  font-weight: bold;
+  background-color: #044b77;
+  width: 360px;
+  height: 44px;
+}
+
+.login-container .login-form .submit-btn:hover {
+  background-color: #3ad0ea;
+  color: #ffffff;
+}
+
+/*
+daftar
+*/
+.overly {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.daftar-container {
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 400px;
+  height: 490px;
+  display: none;
+  position: fixed;
+  top: 20%;
+  left: 38%;
+  z-index: 1;
+  flex-direction: column;
+  align-items: center;
+}
+
+.daftar-container .daftar-title {
+  margin-bottom: 20px;
+  color: #333;
+  margin-top: 2.5rem;
+}
+
+.daftar-container .daftar-title h2 {
+  margin-bottom: 1rem;
+}
+
+.daftar-container .daftar-title p a {
+  text-decoration: none;
+}
+
+.daftar-container .daftar-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.daftar-container .daftar-form .form-control {
+  margin-bottom: 1rem;
+  display: flex;
+}
+
+.daftar-container .daftar-form .form-control .form-input {
+  display: flex;
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  font-size: 16px;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 310px;
+  align-items: center;
+  height: 44px;
+}
+
+.daftar-container .daftar-form .form-control .eye {
+  position: absolute;
+  margin-left: 300px;
+  margin-top: 15px;
+}
+
+.daftar-container .daftar-form .form-input {
+  border: none;
+}
+
+.daftar-container .daftar-form p {
+  text-align: end;
+  margin-right: 3px;
+  margin-top: -8px;
+}
+
+.daftar-container .daftar-form p a {
+  text-decoration: none;
+  color: black;
+}
+
+.daftar-container .daftar-form .submit-btn {
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  font-size: 20px;
+  margin-top: 2rem;
+  color: white;
+  font-weight: bold;
+  background-color: #044b77;
+  width: 350px;
+  height: 44px;
+}
+
+.daftar-container .daftar-form .submit-btn:hover {
+  background-color: #3ad0ea;
+  color: #ffffff;
+}
+
+/*
+Footer
+*/
+
+footer {
+  font-size: 18px;
+  padding: 1.5em;
+  height: 18px;
+  background-color: #02bbdd;
+  color: #fff;
+  margin-top: 2rem;
   text-align: center;
 }
