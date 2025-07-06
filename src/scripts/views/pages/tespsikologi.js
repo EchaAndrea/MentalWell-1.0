@@ -31,6 +31,41 @@ const questions = [
 ];
 
 function startTest() {
+  // Validasi input form
+  const nama = document.getElementById("nama").value.trim();
+  const usia = document.getElementById("usia").value.trim();
+  const gender = document.getElementById("gender").value;
+
+  if (!nama) {
+    Swal.fire({
+      title: "Perhatian!",
+      text: "Mohon masukkan nama lengkap Anda.",
+      icon: "warning",
+      confirmButtonText: "OK"
+    });
+    return;
+  }
+
+  if (!usia || usia < 1 || usia > 120) {
+    Swal.fire({
+      title: "Perhatian!",
+      text: "Mohon masukkan usia yang valid (1-120 tahun).",
+      icon: "warning",
+      confirmButtonText: "OK"
+    });
+    return;
+  }
+
+  if (!gender) {
+    Swal.fire({
+      title: "Perhatian!",
+      text: "Mohon pilih jenis kelamin Anda.",
+      icon: "warning",
+      confirmButtonText: "OK"
+    });
+    return;
+  }
+
   document.getElementById("page1").style.display = "none";
   document.getElementById("page2").style.display = "block";
 
