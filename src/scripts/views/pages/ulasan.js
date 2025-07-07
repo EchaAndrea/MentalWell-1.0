@@ -22,12 +22,43 @@ function closeUlasanPopup() {
   });
 }
 
+// Fungsi untuk menampilkan pesan peringatan
+function showReviewRequiredMessage() {
+  Swal.fire({
+    title: "Ulasan Diperlukan!",
+    text: "Silakan isi ulasan terlebih dahulu untuk melanjutkan.",
+    icon: "warning",
+    confirmButtonText: "OK",
+    confirmButtonColor: "#3085d6",
+  });
+}
+
+// Fungsi untuk cek apakah button perlu diklik untuk ulasan
+function handleReviewButtonClick(counselingId, hasReview) {
+  if (!hasReview) {
+    showReviewRequiredMessage();
+    return;
+  }
+  openUlasanPopup(counselingId, "completed");
+}
+
 function authenticate(event) {
   event.preventDefault();
   alert("Authentication logic goes here!");
 }
 
 function submitUlasan(ulasan) {
+  // Validasi input kosong
+  if (!ulasan.trim()) {
+    Swal.fire({
+      title: "Ulasan Kosong!",
+      text: "Mohon isi ulasan terlebih dahulu sebelum mengirim.",
+      icon: "error",
+      confirmButtonText: "OK",
+    });
+    return;
+  }
+
   Swal.fire({
     title: "Memuat...",
     text: "Harap tunggu sejenak. Ulasan akan segera dikirim",
@@ -61,13 +92,24 @@ function submitUlasan(ulasan) {
 
       Swal.fire({
         title: "Berhasil Membuat Ulasan!",
+        text: "Terima kasih atas ulasan yang Anda berikan.",
         icon: "success",
         showConfirmButton: false,
         timer: 2000,
       });
       updateButtonAfterSubmission(currentCounselingId);
+      // Clear textarea setelah berhasil submit
+      document.getElementById("ulasan").value = "";
     })
-    .catch((error) => console.error("Error submitting review:", error))
+    .catch((error) => {
+      console.error("Error submitting review:", error);
+      Swal.fire({
+        title: "Gagal Mengirim Ulasan!",
+        text: "Terjadi kesalahan saat mengirim ulasan. Silakan coba lagi.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    })
     .finally(() => {
       closeUlasanPopup();
     });
@@ -81,6 +123,7 @@ function updateButtonAfterSubmission(counselingId) {
   if (buttonElement) {
     buttonElement.disabled = true;
     buttonElement.classList.add("disabled");
+    buttonElement.textContent = "ULASAN TERKIRIM";
   }
 }
 
