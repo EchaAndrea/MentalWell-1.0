@@ -123,7 +123,7 @@ function updateButtonAfterSubmission(counselingId) {
   if (buttonElement) {
     buttonElement.disabled = true;
     buttonElement.classList.add("disabled");
-    buttonElement.textContent = "ULASAN TERKIRIM";
+    buttonElement.textContent = "ULASAN";
   }
 }
 

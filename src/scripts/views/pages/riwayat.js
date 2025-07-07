@@ -71,7 +71,7 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
         let buttonId = "";
 
         if (riwayat.status === "finished") {
-          buttonText = "ISI ULASAN";
+          buttonText = "ULASAN";
           buttonId = "button-riwayat-ulasan";
           if (riwayat.has_review) {
             buttonDisabled = "disabled";
