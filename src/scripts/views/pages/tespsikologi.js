@@ -30,193 +30,75 @@ const questions = [
   "Apakah anda sulit menghayati atau mengeluarkan perasaan?",
 ];
 
+let questionsGenerated = false;
+
+// Pindah antar halaman
+function showPage(pageId) {
+  const pages = ["page1", "page2", "page3"];
+  pages.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = id === pageId ? "block" : "none";
+  });
+  window.scrollTo(0, 0);
+}
+
+// Mulai tes
 function startTest() {
-  // Validasi input form
   const nama = document.getElementById("nama").value.trim();
   const usia = document.getElementById("usia").value.trim();
   const gender = document.getElementById("gender").value;
 
-  if (!nama) {
-    Swal.fire({
-      title: "Perhatian!",
-      text: "Mohon masukkan nama lengkap Anda.",
-      icon: "warning",
-      confirmButtonText: "OK",
-    });
+  if (!nama || !usia || !gender) {
+    Swal.fire("Perhatian!", "Mohon lengkapi semua isian.", "warning");
     return;
   }
 
-  if (!usia || usia < 1 || usia > 120) {
-    Swal.fire({
-      title: "Perhatian!",
-      text: "Mohon masukkan usia yang valid (1-120 tahun).",
-      icon: "warning",
-      confirmButtonText: "OK",
-    });
-    return;
-  }
-
-  if (!gender) {
-    Swal.fire({
-      title: "Perhatian!",
-      text: "Mohon pilih jenis kelamin Anda.",
-      icon: "warning",
-      confirmButtonText: "OK",
-    });
-    return;
-  }
-
-  // Simpan data user
   window.userData = { nama, usia, gender };
-
-  // Ganti konten halaman dengan halaman pertanyaan
-  showQuestionsPage();
+  showPage("page2");
+  if (!questionsGenerated) generateQuestions();
 }
 
-function showQuestionsPage() {
-  const main = document.querySelector("main");
-  main.innerHTML = `
-    <div class="container-fluid py-5" style="margin-top: 80px">
-      <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-12 col-md-10 col-lg-8">
-            <div class="card shadow-sm border-0" style="border-radius: 20px">
-              <div class="card-body p-4 p-lg-5">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                  <button class="btn btn-outline-secondary rounded-pill px-3 py-2" onclick="goBackToForm()" style="font-size: 14px">
-                    ← Kembali
-                  </button>
-                  <h5 class="fw-bold mb-0">Pertanyaan</h5>
-                  <div style="width: 80px"></div>
-                </div>
-                <form id="quiz-form"></form>
-                <div class="text-center mt-4">
-                  <button class="btn btn-primary rounded-pill px-5 py-2 fs-5 fw-bold" onclick="showResult()" style="height: 50px">
-                    Cek Hasil
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-
-  // Generate pertanyaan
+// Generate pertanyaan (versi radio dalam kotak)
+function generateQuestions() {
   const form = document.getElementById("quiz-form");
   form.innerHTML = "";
 
-  questions.forEach((q, i) => {
-    const group = document.createElement("div");
-    group.className = "mb-4 pb-3 border-bottom";
+  questions.forEach((question, i) => {
+    const block = document.createElement("div");
+    block.className = "question-block";
 
-    const questionText = document.createElement("p");
-    questionText.className = "fw-bold mb-3";
-    questionText.innerText = `${i + 1}. ${q}`;
-    group.appendChild(questionText);
+    const qText = document.createElement("p");
+    qText.className = "fw-bold";
+    qText.innerText = `${i + 1}. ${question}`;
+    block.appendChild(qText);
 
-    const optionsContainer = document.createElement("div");
-    optionsContainer.className = "d-flex gap-3";
+    const options = document.createElement("div");
+    options.className = "option-container";
 
     ["Ya", "Tidak"].forEach((val) => {
       const label = document.createElement("label");
-      label.className =
-        "btn btn-outline-primary rounded-pill px-4 py-2 option-button";
-      label.style.cursor = "pointer";
-
       const input = document.createElement("input");
       input.type = "radio";
       input.name = `question${i}`;
       input.value = val;
-      input.style.display = "none";
+      input.className = "me-2";
 
-      input.addEventListener("change", () => {
-        group.querySelectorAll(".option-button").forEach((lbl) => {
-          lbl.classList.remove("btn-primary");
-          lbl.classList.add("btn-outline-primary");
-        });
-        label.classList.remove("btn-outline-primary");
-        label.classList.add("btn-primary");
-      });
+      const span = document.createElement("span");
+      span.innerText = val;
 
       label.appendChild(input);
-      label.appendChild(document.createTextNode(val));
-      optionsContainer.appendChild(label);
+      label.appendChild(span);
+      options.appendChild(label);
     });
 
-    group.appendChild(optionsContainer);
-    form.appendChild(group);
+    block.appendChild(options);
+    form.appendChild(block);
   });
 
-  window.scrollTo(0, 0);
+  questionsGenerated = true;
 }
 
-function goBackToForm() {
-  const main = document.querySelector("main");
-  main.innerHTML = `
-    <div class="container-fluid py-5" style="margin-top: 80px">
-      <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 80vh">
-        <div class="row justify-content-center w-100">
-          <div class="col-12 col-md-10 col-lg-8">
-            <div class="row align-items-center">
-              <div class="col-12 col-lg-6 text-center mb-4 mb-lg-0">
-                <img src="/src/public/tespsikologi/mediasi.png" alt="Tes Psikologi" class="img-fluid" style="max-width: 400px" />
-              </div>
-              <div class="col-12 col-lg-6">
-                <div class="card shadow-sm border-0" style="border-radius: 20px">
-                  <div class="card-body p-4">
-                    <h4 class="fw-bold mb-3 text-center">Tes Psikologi</h4>
-                    <p class="text-center text-muted mb-4">
-                      Tes ini digunakan untuk menilai kondisi emosional dan mental seseorang, termasuk seberapa tinggi tingkat stres yang dialami. Memahami tingkat stres dapat membantumu menemukan cara yang lebih efektif untuk mengatasinya. Yuk, coba tes ini dan pahami lebih dalam keadaan psikologismu!
-                    </p>
-                    <form>
-                      <div class="mb-3">
-                        <label for="nama" class="form-label fw-bold">Nama Lengkap</label>
-                        <input type="text" id="nama" class="form-control" placeholder="Nama Lengkap" style="border-radius: 50px; height: 50px" value="${
-                          window.userData ? window.userData.nama : ""
-                        }" />
-                      </div>
-                      <div class="mb-3">
-                        <label for="usia" class="form-label fw-bold">Usia</label>
-                        <input type="number" id="usia" class="form-control" placeholder="Usia" style="border-radius: 50px; height: 50px" value="${
-                          window.userData ? window.userData.usia : ""
-                        }" />
-                      </div>
-                      <div class="mb-3">
-                        <label for="gender" class="form-label fw-bold">Jenis Kelamin</label>
-                        <select id="gender" class="form-select" style="border-radius: 50px; height: 50px">
-                          <option value="">Jenis Kelamin</option>
-                          <option value="Laki-laki" ${
-                            window.userData &&
-                            window.userData.gender === "Laki-laki"
-                              ? "selected"
-                              : ""
-                          }>Laki-laki</option>
-                          <option value="Perempuan" ${
-                            window.userData &&
-                            window.userData.gender === "Perempuan"
-                              ? "selected"
-                              : ""
-                          }>Perempuan</option>
-                        </select>
-                      </div>
-                      <button type="button" class="btn btn-primary w-100 rounded-pill py-2 fs-5 fw-bold" onclick="startTest()" style="height: 50px">
-                        Selanjutnya
-                      </button>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-  window.scrollTo(0, 0);
-}
-
+// Cek hasil akhir tes
 function showResult() {
   const answers = [];
 
@@ -228,103 +110,30 @@ function showResult() {
   }
 
   if (answers.includes(null)) {
-    Swal.fire({
-      title: "Perhatian!",
-      text: "Mohon jawab semua pertanyaan terlebih dahulu.",
-      icon: "warning",
-      confirmButtonText: "OK",
-    });
+    Swal.fire("Perhatian!", "Mohon jawab semua pertanyaan.", "warning");
     return;
   }
 
-  // Hitung jawaban "Ya" untuk 1-20 (index 0 sampai 19)
-  const ya1to20 = answers
-    .slice(0, 20)
-    .filter((ans) => ans.toLowerCase() === "ya").length;
+  // Hitung jawaban "Ya" berdasarkan kelompok
+  const ya1to20 = answers.slice(0, 20).filter((a) => a === "Ya").length; // No 1-20 (GME)
+  const ya21 = answers[20] === "Ya" ? 1 : 0; // No 21 (Penggunaan zat)
+  const ya22to24 = answers.slice(21, 24).filter((a) => a === "Ya").length; // No 22-24 (Psikotik)
+  const ya25to29 = answers.slice(24).filter((a) => a === "Ya").length; // No 25-29 (PTSD)
 
-  // Hitung jawaban "Ya" untuk 21-29 (index 20 sampai 28)
-  const ya21to29 = answers
-    .slice(20, 29)
-    .filter((ans) => ans.toLowerCase() === "ya").length;
-
+  // Tentukan hasil berdasarkan aturan SRQ-29
   let result = "";
 
-  if (ya1to20 >= 8 || ya21to29 >= 1) {
+  if (ya1to20 >= 5 || ya21 >= 1 || ya22to24 >= 1 || ya25to29 >= 1) {
     result =
-      "Ditemukan gejala yang memerlukan perhatian lebih lanjut. Disarankan untuk menghubungi profesional kesehatan mental.";
+      "Berdasarkan hasil tes, ditemukan beberapa indikator yang memerlukan perhatian lebih lanjut dari profesional kesehatan mental. Kami sangat menyarankan untuk berkonsultasi dengan psikolog atau psikiater untuk evaluasi dan penanganan yang tepat.";
   } else {
     result =
-      "Tidak ditemukan indikasi yang signifikan, namun tetap jaga kesehatan mental dan emosional Anda.";
+      "Hasil tes menunjukkan kondisi yang relatif baik. Namun, tetap penting untuk menjaga kesehatan mental dan tidak ragu mencari bantuan profesional jika diperlukan. Kesehatan mental sama pentingnya dengan kesehatan fisik.";
   }
 
-  // Simpan hasil
-  window.testResult = result;
-
-  // Tampilkan halaman hasil
-  showResultsPage();
+  document.getElementById("result-text").innerText = result;
+  showPage("page3");
 }
 
-function showResultsPage() {
-  const main = document.querySelector("main");
-  main.innerHTML = `
-    <div class="container-fluid py-5" style="margin-top: 80px">
-      <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-12 col-md-10 col-lg-8">
-            <div class="card shadow-sm border-0" style="border-radius: 20px">
-              <div class="card-body p-4 p-lg-5 text-center">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                  <button class="btn btn-outline-secondary rounded-pill px-3 py-2" onclick="showQuestionsPage()" style="font-size: 14px">
-                    ← Kembali
-                  </button>
-                  <h4 class="fw-bold mb-0">Hasil Tes Psikologi</h4>
-                  <div style="width: 80px"></div>
-                </div>
-                <div class="mb-4">
-                  <img src="/src/public/tespsikologi/growth.png" alt="Hasil Tes" class="img-fluid mb-4" style="max-width: 250px" />
-                </div>
-                <p class="text-muted mb-4">Instrumen SRQ-29</p>
-                <div class="bg-light p-4 rounded-4 mb-4">
-                  <p class="fw-semibold text-dark mb-0">${window.testResult}</p>
-                </div>
-                <div class="d-flex gap-3 justify-content-center">
-                  <button class="btn btn-outline-primary rounded-pill px-4 py-2" onclick="resetTest()" style="height: 50px">
-                    Tes Ulang
-                  </button>
-                  <a href="/src/templates/listpsikolog.html" class="btn btn-primary rounded-pill px-5 py-2 fs-5 fw-bold" style="height: 50px">Cari Bantuan</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-  window.scrollTo(0, 0);
-}
-
-function resetTest() {
-  window.userData = null;
-  window.testResult = null;
-  goBackToForm();
-}
-
-// Fungsi untuk kembali ke halaman pertama
-function goToPage1() {
-  showPage("page1");
-}
-
-// Fungsi untuk kembali ke halaman pertanyaan
-function goToPage2() {
-  showPage("page2");
-}
-
-// Fungsi untuk reset test
-function resetTest() {
-  document.getElementById("nama").value = "";
-  document.getElementById("usia").value = "";
-  document.getElementById("gender").value = "";
-  document.getElementById("quiz-form").innerHTML = "";
-  document.getElementById("result-text").textContent = "";
-  showPage("page1");
-}
+// Tampilkan halaman awal saat pertama kali load
+document.addEventListener("DOMContentLoaded", () => showPage("page1"));

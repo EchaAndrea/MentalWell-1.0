@@ -131,47 +131,108 @@ img.img-fluid.mb-4 {
   margin: 0 auto;
 }
 
-/* Removed conflicting styles for #page2 */
-
-.option-container {
-  display: flex;
-  padding: 15px 0;
-  flex-direction: column;
-  gap: 0.8rem;
-  margin-bottom: 1.5rem;
+/* Pertanyaan */
+.question-block {
+  margin-bottom: 2rem;
 }
 
-.option-button {
-  background-color: white;
-  color: #333;
+/* Pengaturan Card Pertanyaan */
+#page2 .card {
+  max-width: 800px; /* Mengatur lebar maksimal card */
+  margin: 0 auto; /* Centering card */
+  padding: 1rem; /* Padding dalam card */
+  border-radius: 15px; /* Sudut melengkung */
+}
+
+#page2 .container {
+  padding-top: 1rem; /* Margin atas dikurangi */
+  padding-bottom: 0.5rem; /* Margin bawah dikurangi lebih banyak */
+  padding-left: 1rem; /* Margin kiri */
+  padding-right: 1rem; /* Margin kanan */
+}
+
+/* Pengaturan Card Hasil */
+#page3 .card {
+  padding-top: 2rem; /* Menambah jarak atas untuk konten */
+  padding-bottom: 2rem; /* Menambah jarak bawah untuk konten */
+}
+
+#page3 .container {
+  padding-top: 1rem; /* Menambah jarak atas container */
+  padding-bottom: 0.5rem; /* Mengurangi jarak bawah container */
+}
+
+/* Button Cek Hasil */
+#page2 .btn-primary {
+  margin-bottom: 1rem; /* Menaikkan posisi button */
+  padding: 10px 16px; /* Padding sama dengan input radio */
+  font-size: 16px; /* Font size sama dengan input radio */
+  font-weight: 500; /* Font weight sama dengan input radio */
+  border-radius: 0.75rem; /* Border radius sama dengan input radio */
+  width: 100%; /* Lebar penuh seperti input radio */
+  max-width: 800px; /* Maksimal lebar button */
+  height: auto; /* Tinggi otomatis */
+  display: block; /* Block display */
+  margin-left: auto; /* Center alignment */
+  margin-right: auto; /* Center alignment */
+}
+
+/* Jarak khusus untuk elemen di card hasil */
+#page3 .card h5 {
+  margin-top: 1rem; /* Jarak atas judul "Hasil Tes" */
+}
+
+#page3 .card .d-flex {
+  margin-bottom: 1rem; /* Jarak bawah button */
+}
+
+/* Responsive untuk card pertanyaan */
+@media (max-width: 768px) {
+  #page2 .card {
+    max-width: 100%;
+    margin: 0 1rem;
+    padding: 1.5rem;
+  }
+
+  #page2 .container {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+}
+
+/* Label radio kotak */
+.option-container label {
+  display: block;
+  padding: 10px 16px;
   border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  padding: 12px 20px;
+  border-radius: 0.75rem;
+  margin-bottom: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
-  width: 100%;
-  text-align: left;
-  font-size: 16px;
+  font-weight: 500;
 }
 
-.option-button:hover {
+/* Hover efek */
+.option-container label:hover {
   background-color: #f8f9fa;
-  border-color: #044b77;
-  transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.option-button.active {
-  background-color: #044b77;
-  color: white;
-  border-color: #044b77;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(4, 75, 119, 0.3);
-}
-
-input[type="radio"] {
+/* Radio */
+.option-container input[type="radio"] {
+  margin-right: 10px;
   accent-color: #044b77;
   transform: scale(1.1);
+}
+
+/* Jika terpilih */
+.option-container input[type="radio"]:checked + span {
+  color: #044b77;
+  font-weight: 600;
+}
+
+#result-text {
+  font-size: 1.1rem;
+  line-height: 1.6;
 }
 
 .btn-primary {
@@ -539,48 +600,10 @@ Footer
 footer {
   font-size: 18px;
   padding: 1.5em;
-  height: 18px;
   background-color: #02bbdd;
   color: #fff;
-  margin-top: 2rem;
+  margin-top: 1rem;
   text-align: center;
-}
-
-/* Custom styles for form inputs */
-.form-control,
-.form-select {
-  border: 1px solid #ddd;
-  transition: all 0.3s ease;
-}
-
-.form-control:focus,
-.form-select:focus {
-  border-color: #044b77;
-  box-shadow: 0 0 0 0.2rem rgba(4, 75, 119, 0.25);
-}
-
-/* Custom card styles */
-.card {
-  border: none;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
-
-.card:hover {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-/* Question numbering */
-.question-number {
-  font-weight: bold;
-  color: #044b77;
-  margin-bottom: 10px;
-}
-
-/* Result text styling */
-#result-text {
-  font-size: 1.1rem;
-  line-height: 1.6;
 }
 
 /* Responsive adjustments */
