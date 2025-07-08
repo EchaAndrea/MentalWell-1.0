@@ -5,8 +5,41 @@ const supabaseKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpZ2R5cXN5cGV0b3ppY2l1aGVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg1NzkzNjQsImV4cCI6MjA1NDE1NTM2NH0.ctFsP3ITmiPKJz9RHEkwxdHSKV-E1urbMqcXYui9Gt8";
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+// Function to get current user ID from API
+async function getCurrentUserId() {
+  try {
+    const token = sessionStorage.getItem("authToken");
+    if (!token) throw new Error("No auth token");
+
+    const response = await fetch(
+      "https://mentalwell10-api-production.up.railway.app/my-data",
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    if (!response.ok) throw new Error("Failed to fetch user data");
+
+    const data = await response.json();
+    return data.result.users.user_id;
+  } catch (error) {
+    console.error("Error getting current user ID:", error);
+    return null;
+  }
+}
+
 // deklarasi window.initPopupChat
-window.initPopupChat = function () {
+window.initPopupChat = async function () {
+  // Get current user ID from API
+  const currentUserId = await getCurrentUserId();
+  if (!currentUserId) {
+    alert("Tidak dapat mengambil data user. Silakan login ulang.");
+    return;
+  }
+
+  // Store current user ID for later use
+  localStorage.setItem("current_user_id", currentUserId);
+
   // Set nama psikolog/pasien
   const role = localStorage.getItem("active_role");
   let nama = "Nama";
@@ -76,7 +109,7 @@ window.initPopupChat = function () {
     }
 
     const senderRole = localStorage.getItem("active_role");
-    const senderId = parseInt(localStorage.getItem("active_user_id"), 10);
+    const senderId = parseInt(localStorage.getItem("current_user_id"), 10);
     const id = generateId();
 
     // Tambahkan pesan ke chat body langsung (optimistic update)
@@ -113,7 +146,7 @@ window.initPopupChat = function () {
     }
 
     const senderRole = localStorage.getItem("active_role");
-    const senderId = parseInt(localStorage.getItem("active_user_id"), 10);
+    const senderId = parseInt(localStorage.getItem("current_user_id"), 10);
     const id = generateId();
 
     // Show loading
@@ -271,15 +304,17 @@ async function loadMessages(conversationId) {
   if (data) {
     const chatBody = document.getElementById("chatBody");
     chatBody.innerHTML = "";
-    const activeUserId = parseInt(localStorage.getItem("active_user_id"), 10);
 
-    console.log("Active User ID:", activeUserId);
+    // Use current_user_id instead of active_user_id
+    const currentUserId = parseInt(localStorage.getItem("current_user_id"), 10);
+
+    console.log("Current User ID:", currentUserId);
     console.log("Messages:", data);
 
     data.forEach((msg) => {
-      const isFromCurrentUser = Number(msg.sender_id) === activeUserId;
+      const isFromCurrentUser = Number(msg.sender_id) === currentUserId;
       console.log(
-        `Message from ${msg.sender_id}, current user: ${activeUserId}, isFromCurrentUser: ${isFromCurrentUser}`
+        `Message from ${msg.sender_id}, current user: ${currentUserId}, isFromCurrentUser: ${isFromCurrentUser}`
       );
 
       addMessageToChat(
@@ -312,8 +347,8 @@ function subscribeToMessages(conversationId) {
       },
       (payload) => {
         const msg = payload.new;
-        const activeUserId = Number(localStorage.getItem("active_user_id"));
-        const isFromCurrentUser = Number(msg.sender_id) === activeUserId;
+        const currentUserId = Number(localStorage.getItem("current_user_id"));
+        const isFromCurrentUser = Number(msg.sender_id) === currentUserId;
 
         // Jangan tambahkan pesan dari user sendiri (sudah ditambahkan saat kirim)
         if (!isFromCurrentUser) {
