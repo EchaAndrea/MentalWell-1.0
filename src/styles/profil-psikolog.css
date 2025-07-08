@@ -164,13 +164,13 @@ main {
 .topik-keahlian p {
   font-size: 21px;
   font-weight: bold;
-  margin-bottom: 4px; 
+  margin-bottom: 4px;
 }
 
 .topik-keahlian ul {
   font-size: 19px;
   margin-left: 20px;
-  margin-top: 0; 
+  margin-top: 0;
 }
 
 .container-ulasan {
@@ -495,7 +495,7 @@ daftar
 }
 
 .logos-2 {
-  overflow-x: auto; 
+  overflow-x: auto;
   white-space: nowrap;
   margin: 1rem 6rem 0rem;
   position: relative;
@@ -518,7 +518,6 @@ daftar
 
 .logo-slide-2 {
   display: flex;
-  overflow-x: auto; 
   flex-shrink: 0;
   margin-bottom: 0rem;
 }
@@ -526,9 +525,8 @@ daftar
 #userReviews {
   display: flex;
   flex-direction: row;
-  overflow-x: auto; 
-  white-space: nowrap; 
   height: 15rem;
+  flex-wrap: wrap; 
 }
 
 .komentar-user h3 {
