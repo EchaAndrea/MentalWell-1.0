@@ -495,11 +495,12 @@ daftar
 }
 
 .logos-2 {
-  overflow-x: auto;
+  /* overflow: hidden; */
   white-space: nowrap;
   margin: 1rem 6rem 0rem;
   position: relative;
   display: flex;
+  overflow-x: hidden;
 }
 
 .logos-2::before,
@@ -508,26 +509,25 @@ daftar
   top: 0;
   width: 250px;
   height: 100%;
-  content: "";
+  content: '';
+  /* z-index: 1; */
 }
 
 .logos-2:hover .logo-slide-2 {
   animation-play-state: paused;
-  flex-wrap: wrap;
 }
 
 .logo-slide-2 {
-  display: flex;
-  overflow-x: auto;
+  display: inline-block;
+  animation: 15s slide infinite linear;
+  /* margin-bottom: 2rem; */
   flex-shrink: 0;
-  margin-bottom: 0rem;
+  margin-bottom: 1rem;
 }
 
-#userReviews {
-  display: hidden;
-  flex-direction: row;
-  height: 15rem;
-  flex-wrap: wrap; 
+.logo-slide-2 div {
+  /* height: 100rem; */
+  margin: 2rem 0rem;
 }
 
 .komentar-user h3 {
