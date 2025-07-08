@@ -524,7 +524,7 @@ daftar
 }
 
 #userReviews {
-  display: flex;
+  display: hidden;
   flex-direction: row;
   height: 15rem;
   flex-wrap: wrap; 
