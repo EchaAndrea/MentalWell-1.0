@@ -25,12 +25,24 @@ async function populateHTMLWithData() {
     // Ambil data user dari localStorage (yang disimpan saat isi data)
     const userData = JSON.parse(localStorage.getItem("user_data") || "{}");
 
+    // Debug: lihat data yang tersedia
+    console.log("Counseling data:", counseling);
+    console.log("UserData from localStorage:", userData);
+
     // Gunakan data dari counseling jika ada, fallback ke localStorage
     let patient_name = counseling.patient_name || userData.name || "-";
     let patient_nickname =
       counseling.patient_nickname || userData.nickname || userData.name || "-";
+
+    // Coba berbagai field name yang mungkin untuk phone
     let patient_phone =
-      counseling.patient_phone_number || userData.phone_number || "-";
+      counseling.patient_phone_number ||
+      counseling.patient_phone ||
+      counseling.phone_number ||
+      counseling.phone ||
+      userData.phone_number ||
+      userData.phone ||
+      "-";
 
     // Jika masih kosong, coba ambil dari jadwal localStorage
     if (
@@ -47,9 +59,18 @@ async function populateHTMLWithData() {
             ? jadwal.user_data.nickname || "-"
             : patient_nickname;
         patient_phone =
-          patient_phone === "-" ? jadwal.user_data.phone || "-" : patient_phone;
+          patient_phone === "-"
+            ? jadwal.user_data.phone || jadwal.user_data.phone_number || "-"
+            : patient_phone;
       }
     }
+
+    // Debug: lihat hasil akhir
+    console.log("Final data:", {
+      patient_name,
+      patient_nickname,
+      patient_phone,
+    });
 
     valueContainer.innerHTML = `
       <p><strong>${patient_name}</strong></p>
@@ -65,12 +86,17 @@ async function populateHTMLWithData() {
     const userData = JSON.parse(localStorage.getItem("user_data") || "{}");
     const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
 
+    console.log("Fallback - userData:", userData);
+    console.log("Fallback - jadwal:", jadwal);
+
     const valueContainer = document.querySelector(".value");
     if (valueContainer) {
       valueContainer.innerHTML = `
         <p><strong>${userData.name || "-"}</strong></p>
         <p><strong>${userData.nickname || userData.name || "-"}</strong></p>
-        <p><strong>${userData.phone_number || "-"}</strong></p>
+        <p><strong>${
+          userData.phone_number || userData.phone || "-"
+        }</strong></p>
         <p><strong>${formatTanggalIndo(jadwal.tanggal) || "-"}</strong></p>
         <p><strong>${jadwal.waktu ? jadwal.waktu + " WIB" : "-"}</strong></p>
       `;

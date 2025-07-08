@@ -152,16 +152,17 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Simpan data user ke localStorage untuk digunakan di halaman selesai
     if (userProfile) {
-      localStorage.setItem(
-        "user_data",
-        JSON.stringify({
-          name: userProfile.name,
-          nickname: userProfile.nickname || userProfile.name,
-          phone_number: userProfile.phone,
-          birth_date: userProfile.birth_date,
-          gender: userProfile.gender,
-        })
-      );
+      const userDataToSave = {
+        name: userProfile.name,
+        nickname: userProfile.nickname || userProfile.name,
+        phone_number: userProfile.phone_number || userProfile.phone, // Coba kedua field
+        phone: userProfile.phone || userProfile.phone_number, // Tambahkan fallback
+        birth_date: userProfile.birth_date,
+        gender: userProfile.gender,
+      };
+
+      console.log("Saving user data:", userDataToSave); // Debug
+      localStorage.setItem("user_data", JSON.stringify(userDataToSave));
     }
 
     // Fill data diri
