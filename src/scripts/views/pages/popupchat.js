@@ -11,6 +11,8 @@ async function getCurrentUserId() {
     const token = sessionStorage.getItem("authToken");
     if (!token) throw new Error("No auth token");
 
+    console.log("Fetching user data with token:", token);
+
     const response = await fetch(
       "https://mentalwell10-api-production.up.railway.app/my-data",
       {
@@ -18,10 +20,37 @@ async function getCurrentUserId() {
       }
     );
 
-    if (!response.ok) throw new Error("Failed to fetch user data");
+    console.log("Response status:", response.status);
+    console.log("Response ok:", response.ok);
+
+    if (!response.ok)
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 
     const data = await response.json();
-    return data.result.users.user_id;
+    console.log("API Response:", data);
+
+    // Try different possible paths for user_id
+    let userId = null;
+
+    // Check various possible response structures
+    if (data.result?.users?.user_id) {
+      userId = data.result.users.user_id;
+    } else if (data.result?.user_id) {
+      userId = data.result.user_id;
+    } else if (data.user_id) {
+      userId = data.user_id;
+    } else if (data.id) {
+      userId = data.id;
+    } else if (data.users?.user_id) {
+      userId = data.users.user_id;
+    } else if (data.user?.user_id) {
+      userId = data.user.user_id;
+    } else if (data.user?.id) {
+      userId = data.user.id;
+    }
+
+    console.log("Extracted user ID:", userId);
+    return userId;
   } catch (error) {
     console.error("Error getting current user ID:", error);
     return null;
@@ -30,15 +59,30 @@ async function getCurrentUserId() {
 
 // deklarasi window.initPopupChat
 window.initPopupChat = async function () {
+  console.log("Initializing popup chat...");
+
   // Get current user ID from API
   const currentUserId = await getCurrentUserId();
-  if (!currentUserId) {
-    alert("Tidak dapat mengambil data user. Silakan login ulang.");
-    return;
-  }
+  console.log("Current user ID result:", currentUserId);
 
-  // Store current user ID for later use
-  localStorage.setItem("current_user_id", currentUserId);
+  if (!currentUserId) {
+    console.error("Cannot get user ID, falling back to alternative method");
+
+    // Fallback: try to get from localStorage if available
+    const fallbackUserId =
+      localStorage.getItem("user_id") ||
+      localStorage.getItem("current_user_id");
+    if (fallbackUserId) {
+      console.log("Using fallback user ID:", fallbackUserId);
+      localStorage.setItem("current_user_id", fallbackUserId);
+    } else {
+      alert("Tidak dapat mengambil data user. Silakan login ulang.");
+      return;
+    }
+  } else {
+    // Store current user ID for later use
+    localStorage.setItem("current_user_id", currentUserId);
+  }
 
   // Set nama psikolog/pasien
   const role = localStorage.getItem("active_role");
@@ -71,29 +115,34 @@ window.initPopupChat = async function () {
 
   // Fungsi untuk upload file ke Supabase Storage
   async function uploadFile(file) {
-    const fileExt = file.name.split(".").pop();
-    const fileName = `${Date.now()}.${fileExt}`;
-    const filePath = `chat-files/${fileName}`;
+    try {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+      const filePath = `chat-files/${fileName}`;
 
-    const { data, error } = await supabase.storage
-      .from("chat-files")
-      .upload(filePath, file);
+      const { data, error } = await supabase.storage
+        .from("chat-files")
+        .upload(filePath, file);
 
-    if (error) {
-      console.error("Error uploading file:", error);
+      if (error) {
+        console.error("Error uploading file:", error);
+        return null;
+      }
+
+      // Get public URL
+      const { data: publicURL } = supabase.storage
+        .from("chat-files")
+        .getPublicUrl(filePath);
+
+      return {
+        url: publicURL.publicUrl,
+        fileName: file.name,
+        fileSize: file.size,
+      };
+    } catch (error) {
+      console.error("Upload file error:", error);
       return null;
     }
-
-    // Get public URL
-    const { data: publicURL } = supabase.storage
-      .from("chat-files")
-      .getPublicUrl(filePath);
-
-    return {
-      url: publicURL.publicUrl,
-      fileName: file.name,
-      fileSize: file.size,
-    };
   }
 
   // Fungsi untuk mengirim pesan
@@ -111,6 +160,13 @@ window.initPopupChat = async function () {
     const senderRole = localStorage.getItem("active_role");
     const senderId = parseInt(localStorage.getItem("current_user_id"), 10);
     const id = generateId();
+
+    console.log("Sending message:", {
+      conversationId,
+      senderRole,
+      senderId,
+      message,
+    });
 
     // Tambahkan pesan ke chat body langsung (optimistic update)
     addMessageToChat(message, true, "text");
@@ -130,8 +186,10 @@ window.initPopupChat = async function () {
     ]);
 
     if (error) {
+      console.error("Error sending message:", error);
       alert("Gagal mengirim pesan: " + error.message);
-      console.error(error);
+    } else {
+      console.log("Message sent successfully");
     }
 
     input.value = "";
