@@ -246,7 +246,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         confirmButtonText: "Sudah Bayar",
       }).then((result) => {
         if (result.isConfirmed) {
-          if (mode === "realtime") {
+          if (mode === "realtime" || mode === "chat") {
             createRealtimeCounseling();
           } else {
             confirmPayment();
