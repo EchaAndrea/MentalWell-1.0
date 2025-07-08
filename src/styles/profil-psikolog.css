@@ -199,6 +199,19 @@ main {
   text-align: center;
 }
 
+#userReview {
+  margin: 20px 20px;
+  width: 100px;
+  height: 100px;
+}
+
+.userReviews {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: 1rem;
+  /* Adjust the gap as needed */
+}
+
 .isi-ulasan {
   display: flex;
   flex-direction: row;
@@ -238,10 +251,7 @@ main {
 
 #btnDaftar.disabled {
   background-color: #ccc;
-  /* Change to your desired disabled button color */
   color: #999;
-  /* Change to your desired text color for disabled button */
-  /* Add any additional styling for the disabled state */
   cursor: default;
 }
 
