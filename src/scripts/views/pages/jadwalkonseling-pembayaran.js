@@ -116,90 +116,16 @@ async function confirmPayment() {
 
       localStorage.setItem("last_counseling_id", counseling_id);
 
-      // Langsung buat conversation setelah counseling berhasil dibuat
-      try {
-        console.log("Creating conversation for counseling_id:", counseling_id);
-
-        const createConversationRes = await fetch(
-          `https://mentalwell10-api-production.up.railway.app/conversations`,
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              counseling_id: counseling_id,
-              psychologist_id: psychologist_id,
-            }),
-          }
-        );
-
-        if (createConversationRes.ok) {
-          const conversationData = await createConversationRes.json();
-          const conversation_id =
-            conversationData.conversation_id || conversationData.id;
-
-          if (conversation_id) {
-            localStorage.setItem("last_conversation_id", conversation_id);
-            console.log("Conversation created successfully:", conversation_id);
-          } else {
-            console.log("Conversation response:", conversationData);
-            // Jika response tidak ada conversation_id, coba alternatif
-            localStorage.setItem("last_conversation_id", "null");
-          }
-        } else {
-          const errorData = await createConversationRes.json();
-          console.error("Failed to create conversation:", errorData);
-
-          // Jika endpoint conversations tidak ada, coba langsung insert ke Supabase
-          try {
-            const supabaseRes = await fetch(
-              "https://uigdyqsypetoziciuhef.supabase.co/rest/v1/conversations",
-              {
-                method: "POST",
-                headers: {
-                  Authorization:
-                    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpZ2R5cXN5cGV0b3ppY2l1aGVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM0NzgyMTcsImV4cCI6MjA0OTA1NDIxN30.oYQYxRUo9L0x8j8POhxFQUzKHLCzTCyY-fYqWxvOFWk",
-                  "Content-Type": "application/json",
-                  apikey:
-                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpZ2R5cXN5cGV0b3ppY2l1aGVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM0NzgyMTcsImV4cCI6MjA0OTA1NDIxN30.oYQYxRUo9L0x8j8POhxFQUzKHLCzTCyY-fYqWxvOFWk",
-                },
-                body: JSON.stringify({
-                  counseling_id: counseling_id,
-                  psychologist_id: psychologist_id,
-                  created_at: new Date().toISOString(),
-                }),
-              }
-            );
-
-            if (supabaseRes.ok) {
-              const supabaseData = await supabaseRes.json();
-              const conversation_id = supabaseData[0]?.id;
-
-              if (conversation_id) {
-                localStorage.setItem("last_conversation_id", conversation_id);
-                console.log(
-                  "Conversation created via Supabase:",
-                  conversation_id
-                );
-              } else {
-                localStorage.setItem("last_conversation_id", "null");
-              }
-            } else {
-              localStorage.setItem("last_conversation_id", "null");
-            }
-          } catch (supabaseError) {
-            console.error(
-              "Supabase conversation creation failed:",
-              supabaseError
-            );
-            localStorage.setItem("last_conversation_id", "null");
-          }
+      const detail = await fetch(
+        `https://mentalwell10-api-production.up.railway.app/counseling/${counseling_id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
         }
-      } catch (error) {
-        console.error("Error creating conversation:", error);
-        localStorage.setItem("last_conversation_id", "null");
+      ).then((res) => res.json());
+
+      const conversation_id = detail.counseling?.conversation_id;
+      if (conversation_id) {
+        localStorage.setItem("last_conversation_id", conversation_id);
       }
 
       Swal.close();
