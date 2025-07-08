@@ -82,23 +82,6 @@ async function renderArticleDetails() {
       }
     }
 
-    // Scroll otomatis horizontal untuk ulasan
-    let scrollAmount2 = 0;
-    const scrollSpeed2 = 1.5;
-    function scroll2() {
-      if (!userReviewsContainer) return;
-      scrollAmount2 += scrollSpeed2;
-      userReviewsContainer.scrollLeft = scrollAmount2;
-      if (
-        scrollAmount2 >=
-        userReviewsContainer.scrollWidth - userReviewsContainer.clientWidth
-      ) {
-        scrollAmount2 = 0;
-      }
-      requestAnimationFrame(scroll2);
-    }
-    setTimeout(scroll2, 500);
-
     // Render ketersediaan (availability)
     const availabilityTimes = document.getElementById("availabilityTimes");
     if (availabilityTimes) {
