@@ -59,25 +59,8 @@ window.initPopupChat = async function () {
   localStorage.setItem("current_user_id", tokenUserId);
   localStorage.setItem("current_user_role", tokenRole);
 
-  // Get active role (bisa berbeda dari token role)
-  const activeRole = localStorage.getItem("active_role");
-  console.log("Active role from localStorage:", activeRole);
-
-  // Tentukan current user ID berdasarkan role aktif
-  let currentUserId;
-  if (activeRole === "psikolog") {
-    // Jika saya psikolog, ID saya adalah psychologist_id
-    currentUserId =
-      localStorage.getItem("active_psychologist_id") || tokenUserId;
-  } else {
-    // Jika saya patient, ID saya adalah patient_id
-    currentUserId = localStorage.getItem("active_patient_id") || tokenUserId;
-  }
-
-  console.log("Final current user ID:", currentUserId);
-  localStorage.setItem("final_current_user_id", currentUserId);
-
   // Set nama psikolog/pasien
+  const activeRole = localStorage.getItem("active_role");
   let nama = "Nama";
   if (activeRole === "psikolog") {
     nama = localStorage.getItem("active_patient_name") || "Pasien";
@@ -150,10 +133,7 @@ window.initPopupChat = async function () {
     }
 
     const senderRole = localStorage.getItem("current_user_role");
-    const senderId = parseInt(
-      localStorage.getItem("final_current_user_id"),
-      10
-    );
+    const senderId = parseInt(localStorage.getItem("current_user_id"), 10);
     const id = generateId();
 
     console.log("Sending message:", {
@@ -199,10 +179,7 @@ window.initPopupChat = async function () {
     }
 
     const senderRole = localStorage.getItem("current_user_role");
-    const senderId = parseInt(
-      localStorage.getItem("final_current_user_id"),
-      10
-    );
+    const senderId = parseInt(localStorage.getItem("current_user_id"), 10);
     const id = generateId();
 
     // Show loading
@@ -259,7 +236,7 @@ window.initPopupChat = async function () {
 
     // Handle different message types
     if (type === "file" && fileUrl) {
-      // File message - gunakan icon yang ada di HTML
+      // File message
       msgDiv.innerHTML = `
         <div class="file-message">
           <strong>${fileName || "File"}</strong><br>
@@ -278,7 +255,7 @@ window.initPopupChat = async function () {
     chatBody.scrollTop = chatBody.scrollHeight;
   }
 
-  // Event listeners - gunakan element yang sudah ada di HTML
+  // Event listeners
   const chatInput = document.getElementById("chatInput");
   if (chatInput) {
     chatInput.addEventListener("keydown", function (e) {
@@ -355,30 +332,19 @@ async function loadMessages(conversationId) {
     const chatBody = document.getElementById("chatBody");
     chatBody.innerHTML = "";
 
-    const currentUserId = parseInt(
-      localStorage.getItem("final_current_user_id"),
-      10
-    );
-    const activeRole = localStorage.getItem("active_role");
+    // Gunakan current_user_id dari token untuk comparison
+    const currentUserId = parseInt(localStorage.getItem("current_user_id"), 10);
 
-    console.log("Current User ID:", currentUserId);
-    console.log("Active Role:", activeRole);
+    console.log("Current User ID from token:", currentUserId);
     console.log("Messages:", data);
 
     data.forEach((msg) => {
-      // Logic untuk menentukan apakah pesan dari user yang sedang login
-      let isFromCurrentUser = false;
-
-      if (activeRole === "psikolog") {
-        // Jika saya psikolog, pesan dari saya jika sender_role adalah "psychologist"
-        isFromCurrentUser = msg.sender_role === "psychologist";
-      } else {
-        // Jika saya patient, pesan dari saya jika sender_role adalah "patient"
-        isFromCurrentUser = msg.sender_role === "patient";
-      }
+      // Bandingkan sender_id dengan current_user_id
+      // Jika sender_id === current_user_id, berarti pesan dari saya sendiri
+      const isFromCurrentUser = Number(msg.sender_id) === currentUserId;
 
       console.log(
-        `Message from sender_id: ${msg.sender_id}, sender_role: ${msg.sender_role}, active_role: ${activeRole}, isFromCurrentUser: ${isFromCurrentUser}`
+        `Message from sender_id: ${msg.sender_id}, current_user_id: ${currentUserId}, isFromCurrentUser: ${isFromCurrentUser}`
       );
 
       addMessageToChat(
@@ -411,18 +377,10 @@ function subscribeToMessages(conversationId) {
       },
       (payload) => {
         const msg = payload.new;
-        const activeRole = localStorage.getItem("active_role");
+        const currentUserId = Number(localStorage.getItem("current_user_id"));
+        const isFromCurrentUser = Number(msg.sender_id) === currentUserId;
 
-        // Logic yang sama untuk real-time messages
-        let isFromCurrentUser = false;
-
-        if (activeRole === "psikolog") {
-          isFromCurrentUser = msg.sender_role === "psychologist";
-        } else {
-          isFromCurrentUser = msg.sender_role === "patient";
-        }
-
-        // Hanya tambahkan pesan dari lawan bicara
+        // Hanya tambahkan pesan dari lawan bicara (tidak dari diri sendiri)
         if (!isFromCurrentUser) {
           addMessageToChat(
             msg.content,
