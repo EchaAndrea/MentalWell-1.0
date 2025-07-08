@@ -5,54 +5,37 @@ const supabaseKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpZ2R5cXN5cGV0b3ppY2l1aGVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg1NzkzNjQsImV4cCI6MjA1NDE1NTM2NH0.ctFsP3ITmiPKJz9RHEkwxdHSKV-E1urbMqcXYui9Gt8";
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Function to get current user ID from API
-async function getCurrentUserId() {
+// Function to decode JWT token and get user ID
+function getUserIdFromToken() {
   try {
     const token = sessionStorage.getItem("authToken");
-    if (!token) throw new Error("No auth token");
+    if (!token) return null;
 
-    console.log("Fetching user data with token:", token);
+    const payload = token.split(".")[1];
+    const decoded = JSON.parse(atob(payload));
 
-    const response = await fetch(
-      "https://mentalwell10-api-production.up.railway.app/my-data",
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+    console.log("Decoded token:", decoded);
 
-    console.log("Response status:", response.status);
-    console.log("Response ok:", response.ok);
-
-    if (!response.ok)
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-
-    const data = await response.json();
-    console.log("API Response:", data);
-
-    // Try different possible paths for user_id
-    let userId = null;
-
-    // Check various possible response structures
-    if (data.result?.users?.user_id) {
-      userId = data.result.users.user_id;
-    } else if (data.result?.user_id) {
-      userId = data.result.user_id;
-    } else if (data.user_id) {
-      userId = data.user_id;
-    } else if (data.id) {
-      userId = data.id;
-    } else if (data.users?.user_id) {
-      userId = data.users.user_id;
-    } else if (data.user?.user_id) {
-      userId = data.user.user_id;
-    } else if (data.user?.id) {
-      userId = data.user.id;
-    }
-
-    console.log("Extracted user ID:", userId);
-    return userId;
+    // Token berisi: {"id":29,"role":"psychologist","name":"Eca","iat":1751982349,"exp":1751996749}
+    return decoded.id;
   } catch (error) {
-    console.error("Error getting current user ID:", error);
+    console.error("Error decoding token:", error);
+    return null;
+  }
+}
+
+// Function to get current user role from token
+function getUserRoleFromToken() {
+  try {
+    const token = sessionStorage.getItem("authToken");
+    if (!token) return null;
+
+    const payload = token.split(".")[1];
+    const decoded = JSON.parse(atob(payload));
+
+    return decoded.role; // "psychologist" atau "patient"
+  } catch (error) {
+    console.error("Error getting role from token:", error);
     return null;
   }
 }
@@ -61,28 +44,29 @@ async function getCurrentUserId() {
 window.initPopupChat = async function () {
   console.log("Initializing popup chat...");
 
-  // Get current user ID from API
-  const currentUserId = await getCurrentUserId();
-  console.log("Current user ID result:", currentUserId);
+  // Get user ID dan role dari token
+  const tokenUserId = getUserIdFromToken();
+  const tokenRole = getUserRoleFromToken();
 
-  if (!currentUserId) {
-    console.error("Cannot get user ID, falling back to alternative method");
+  console.log("Token User ID:", tokenUserId);
+  console.log("Token Role:", tokenRole);
 
-    // Fallback: try to get from localStorage if available
-    const fallbackUserId =
-      localStorage.getItem("user_id") ||
-      localStorage.getItem("current_user_id");
-    if (fallbackUserId) {
-      console.log("Using fallback user ID:", fallbackUserId);
-      localStorage.setItem("current_user_id", fallbackUserId);
-    } else {
-      alert("Tidak dapat mengambil data user. Silakan login ulang.");
-      return;
-    }
-  } else {
-    // Store current user ID for later use
-    localStorage.setItem("current_user_id", currentUserId);
+  if (!tokenUserId || !tokenRole) {
+    alert("Tidak dapat mengambil data user dari token. Silakan login ulang.");
+    return;
   }
+
+  // Store current user ID dan role
+  localStorage.setItem("current_user_id", tokenUserId);
+  localStorage.setItem("current_user_role", tokenRole);
+
+  // Dari conversation table, kita tahu:
+  // - patient_id: 8 (user ID untuk patient)
+  // - psychologist_id: 7 (user ID untuk psychologist)
+  //
+  // Jadi untuk matching message sender_id:
+  // - Jika current user adalah psychologist (id=7), maka sender_id=7 adalah dari user sendiri
+  // - Jika current user adalah patient (id=8), maka sender_id=8 adalah dari user sendiri
 
   // Set nama psikolog/pasien
   const role = localStorage.getItem("active_role");
@@ -157,7 +141,7 @@ window.initPopupChat = async function () {
       return;
     }
 
-    const senderRole = localStorage.getItem("active_role");
+    const senderRole = localStorage.getItem("current_user_role");
     const senderId = parseInt(localStorage.getItem("current_user_id"), 10);
     const id = generateId();
 
@@ -203,7 +187,7 @@ window.initPopupChat = async function () {
       return;
     }
 
-    const senderRole = localStorage.getItem("active_role");
+    const senderRole = localStorage.getItem("current_user_role");
     const senderId = parseInt(localStorage.getItem("current_user_id"), 10);
     const id = generateId();
 
@@ -283,7 +267,7 @@ window.initPopupChat = async function () {
     chatBody.scrollTop = chatBody.scrollHeight;
   }
 
-  // Enter untuk kirim pesan
+  // Event listeners
   const chatInput = document.getElementById("chatInput");
   if (chatInput) {
     chatInput.addEventListener("keydown", function (e) {
@@ -293,19 +277,16 @@ window.initPopupChat = async function () {
     });
   }
 
-  // Handle file upload
   const fileUpload = document.getElementById("fileUpload");
   if (fileUpload) {
     fileUpload.addEventListener("change", function (e) {
       const file = e.target.files[0];
       if (file) {
-        // Validasi file size (max 5MB)
         if (file.size > 5 * 1024 * 1024) {
           alert("File terlalu besar! Maksimal 5MB.");
           return;
         }
 
-        // Validasi tipe file
         const allowedTypes = [
           "image/jpeg",
           "image/png",
@@ -321,7 +302,7 @@ window.initPopupChat = async function () {
         }
 
         window.sendFile(file);
-        e.target.value = ""; // Reset input
+        e.target.value = "";
       }
     });
   }
@@ -336,7 +317,7 @@ window.initPopupChat = async function () {
     closeBtn.addEventListener("click", window.closeChat);
   }
 
-  // Pastikan conversationId valid sebelum load chat
+  // Load chat
   const conversationId = localStorage.getItem("active_conversation_id");
   console.log("conversationId:", conversationId);
   if (!conversationId || conversationId === "undefined") {
@@ -363,16 +344,17 @@ async function loadMessages(conversationId) {
     const chatBody = document.getElementById("chatBody");
     chatBody.innerHTML = "";
 
-    // Use current_user_id instead of active_user_id
     const currentUserId = parseInt(localStorage.getItem("current_user_id"), 10);
 
     console.log("Current User ID:", currentUserId);
     console.log("Messages:", data);
 
     data.forEach((msg) => {
+      // Bandingkan sender_id dengan current_user_id
       const isFromCurrentUser = Number(msg.sender_id) === currentUserId;
+
       console.log(
-        `Message from ${msg.sender_id}, current user: ${currentUserId}, isFromCurrentUser: ${isFromCurrentUser}`
+        `Message from sender_id: ${msg.sender_id}, current user: ${currentUserId}, isFromCurrentUser: ${isFromCurrentUser}`
       );
 
       addMessageToChat(
@@ -408,7 +390,7 @@ function subscribeToMessages(conversationId) {
         const currentUserId = Number(localStorage.getItem("current_user_id"));
         const isFromCurrentUser = Number(msg.sender_id) === currentUserId;
 
-        // Jangan tambahkan pesan dari user sendiri (sudah ditambahkan saat kirim)
+        // Hanya tambahkan pesan dari lawan bicara
         if (!isFromCurrentUser) {
           addMessageToChat(
             msg.content,
@@ -433,19 +415,15 @@ function addMessageToChat(
 ) {
   const chatBody = document.getElementById("chatBody");
 
-  // Buat container untuk pesan
   const messageContainer = document.createElement("div");
   messageContainer.className = `message-container ${
     isFromCurrentUser ? "right" : "left"
   }`;
 
-  // Buat bubble pesan
   const msgDiv = document.createElement("div");
   msgDiv.className = `chat-bubble ${isFromCurrentUser ? "right" : "left"}`;
 
-  // Handle different message types
   if (type === "file" && fileUrl) {
-    // File message
     msgDiv.innerHTML = `
       <div class="file-message">
         <span>📎</span>
@@ -458,7 +436,6 @@ function addMessageToChat(
       </div>
     `;
   } else {
-    // Text message
     msgDiv.textContent = content;
   }
 
