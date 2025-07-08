@@ -509,7 +509,7 @@ daftar
   top: 0;
   width: 250px;
   height: 100%;
-  content: '';
+  content: "";
   /* z-index: 1; */
 }
 
@@ -518,11 +518,12 @@ daftar
 }
 
 .logo-slide-2 {
-  display: inline-block;
+  display: flex; /* Ubah dari inline-block ke flex */
+  flex-direction: row; /* Susun ke samping */
   animation: 15s slide infinite linear;
-  /* margin-bottom: 2rem; */
   flex-shrink: 0;
   margin-bottom: 1rem;
+  gap: 2rem; /* Jarak antar logo, opsional */
 }
 
 .logo-slide-2 div {
