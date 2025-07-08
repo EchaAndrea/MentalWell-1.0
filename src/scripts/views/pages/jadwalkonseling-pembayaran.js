@@ -185,7 +185,6 @@ async function createRealtimeCounseling() {
   });
 
   try {
-    // Gunakan POST untuk realtime sesuai dokumentasi API
     const res = await fetch(
       `https://mentalwell10-api-production.up.railway.app/realtime/counseling/${psychologist_id}`,
       {
@@ -196,8 +195,6 @@ async function createRealtimeCounseling() {
     );
 
     const data = await res.json();
-    console.log("Realtime counseling response:", data);
-
     if (data.status === "success") {
       const counseling_id = data.newCounseling?.counseling_id;
       if (!counseling_id) {
@@ -205,43 +202,6 @@ async function createRealtimeCounseling() {
       }
 
       localStorage.setItem("last_counseling_id", counseling_id);
-
-      // Untuk realtime, coba buat conversation terpisah jika tidak ada
-      if (!data.newCounseling?.conversation_id) {
-        try {
-          // Tunggu sebentar untuk proses backend
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-
-          // Ambil detail counseling terbaru
-          const detailRes = await fetch(
-            `https://mentalwell10-api-production.up.railway.app/counseling/${counseling_id}`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
-
-          if (detailRes.ok) {
-            const detailData = await detailRes.json();
-            const conversation_id = detailData.counseling?.conversation_id;
-
-            if (conversation_id) {
-              localStorage.setItem("last_conversation_id", conversation_id);
-              console.log("Conversation ID found:", conversation_id);
-            } else {
-              console.log(
-                "Conversation ID masih null, akan dibuat saat admin approve"
-              );
-            }
-          }
-        } catch (error) {
-          console.error("Error getting conversation ID:", error);
-        }
-      } else {
-        localStorage.setItem(
-          "last_conversation_id",
-          data.newCounseling.conversation_id
-        );
-      }
 
       Swal.close();
 
@@ -261,21 +221,11 @@ async function createRealtimeCounseling() {
   } catch (error) {
     console.error("Realtime counseling error:", error);
     Swal.close();
-
-    // Handle error 409 khusus
-    if (error.message?.includes("409")) {
-      Swal.fire({
-        icon: "warning",
-        title: "Sesi Sudah Ada",
-        text: "Anda sudah memiliki sesi konseling yang sedang berlangsung. Silakan cek riwayat konseling.",
-      });
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: "Pembayaran Gagal",
-        text: "Gagal memproses counseling realtime. Silakan coba lagi.",
-      });
-    }
+    Swal.fire({
+      icon: "error",
+      title: "Pembayaran Gagal",
+      text: "Gagal memproses counseling realtime. Silakan coba lagi.",
+    });
   }
 }
 
