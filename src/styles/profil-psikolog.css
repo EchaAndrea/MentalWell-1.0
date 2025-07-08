@@ -519,7 +519,7 @@ daftar
   flex-direction: row; 
   animation: 15s slide infinite linear;
   flex-shrink: 0;
-  margin-bottom: 3rem;
+  margin-top: 3rem;
   margin-bottom: 1rem;
   gap: 2rem; 
 }
