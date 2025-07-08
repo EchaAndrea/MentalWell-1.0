@@ -5,6 +5,10 @@ const supabaseKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpZ2R5cXN5cGV0b3ppY2l1aGVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg1NzkzNjQsImV4cCI6MjA1NDE1NTM2NH0.ctFsP3ITmiPKJz9RHEkwxdHSKV-E1urbMqcXYui9Gt8";
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+// Global variables
+let chatChannel = null;
+let addMessageToChat; // Declare globally to avoid duplication
+
 // Function to decode JWT token and get user ID
 function getUserIdFromToken() {
   try {
@@ -15,7 +19,6 @@ function getUserIdFromToken() {
     const decoded = JSON.parse(atob(payload));
 
     console.log("Decoded token:", decoded);
-
     return decoded.id;
   } catch (error) {
     console.error("Error decoding token:", error);
@@ -39,7 +42,7 @@ function getUserRoleFromToken() {
   }
 }
 
-// deklarasi window.initPopupChat
+// Main popup chat initialization
 window.initPopupChat = async function () {
   console.log("Initializing popup chat...");
 
@@ -72,6 +75,13 @@ window.initPopupChat = async function () {
 
   // Fungsi untuk menutup chat popup
   window.closeChat = function () {
+    // Unsubscribe dari channel sebelum menutup
+    if (chatChannel) {
+      console.log("Unsubscribing from chat channel");
+      chatChannel.unsubscribe();
+      chatChannel = null;
+    }
+
     const chatPopup = document.getElementById("chatPopupCustom");
     if (chatPopup) chatPopup.style.display = "none";
     const chatOverlay = document.getElementById("chatOverlay");
@@ -105,8 +115,7 @@ window.initPopupChat = async function () {
 
       if (error) {
         console.error("Error uploading file:", error);
-        alert("Gagal upload file: " + error.message);
-        return null;
+        throw new Error(error.message);
       }
 
       console.log("File uploaded successfully:", data);
@@ -125,12 +134,65 @@ window.initPopupChat = async function () {
       };
     } catch (error) {
       console.error("Upload file error:", error);
-      alert("Gagal upload file: " + error.message);
-      return null;
+      throw error;
     }
   }
 
-  // Fungsi untuk mengirim pesan
+  // Fungsi untuk menambahkan pesan ke chat (SINGLE DEFINITION)
+  addMessageToChat = function (
+    content,
+    isFromCurrentUser,
+    type = "text",
+    fileUrl = null,
+    fileName = null
+  ) {
+    const chatBody = document.getElementById("chatBody");
+    if (!chatBody) {
+      console.error("Chat body not found");
+      return null;
+    }
+
+    const messageContainer = document.createElement("div");
+    messageContainer.className = `message-container ${
+      isFromCurrentUser ? "right" : "left"
+    }`;
+
+    const msgDiv = document.createElement("div");
+    msgDiv.className = `chat-bubble ${isFromCurrentUser ? "right" : "left"}`;
+
+    // Debug log
+    console.log("Adding message:", {
+      content: content.substring(0, 50) + "...",
+      isFromCurrentUser,
+      containerClass: messageContainer.className,
+      bubbleClass: msgDiv.className,
+    });
+
+    // Handle different message types
+    if (type === "file" && fileUrl) {
+      msgDiv.innerHTML = `
+        <div class="file-message">
+          <span>📎</span>
+          <div>
+            <strong>${fileName || "File"}</strong><br>
+            <a href="${fileUrl}" target="_blank" style="color: inherit;">
+              Buka file
+            </a>
+          </div>
+        </div>
+      `;
+    } else {
+      msgDiv.textContent = content;
+    }
+
+    messageContainer.appendChild(msgDiv);
+    chatBody.appendChild(messageContainer);
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    return messageContainer;
+  };
+
+  // Fungsi untuk mengirim pesan text
   window.sendMessage = async function () {
     const input = document.getElementById("chatInput");
     const message = input.value.trim();
@@ -153,31 +215,37 @@ window.initPopupChat = async function () {
       message,
     });
 
+    // Clear input immediately
+    input.value = "";
+
     // Tambahkan pesan ke chat body langsung (optimistic update)
     addMessageToChat(message, true, "text");
 
     // Kirim ke database
-    const { error } = await supabase.from("messages").insert([
-      {
-        id: id,
-        conversation_id: conversationId,
-        sender_id: senderId,
-        sender_role: senderRole,
-        content: message,
-        type: "text",
-        sent_at: new Date().toISOString(),
-        is_read: false,
-      },
-    ]);
+    try {
+      const { error } = await supabase.from("messages").insert([
+        {
+          id: id,
+          conversation_id: conversationId,
+          sender_id: senderId,
+          sender_role: senderRole,
+          content: message,
+          type: "text",
+          sent_at: new Date().toISOString(),
+          is_read: false,
+        },
+      ]);
 
-    if (error) {
+      if (error) {
+        console.error("Error sending message:", error);
+        alert("Gagal mengirim pesan: " + error.message);
+      } else {
+        console.log("Message sent successfully");
+      }
+    } catch (error) {
       console.error("Error sending message:", error);
       alert("Gagal mengirim pesan: " + error.message);
-    } else {
-      console.log("Message sent successfully");
     }
-
-    input.value = "";
   };
 
   // Fungsi untuk mengirim file
@@ -204,105 +272,52 @@ window.initPopupChat = async function () {
     // Show loading message
     const loadingMsgDiv = addMessageToChat("📎 Mengirim file...", true, "text");
 
-    // Upload file
-    const uploadResult = await uploadFile(file);
-    if (!uploadResult) {
+    try {
+      // Upload file
+      const uploadResult = await uploadFile(file);
+
+      // Remove loading message
+      if (loadingMsgDiv) loadingMsgDiv.remove();
+
+      // Add file message to chat
+      addMessageToChat(
+        `File: ${uploadResult.fileName}`,
+        true,
+        "file",
+        uploadResult.url,
+        uploadResult.fileName
+      );
+
+      // Kirim file message ke database
+      const { error } = await supabase.from("messages").insert([
+        {
+          id: id,
+          conversation_id: conversationId,
+          sender_id: senderId,
+          sender_role: senderRole,
+          content: `File: ${uploadResult.fileName}`,
+          type: "file",
+          file_url: uploadResult.url,
+          file_name: uploadResult.fileName,
+          sent_at: new Date().toISOString(),
+          is_read: false,
+        },
+      ]);
+
+      if (error) {
+        console.error("Error saving file message:", error);
+        alert("Gagal menyimpan pesan file: " + error.message);
+      } else {
+        console.log("File message sent successfully");
+      }
+    } catch (error) {
+      console.error("Error uploading file:", error);
       // Remove loading message and show error
-      loadingMsgDiv.remove();
+      if (loadingMsgDiv) loadingMsgDiv.remove();
       addMessageToChat("❌ Gagal mengirim file", true, "text");
-      return;
-    }
-
-    // Remove loading message
-    loadingMsgDiv.remove();
-
-    // Add file message to chat
-    addMessageToChat(
-      `File: ${uploadResult.fileName}`,
-      true,
-      "file",
-      uploadResult.url,
-      uploadResult.fileName
-    );
-
-    // Kirim file message ke database
-    const { error } = await supabase.from("messages").insert([
-      {
-        id: id,
-        conversation_id: conversationId,
-        sender_id: senderId,
-        sender_role: senderRole,
-        content: `File: ${uploadResult.fileName}`,
-        type: "file",
-        file_url: uploadResult.url,
-        file_name: uploadResult.fileName,
-        sent_at: new Date().toISOString(),
-        is_read: false,
-      },
-    ]);
-
-    if (error) {
-      console.error("Error saving file message:", error);
-      alert("Gagal menyimpan pesan file: " + error.message);
-    } else {
-      console.log("File message sent successfully");
+      alert("Gagal mengirim file: " + error.message);
     }
   };
-
-  // Fungsi untuk menambahkan pesan ke chat
-  function addMessageToChat(
-    content,
-    isFromCurrentUser,
-    type = "text",
-    fileUrl = null,
-    fileName = null
-  ) {
-    const chatBody = document.getElementById("chatBody");
-
-    // Buat container untuk pesan
-    const messageContainer = document.createElement("div");
-    messageContainer.className = `message-container ${
-      isFromCurrentUser ? "right" : "left"
-    }`;
-
-    // Buat bubble pesan
-    const msgDiv = document.createElement("div");
-    msgDiv.className = `chat-bubble ${isFromCurrentUser ? "right" : "left"}`;
-
-    // Debug log untuk memastikan class diterapkan
-    console.log("Adding message:", {
-      content,
-      isFromCurrentUser,
-      containerClass: messageContainer.className,
-      bubbleClass: msgDiv.className,
-    });
-
-    // Handle different message types
-    if (type === "file" && fileUrl) {
-      // File message
-      msgDiv.innerHTML = `
-        <div class="file-message">
-          <span>📎</span>
-          <div>
-            <strong>${fileName || "File"}</strong><br>
-            <a href="${fileUrl}" target="_blank" style="color: inherit;">
-              Buka file
-            </a>
-          </div>
-        </div>
-      `;
-    } else {
-      // Text message
-      msgDiv.textContent = content;
-    }
-
-    messageContainer.appendChild(msgDiv);
-    chatBody.appendChild(messageContainer);
-    chatBody.scrollTop = chatBody.scrollHeight;
-
-    // Return the message element for potential removal
-    return messageContainer;
-  }
 
   // Event listeners
   const chatInput = document.getElementById("chatInput");
@@ -325,11 +340,11 @@ window.initPopupChat = async function () {
         // Validasi file size (max 10MB)
         if (file.size > 10 * 1024 * 1024) {
           alert("File terlalu besar! Maksimal 10MB.");
-          e.target.value = ""; // Reset input
+          e.target.value = "";
           return;
         }
 
-        // Validasi tipe file (lebih lengkap)
+        // Validasi tipe file
         const allowedTypes = [
           "image/jpeg",
           "image/jpg",
@@ -346,13 +361,13 @@ window.initPopupChat = async function () {
           alert(
             "Tipe file tidak diizinkan!\nDiizinkan: JPG, PNG, GIF, WEBP, PDF, TXT, DOC, DOCX"
           );
-          e.target.value = ""; // Reset input
+          e.target.value = "";
           return;
         }
 
         console.log("File validation passed, calling sendFile");
         window.sendFile(file);
-        e.target.value = ""; // Reset input
+        e.target.value = "";
       }
     });
   }
@@ -377,11 +392,16 @@ window.initPopupChat = async function () {
     alert("conversation_id tidak ditemukan di localStorage!");
     return;
   }
-  loadMessages(conversationId);
+
+  // Load messages first, then subscribe
+  await loadMessages(conversationId);
   subscribeToMessages(conversationId);
 };
 
+// Load messages from database
 async function loadMessages(conversationId) {
+  console.log("Loading messages for conversation:", conversationId);
+
   const { data, error } = await supabase
     .from("messages")
     .select("*")
@@ -395,20 +415,22 @@ async function loadMessages(conversationId) {
 
   if (data) {
     const chatBody = document.getElementById("chatBody");
-    chatBody.innerHTML = "";
+    if (chatBody) {
+      chatBody.innerHTML = "";
+    }
 
-    // Gunakan current_user_id dari token untuk comparison
     const currentUserId = parseInt(localStorage.getItem("current_user_id"), 10);
 
-    console.log("Current User ID from token:", currentUserId);
-    console.log("Messages:", data);
+    console.log("Current User ID:", currentUserId);
+    console.log("Messages loaded:", data.length);
 
-    data.forEach((msg) => {
-      // Bandingkan sender_id dengan current_user_id
+    data.forEach((msg, index) => {
       const isFromCurrentUser = Number(msg.sender_id) === currentUserId;
 
       console.log(
-        `Message from sender_id: ${msg.sender_id}, current_user_id: ${currentUserId}, isFromCurrentUser: ${isFromCurrentUser}`
+        `Message ${index + 1}: sender_id=${
+          msg.sender_id
+        }, current_user_id=${currentUserId}, isFromCurrentUser=${isFromCurrentUser}`
       );
 
       addMessageToChat(
@@ -422,15 +444,19 @@ async function loadMessages(conversationId) {
   }
 }
 
-let chatChannel = null;
-
+// Subscribe to real-time messages
 function subscribeToMessages(conversationId) {
+  console.log("Setting up real-time subscription for:", conversationId);
+
+  // Unsubscribe dari channel yang ada
   if (chatChannel) {
+    console.log("Unsubscribing from existing channel");
     chatChannel.unsubscribe();
   }
 
+  // Create new channel with unique name
   chatChannel = supabase
-    .channel("messages")
+    .channel(`messages-${conversationId}-${Date.now()}`)
     .on(
       "postgres_changes",
       {
@@ -440,18 +466,23 @@ function subscribeToMessages(conversationId) {
         filter: `conversation_id=eq.${conversationId}`,
       },
       (payload) => {
+        console.log("Real-time message received:", payload);
+
         const msg = payload.new;
         const currentUserId = Number(localStorage.getItem("current_user_id"));
         const isFromCurrentUser = Number(msg.sender_id) === currentUserId;
 
-        console.log("Real-time message received:", {
+        console.log("Processing real-time message:", {
           sender_id: msg.sender_id,
           current_user_id: currentUserId,
           isFromCurrentUser,
+          content: msg.content.substring(0, 50) + "...",
         });
 
         // Hanya tambahkan pesan dari lawan bicara
+        // (pesan sendiri sudah ditambahkan via optimistic update)
         if (!isFromCurrentUser) {
+          console.log("Adding message from other user");
           addMessageToChat(
             msg.content,
             isFromCurrentUser,
@@ -459,56 +490,12 @@ function subscribeToMessages(conversationId) {
             msg.file_url,
             msg.file_name
           );
+        } else {
+          console.log("Skipping message from current user (already added)");
         }
       }
     )
-    .subscribe();
-}
-
-// Fungsi helper untuk menambahkan pesan ke chat
-function addMessageToChat(
-  content,
-  isFromCurrentUser,
-  type = "text",
-  fileUrl = null,
-  fileName = null
-) {
-  const chatBody = document.getElementById("chatBody");
-
-  const messageContainer = document.createElement("div");
-  messageContainer.className = `message-container ${
-    isFromCurrentUser ? "right" : "left"
-  }`;
-
-  const msgDiv = document.createElement("div");
-  msgDiv.className = `chat-bubble ${isFromCurrentUser ? "right" : "left"}`;
-
-  // Debug log
-  console.log("Adding message with classes:", {
-    containerClass: messageContainer.className,
-    bubbleClass: msgDiv.className,
-    isFromCurrentUser,
-  });
-
-  if (type === "file" && fileUrl) {
-    msgDiv.innerHTML = `
-      <div class="file-message">
-        <span>📎</span>
-        <div>
-          <strong>${fileName || "File"}</strong><br>
-          <a href="${fileUrl}" target="_blank" style="color: inherit;">
-            Buka file
-          </a>
-        </div>
-      </div>
-    `;
-  } else {
-    msgDiv.textContent = content;
-  }
-
-  messageContainer.appendChild(msgDiv);
-  chatBody.appendChild(messageContainer);
-  chatBody.scrollTop = chatBody.scrollHeight;
-
-  return messageContainer;
+    .subscribe((status) => {
+      console.log("Subscription status:", status);
+    });
 }
