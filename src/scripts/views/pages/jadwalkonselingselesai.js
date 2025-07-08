@@ -124,15 +124,6 @@ function formatTanggalIndo(tanggalStr) {
   return `${parseInt(tanggal)} ${bulan[parseInt(bulanIdx) - 1]} ${tahun}`;
 }
 
-function redirectToIndex() {
-  // Clean up localStorage
-  localStorage.removeItem("jadwal");
-  localStorage.removeItem("counseling_problem");
-  localStorage.removeItem("user_data");
-
-  window.location.href = "/";
-}
-
 function convertDateFormat(inputDate) {
   const parsedDate = new Date(inputDate);
   if (isNaN(parsedDate.getTime())) return "Invalid date";
@@ -172,6 +163,14 @@ function convertTimeFormat(inputTime) {
   return `${startTime?.replace(":", ".")} - ${endTime?.replace(":", ".")} WIB`;
 }
 
+function redirectToIndex() {
+  window.location.href = "/";
+}
+
+function redirectToRiwayat() {
+  window.location.href = "/riwayat";
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   const urlParams = new URLSearchParams(window.location.search);
   const mode = urlParams.get("mode");
@@ -183,14 +182,7 @@ document.addEventListener("DOMContentLoaded", function () {
     btnKembali.removeAttribute("onclick");
     if (mode === "chat" || mode === "realtime") {
       btnKembali.textContent = "Lihat Riwayat Konseling";
-      btnKembali.onclick = function () {
-        // Clean up localStorage
-        localStorage.removeItem("jadwal");
-        localStorage.removeItem("counseling_problem");
-        localStorage.removeItem("user_data");
-
-        window.location.href = "/riwayatkonseling";
-      };
+      btnKembali.onclick = redirectToRiwayat;
     } else {
       btnKembali.textContent = "Kembali ke Beranda";
       btnKembali.onclick = redirectToIndex;
