@@ -149,15 +149,12 @@ async function confirmPayment() {
 
       Swal.close();
 
-      // Redirect berdasarkan mode
+      // Redirect ke halaman selesai dulu
       const mode = new URLSearchParams(window.location.search).get("mode");
-      setTimeout(() => {
-        if (mode === "chat" || mode === "realtime") {
-          window.location.href = `/chatpsikolog?conversation_id=${conversation_id}`;
-        } else {
-          window.location.href = "/riwayatkonseling";
-        }
-      }, 1000);
+      const psikologId = new URLSearchParams(window.location.search).get("id");
+      window.location.href = `/jadwalkonseling-selesai?id=${psikologId}${
+        mode ? `&mode=${mode}` : ""
+      }`;
     } else {
       Swal.close();
       Swal.fire({
@@ -226,15 +223,14 @@ async function createRealtimeCounseling() {
 
       localStorage.setItem("last_counseling_id", counseling_id);
 
-      Swal.fire({
-        icon: "success",
-        title: "Pembayaran Berhasil!",
-        text: "Anda akan diarahkan ke halaman chat.",
-        timer: 2000,
-        showConfirmButton: false,
-      }).then(() => {
-        window.location.href = `/chatpsikolog?counseling_id=${counseling_id}`;
-      });
+      Swal.close();
+
+      // Redirect ke halaman selesai dulu
+      const mode = new URLSearchParams(window.location.search).get("mode");
+      const psikologId = new URLSearchParams(window.location.search).get("id");
+      window.location.href = `/jadwalkonseling-selesai?id=${psikologId}&mode=${
+        mode || "chat"
+      }`;
     } else {
       Swal.close();
       Swal.fire({
