@@ -116,99 +116,85 @@ async function confirmPayment() {
 
       localStorage.setItem("last_counseling_id", counseling_id);
 
-      // Untuk scheduled counseling, coba buat conversation via API terpisah
+      // Langsung buat conversation setelah counseling berhasil dibuat
       try {
-        // Tunggu sebentar untuk proses backend
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        console.log("Creating conversation for counseling_id:", counseling_id);
 
-        // Coba approve/start counseling agar conversation_id dibuat
-        const approveRes = await fetch(
-          `https://mentalwell10-api-production.up.railway.app/admin/counselings/${counseling_id}/approve`,
+        const createConversationRes = await fetch(
+          `https://mentalwell10-api-production.up.railway.app/conversations`,
           {
-            method: "PUT",
+            method: "POST",
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              status: "approved",
+              counseling_id: counseling_id,
+              psychologist_id: psychologist_id,
             }),
           }
         );
 
-        if (approveRes.ok) {
-          console.log("Counseling approved successfully");
-
-          // Setelah approve, coba start counseling
-          const startRes = await fetch(
-            `https://mentalwell10-api-production.up.railway.app/counselings/${counseling_id}/start`,
-            {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-            }
-          );
-
-          if (startRes.ok) {
-            console.log("Counseling started successfully");
-          }
-        }
-
-        // Ambil detail counseling terbaru untuk mendapatkan conversation_id
-        const detail = await fetch(
-          `https://mentalwell10-api-production.up.railway.app/counseling/${counseling_id}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        if (detail.ok) {
-          const detailData = await detail.json();
-          const conversation_id = detailData.counseling?.conversation_id;
+        if (createConversationRes.ok) {
+          const conversationData = await createConversationRes.json();
+          const conversation_id =
+            conversationData.conversation_id || conversationData.id;
 
           if (conversation_id) {
             localStorage.setItem("last_conversation_id", conversation_id);
-            console.log(
-              "Conversation ID found for scheduled counseling:",
-              conversation_id
-            );
+            console.log("Conversation created successfully:", conversation_id);
           } else {
-            // Jika masih null, coba buat conversation manual
-            console.log("Trying to create conversation manually...");
+            console.log("Conversation response:", conversationData);
+            // Jika response tidak ada conversation_id, coba alternatif
+            localStorage.setItem("last_conversation_id", "null");
+          }
+        } else {
+          const errorData = await createConversationRes.json();
+          console.error("Failed to create conversation:", errorData);
 
-            const createConversationRes = await fetch(
-              `https://mentalwell10-api-production.up.railway.app/conversations`,
+          // Jika endpoint conversations tidak ada, coba langsung insert ke Supabase
+          try {
+            const supabaseRes = await fetch(
+              "https://uigdyqsypetoziciuhef.supabase.co/rest/v1/conversations",
               {
                 method: "POST",
                 headers: {
-                  Authorization: `Bearer ${token}`,
+                  Authorization:
+                    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpZ2R5cXN5cGV0b3ppY2l1aGVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM0NzgyMTcsImV4cCI6MjA0OTA1NDIxN30.oYQYxRUo9L0x8j8POhxFQUzKHLCzTCyY-fYqWxvOFWk",
                   "Content-Type": "application/json",
+                  apikey:
+                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpZ2R5cXN5cGV0b3ppY2l1aGVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM0NzgyMTcsImV4cCI6MjA0OTA1NDIxN30.oYQYxRUo9L0x8j8POhxFQUzKHLCzTCyY-fYqWxvOFWk",
                 },
                 body: JSON.stringify({
                   counseling_id: counseling_id,
                   psychologist_id: psychologist_id,
+                  created_at: new Date().toISOString(),
                 }),
               }
             );
 
-            if (createConversationRes.ok) {
-              const conversationData = await createConversationRes.json();
-              const new_conversation_id =
-                conversationData.conversation_id || conversationData.id;
+            if (supabaseRes.ok) {
+              const supabaseData = await supabaseRes.json();
+              const conversation_id = supabaseData[0]?.id;
 
-              if (new_conversation_id) {
-                localStorage.setItem(
-                  "last_conversation_id",
-                  new_conversation_id
-                );
+              if (conversation_id) {
+                localStorage.setItem("last_conversation_id", conversation_id);
                 console.log(
-                  "Manual conversation created:",
-                  new_conversation_id
+                  "Conversation created via Supabase:",
+                  conversation_id
                 );
+              } else {
+                localStorage.setItem("last_conversation_id", "null");
               }
+            } else {
+              localStorage.setItem("last_conversation_id", "null");
             }
+          } catch (supabaseError) {
+            console.error(
+              "Supabase conversation creation failed:",
+              supabaseError
+            );
+            localStorage.setItem("last_conversation_id", "null");
           }
         }
       } catch (error) {
