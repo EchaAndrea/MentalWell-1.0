@@ -82,32 +82,25 @@ async function renderArticleDetails() {
       }
     }
 
-const logosContainer2 = document.querySelector(".logos-2");
-const originalLogosContainer2 = document.querySelector(".logos-2");
-const clone2 = originalLogosContainer2.cloneNode(true);
-originalLogosContainer2.parentNode.insertBefore(
-  clone2,
-  originalLogosContainer2.nextSibling
-);
+    const logosContainer2 = document.querySelector(".logos-2");
+    let scrollAmount2 = 0;
+    const scrollSpeed2 = 2;
 
-let scrollAmount2 = 0;
-const scrollSpeed2 = 2;
+    function scroll2() {
+      scrollAmount2 += scrollSpeed2;
+      logosContainer2.scrollLeft = scrollAmount2;
 
-function scroll2() {
-  scrollAmount2 += scrollSpeed2;
-  originalLogosContainer2.scrollLeft = scrollAmount2;
+      if (
+        scrollAmount2 >=
+        logosContainer2.scrollWidth - logosContainer2.clientWidth
+      ) {
+        scrollAmount2 = 0;
+      }
 
-  if (
-    scrollAmount2 >=
-    originalLogosContainer2.scrollWidth - originalLogosContainer2.clientWidth
-  ) {
-    scrollAmount2 = 0;
-  }
+      requestAnimationFrame(scroll2);
+    }
 
-  requestAnimationFrame(scroll2);
-}
-
-scroll2();
+    scroll2();
 
     // Render ketersediaan (availability)
     const availabilityTimes = document.getElementById("availabilityTimes");
