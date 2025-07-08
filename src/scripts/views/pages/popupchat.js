@@ -267,8 +267,15 @@ async function loadMessages(conversationId) {
     chatBody.innerHTML = "";
     const activeUserId = parseInt(localStorage.getItem("active_user_id"), 10);
 
+    console.log("Active User ID:", activeUserId);
+    console.log("Messages:", data);
+
     data.forEach((msg) => {
       const isFromCurrentUser = Number(msg.sender_id) === activeUserId;
+      console.log(
+        `Message from ${msg.sender_id}, current user: ${activeUserId}, isFromCurrentUser: ${isFromCurrentUser}`
+      );
+
       addMessageToChat(
         msg.content,
         isFromCurrentUser,
