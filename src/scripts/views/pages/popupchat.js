@@ -91,9 +91,13 @@ window.initPopupChat = async function () {
   // Fungsi untuk upload file ke Supabase Storage
   async function uploadFile(file) {
     try {
+      console.log("Starting file upload for:", file.name);
+
       const fileExt = file.name.split(".").pop();
       const fileName = `${Date.now()}.${fileExt}`;
       const filePath = `chat-files/${fileName}`;
+
+      console.log("Uploading to path:", filePath);
 
       const { data, error } = await supabase.storage
         .from("chat-files")
@@ -101,13 +105,18 @@ window.initPopupChat = async function () {
 
       if (error) {
         console.error("Error uploading file:", error);
+        alert("Gagal upload file: " + error.message);
         return null;
       }
+
+      console.log("File uploaded successfully:", data);
 
       // Get public URL
       const { data: publicURL } = supabase.storage
         .from("chat-files")
         .getPublicUrl(filePath);
+
+      console.log("Public URL:", publicURL.publicUrl);
 
       return {
         url: publicURL.publicUrl,
@@ -116,6 +125,7 @@ window.initPopupChat = async function () {
       };
     } catch (error) {
       console.error("Upload file error:", error);
+      alert("Gagal upload file: " + error.message);
       return null;
     }
   }
@@ -172,6 +182,8 @@ window.initPopupChat = async function () {
 
   // Fungsi untuk mengirim file
   window.sendFile = async function (file) {
+    console.log("sendFile called with:", file);
+
     const conversationId = localStorage.getItem("active_conversation_id");
     if (!conversationId) {
       alert("conversation_id tidak ditemukan di localStorage!");
@@ -182,17 +194,38 @@ window.initPopupChat = async function () {
     const senderId = parseInt(localStorage.getItem("current_user_id"), 10);
     const id = generateId();
 
-    // Show loading
-    addMessageToChat("Mengirim file...", true, "file");
+    console.log("Sending file:", {
+      conversationId,
+      senderRole,
+      senderId,
+      fileName: file.name,
+    });
+
+    // Show loading message
+    const loadingMsgDiv = addMessageToChat("📎 Mengirim file...", true, "text");
 
     // Upload file
     const uploadResult = await uploadFile(file);
     if (!uploadResult) {
-      alert("Gagal upload file");
+      // Remove loading message and show error
+      loadingMsgDiv.remove();
+      addMessageToChat("❌ Gagal mengirim file", true, "text");
       return;
     }
 
-    // Kirim file message
+    // Remove loading message
+    loadingMsgDiv.remove();
+
+    // Add file message to chat
+    addMessageToChat(
+      `File: ${uploadResult.fileName}`,
+      true,
+      "file",
+      uploadResult.url,
+      uploadResult.fileName
+    );
+
+    // Kirim file message ke database
     const { error } = await supabase.from("messages").insert([
       {
         id: id,
@@ -209,8 +242,10 @@ window.initPopupChat = async function () {
     ]);
 
     if (error) {
-      alert("Gagal mengirim file: " + error.message);
-      console.error(error);
+      console.error("Error saving file message:", error);
+      alert("Gagal menyimpan pesan file: " + error.message);
+    } else {
+      console.log("File message sent successfully");
     }
   };
 
@@ -234,15 +269,26 @@ window.initPopupChat = async function () {
     const msgDiv = document.createElement("div");
     msgDiv.className = `chat-bubble ${isFromCurrentUser ? "right" : "left"}`;
 
+    // Debug log untuk memastikan class diterapkan
+    console.log("Adding message:", {
+      content,
+      isFromCurrentUser,
+      containerClass: messageContainer.className,
+      bubbleClass: msgDiv.className,
+    });
+
     // Handle different message types
     if (type === "file" && fileUrl) {
       // File message
       msgDiv.innerHTML = `
         <div class="file-message">
-          <strong>${fileName || "File"}</strong><br>
-          <a href="${fileUrl}" target="_blank">
-            Buka file
-          </a>
+          <span>📎</span>
+          <div>
+            <strong>${fileName || "File"}</strong><br>
+            <a href="${fileUrl}" target="_blank" style="color: inherit;">
+              Buka file
+            </a>
+          </div>
         </div>
       `;
     } else {
@@ -253,6 +299,9 @@ window.initPopupChat = async function () {
     messageContainer.appendChild(msgDiv);
     chatBody.appendChild(messageContainer);
     chatBody.scrollTop = chatBody.scrollHeight;
+
+    // Return the message element for potential removal
+    return messageContainer;
   }
 
   // Event listeners
@@ -260,6 +309,7 @@ window.initPopupChat = async function () {
   if (chatInput) {
     chatInput.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
+        e.preventDefault();
         window.sendMessage();
       }
     });
@@ -269,35 +319,50 @@ window.initPopupChat = async function () {
   if (fileUpload) {
     fileUpload.addEventListener("change", function (e) {
       const file = e.target.files[0];
+      console.log("File selected:", file);
+
       if (file) {
-        if (file.size > 5 * 1024 * 1024) {
-          alert("File terlalu besar! Maksimal 5MB.");
+        // Validasi file size (max 10MB)
+        if (file.size > 10 * 1024 * 1024) {
+          alert("File terlalu besar! Maksimal 10MB.");
+          e.target.value = ""; // Reset input
           return;
         }
 
+        // Validasi tipe file (lebih lengkap)
         const allowedTypes = [
           "image/jpeg",
+          "image/jpg",
           "image/png",
           "image/gif",
+          "image/webp",
           "application/pdf",
           "text/plain",
+          "application/msword",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         ];
+
         if (!allowedTypes.includes(file.type)) {
           alert(
-            "Tipe file tidak diizinkan! Hanya JPG, PNG, GIF, PDF, dan TXT."
+            "Tipe file tidak diizinkan!\nDiizinkan: JPG, PNG, GIF, WEBP, PDF, TXT, DOC, DOCX"
           );
+          e.target.value = ""; // Reset input
           return;
         }
 
+        console.log("File validation passed, calling sendFile");
         window.sendFile(file);
-        e.target.value = "";
+        e.target.value = ""; // Reset input
       }
     });
   }
 
   const sendBtn = document.getElementById("sendBtn");
   if (sendBtn) {
-    sendBtn.addEventListener("click", window.sendMessage);
+    sendBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      window.sendMessage();
+    });
   }
 
   const closeBtn = document.querySelector(".btn-close-popup");
@@ -340,7 +405,6 @@ async function loadMessages(conversationId) {
 
     data.forEach((msg) => {
       // Bandingkan sender_id dengan current_user_id
-      // Jika sender_id === current_user_id, berarti pesan dari saya sendiri
       const isFromCurrentUser = Number(msg.sender_id) === currentUserId;
 
       console.log(
@@ -380,7 +444,13 @@ function subscribeToMessages(conversationId) {
         const currentUserId = Number(localStorage.getItem("current_user_id"));
         const isFromCurrentUser = Number(msg.sender_id) === currentUserId;
 
-        // Hanya tambahkan pesan dari lawan bicara (tidak dari diri sendiri)
+        console.log("Real-time message received:", {
+          sender_id: msg.sender_id,
+          current_user_id: currentUserId,
+          isFromCurrentUser,
+        });
+
+        // Hanya tambahkan pesan dari lawan bicara
         if (!isFromCurrentUser) {
           addMessageToChat(
             msg.content,
@@ -413,13 +483,23 @@ function addMessageToChat(
   const msgDiv = document.createElement("div");
   msgDiv.className = `chat-bubble ${isFromCurrentUser ? "right" : "left"}`;
 
+  // Debug log
+  console.log("Adding message with classes:", {
+    containerClass: messageContainer.className,
+    bubbleClass: msgDiv.className,
+    isFromCurrentUser,
+  });
+
   if (type === "file" && fileUrl) {
     msgDiv.innerHTML = `
       <div class="file-message">
-        <strong>${fileName || "File"}</strong><br>
-        <a href="${fileUrl}" target="_blank">
-          Buka file
-        </a>
+        <span>📎</span>
+        <div>
+          <strong>${fileName || "File"}</strong><br>
+          <a href="${fileUrl}" target="_blank" style="color: inherit;">
+            Buka file
+          </a>
+        </div>
       </div>
     `;
   } else {
@@ -429,4 +509,6 @@ function addMessageToChat(
   messageContainer.appendChild(msgDiv);
   chatBody.appendChild(messageContainer);
   chatBody.scrollTop = chatBody.scrollHeight;
+
+  return messageContainer;
 }
