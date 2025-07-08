@@ -168,7 +168,28 @@ function redirectToIndex() {
 }
 
 function redirectToRiwayat() {
-  window.location.href = "/riwayat";
+  // Hanya clean up data sementara
+  localStorage.removeItem("jadwal");
+  localStorage.removeItem("counseling_problem");
+  localStorage.removeItem("user_data");
+
+  // Cek apakah ada conversation_id
+  const conversation_id = localStorage.getItem("last_conversation_id");
+
+  if (conversation_id && conversation_id !== "null") {
+    // Jika ada conversation_id, langsung ke riwayat
+    window.location.href = "/riwayat";
+  } else {
+    // Jika belum ada conversation_id, beri pesan
+    Swal.fire({
+      icon: "info",
+      title: "Menunggu Persetujuan",
+      text: "Sesi konseling Anda sedang menunggu persetujuan admin. Silakan cek riwayat konseling nanti.",
+      confirmButtonText: "Lihat Riwayat",
+    }).then(() => {
+      window.location.href = "/riwayat";
+    });
+  }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -181,7 +202,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (btnKembali) {
     btnKembali.removeAttribute("onclick");
     if (mode === "chat" || mode === "realtime") {
-      btnKembali.textContent = "Lihat Riwayat Konseling";
+      btnKembali.textContent = "Mulai Konseling";
       btnKembali.onclick = redirectToRiwayat;
     } else {
       btnKembali.textContent = "Kembali ke Beranda";
