@@ -518,6 +518,7 @@ daftar
 
 .logo-slide-2 {
   display: flex;
+  overflow-x: auto;
   flex-shrink: 0;
   margin-bottom: 0rem;
 }
