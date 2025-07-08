@@ -515,12 +515,13 @@ daftar
 }
 
 .logo-slide-2 {
-  display: flex; /* Ubah dari inline-block ke flex */
-  flex-direction: row; /* Susun ke samping */
+  display: flex; 
+  flex-direction: row; 
   animation: 15s slide infinite linear;
   flex-shrink: 0;
+  margin-bottom: 3rem;
   margin-bottom: 1rem;
-  gap: 2rem; /* Jarak antar logo, opsional */
+  gap: 2rem; 
 }
 
 .logo-slide-2 div {
