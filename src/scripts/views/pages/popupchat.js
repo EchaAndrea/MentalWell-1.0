@@ -16,7 +16,6 @@ function getUserIdFromToken() {
 
     console.log("Decoded token:", decoded);
 
-    // Token berisi: {"id":29,"role":"psychologist","name":"Eca","iat":1751982349,"exp":1751996749}
     return decoded.id;
   } catch (error) {
     console.error("Error decoding token:", error);
@@ -60,18 +59,27 @@ window.initPopupChat = async function () {
   localStorage.setItem("current_user_id", tokenUserId);
   localStorage.setItem("current_user_role", tokenRole);
 
-  // Dari conversation table, kita tahu:
-  // - patient_id: 8 (user ID untuk patient)
-  // - psychologist_id: 7 (user ID untuk psychologist)
-  //
-  // Jadi untuk matching message sender_id:
-  // - Jika current user adalah psychologist (id=7), maka sender_id=7 adalah dari user sendiri
-  // - Jika current user adalah patient (id=8), maka sender_id=8 adalah dari user sendiri
+  // Get active role (bisa berbeda dari token role)
+  const activeRole = localStorage.getItem("active_role");
+  console.log("Active role from localStorage:", activeRole);
+
+  // Tentukan current user ID berdasarkan role aktif
+  let currentUserId;
+  if (activeRole === "psikolog") {
+    // Jika saya psikolog, ID saya adalah psychologist_id
+    currentUserId =
+      localStorage.getItem("active_psychologist_id") || tokenUserId;
+  } else {
+    // Jika saya patient, ID saya adalah patient_id
+    currentUserId = localStorage.getItem("active_patient_id") || tokenUserId;
+  }
+
+  console.log("Final current user ID:", currentUserId);
+  localStorage.setItem("final_current_user_id", currentUserId);
 
   // Set nama psikolog/pasien
-  const role = localStorage.getItem("active_role");
   let nama = "Nama";
-  if (role === "psikolog") {
+  if (activeRole === "psikolog") {
     nama = localStorage.getItem("active_patient_name") || "Pasien";
   } else {
     nama = localStorage.getItem("active_psychologist_name") || "Psikolog";
@@ -142,7 +150,10 @@ window.initPopupChat = async function () {
     }
 
     const senderRole = localStorage.getItem("current_user_role");
-    const senderId = parseInt(localStorage.getItem("current_user_id"), 10);
+    const senderId = parseInt(
+      localStorage.getItem("final_current_user_id"),
+      10
+    );
     const id = generateId();
 
     console.log("Sending message:", {
@@ -188,7 +199,10 @@ window.initPopupChat = async function () {
     }
 
     const senderRole = localStorage.getItem("current_user_role");
-    const senderId = parseInt(localStorage.getItem("current_user_id"), 10);
+    const senderId = parseInt(
+      localStorage.getItem("final_current_user_id"),
+      10
+    );
     const id = generateId();
 
     // Show loading
@@ -245,16 +259,13 @@ window.initPopupChat = async function () {
 
     // Handle different message types
     if (type === "file" && fileUrl) {
-      // File message
+      // File message - gunakan icon yang ada di HTML
       msgDiv.innerHTML = `
         <div class="file-message">
-          <span>📎</span>
-          <div>
-            <strong>${fileName || "File"}</strong><br>
-            <a href="${fileUrl}" target="_blank">
-              Buka file
-            </a>
-          </div>
+          <strong>${fileName || "File"}</strong><br>
+          <a href="${fileUrl}" target="_blank">
+            Buka file
+          </a>
         </div>
       `;
     } else {
@@ -267,7 +278,7 @@ window.initPopupChat = async function () {
     chatBody.scrollTop = chatBody.scrollHeight;
   }
 
-  // Event listeners
+  // Event listeners - gunakan element yang sudah ada di HTML
   const chatInput = document.getElementById("chatInput");
   if (chatInput) {
     chatInput.addEventListener("keydown", function (e) {
@@ -344,17 +355,30 @@ async function loadMessages(conversationId) {
     const chatBody = document.getElementById("chatBody");
     chatBody.innerHTML = "";
 
-    const currentUserId = parseInt(localStorage.getItem("current_user_id"), 10);
+    const currentUserId = parseInt(
+      localStorage.getItem("final_current_user_id"),
+      10
+    );
+    const activeRole = localStorage.getItem("active_role");
 
     console.log("Current User ID:", currentUserId);
+    console.log("Active Role:", activeRole);
     console.log("Messages:", data);
 
     data.forEach((msg) => {
-      // Bandingkan sender_id dengan current_user_id
-      const isFromCurrentUser = Number(msg.sender_id) === currentUserId;
+      // Logic untuk menentukan apakah pesan dari user yang sedang login
+      let isFromCurrentUser = false;
+
+      if (activeRole === "psikolog") {
+        // Jika saya psikolog, pesan dari saya jika sender_role adalah "psychologist"
+        isFromCurrentUser = msg.sender_role === "psychologist";
+      } else {
+        // Jika saya patient, pesan dari saya jika sender_role adalah "patient"
+        isFromCurrentUser = msg.sender_role === "patient";
+      }
 
       console.log(
-        `Message from sender_id: ${msg.sender_id}, current user: ${currentUserId}, isFromCurrentUser: ${isFromCurrentUser}`
+        `Message from sender_id: ${msg.sender_id}, sender_role: ${msg.sender_role}, active_role: ${activeRole}, isFromCurrentUser: ${isFromCurrentUser}`
       );
 
       addMessageToChat(
@@ -387,8 +411,16 @@ function subscribeToMessages(conversationId) {
       },
       (payload) => {
         const msg = payload.new;
-        const currentUserId = Number(localStorage.getItem("current_user_id"));
-        const isFromCurrentUser = Number(msg.sender_id) === currentUserId;
+        const activeRole = localStorage.getItem("active_role");
+
+        // Logic yang sama untuk real-time messages
+        let isFromCurrentUser = false;
+
+        if (activeRole === "psikolog") {
+          isFromCurrentUser = msg.sender_role === "psychologist";
+        } else {
+          isFromCurrentUser = msg.sender_role === "patient";
+        }
 
         // Hanya tambahkan pesan dari lawan bicara
         if (!isFromCurrentUser) {
@@ -426,13 +458,10 @@ function addMessageToChat(
   if (type === "file" && fileUrl) {
     msgDiv.innerHTML = `
       <div class="file-message">
-        <span>📎</span>
-        <div>
-          <strong>${fileName || "File"}</strong><br>
-          <a href="${fileUrl}" target="_blank">
-            Buka file
-          </a>
-        </div>
+        <strong>${fileName || "File"}</strong><br>
+        <a href="${fileUrl}" target="_blank">
+          Buka file
+        </a>
       </div>
     `;
   } else {
