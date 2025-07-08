@@ -24,7 +24,7 @@
 }
 
 .popup-header {
-  background: #2196f3;
+  background: #00bcd4;
   color: white;
   padding: 15px 20px;
   border-radius: 12px 12px 0 0;
@@ -50,8 +50,6 @@
   padding: 20px;
   overflow-y: auto;
   background: #f5f5f5;
-  display: flex;
-  flex-direction: column;
 }
 
 .popup-footer {
@@ -74,36 +72,59 @@
 }
 
 .input-message:focus {
-  border-color: #2196f3;
+  border-color: #00bcd4;
+}
+
+/* Chat Body - gunakan flexbox untuk alignment */
+#chatBody {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0;
 }
 
 /* Chat Bubble Styles */
 .chat-bubble {
   max-width: 70%;
-  padding: 10px 15px;
-  margin: 8px 0;
+  padding: 12px 16px;
   border-radius: 18px;
   word-wrap: break-word;
   position: relative;
-  clear: both;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
+/* Bubble dari lawan bicara (kiri) */
 .chat-bubble.left {
   background: #e0e0e0;
   color: #333;
   align-self: flex-start;
-  float: left;
-  margin-right: auto;
   border-bottom-left-radius: 5px;
+  margin-right: auto;
 }
 
+/* Bubble dari user sendiri (kanan) */
 .chat-bubble.right {
-  background: #2196f3;
+  background: #00bcd4;
   color: white;
   align-self: flex-end;
-  float: right;
-  margin-left: auto;
   border-bottom-right-radius: 5px;
+  margin-left: auto;
+}
+
+/* Container untuk setiap pesan */
+.message-container {
+  display: flex;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.message-container.left {
+  justify-content: flex-start;
+}
+
+.message-container.right {
+  justify-content: flex-end;
 }
 
 .btn-close-popup,
@@ -134,16 +155,16 @@
 }
 
 .btn-send {
-  background: #2196f3;
+  background: #00bcd4;
   color: white;
 }
 
 .btn-send:hover {
-  background: #1976d2;
+  background: #01b2ca;
 }
 
 .card-header {
-  background: #2196f3;
+  background: #00bcd4;
   color: white;
   padding: 15px;
   border-radius: 8px 8px 0 0;
@@ -170,16 +191,18 @@
   display: none;
 }
 
-/* Ensure proper alignment */
-#chatBody {
+/* File message styling */
+.file-message {
   display: flex;
-  flex-direction: column;
-  gap: 5px;
+  align-items: center;
+  gap: 8px;
 }
 
-/* Clear floats */
-.chat-bubble::after {
-  content: "";
-  display: table;
-  clear: both;
+.file-message a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.file-message a:hover {
+  text-decoration: none;
 }

@@ -157,24 +157,29 @@ window.initPopupChat = function () {
     fileName = null
   ) {
     const chatBody = document.getElementById("chatBody");
-    const msgDiv = document.createElement("div");
 
-    // Set posisi bubble berdasarkan pengirim
-    if (isFromCurrentUser) {
-      msgDiv.className = "chat-bubble right";
-    } else {
-      msgDiv.className = "chat-bubble left";
-    }
+    // Buat container untuk pesan
+    const messageContainer = document.createElement("div");
+    messageContainer.className = `message-container ${
+      isFromCurrentUser ? "right" : "left"
+    }`;
+
+    // Buat bubble pesan
+    const msgDiv = document.createElement("div");
+    msgDiv.className = `chat-bubble ${isFromCurrentUser ? "right" : "left"}`;
 
     // Handle different message types
     if (type === "file" && fileUrl) {
       // File message
       msgDiv.innerHTML = `
-        <div>
-          <strong>📎 ${fileName || "File"}</strong><br>
-          <a href="${fileUrl}" target="_blank" style="color: inherit; text-decoration: underline;">
-            Buka file
-          </a>
+        <div class="file-message">
+          <span>📎</span>
+          <div>
+            <strong>${fileName || "File"}</strong><br>
+            <a href="${fileUrl}" target="_blank">
+              Buka file
+            </a>
+          </div>
         </div>
       `;
     } else {
@@ -182,7 +187,8 @@ window.initPopupChat = function () {
       msgDiv.textContent = content;
     }
 
-    chatBody.appendChild(msgDiv);
+    messageContainer.appendChild(msgDiv);
+    chatBody.appendChild(messageContainer);
     chatBody.scrollTop = chatBody.scrollHeight;
   }
 
@@ -333,24 +339,29 @@ function addMessageToChat(
   fileName = null
 ) {
   const chatBody = document.getElementById("chatBody");
-  const msgDiv = document.createElement("div");
 
-  // Set posisi bubble berdasarkan pengirim
-  if (isFromCurrentUser) {
-    msgDiv.className = "chat-bubble right";
-  } else {
-    msgDiv.className = "chat-bubble left";
-  }
+  // Buat container untuk pesan
+  const messageContainer = document.createElement("div");
+  messageContainer.className = `message-container ${
+    isFromCurrentUser ? "right" : "left"
+  }`;
+
+  // Buat bubble pesan
+  const msgDiv = document.createElement("div");
+  msgDiv.className = `chat-bubble ${isFromCurrentUser ? "right" : "left"}`;
 
   // Handle different message types
   if (type === "file" && fileUrl) {
     // File message
     msgDiv.innerHTML = `
-      <div>
-        <strong>📎 ${fileName || "File"}</strong><br>
-        <a href="${fileUrl}" target="_blank" style="color: inherit; text-decoration: underline;">
-          Buka file
-        </a>
+      <div class="file-message">
+        <span>📎</span>
+        <div>
+          <strong>${fileName || "File"}</strong><br>
+          <a href="${fileUrl}" target="_blank">
+            Buka file
+          </a>
+        </div>
       </div>
     `;
   } else {
@@ -358,6 +369,7 @@ function addMessageToChat(
     msgDiv.textContent = content;
   }
 
-  chatBody.appendChild(msgDiv);
+  messageContainer.appendChild(msgDiv);
+  chatBody.appendChild(messageContainer);
   chatBody.scrollTop = chatBody.scrollHeight;
 }
