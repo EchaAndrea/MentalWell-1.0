@@ -97,14 +97,7 @@ async function renderArticleDetails() {
       }
       requestAnimationFrame(scroll2);
     }
-    if (
-      userReviewsContainer &&
-      psikolog.reviews &&
-      psikolog.reviews.length > 0 &&
-      userReviewsContainer.scrollWidth > userReviewsContainer.clientWidth
-    ) {
-      setTimeout(scroll2, 500); // pastikan sudah terisi
-    }
+    setTimeout(scroll2, 500);
 
     // Render ketersediaan (availability)
     const availabilityTimes = document.getElementById("availabilityTimes");
