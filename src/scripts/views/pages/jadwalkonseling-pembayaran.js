@@ -116,16 +116,38 @@ async function confirmPayment() {
 
       localStorage.setItem("last_counseling_id", counseling_id);
 
-      const detail = await fetch(
-        `https://mentalwell10-api-production.up.railway.app/counseling/${counseling_id}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      ).then((res) => res.json());
+      try {
+        // Tunggu sebentar untuk proses backend
+        await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      const conversation_id = detail.counseling?.conversation_id;
-      if (conversation_id) {
-        localStorage.setItem("last_conversation_id", conversation_id);
+        const detail = await fetch(
+          `https://mentalwell10-api-production.up.railway.app/counseling/${counseling_id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (detail.ok) {
+          const detailData = await detail.json();
+          const conversation_id = detailData.counseling?.conversation_id;
+
+          if (conversation_id) {
+            localStorage.setItem("last_conversation_id", conversation_id);
+            console.log(
+              "Conversation ID found for scheduled counseling:",
+              conversation_id
+            );
+          } else {
+            console.log(
+              "Conversation ID akan dibuat setelah admin approve scheduled counseling"
+            );
+            // Set null untuk menandakan bahwa belum ada conversation_id
+            localStorage.setItem("last_conversation_id", "null");
+          }
+        }
+      } catch (error) {
+        console.error("Error getting conversation ID:", error);
+        localStorage.setItem("last_conversation_id", "null");
       }
 
       Swal.close();
