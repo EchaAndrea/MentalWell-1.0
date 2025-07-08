@@ -507,7 +507,6 @@ daftar
   width: 250px;
   height: 100%;
   content: "";
-  /* z-index: 1; */
 }
 
 .logos-2:hover .logo-slide-2 {
@@ -519,13 +518,12 @@ daftar
   flex-direction: row;
   animation: 15s slide infinite linear;
   flex-shrink: 0;
-  margin-top: 3rem;
+  margin-top: 1rem;
   margin-bottom: 1rem;
   gap: 2rem;
 }
 
 .logo-slide-2 div {
-  /* height: 100rem; */
   margin: 2rem 0rem;
 }
 
@@ -542,10 +540,10 @@ daftar
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* maksimal 2 baris */
+  -webkit-line-clamp: 2; 
   -webkit-box-orient: vertical;
-  line-clamp: 2; /* Standar, agar warning hilang */
-  max-width: 220px; /* Atur sesuai kebutuhan */
+  line-clamp: 2; 
+  max-width: 220px; 
 }
 
 /*
