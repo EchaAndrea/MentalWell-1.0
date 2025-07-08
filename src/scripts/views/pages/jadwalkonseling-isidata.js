@@ -150,6 +150,21 @@ document.addEventListener("DOMContentLoaded", async function () {
       return;
     }
 
+    // Simpan data user ke localStorage untuk digunakan di halaman selesai
+    if (userProfile) {
+      localStorage.setItem(
+        "user_data",
+        JSON.stringify({
+          name: userProfile.name,
+          nickname: userProfile.nickname || userProfile.name,
+          phone_number: userProfile.phone,
+          birth_date: userProfile.birth_date,
+          gender: userProfile.gender,
+        })
+      );
+    }
+
+    // Fill data diri
     const inputs = document.querySelectorAll(".form-center input");
     if (userProfile && inputs.length >= 5) {
       inputs[0].value = userProfile.name || "";
@@ -159,6 +174,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       inputs[4].value = userProfile.phone || "";
     }
 
+    // Fill jadwal data
     const selectedDateEl = document.getElementById("selectedDate");
     const selectedTimeEl = document.getElementById("selectedTime");
 

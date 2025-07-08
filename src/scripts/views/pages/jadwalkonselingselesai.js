@@ -21,32 +21,90 @@ async function populateHTMLWithData() {
   try {
     const counseling = await fetchConfirmedCounselingData();
     const valueContainer = document.querySelector(".value");
-    // Ambil data user dari counseling, fallback ke localStorage jika tidak ada
-    let patient_name = counseling.patient_name;
-    let patient_nickname = counseling.patient_nickname;
-    let patient_phone = counseling.patient_phone_number;
 
-    if (!patient_name || !patient_nickname || !patient_phone) {
-      const userData = JSON.parse(localStorage.getItem("user_data") || "{}");
-      patient_name = patient_name || userData.name || "-";
-      patient_nickname = patient_nickname || userData.nickname || "-";
-      patient_phone = patient_phone || userData.phone_number || "-";
+    // Ambil data user dari localStorage (yang disimpan saat isi data)
+    const userData = JSON.parse(localStorage.getItem("user_data") || "{}");
+
+    // Gunakan data dari counseling jika ada, fallback ke localStorage
+    let patient_name = counseling.patient_name || userData.name || "-";
+    let patient_nickname =
+      counseling.patient_nickname || userData.nickname || userData.name || "-";
+    let patient_phone =
+      counseling.patient_phone_number || userData.phone_number || "-";
+
+    // Jika masih kosong, coba ambil dari jadwal localStorage
+    if (
+      patient_name === "-" ||
+      patient_nickname === "-" ||
+      patient_phone === "-"
+    ) {
+      const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
+      if (jadwal.user_data) {
+        patient_name =
+          patient_name === "-" ? jadwal.user_data.name || "-" : patient_name;
+        patient_nickname =
+          patient_nickname === "-"
+            ? jadwal.user_data.nickname || "-"
+            : patient_nickname;
+        patient_phone =
+          patient_phone === "-" ? jadwal.user_data.phone || "-" : patient_phone;
+      }
     }
 
     valueContainer.innerHTML = `
-      <p>${patient_name}</p>
-      <p>${patient_nickname}</p>
-      <p>${patient_phone}</p>
-      <p>${convertDateFormat(counseling.schedule_date)}</p>
-      <p>${convertTimeFormat(counseling.schedule_time)}</p>
+      <p><strong>${patient_name}</strong></p>
+      <p><strong>${patient_nickname}</strong></p>
+      <p><strong>${patient_phone}</strong></p>
+      <p><strong>${convertDateFormat(counseling.schedule_date)}</strong></p>
+      <p><strong>${convertTimeFormat(counseling.schedule_time)}</strong></p>
     `;
   } catch (error) {
-    // Tampilkan error ke user jika perlu
+    console.error("Error populating HTML:", error);
+
+    // Fallback: gunakan data dari localStorage jika API gagal
+    const userData = JSON.parse(localStorage.getItem("user_data") || "{}");
+    const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
+
+    const valueContainer = document.querySelector(".value");
+    if (valueContainer) {
+      valueContainer.innerHTML = `
+        <p><strong>${userData.name || "-"}</strong></p>
+        <p><strong>${userData.nickname || userData.name || "-"}</strong></p>
+        <p><strong>${userData.phone_number || "-"}</strong></p>
+        <p><strong>${formatTanggalIndo(jadwal.tanggal) || "-"}</strong></p>
+        <p><strong>${jadwal.waktu ? jadwal.waktu + " WIB" : "-"}</strong></p>
+      `;
+    }
   }
 }
 
+function formatTanggalIndo(tanggalStr) {
+  if (!tanggalStr) return "-";
+  const bulan = [
+    "Januari",
+    "Februari",
+    "Maret",
+    "April",
+    "Mei",
+    "Juni",
+    "Juli",
+    "Agustus",
+    "September",
+    "Oktober",
+    "November",
+    "Desember",
+  ];
+  const [tahun, bulanIdx, tanggal] = tanggalStr.split("-");
+  return `${parseInt(tanggal)} ${bulan[parseInt(bulanIdx) - 1]} ${tahun}`;
+}
+
 function redirectToIndex() {
-  window.location.href = `https://mentalwell-10-frontend.vercel.app/`;
+  // Clean up localStorage
+  localStorage.removeItem("jadwal");
+  localStorage.removeItem("counseling_problem");
+  localStorage.removeItem("user_data");
+
+  window.location.href = "/";
 }
 
 function convertDateFormat(inputDate) {
@@ -85,7 +143,7 @@ function convertDateFormat(inputDate) {
 function convertTimeFormat(inputTime) {
   if (!inputTime) return "-";
   const [startTime, endTime] = inputTime.split("-");
-  return `${startTime?.replace(":", ".")} - ${endTime?.replace(":", ".")}`;
+  return `${startTime?.replace(":", ".")} - ${endTime?.replace(":", ".")} WIB`;
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -94,12 +152,18 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnKembali = document.querySelector(
     'button[onclick="redirectToIndex()"]'
   );
+
   if (btnKembali) {
     btnKembali.removeAttribute("onclick");
-    if (mode === "chat") {
-      btnKembali.textContent = "Mulai Konseling";
+    if (mode === "chat" || mode === "realtime") {
+      btnKembali.textContent = "Lihat Riwayat Konseling";
       btnKembali.onclick = function () {
-        window.location.href = "/riwayat";
+        // Clean up localStorage
+        localStorage.removeItem("jadwal");
+        localStorage.removeItem("counseling_problem");
+        localStorage.removeItem("user_data");
+
+        window.location.href = "/riwayatkonseling";
       };
     } else {
       btnKembali.textContent = "Kembali ke Beranda";
@@ -108,4 +172,5 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
+// Load data saat halaman dimuat
 populateHTMLWithData();
