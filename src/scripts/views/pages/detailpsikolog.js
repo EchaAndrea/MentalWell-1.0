@@ -82,22 +82,32 @@ async function renderArticleDetails() {
       }
     }
 
-    // Scroll otomatis horizontal untuk ulasan
-    let scrollAmount2 = 0;
-    const scrollSpeed2 = 1.5;
-    function scroll2() {
-      if (!userReviewsContainer) return;
-      scrollAmount2 += scrollSpeed2;
-      userReviewsContainer.scrollLeft = scrollAmount2;
-      if (
-        scrollAmount2 >=
-        userReviewsContainer.scrollWidth - userReviewsContainer.clientWidth
-      ) {
-        scrollAmount2 = 0;
-      }
-      requestAnimationFrame(scroll2);
-    }
-    setTimeout(scroll2, 500);
+const logosContainer2 = document.querySelector(".logos-2");
+const originalLogosContainer2 = document.querySelector(".logos-2");
+const clone2 = originalLogosContainer2.cloneNode(true);
+originalLogosContainer2.parentNode.insertBefore(
+  clone2,
+  originalLogosContainer2.nextSibling
+);
+
+let scrollAmount2 = 0;
+const scrollSpeed2 = 2;
+
+function scroll2() {
+  scrollAmount2 += scrollSpeed2;
+  originalLogosContainer2.scrollLeft = scrollAmount2;
+
+  if (
+    scrollAmount2 >=
+    originalLogosContainer2.scrollWidth - originalLogosContainer2.clientWidth
+  ) {
+    scrollAmount2 = 0;
+  }
+
+  requestAnimationFrame(scroll2);
+}
+
+scroll2();
 
     // Render ketersediaan (availability)
     const availabilityTimes = document.getElementById("availabilityTimes");
