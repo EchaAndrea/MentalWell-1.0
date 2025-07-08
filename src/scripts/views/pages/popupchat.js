@@ -36,21 +36,53 @@ window.initPopupChat = function () {
     return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
   }
 
+  // Fungsi untuk upload file ke Supabase Storage
+  async function uploadFile(file) {
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${Date.now()}.${fileExt}`;
+    const filePath = `chat-files/${fileName}`;
+
+    const { data, error } = await supabase.storage
+      .from("chat-files")
+      .upload(filePath, file);
+
+    if (error) {
+      console.error("Error uploading file:", error);
+      return null;
+    }
+
+    // Get public URL
+    const { data: publicURL } = supabase.storage
+      .from("chat-files")
+      .getPublicUrl(filePath);
+
+    return {
+      url: publicURL.publicUrl,
+      fileName: file.name,
+      fileSize: file.size,
+    };
+  }
+
   // Fungsi untuk mengirim pesan
   window.sendMessage = async function () {
     const input = document.getElementById("chatInput");
     const message = input.value.trim();
     if (!message) return;
+
     const conversationId = localStorage.getItem("active_conversation_id");
     if (!conversationId) {
       alert("conversation_id tidak ditemukan di localStorage!");
       return;
     }
+
     const senderRole = localStorage.getItem("active_role");
     const senderId = parseInt(localStorage.getItem("active_user_id"), 10);
     const id = generateId();
 
-    // Hanya kirim field yang ADA di tabel messages
+    // Tambahkan pesan ke chat body langsung (optimistic update)
+    addMessageToChat(message, true, "text");
+
+    // Kirim ke database
     const { error } = await supabase.from("messages").insert([
       {
         id: id,
@@ -63,12 +95,96 @@ window.initPopupChat = function () {
         is_read: false,
       },
     ]);
+
     if (error) {
       alert("Gagal mengirim pesan: " + error.message);
       console.error(error);
     }
+
     input.value = "";
   };
+
+  // Fungsi untuk mengirim file
+  window.sendFile = async function (file) {
+    const conversationId = localStorage.getItem("active_conversation_id");
+    if (!conversationId) {
+      alert("conversation_id tidak ditemukan di localStorage!");
+      return;
+    }
+
+    const senderRole = localStorage.getItem("active_role");
+    const senderId = parseInt(localStorage.getItem("active_user_id"), 10);
+    const id = generateId();
+
+    // Show loading
+    addMessageToChat("Mengirim file...", true, "file");
+
+    // Upload file
+    const uploadResult = await uploadFile(file);
+    if (!uploadResult) {
+      alert("Gagal upload file");
+      return;
+    }
+
+    // Kirim file message
+    const { error } = await supabase.from("messages").insert([
+      {
+        id: id,
+        conversation_id: conversationId,
+        sender_id: senderId,
+        sender_role: senderRole,
+        content: `File: ${uploadResult.fileName}`,
+        type: "file",
+        file_url: uploadResult.url,
+        file_name: uploadResult.fileName,
+        sent_at: new Date().toISOString(),
+        is_read: false,
+      },
+    ]);
+
+    if (error) {
+      alert("Gagal mengirim file: " + error.message);
+      console.error(error);
+    }
+  };
+
+  // Fungsi untuk menambahkan pesan ke chat
+  function addMessageToChat(
+    content,
+    isFromCurrentUser,
+    type = "text",
+    fileUrl = null,
+    fileName = null
+  ) {
+    const chatBody = document.getElementById("chatBody");
+    const msgDiv = document.createElement("div");
+
+    // Set posisi bubble berdasarkan pengirim
+    if (isFromCurrentUser) {
+      msgDiv.className = "chat-bubble right";
+    } else {
+      msgDiv.className = "chat-bubble left";
+    }
+
+    // Handle different message types
+    if (type === "file" && fileUrl) {
+      // File message
+      msgDiv.innerHTML = `
+        <div>
+          <strong>📎 ${fileName || "File"}</strong><br>
+          <a href="${fileUrl}" target="_blank" style="color: inherit; text-decoration: underline;">
+            Buka file
+          </a>
+        </div>
+      `;
+    } else {
+      // Text message
+      msgDiv.textContent = content;
+    }
+
+    chatBody.appendChild(msgDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
 
   // Enter untuk kirim pesan
   const chatInput = document.getElementById("chatInput");
@@ -80,18 +196,35 @@ window.initPopupChat = function () {
     });
   }
 
-  // Optional: Preview nama file yang diupload
+  // Handle file upload
   const fileUpload = document.getElementById("fileUpload");
   if (fileUpload) {
     fileUpload.addEventListener("change", function (e) {
       const file = e.target.files[0];
       if (file) {
-        const chatBody = document.getElementById("chatBody");
-        const fileDiv = document.createElement("div");
-        fileDiv.className = "alert alert-secondary p-2 mb-1 align-self-end";
-        fileDiv.textContent = `File: ${file.name}`;
-        chatBody.appendChild(fileDiv);
-        chatBody.scrollTop = chatBody.scrollHeight;
+        // Validasi file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          alert("File terlalu besar! Maksimal 5MB.");
+          return;
+        }
+
+        // Validasi tipe file
+        const allowedTypes = [
+          "image/jpeg",
+          "image/png",
+          "image/gif",
+          "application/pdf",
+          "text/plain",
+        ];
+        if (!allowedTypes.includes(file.type)) {
+          alert(
+            "Tipe file tidak diizinkan! Hanya JPG, PNG, GIF, PDF, dan TXT."
+          );
+          return;
+        }
+
+        window.sendFile(file);
+        e.target.value = ""; // Reset input
       }
     });
   }
@@ -108,7 +241,7 @@ window.initPopupChat = function () {
 
   // Pastikan conversationId valid sebelum load chat
   const conversationId = localStorage.getItem("active_conversation_id");
-  console.log("conversationId:", conversationId); // Debug
+  console.log("conversationId:", conversationId);
   if (!conversationId || conversationId === "undefined") {
     alert("conversation_id tidak ditemukan di localStorage!");
     return;
@@ -123,23 +256,27 @@ async function loadMessages(conversationId) {
     .select("*")
     .eq("conversation_id", conversationId)
     .order("sent_at", { ascending: true });
+
+  if (error) {
+    console.error("Error loading messages:", error);
+    return;
+  }
+
   if (data) {
     const chatBody = document.getElementById("chatBody");
     chatBody.innerHTML = "";
     const activeUserId = parseInt(localStorage.getItem("active_user_id"), 10);
+
     data.forEach((msg) => {
-      const msgDiv = document.createElement("div");
-      if (Number(msg.sender_id) === activeUserId) {
-        // Bubble kanan (user aktif)
-        msgDiv.className = "chat-bubble right";
-      } else {
-        // Bubble kiri (lawan bicara)
-        msgDiv.className = "chat-bubble left";
-      }
-      msgDiv.textContent = msg.content;
-      chatBody.appendChild(msgDiv);
+      const isFromCurrentUser = Number(msg.sender_id) === activeUserId;
+      addMessageToChat(
+        msg.content,
+        isFromCurrentUser,
+        msg.type,
+        msg.file_url,
+        msg.file_name
+      );
     });
-    chatBody.scrollTop = chatBody.scrollHeight;
   }
 }
 
@@ -149,6 +286,7 @@ function subscribeToMessages(conversationId) {
   if (chatChannel) {
     chatChannel.unsubscribe();
   }
+
   chatChannel = supabase
     .channel("messages")
     .on(
@@ -161,19 +299,58 @@ function subscribeToMessages(conversationId) {
       },
       (payload) => {
         const msg = payload.new;
-        const chatBody = document.getElementById("chatBody");
         const activeUserId = Number(localStorage.getItem("active_user_id"));
-        const msgDiv = document.createElement("div");
-        // Samakan tipe data!
-        if (Number(msg.sender_id) === activeUserId) {
-          msgDiv.className = "chat-bubble right";
-        } else {
-          msgDiv.className = "chat-bubble left";
+        const isFromCurrentUser = Number(msg.sender_id) === activeUserId;
+
+        // Jangan tambahkan pesan dari user sendiri (sudah ditambahkan saat kirim)
+        if (!isFromCurrentUser) {
+          addMessageToChat(
+            msg.content,
+            isFromCurrentUser,
+            msg.type,
+            msg.file_url,
+            msg.file_name
+          );
         }
-        msgDiv.textContent = msg.content;
-        chatBody.appendChild(msgDiv);
-        chatBody.scrollTop = chatBody.scrollHeight;
       }
     )
     .subscribe();
+}
+
+// Fungsi helper untuk menambahkan pesan ke chat
+function addMessageToChat(
+  content,
+  isFromCurrentUser,
+  type = "text",
+  fileUrl = null,
+  fileName = null
+) {
+  const chatBody = document.getElementById("chatBody");
+  const msgDiv = document.createElement("div");
+
+  // Set posisi bubble berdasarkan pengirim
+  if (isFromCurrentUser) {
+    msgDiv.className = "chat-bubble right";
+  } else {
+    msgDiv.className = "chat-bubble left";
+  }
+
+  // Handle different message types
+  if (type === "file" && fileUrl) {
+    // File message
+    msgDiv.innerHTML = `
+      <div>
+        <strong>📎 ${fileName || "File"}</strong><br>
+        <a href="${fileUrl}" target="_blank" style="color: inherit; text-decoration: underline;">
+          Buka file
+        </a>
+      </div>
+    `;
+  } else {
+    // Text message
+    msgDiv.textContent = content;
+  }
+
+  chatBody.appendChild(msgDiv);
+  chatBody.scrollTop = chatBody.scrollHeight;
 }
