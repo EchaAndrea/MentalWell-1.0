@@ -142,7 +142,6 @@ document.addEventListener("DOMContentLoaded", function () {
       // Cek status available dari atribut data-status
       if (btnDaftar.dataset.status === "available") {
         const modalEl = document.getElementById("modalPilihKonseling");
-        // Tambahkan class modal-bottom
         modalEl.classList.add("modal-bottom");
         const modal = new bootstrap.Modal(modalEl);
         modal.show();
@@ -154,16 +153,10 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   const btnChatSekarang = document.getElementById("btnChatSekarang");
-  const btnJadwalkan = document.getElementById("btnJadwalkan");
 
   if (btnChatSekarang) {
     btnChatSekarang.onclick = function () {
-      window.location.href = `/jadwalkonseling-isidata?id=${psikologId}&mode=chat`;
-    };
-  }
-  if (btnJadwalkan) {
-    btnJadwalkan.onclick = function () {
-      window.location.href = `/jadwalpsikolog?id=${psikologId}`;
+      window.location.href = `/jadwalkonseling-isidata?id=${psikologId}&mode=realtime`;
     };
   }
 });
