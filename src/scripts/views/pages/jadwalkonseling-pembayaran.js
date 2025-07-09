@@ -1,33 +1,22 @@
 async function fetchPsychologistPrice(psikologId) {
   const token = sessionStorage.getItem("authToken");
-
   try {
     const scheduleRes = await fetch(
       `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}/schedules`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
+      { headers: { Authorization: `Bearer ${token}` } }
     );
-
     if (scheduleRes.ok) {
       const scheduleData = await scheduleRes.json();
-      if (scheduleData.price) {
-        return parseInt(scheduleData.price);
-      }
+      if (scheduleData.price) return parseInt(scheduleData.price);
     }
-
     const psychRes = await fetch(
       `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}`,
-      {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      }
+      { headers: token ? { Authorization: `Bearer ${token}` } : {} }
     );
-
     if (psychRes.ok) {
       const psychData = await psychRes.json();
       return parseInt(psychData.price || psychData.data?.price || 0);
     }
-
     return 0;
   } catch (error) {
     console.error("Error fetching psychologist price:", error);
@@ -44,14 +33,12 @@ async function setupRealtimeSchedule(psikologId) {
   const waktu = `${pad(now.getHours())}:${pad(now.getMinutes())}-${pad(
     now.getHours() + 1
   )}:${pad(now.getMinutes())}`;
-
   let harga = 0;
   try {
     harga = await fetchPsychologistPrice(psikologId);
   } catch (error) {
     console.error("Error fetching price:", error);
   }
-
   const jadwal = {
     tanggal,
     waktu,
@@ -60,11 +47,11 @@ async function setupRealtimeSchedule(psikologId) {
     harga,
     virtual_account: "123 456 789 1011",
   };
-
   localStorage.setItem("jadwal", JSON.stringify(jadwal));
   return jadwal;
 }
 
+// --- SCHEDULE FLOW ---
 async function confirmPayment() {
   const token = sessionStorage.getItem("authToken");
   const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
@@ -106,30 +93,27 @@ async function confirmPayment() {
         body: formData,
       }
     );
-
     const data = await res.json();
     if (data.status === "success") {
       const counseling_id = data.newCounseling?.counseling_id;
-      if (!counseling_id) {
+      if (!counseling_id)
         throw new Error("Counseling ID tidak ditemukan dalam response");
-      }
-
       localStorage.setItem("last_counseling_id", counseling_id);
 
+      // Ambil detail counseling untuk dapat conversation_id
       const detail = await fetch(
         `https://mentalwell10-api-production.up.railway.app/counseling/${counseling_id}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       ).then((res) => res.json());
 
       const conversation_id = detail.counseling?.conversation_id;
-      if (conversation_id) {
+      if (conversation_id && conversation_id !== "null") {
         localStorage.setItem("last_conversation_id", conversation_id);
+      } else {
+        localStorage.removeItem("last_conversation_id");
       }
 
       Swal.close();
-
       const mode = new URLSearchParams(window.location.search).get("mode");
       const psikologId = new URLSearchParams(window.location.search).get("id");
       window.location.href = `/jadwalkonseling-selesai?id=${psikologId}${
@@ -154,6 +138,7 @@ async function confirmPayment() {
   }
 }
 
+// --- REALTIME FLOW ---
 async function createRealtimeCounseling() {
   const token = sessionStorage.getItem("authToken");
   const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
@@ -193,18 +178,27 @@ async function createRealtimeCounseling() {
         body: formData,
       }
     );
-
     const data = await res.json();
     if (data.status === "success") {
       const counseling_id = data.newCounseling?.counseling_id;
-      if (!counseling_id) {
+      if (!counseling_id)
         throw new Error("Counseling ID tidak ditemukan dalam response");
-      }
-
       localStorage.setItem("last_counseling_id", counseling_id);
 
-      Swal.close();
+      // Ambil detail counseling untuk dapat conversation_id (biar konsisten)
+      const detail = await fetch(
+        `https://mentalwell10-api-production.up.railway.app/counseling/${counseling_id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      ).then((res) => res.json());
 
+      const conversation_id = detail.counseling?.conversation_id;
+      if (conversation_id && conversation_id !== "null") {
+        localStorage.setItem("last_conversation_id", conversation_id);
+      } else {
+        localStorage.removeItem("last_conversation_id");
+      }
+
+      Swal.close();
       const mode = new URLSearchParams(window.location.search).get("mode");
       const psikologId = new URLSearchParams(window.location.search).get("id");
       window.location.href = `/jadwalkonseling-selesai?id=${psikologId}&mode=${
@@ -243,7 +237,6 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 
   const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
-
   if (!jadwal.psychologist_id) {
     Swal.fire({
       icon: "error",
@@ -286,7 +279,6 @@ document.addEventListener("DOMContentLoaded", async function () {
   if (btn) {
     btn.addEventListener("click", function (e) {
       e.preventDefault();
-
       const mode = new URLSearchParams(window.location.search).get("mode");
       if (mode === "chat" || mode === "realtime") {
         createRealtimeCounseling();
