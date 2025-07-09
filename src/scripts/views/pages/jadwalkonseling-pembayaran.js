@@ -264,16 +264,20 @@ document.addEventListener("DOMContentLoaded", async function () {
   const btn = document.getElementById("btnKonfirmasiPembayaran");
   if (btn) {
     btn.addEventListener("click", function (e) {
-      e.preventDefault();
-      if (mode === "realtime") {
-        createRealtimeCounseling();
-      } else if (mode === "schedule") {
-        confirmPayment();
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Mode Tidak Valid",
-          text: "Silakan ulangi proses dari awal.",
+  e.preventDefault();
+  const modeParam = mode?.toLowerCase();
+
+  if (modeParam === "realtime") {
+    createRealtimeCounseling();
+  } else if (modeParam === "schedule" || modeParam === "chat" || !modeParam) {
+    confirmPayment();
+  } else {
+    Swal.fire({
+      icon: "error",
+      title: "Mode Tidak Valid",
+      text: "Silakan ulangi proses daftar dari awal.",
+    }).then(() => {
+      window.location.href = "/profilpsikolog.html?id=" + psikologId;
         });
       }
     });
