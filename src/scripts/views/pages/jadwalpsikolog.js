@@ -256,6 +256,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         alert("Silakan pilih tanggal dan waktu terlebih dahulu.");
         return;
       }
+
       localStorage.setItem(
         "jadwal",
         JSON.stringify({
@@ -264,10 +265,11 @@ document.addEventListener("DOMContentLoaded", async function () {
           harga: selectedPsikolog.price,
           tanggal: selectedTanggal,
           waktu: selectedWaktu,
-          psychologist_id: selectedPsikolog.id,
+          psychologist_id: selectedPsikolog.id, // <-- TAMBAHKAN INI!
         })
       );
-      window.location.href = `/jadwalkonseling-isidata?id=${psikologId}&mode=schedule`;
+
+      window.location.href = `/jadwalkonseling-isidata?id=${psikologId}`;
     });
   } catch (err) {
     alert("Gagal mengambil data psikolog atau jadwal: " + err.message);
