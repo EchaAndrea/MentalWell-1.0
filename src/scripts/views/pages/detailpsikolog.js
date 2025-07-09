@@ -147,7 +147,7 @@ document.addEventListener("DOMContentLoaded", function () {
         modal.show();
       } else {
         // Jika tidak tersedia, langsung redirect ke jadwal psikolog
-        window.location.href = `/jadwalpsikolog?id=${psikologId}`;
+        window.location.href = `/jadwalkonseling-isidata?id=${psikologId}&mode=schedule`;
       }
     };
   }
