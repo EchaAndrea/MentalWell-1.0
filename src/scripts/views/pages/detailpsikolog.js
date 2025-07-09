@@ -158,7 +158,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (btnChatSekarang) {
     btnChatSekarang.onclick = function () {
-      window.location.href = `/jadwalkonseling-isidata?id=${psikologId}&mode=chat`;
+      window.location.href = `/jadwalkonseling-isidata?id=${psikologId}&mode=realtime`;
     };
   }
   if (btnJadwalkan) {

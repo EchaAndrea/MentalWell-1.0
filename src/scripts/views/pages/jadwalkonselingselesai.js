@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (btnKembali) {
     btnKembali.removeAttribute("onclick");
-    if (mode === "chat" || mode === "realtime") {
+    if (mode === "realtime" || mode === "schedule") {
       btnKembali.textContent = "Mulai Konseling";
       btnKembali.onclick = redirectToRiwayat;
     } else {

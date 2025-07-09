@@ -70,8 +70,8 @@ document.addEventListener("DOMContentLoaded", async function () {
   const mode = urlParams.get("mode");
   const psikologId = urlParams.get("id");
 
-  // Setup jadwal untuk mode realtime/chat jika belum ada
-  if (mode === "chat" || mode === "realtime") {
+  // Setup jadwal untuk mode realtime/schedule jika belum ada
+  if (mode === "realtime" || mode === "schedule") {
     const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
     if (!jadwal.psychologist_id) {
       await setupRealtimeSchedule(psikologId);

@@ -116,8 +116,8 @@ document.addEventListener("DOMContentLoaded", async function () {
   const mode = urlParams.get("mode");
   const psikologId = urlParams.get("id");
 
-  // Setup jadwal untuk mode realtime/chat
-  if (mode === "chat" || mode === "realtime") {
+  // Setup jadwal untuk mode realtime/scheduele 
+  if (mode === "realtime" || mode === "schedule") {
     try {
       const jadwal = await setupRealtimeSchedule(psikologId);
 
@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         title: "Data jadwal tidak ditemukan",
         text: "Silakan pilih jadwal terlebih dahulu",
       }).then(() => {
-        if (mode === "chat" || mode === "realtime") {
+        if (mode === "realtime" || mode === "schedule") {
           window.location.href = `/profilpsikolog?id=${psikologId}`;
         } else {
           window.location.href = `/jadwalpsikolog?id=${psikologId}`;
