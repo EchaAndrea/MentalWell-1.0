@@ -52,7 +52,7 @@ async function setupRealtimeSchedule(psikologId) {
   return jadwal;
 }
 
-async function confirmPayment() {
+async function createScheduleCounseling() {
   const token = sessionStorage.getItem("authToken");
   const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
   const psychologist_id = jadwal.psychologist_id;
@@ -114,7 +114,7 @@ async function confirmPayment() {
         localStorage.removeItem("last_conversation_id");
         Swal.fire({
           icon: "warning",
-          title: "Belum Bisa Chat",
+          title: "Belum Bisa Mulai Sesi",
           text: "Sesi belum aktif. Tunggu konfirmasi dari admin.",
         });
       }
@@ -123,15 +123,15 @@ async function confirmPayment() {
       const psikologId = new URLSearchParams(window.location.search).get("id");
       window.location.href = `/jadwalkonseling-selesai?id=${psikologId}&mode=schedule`;
     } else {
-      throw new Error(data.message || "Gagal mengirim pembayaran");
+      throw new Error(data.message || "Gagal mengirim counseling schedule");
     }
   } catch (error) {
-    console.error("Payment error:", error);
+    console.error("Schedule counseling error:", error);
     Swal.close();
     Swal.fire({
       icon: "error",
       title: "Pembayaran Gagal",
-      text: error.message || "Gagal memproses pembayaran. Silakan coba lagi.",
+      text: error.message || "Gagal memproses counseling schedule.",
     });
   }
 }
@@ -264,20 +264,20 @@ document.addEventListener("DOMContentLoaded", async function () {
   const btn = document.getElementById("btnKonfirmasiPembayaran");
   if (btn) {
     btn.addEventListener("click", function (e) {
-  e.preventDefault();
-  const modeParam = mode?.toLowerCase();
+      e.preventDefault();
+      const modeParam = mode?.toLowerCase();
 
-  if (modeParam === "realtime") {
-    createRealtimeCounseling();
-  } else if (modeParam === "schedule" || modeParam === "chat" || !modeParam) {
-    confirmPayment();
-  } else {
-    Swal.fire({
-      icon: "error",
-      title: "Mode Tidak Valid",
-      text: "Silakan ulangi proses daftar dari awal.",
-    }).then(() => {
-      window.location.href = "/profilpsikolog.html?id=" + psikologId;
+      if (modeParam === "realtime") {
+        createRealtimeCounseling();
+      } else if (modeParam === "schedule") {
+        createScheduleCounseling();
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Mode Tidak Valid",
+          text: "Silakan ulangi proses daftar dari awal.",
+        }).then(() => {
+          window.location.href = "/profilpsikolog.html?id=" + psikologId;
         });
       }
     });
