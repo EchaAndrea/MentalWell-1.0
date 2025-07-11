@@ -80,9 +80,14 @@ fetch(apiUrl, {
 function redirectToDetailPsychologist(id, mode = "") {
   const token = localStorage.getItem("token");
   if (!token) {
-    // Langsung tampilkan popup login tanpa alert
-    document.getElementById('overlay').style.display = 'block';
-    document.getElementById('login-container').style.display = 'block';
+    // Tampilkan popup login atau alert
+    Swal.fire({
+      icon: 'warning',
+      title: 'Login Diperlukan',
+      text: 'Silakan login terlebih dahulu untuk mendaftar konseling.',
+      confirmButtonText: 'Login',
+      allowOutsideClick: false,
+    });
     return;
   }
   window.location.href = `/profilpsikolog?id=${id}${mode ? `&mode=${mode}` : ""}`;
