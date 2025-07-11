@@ -13,10 +13,10 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 90vw;           /* Gunakan persentase viewport */
-  max-width: 900px;      /* Batas maksimal */
-  height: 80vh;          /* Gunakan persentase viewport */
-  max-height: 700px;     /* Batas maksimal */
+  width: 90vw;           
+  max-width: 900px;      
+  height: 100vh;          
+  max-height: 700px;     
   min-width: 320px;
   min-height: 400px;
   background: #fff;
@@ -25,7 +25,7 @@
   display: flex;
   flex-direction: column;
   z-index: 1001;
-  overflow: hidden;      /* Agar konten tidak keluar */
+  overflow: hidden;      
 }
 
 .popup-header {
@@ -55,7 +55,7 @@
   padding: 20px;
   overflow-y: auto;
   background: #f5f5f5;
-  min-height: 0; /* Agar flexbox bekerja di height kecil */
+  min-height: 0; 
 }
 
 .popup-footer {
