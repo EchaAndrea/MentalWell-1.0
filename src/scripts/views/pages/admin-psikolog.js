@@ -45,7 +45,7 @@ async function fetchPsikologData() {
         id: item.id,
         nama: item.name,
         email: item.email,
-        topik: "-", // Tidak ada field topics di response, jadi default "-"
+        topik: item.topics?.map((t) => t.name).join(", ") || "-", // Tidak ada field topics di response, jadi default "-"
         status: item.availability === "available",
         password: "********", // Tidak ada password dari BE
       })).sort((a, b) => b.id - a.id);
