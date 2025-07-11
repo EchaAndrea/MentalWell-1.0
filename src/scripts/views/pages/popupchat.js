@@ -565,6 +565,7 @@ function subscribeToMessages(conversationId) {
 
 // Show chat popup on window load
 window.addEventListener("load", function () {
+  document.body.style.visibility = "visible";
   var popup = document.getElementById("chatPopupCustom");
   if (popup) popup.style.display = "flex";
 });
