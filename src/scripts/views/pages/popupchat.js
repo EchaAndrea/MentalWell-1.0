@@ -255,7 +255,16 @@ window.initPopupChat = async function () {
     }
     } catch (error) {
       console.error("Error sending message:", error);
-      alert("Gagal mengirim pesan: " + error.message);
+
+      const msg = error.message?.toLowerCase() || "";
+
+      if (msg.includes("violates row-level security") || msg.includes("not allowed")) {
+        alert(
+          "Sesi Anda telah berakhir sehingga pesan tidak dapat dikirim.\nSilakan mulai sesi baru atau hubungi admin jika Anda merasa ini adalah kesalahan. 🌸"
+        );
+      } else {
+        alert("Maaf, terjadi kendala saat mengirim pesan. Silakan coba kembali nanti.");
+      }
     }
   };
 
