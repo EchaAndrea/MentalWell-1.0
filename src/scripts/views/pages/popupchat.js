@@ -448,9 +448,9 @@ async function loadMessages(conversationId) {
 async function subscribeToMessages(conversationId) {
   console.log("Setting up real-time subscription for:", conversationId);
 
-  if (chatChannel) {
+if (chatChannel) {
     console.log("Unsubscribing from existing channel");
-    chatChannel.unsubscribe();
+    await supabase.removeChannel(chatChannel);
   }
 
   // Cek status conversation
