@@ -73,7 +73,7 @@ async function renderArticleDetails() {
           .map(
             (review) => `
             <div class="isi-ulasan">
-              <img src="/src/public/beranda/man.png" alt="Foto User" id="userReview" />
+              <img src="${review.profpic || '/src/public/beranda/man.png'}" alt="Foto User" id="userReview" />
               <div class="komentar-user">
                 <h3>${review.patient || "Pengguna Tanpa Nama"}</h3>
                 <p>${review.review}</p>
