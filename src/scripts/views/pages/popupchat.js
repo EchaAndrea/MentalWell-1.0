@@ -144,7 +144,9 @@ window.initPopupChat = async function () {
     isFromCurrentUser,
     type = "text",
     fileUrl = null,
-    fileName = null
+    fileName = null,
+    senderId = null,
+    prevSenderId = null // tambahkan argumen ini
   ) {
     const chatBody = document.getElementById("chatBody");
     if (!chatBody) {
@@ -156,6 +158,15 @@ window.initPopupChat = async function () {
     messageContainer.className = `message-container ${
       isFromCurrentUser ? "right" : "left"
     }`;
+
+    // Tambahkan class same-sender atau diff-sender
+    if (prevSenderId !== null && senderId !== null) {
+      if (prevSenderId === senderId) {
+        messageContainer.classList.add("same-sender");
+      } else {
+        messageContainer.classList.add("diff-sender");
+      }
+    }
 
     const msgDiv = document.createElement("div");
     msgDiv.className = `chat-bubble ${isFromCurrentUser ? "right" : "left"}`;
@@ -444,22 +455,20 @@ async function loadMessages(conversationId) {
     console.log("Current User ID:", currentUserId);
     console.log("Messages loaded:", data.length);
 
+    let prevSenderId = null;
     data.forEach((msg, index) => {
       const isFromCurrentUser = Number(msg.sender_id) === currentUserId;
-
-      console.log(
-        `Message ${index + 1}: sender_id=${
-          msg.sender_id
-        }, current_user_id=${currentUserId}, isFromCurrentUser=${isFromCurrentUser}`
-      );
 
       addMessageToChat(
         msg.content,
         isFromCurrentUser,
         msg.type,
         msg.file_url,
-        msg.file_name
+        msg.file_name,
+        msg.sender_id,
+        prevSenderId
       );
+      prevSenderId = msg.sender_id;
     });
   }
 }
@@ -507,14 +516,24 @@ function subscribeToMessages(conversationId) {
           isi: msg.content?.substring(0, 50) + "...",
         });
 
+        // Cari senderId sebelumnya dari chatBody
+        let prevSenderId = null;
+        const chatBody = document.getElementById("chatBody");
+        if (chatBody && chatBody.lastChild) {
+          prevSenderId = chatBody.lastChild.getAttribute("data-sender-id");
+        }
+
         if (!isFromCurrentUser) {
-          addMessageToChat(
+          const msgDiv = addMessageToChat(
             msg.content,
             isFromCurrentUser,
             msg.type,
             msg.file_url,
-            msg.file_name
+            msg.file_name,
+            msg.sender_id,
+            prevSenderId
           );
+          if (msgDiv) msgDiv.setAttribute("data-sender-id", msg.sender_id);
         }
       }
     )

@@ -79,8 +79,10 @@
 #chatBody {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 0;
+  gap: 4px; /* default gap antar bubble, nanti diatur lebih lanjut */
+  padding: 16px 24px 16px 24px; /* atas kanan bawah kiri */
+  min-height: 100px;
+  box-sizing: border-box;
 }
 
 /* Chat Bubble Styles */
@@ -101,6 +103,7 @@
   align-self: flex-start;
   border-bottom-left-radius: 5px;
   margin-right: auto;
+  margin-left: 8px; /* beri jarak dari kiri */
 }
 
 /* Bubble dari user sendiri (kanan) */
@@ -110,13 +113,14 @@
   align-self: flex-end;
   border-bottom-right-radius: 5px;
   margin-left: auto;
+  margin-right: 8px; /* beri jarak dari kanan */
 }
 
 /* Container untuk setiap pesan */
 .message-container {
   display: flex;
   width: 100%;
-  margin-bottom: 5px;
+  margin-bottom: 2px; /* default jarak antar bubble, nanti diatur lebih lanjut */
 }
 
 .message-container.left {
@@ -125,6 +129,18 @@
 
 .message-container.right {
   justify-content: flex-end;
+}
+
+/* Jarak antar bubble dari sender yang sama lebih rapat */
+.message-container.same-sender {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+/* Jarak antar bubble beda sender lebih renggang */
+.message-container.diff-sender {
+  margin-top: 16px;
+  margin-bottom: 2px;
 }
 
 .btn-close-popup,
