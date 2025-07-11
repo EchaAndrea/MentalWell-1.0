@@ -80,18 +80,9 @@ fetch(apiUrl, {
 function redirectToDetailPsychologist(id, mode = "") {
   const token = localStorage.getItem("token");
   if (!token) {
-    // Tampilkan popup login atau alert
-    Swal.fire({
-      icon: 'warning',
-      title: 'Login Diperlukan',
-      text: 'Silakan login terlebih dahulu untuk mengakses fitur ini.',
-      confirmButtonText: 'Login',
-      allowOutsideClick: false,
-    }).then(() => {
-      // Tampilkan popup login (jika ada popup), atau redirect ke halaman login
-      document.getElementById('overlay').style.display = 'block';
-      document.getElementById('login-container').style.display = 'block';
-    });
+    // Langsung tampilkan popup login tanpa alert
+    document.getElementById('overlay').style.display = 'block';
+    document.getElementById('login-container').style.display = 'block';
     return;
   }
   window.location.href = `/profilpsikolog?id=${id}${mode ? `&mode=${mode}` : ""}`;
