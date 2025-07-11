@@ -245,7 +245,7 @@ window.initPopupChat = async function () {
         error.message?.toLowerCase().includes("not allowed")
       ) {
         alert(
-          "Sesi Anda telah berakhir sehingga pesan tidak dapat dikirim.\nSilakan mulai sesi baru atau hubungi admin jika Anda merasa ini adalah kesalahan. 🌸"
+          "Sesi Anda telah berakhir sehingga pesan tidak dapat dikirim.\nSilakan mulai sesi baru atau hubungi admin jika Anda merasa ini adalah kesalahan."
         );
       } else {
         alert("Maaf, terjadi kendala saat mengirim pesan. Silakan coba kembali nanti.");
@@ -260,7 +260,7 @@ window.initPopupChat = async function () {
 
       if (msg.includes("violates row-level security") || msg.includes("not allowed")) {
         alert(
-          "Sesi Anda telah berakhir sehingga pesan tidak dapat dikirim.\nSilakan mulai sesi baru atau hubungi admin jika Anda merasa ini adalah kesalahan. 🌸"
+          "Sesi Anda telah berakhir sehingga pesan tidak dapat dikirim.\nSilakan mulai sesi baru atau hubungi admin jika Anda merasa ini adalah kesalahan."
         );
       } else {
         alert("Maaf, terjadi kendala saat mengirim pesan. Silakan coba kembali nanti.");
