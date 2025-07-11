@@ -35,7 +35,7 @@ async function fetchArticles() {
             })
           : "",
         dibuatoleh: a.created_by || "Admin",
-      })).reverse();
+      })).sort((a, b) => b.id - a.id);
       filteredData = [...allArticles];
     } else {
       allArticles = [];
