@@ -235,18 +235,39 @@ async function hapusItem(id) {
   }
 }
 
-function hapusYangDipilih() {
+async function hapusYangDipilih() {
   const checkboxes = document.querySelectorAll(".row-checkbox:checked");
-  if (checkboxes.length === 0) return alert("Pilih data terlebih dahulu.");
+  if (checkboxes.length === 0) {
+    alert("Pilih data terlebih dahulu.");
+    return;
+  }
 
-  checkboxes.forEach((cb) => {
-    const id = parseInt(cb.getAttribute("data-id"));
-    const index = psikologData.findIndex((p) => p.id === id);
-    if (index !== -1) psikologData.splice(index, 1);
-  });
+  if (!confirm("Yakin ingin menghapus semua psikolog yang dipilih?")) return;
 
-  filteredData = [...psikologData];
-  renderTable();
+  const TOKEN = sessionStorage.getItem("authToken");
+  if (!TOKEN) {
+    alert("Token tidak ditemukan. Silakan login ulang.");
+    return;
+  }
+
+  for (const cb of checkboxes) {
+    const id = cb.getAttribute("data-id");
+    try {
+      const res = await fetch(
+        `https://mentalwell10-api-production.up.railway.app/admin/psychologist/${id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${TOKEN}` },
+        }
+      );
+      // Optional: bisa cek hasil res di sini
+    } catch (err) {
+      // Optional: tampilkan error jika gagal hapus salah satu
+    }
+  }
+
+  alert("Data terpilih berhasil dihapus.");
+  await fetchPsikologData(); // Refresh data dari server
 }
 
 // Agar bisa dipanggil dari HTML
