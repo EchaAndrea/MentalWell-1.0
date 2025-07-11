@@ -8,7 +8,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Ambil artikel_id dari URL
   const params = new URLSearchParams(window.location.search);
   const artikelId = params.get("artikel_id");
-  console.log("artikelId:", artikelId); // Tambahkan ini untuk debug
+  console.log("artikelId:", artikelId);
+
+  // Cek artikelId
+  if (!artikelId) {
+    Swal.fire("ID artikel tidak ditemukan.");
+    return;
+  }
 
   // Disable semua input (readonly)
   Array.from(form.elements).forEach((el) => {
@@ -31,7 +37,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     );
     const result = await res.json();
-    if (res.ok && result.status === "success" && result.article) {
+
+    if (!res.ok) {
+      Swal.fire(
+        "Gagal!",
+        result.message || `Artikel dengan ID ${artikelId} tidak ditemukan.`,
+        "error"
+      );
+      return;
+    }
+
+    if (result.status === "success" && result.article) {
       const artikel = result.article;
       form.judul.value = artikel.title || "";
       form.kategori.value =
@@ -53,7 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } else {
       Swal.fire({
         icon: "error",
-        title: "Gagal memuat artikel",
+        title: result.message || "Gagal memuat artikel",
       });
     }
   } catch (err) {
