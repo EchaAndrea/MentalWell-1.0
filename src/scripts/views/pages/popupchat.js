@@ -361,48 +361,6 @@ window.initPopupChat = async function () {
     });
   }
 
-  const fileUpload = document.getElementById("fileUpload");
-  if (fileUpload) {
-    fileUpload.addEventListener("change", function (e) {
-      const file = e.target.files[0];
-      console.log("File selected:", file);
-
-      if (file) {
-        // Validasi file size (max 10MB)
-        if (file.size > 10 * 1024 * 1024) {
-          alert("File terlalu besar! Maksimal 10MB.");
-          e.target.value = "";
-          return;
-        }
-
-        // Validasi tipe file
-        const allowedTypes = [
-          "image/jpeg",
-          "image/jpg",
-          "image/png",
-          "image/gif",
-          "image/webp",
-          "application/pdf",
-          "text/plain",
-          "application/msword",
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        ];
-
-        if (!allowedTypes.includes(file.type)) {
-          alert(
-            "Tipe file tidak diizinkan!\nDiizinkan: JPG, PNG, GIF, WEBP, PDF, TXT, DOC, DOCX"
-          );
-          e.target.value = "";
-          return;
-        }
-
-        console.log("File validation passed, calling sendFile");
-        window.sendFile(file);
-        e.target.value = "";
-      }
-    });
-  }
-
   const sendBtn = document.getElementById("sendBtn");
   if (sendBtn) {
     sendBtn.addEventListener("click", function (e) {
