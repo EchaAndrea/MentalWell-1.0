@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       // Isi form
       form.judul.value = artikel.title || "";
-      form.kategori.value = artikel.categories?.[0]?.name || "";
+      form.kategori.value = artikel.categories?.[0]?.id || "";
       form.tanggal.value = artikel.created_at
         ? artikel.created_at.slice(0, 10)
         : "";
@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (form.judul.value.trim())
       formData.append("title", form.judul.value.trim());
     if (form.kategori.value.trim())
-      formData.append("category", form.kategori.value.trim());
+      formData.append("categories", form.kategori.value.trim());
     if (kontenTextarea.value.trim())
       formData.append("content", kontenTextarea.value.trim());
     if (gambarInput && gambarInput.files[0]) {
