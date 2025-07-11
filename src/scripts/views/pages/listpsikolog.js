@@ -83,9 +83,9 @@ function redirectToDetailPsychologist(id, mode = "") {
     // Tampilkan popup login atau alert
     Swal.fire({
       icon: 'warning',
-      title: 'Login Diperlukan',
-      text: 'Silakan login terlebih dahulu untuk mendaftar konseling.',
-      confirmButtonText: 'Login',
+      title: 'Perlu Masuk Akun',
+      text: 'Silakan masuk akun untuk mendaftar konseling.',
+      confirmButtonText: 'Oke',
       allowOutsideClick: false,
     });
     return;
