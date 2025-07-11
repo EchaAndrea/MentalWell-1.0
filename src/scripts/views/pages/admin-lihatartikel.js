@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Ambil artikel_id dari URL
   const params = new URLSearchParams(window.location.search);
   const artikelId = params.get("artikel_id");
+  console.log("artikelId:", artikelId); // Tambahkan ini untuk debug
 
   // Disable semua input (readonly)
   Array.from(form.elements).forEach((el) => {
