@@ -14,12 +14,11 @@ fetch(apiUrl)
   .then((data) => {
     loadingIndicator.style.display = "none";
 
-    // Perbaikan di sini: akses data.articles
     (data.articles || []).forEach((articleData) => {
       const articleElement = document.createElement("article");
 
-      // Batasi isi artikel yang tampil, misal 120 karakter
-      const truncatedContent = truncateText(articleData.content, 150);
+      // Batasi isi artikel yang tampil, misal 150 karakter
+      const truncatedContent = truncateText(articleData.content, 200);
 
       articleElement.innerHTML = `
                     <div class="image-articel">
