@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   const token = sessionStorage.getItem("authToken");
   try {
     const response = await fetch(
-      "https://mentalwell10-api-production.up.railway.app/my-data",
+      "https://mentalwell10-api-production.up.railway.app/profile",
       {
         headers: {
           Authorization: `Bearer ${token}`,
