@@ -80,7 +80,7 @@
 }
 
 .input-message:focus {
-  border-color: #00bcd4;
+  border-color: #02BBDD;
 }
 
 #chatBody {
@@ -113,7 +113,7 @@
 }
 
 .chat-bubble.right {
-  background: #00bcd4;
+  background: #02BBDD;
   color: white;
   align-self: flex-end;
   border-bottom-right-radius: 5px;
@@ -173,16 +173,16 @@
 }
 
 .btn-send {
-  background: #00bcd4;
+  background: #02BBDD;
   color: white;
 }
 
 .btn-send:hover {
-  background: #01b2ca;
+  background: #02a3c0;
 }
 
 .card-header {
-  background: #00bcd4;
+  background: #02BBDD;
   color: white;
   padding: 15px;
   border-radius: 8px 8px 0 0;
