@@ -45,7 +45,8 @@ async function fetchPsikologData() {
         id: item.id,
         nama: item.name,
         email: item.email,
-        topik: item.topics?.map((t) => t.name).join(", ") || "-", // Tidak ada field topics di response, jadi default "-"
+        topik: item.topics?.map((t) => t.id) || [],
+        topikString: item.topics?.map((t) => t.name).join(", ") || "-", // Tidak ada field topics di response, jadi default "-"
         status: item.availability === "available",
         password: "********", // Tidak ada password dari BE
       })).sort((a, b) => b.id - a.id);
@@ -63,11 +64,13 @@ async function fetchPsikologData() {
 }
 
 function handleFilter() {
-  const topik = document.getElementById("filterKategori").value;
+  const topikId = document.getElementById("filterKategori").value;
   filteredData =
-    topik === "semua"
+    topikId === "semua"
       ? [...psikologData]
-      : psikologData.filter((item) => item.topik === topik);
+      : psikologData.filter((item) =>
+          item.topik.includes(parseInt(topikId))
+        );
   currentPage = 1;
   renderTable();
 }
@@ -126,7 +129,7 @@ function renderTable() {
         <td>${p.nama}</td>
         <td>${p.email}</td>
         <td>${p.password}</td>
-        <td>${p.topik}</td>
+        <td>${p.topikString}</td>
         <td>${p.status ? "Aktif" : "Nonaktif"}</td>
         <td>
           <a href="/src/templates/admin-lihatpsikolog.html?id=${
