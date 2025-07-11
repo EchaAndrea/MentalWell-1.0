@@ -16,10 +16,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
   kontenTextarea.readOnly = true;
 
-  // Sembunyikan tombol simpan
-  form.querySelector(".btn-simpan").style.display = "none";
-  gambarInput.style.display = "none";
-
   // Fetch artikel
   try {
     const TOKEN = sessionStorage.getItem("authToken");
@@ -28,30 +24,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
     const res = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/articles`,
+      `https://mentalwell10-api-production.up.railway.app/articles/${artikelId}`,
       {
         headers: { Authorization: `Bearer ${TOKEN}` },
       }
     );
     const result = await res.json();
-    if (
-      res.ok &&
-      result.status === "success" &&
-      Array.isArray(result.articles)
-    ) {
-      const artikel = result.articles.find(
-        (a) => String(a.id) === String(artikelId)
-      );
-      if (!artikel) {
-        Swal.fire({
-          icon: "error",
-          title: "Artikel tidak ditemukan",
-        });
-        return;
-      }
-      // Isi form
+    if (res.ok && result.status === "success" && result.article) {
+      const artikel = result.article;
       form.judul.value = artikel.title || "";
-      form.kategori.value = artikel.categories || "";
+      form.kategori.value =
+        Array.isArray(artikel.categories) && artikel.categories.length > 0
+          ? artikel.categories.map((c) => c.name).join(", ")
+          : "";
       form.tanggal.value = artikel.created_at
         ? artikel.created_at.slice(0, 10)
         : "";
