@@ -20,11 +20,14 @@ document.addEventListener("DOMContentLoaded", () => {
     refundPayment(counselingId, TOKEN);
 
   // Modal bukti bayar
+  const buktiBayarModalEl = document.getElementById("buktiBayarModal");
+  const buktiBayarModal = new bootstrap.Modal(buktiBayarModalEl);
+
   document.getElementById("statusPembayaran").onclick = (e) => {
     e.preventDefault();
     const img = document.getElementById("imgBuktiBayar");
     if (img.src) {
-      new bootstrap.Modal(document.getElementById("buktiBayarModal")).show();
+      buktiBayarModal.show();
     }
   };
 });
