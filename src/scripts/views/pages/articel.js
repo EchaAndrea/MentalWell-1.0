@@ -17,8 +17,8 @@ fetch(apiUrl)
     (data.articles || []).forEach((articleData) => {
       const articleElement = document.createElement("article");
 
-      // Batasi isi artikel yang tampil, misal 150 karakter
-      const truncatedContent = truncateText(articleData.content, 180);
+      // Batasi isi artikel yang tampil, misal 160 karakter
+      const truncatedContent = truncateText(articleData.content, 160);
 
       articleElement.innerHTML = `
                     <div class="image-articel">
