@@ -62,7 +62,9 @@ function renderTable() {
       <td>${item.schedule_time}</td>
       <td>${renderStatus(item.payment_status)}</td>
       <td>
-        <a href="/src/templates/admin-detaildashboard.html?id=${item.id}" class="btn btn-sm btn-primary" title="Detail">
+        <a href="/src/templates/admin-detaildashboard.html?id=${
+          item.id
+        }" class="btn btn-sm btn-primary" title="Detail">
         <img src="/src/public/admin/edit.png" width="13">
       </td>
     `;
@@ -78,8 +80,8 @@ function renderStatus(status) {
       return '<span class="badge bg-success">Lunas</span>';
     case "waiting":
       return '<span class="badge bg-warning text-dark">Belum Lunas</span>';
-    case "failed":
-      return '<span class="badge bg-danger">Gagal</span>';
+    case "rejected":
+      return '<span class="badge bg-danger">Rejected</span>';
     case "refunded":
       return '<span class="badge bg-info text-dark">Refund</span>';
     default:
