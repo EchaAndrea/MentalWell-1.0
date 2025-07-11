@@ -248,33 +248,42 @@ window.initPopupChat = async function () {
       ]);
 
       if (error) {
-      console.error("Error sending message:", error);
+        console.error("Error sending message:", error);
 
-      if (
-        error.code === "42501" ||
-        error.message?.toLowerCase().includes("violates row-level security") ||
-        error.message?.toLowerCase().includes("not allowed")
-      ) {
-        alert(
-          "Sesi Anda telah berakhir sehingga pesan tidak dapat dikirim.\nSilakan mulai sesi baru atau hubungi admin jika Anda merasa ini adalah kesalahan."
-        );
+        if (
+          error.code === "42501" ||
+          error.message
+            ?.toLowerCase()
+            .includes("violates row-level security") ||
+          error.message?.toLowerCase().includes("not allowed")
+        ) {
+          alert(
+            "Sesi Anda telah berakhir sehingga pesan tidak dapat dikirim.\nSilakan mulai sesi baru atau hubungi admin jika Anda merasa ini adalah kesalahan."
+          );
+        } else {
+          alert(
+            "Maaf, terjadi kendala saat mengirim pesan. Silakan coba kembali nanti."
+          );
+        }
       } else {
-        alert("Maaf, terjadi kendala saat mengirim pesan. Silakan coba kembali nanti.");
+        console.log("Message sent successfully");
       }
-    } else {
-      console.log("Message sent successfully");
-    }
     } catch (error) {
       console.error("Error sending message:", error);
 
       const msg = error.message?.toLowerCase() || "";
 
-      if (msg.includes("violates row-level security") || msg.includes("not allowed")) {
+      if (
+        msg.includes("violates row-level security") ||
+        msg.includes("not allowed")
+      ) {
         alert(
           "Sesi Anda telah berakhir sehingga pesan tidak dapat dikirim.\nSilakan mulai sesi baru atau hubungi admin jika Anda merasa ini adalah kesalahan."
         );
       } else {
-        alert("Maaf, terjadi kendala saat mengirim pesan. Silakan coba kembali nanti.");
+        alert(
+          "Maaf, terjadi kendala saat mengirim pesan. Silakan coba kembali nanti."
+        );
       }
     }
   };
@@ -475,7 +484,10 @@ async function loadMessages(conversationId) {
 
 // Subscribe to real-time messages
 function subscribeToMessages(conversationId) {
-  console.log("🟢 Memulai langganan real-time untuk percakapan:", conversationId);
+  console.log(
+    "🟢 Memulai langganan real-time untuk percakapan:",
+    conversationId
+  );
 
   // Unsubscribe jika sudah ada channel sebelumnya
   if (chatChannel) {
@@ -551,3 +563,8 @@ function subscribeToMessages(conversationId) {
     });
 }
 
+// Show popup chat on DOMContentLoaded
+window.addEventListener("DOMContentLoaded", function () {
+  var popup = document.getElementById("chatPopupCustom");
+  if (popup) popup.style.display = "flex";
+});
