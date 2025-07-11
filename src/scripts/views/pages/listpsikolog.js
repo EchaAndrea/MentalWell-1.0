@@ -14,51 +14,7 @@ fetch(apiUrl, {
   .then((data) => {
     loadingIndicator.style.display = "none";
     if (data.status === "success") {
-      (data.data || []).forEach((articleData) => {
-        const articleElement = document.createElement("div");
-        articleElement.classList.add("content-psikolog");
-
-        let formattedExperience = articleData.experience || "-";
-        let formattedketersediaan =
-          articleData.availability === "available"
-            ? "Tersedia"
-            : "Tidak Tersedia";
-
-        articleElement.innerHTML = `
-          <img class="image-psikolog" src="${
-            articleData.profile_image
-          }" alt="man" />
-          <div class="data-psikolog">
-            <h2>${articleData.name}</h2>
-            <div class="value-psikolog">
-              <p>Pengalaman Kerja: ${formattedExperience}</p>
-            </div>
-            <div class="list-button-psikolog">
-              <div class="${
-                articleData.availability === "available"
-                  ? "jadwal-hijau"
-                  : "jadwal-merah"
-              }">
-                <p>${formattedketersediaan}</p>
-              </div>
-              <div class="button-psikolog">
-                <button type="button" onclick="redirectToDetailPsychologist('${
-                  articleData.id
-                }', '${
-          articleData.availability === "available" ? "chat" : ""
-        }')">
-                  ${
-                    articleData.availability === "available"
-                      ? "Chat Sekarang"
-                      : "Lihat Selengkapnya"
-                  }
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-        articleSection.appendChild(articleElement);
-      });
+      renderPsikologList(data.data);
       sessionStorage.setItem("all_psikolog", JSON.stringify(data.data || []));
     } else {
       loadingIndicator.style.display = "none";
@@ -77,10 +33,62 @@ fetch(apiUrl, {
     articleSection.appendChild(errorElement);
   });
 
+function renderPsikologList(data) {
+  articleSection.innerHTML = "";
+  data.forEach((articleData) => {
+    const articleElement = document.createElement("div");
+    articleElement.classList.add("content-psikolog");
+    let formattedExperience = articleData.experience || "-";
+    let formattedketersediaan =
+      articleData.availability === "available"
+        ? "Tersedia"
+        : "Tidak Tersedia";
+    articleElement.innerHTML = `
+      <img class="image-psikolog" src="${articleData.profile_image}" alt="man" />
+      <div class="data-psikolog">
+        <h2>${articleData.name}</h2>
+        <div class="value-psikolog">
+          <p>Pengalaman Kerja: ${formattedExperience}</p>
+        </div>
+        <div class="list-button-psikolog">
+          <div class="${
+            articleData.availability === "available"
+              ? "jadwal-hijau"
+              : "jadwal-merah"
+          }">
+            <p>${formattedketersediaan}</p>
+          </div>
+          <div class="button-psikolog">
+            <button type="button" onclick="redirectToDetailPsychologist('${articleData.id}', '${articleData.availability === "available" ? "chat" : ""}')">
+              ${articleData.availability === "available" ? "Chat Sekarang" : "Lihat Selengkapnya"}
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    articleSection.appendChild(articleElement);
+  });
+}
+
+document.querySelectorAll('.filter-checkbox').forEach((checkbox) => {
+  checkbox.addEventListener('change', function () {
+    const allPsikolog = JSON.parse(sessionStorage.getItem("all_psikolog") || "[]");
+    const checked = Array.from(document.querySelectorAll('.filter-checkbox:checked'));
+    if (checked.length === 0) {
+      renderPsikologList(allPsikolog);
+      return;
+    }
+    const selectedValues = checked.map(cb => cb.value);
+    const filtered = allPsikolog.filter(psikolog =>
+      psikolog.topics && psikolog.topics.some(topic => selectedValues.includes(String(topic.id)))
+    );
+    renderPsikologList(filtered);
+  });
+});
+
 function redirectToDetailPsychologist(id, mode = "") {
   const token = localStorage.getItem("token");
   if (!token) {
-    // Tampilkan popup login atau alert
     Swal.fire({
       icon: 'warning',
       title: 'Masuk Akun Dahulu',
@@ -98,7 +106,6 @@ function redirectToPembayaran(id) {
 }
 
 function redirectToRealtime(id) {
-  // Ambil semua psikolog dari hasil fetch (sudah ada di sessionStorage)
   const allPsikolog = JSON.parse(
     sessionStorage.getItem("all_psikolog") || "[]"
   );
