@@ -40,7 +40,7 @@ async function renderArticleDetails() {
     // Render harga 
     const hargaElem = document.getElementById("harga-psikolog");
     if (hargaElem) {
-      hargaElem.innerHTML = `<b>Rp. ${psikolog.price?.toLocaleString("id-ID")}</b>`;
+      hargaElem.innerHTML = `Rp. ${psikolog.price?.toLocaleString("id-ID")}`;
     }
 
     // Render bio
