@@ -26,14 +26,6 @@
   flex-direction: column;
   z-index: 1001;
   overflow: hidden;      
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.2s;
-}
-
-#chatPopupCustom.active {
-  opacity: 1;
-  visibility: visible;
 }
 
 .popup-header {
