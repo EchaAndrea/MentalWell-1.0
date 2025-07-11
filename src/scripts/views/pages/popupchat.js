@@ -463,7 +463,7 @@ function subscribeToMessages(conversationId) {
         event: "INSERT",
         schema: "public",
         table: "messages",
-        filter: `conversation_id=eq.${conversationId}`,
+        filter: `conversation_id=eq.${conversationId}, status=eq.active`,
       },
       (payload) => {
         console.log("Real-time message received:", payload);
