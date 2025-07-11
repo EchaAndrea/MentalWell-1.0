@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     );
     if (!response.ok) throw new Error("Unauthorized or server error");
     const data = await response.json();
-    const user = data.result.users;
+    const user = data.data;
 
     // Tampilkan gambar profil dan input file
     document.getElementById("profileimage").innerHTML = `
