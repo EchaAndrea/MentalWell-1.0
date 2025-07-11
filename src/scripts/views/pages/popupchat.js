@@ -237,11 +237,22 @@ window.initPopupChat = async function () {
       ]);
 
       if (error) {
-        console.error("Error sending message:", error);
-        alert("Gagal mengirim pesan: " + error.message);
+      console.error("Error sending message:", error);
+
+      if (
+        error.code === "42501" ||
+        error.message?.toLowerCase().includes("violates row-level security") ||
+        error.message?.toLowerCase().includes("not allowed")
+      ) {
+        alert(
+          "Sesi Anda telah berakhir sehingga pesan tidak dapat dikirim.\nSilakan mulai sesi baru atau hubungi admin jika Anda merasa ini adalah kesalahan. 🌸"
+        );
       } else {
-        console.log("Message sent successfully");
+        alert("Maaf, terjadi kendala saat mengirim pesan. Silakan coba kembali nanti.");
       }
+    } else {
+      console.log("Message sent successfully");
+    }
     } catch (error) {
       console.error("Error sending message:", error);
       alert("Gagal mengirim pesan: " + error.message);
