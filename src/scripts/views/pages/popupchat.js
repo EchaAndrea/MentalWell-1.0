@@ -551,9 +551,9 @@ function subscribeToMessages(conversationId) {
     )
     .subscribe((status, err) => {
       if (err) {
-        console.error("🚫 Tidak dapat berlangganan ke pesan baru:", err);
+        console.error("🚫 Tidak dapat menampilkan pesan baru:", err);
         console.warn(
-          "%cPercakapan tidak aktif atau akses telah dibatasi.",
+          "%cPercakapan tidak aktif atau akses telah selesai.",
           "color: #b91c1c; font-style: italic;"
         );
         return;
@@ -565,7 +565,10 @@ function subscribeToMessages(conversationId) {
 
 // Show chat popup on window load
 window.addEventListener("load", function () {
-  document.body.style.visibility = "visible";
-  var popup = document.getElementById("chatPopupCustom");
-  if (popup) popup.style.display = "flex";
+  // Pastikan CSS sudah termuat
+  setTimeout(function () {
+    document.body.style.visibility = "visible";
+    var popup = document.getElementById("chatPopupCustom");
+    if (popup) popup.style.display = "flex";
+  }, 0);
 });
