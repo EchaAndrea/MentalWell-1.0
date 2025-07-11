@@ -122,6 +122,12 @@ main {
   margin: 50px 0 10px 300px;
 }
 
+#harga-psikolog {
+  font-size: 19px;
+  font-weight: bold;
+  margin: 10px 0 0 0;
+}
+
 .biodata-psikolog p {
   font-size: 19px;
   margin: 30px 20px 10px 0;
