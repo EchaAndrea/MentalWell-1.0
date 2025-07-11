@@ -446,15 +446,15 @@ async function loadMessages(conversationId) {
 
 // Subscribe to real-time messages
 function subscribeToMessages(conversationId) {
-  console.log("Setting up real-time subscription for:", conversationId);
+  console.log("🟢 Memulai langganan real-time untuk percakapan:", conversationId);
 
-  // Unsubscribe dari channel yang ada
+  // Unsubscribe jika sudah ada channel sebelumnya
   if (chatChannel) {
-    console.log("Unsubscribing from existing channel");
+    console.log("ℹ️ Menghentikan langganan sebelumnya...");
     chatChannel.unsubscribe();
   }
 
-  // Create new channel with unique name
+  // Buat channel baru
   chatChannel = supabase
     .channel(`messages-${conversationId}-${Date.now()}`)
     .on(
@@ -463,26 +463,31 @@ function subscribeToMessages(conversationId) {
         event: "INSERT",
         schema: "public",
         table: "messages",
-        filter: `conversation_id=eq.${conversationId}, conversation_status=eq.active`,
+        filter: `conversation_id=eq.${conversationId}`,
       },
       (payload) => {
-        console.log("Real-time message received:", payload);
+        if (!payload || !payload.new) {
+          console.warn(
+            "%c📴 Sesi ini telah berakhir. Anda tidak dapat menerima pesan baru.",
+            "color: #d97706; font-weight: bold;"
+          );
+          console.info(
+            "%cSilakan mulai sesi baru jika ingin melanjutkan percakapan.",
+            "color: #6b7280;"
+          );
+          return;
+        }
 
         const msg = payload.new;
         const currentUserId = Number(localStorage.getItem("current_user_id"));
         const isFromCurrentUser = Number(msg.sender_id) === currentUserId;
 
-        console.log("Processing real-time message:", {
-          sender_id: msg.sender_id,
-          current_user_id: currentUserId,
-          isFromCurrentUser,
-          content: msg.content.substring(0, 50) + "...",
+        console.log("💬 Pesan baru diterima:", {
+          dari: msg.sender_id,
+          isi: msg.content?.substring(0, 50) + "...",
         });
 
-        // Hanya tambahkan pesan dari lawan bicara
-        // (pesan sendiri sudah ditambahkan via optimistic update)
         if (!isFromCurrentUser) {
-          console.log("Adding message from other user");
           addMessageToChat(
             msg.content,
             isFromCurrentUser,
@@ -490,12 +495,20 @@ function subscribeToMessages(conversationId) {
             msg.file_url,
             msg.file_name
           );
-        } else {
-          console.log("Skipping message from current user (already added)");
         }
       }
     )
-    .subscribe((status) => {
-      console.log("Subscription status:", status);
+    .subscribe((status, err) => {
+      if (err) {
+        console.error("🚫 Tidak dapat berlangganan ke pesan baru:", err);
+        console.warn(
+          "%cPercakapan tidak aktif atau akses telah dibatasi.",
+          "color: #b91c1c; font-style: italic;"
+        );
+        return;
+      }
+
+      console.log("✅ Sesi aktif. Menunggu pesan masuk...");
     });
 }
+
