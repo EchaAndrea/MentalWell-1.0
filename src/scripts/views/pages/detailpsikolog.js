@@ -33,10 +33,17 @@ async function renderArticleDetails() {
     const fotopsikolog = document.getElementById("psychologProfile");
     if (fotopsikolog) fotopsikolog.src = psikolog.profile_image;
 
-    // Render nama dan bio
+    // Render nama 
     const datapsikolog = document.querySelector(".data-psikolog h2");
     if (datapsikolog) datapsikolog.textContent = psikolog.name;
 
+    // Render harga 
+    const hargaElem = document.getElementById("harga-psikolog");
+    if (hargaElem) {
+      hargaElem.innerHTML = `<b>Rp. ${psikolog.price?.toLocaleString("id-ID")}</b>`;
+    }
+
+    // Render bio
     const biodatapsikolog = document.getElementById("biodata-psikolog");
     if (biodatapsikolog) biodatapsikolog.innerHTML = `<p>${psikolog.bio}</p>`;
 
