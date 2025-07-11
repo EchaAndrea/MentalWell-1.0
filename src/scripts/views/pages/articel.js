@@ -19,7 +19,7 @@ fetch(apiUrl)
       const articleElement = document.createElement("article");
 
       // Batasi isi artikel yang tampil, misal 120 karakter
-      const truncatedContent = truncateText(articleData.content, 120);
+      const truncatedContent = truncateText(articleData.content, 150);
 
       articleElement.innerHTML = `
                     <div class="image-articel">
