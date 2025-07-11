@@ -32,7 +32,7 @@ async function fetchCounselings() {
       }
     );
     const data = await res.json();
-    allCounselings = data.counselings || [];
+    allCounselings = (data.counselings || []).reverse();
     filteredCounselings = [...allCounselings];
     renderTable();
   } catch (err) {
