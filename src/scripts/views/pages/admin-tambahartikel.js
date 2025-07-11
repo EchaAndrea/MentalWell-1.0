@@ -30,8 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (form.references && form.references.value.trim()) {
       formData.append("references", form.references.value.trim());
     }
-    const kategoriDipilih = kategoriSelect.value;
-    formData.append("category", kategoriDipilih);
+    const kategoriDipilih = [parseInt(kategoriSelect.value)];
+    formData.append("categories", JSON.stringify(kategoriDipilih));
 
     try {
       const res = await fetch(`${ENDPOINT}/article`, {
