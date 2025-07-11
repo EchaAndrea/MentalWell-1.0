@@ -13,14 +13,19 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 900px;
-  height: 700px;
+  width: 90vw;           /* Gunakan persentase viewport */
+  max-width: 900px;      /* Batas maksimal */
+  height: 80vh;          /* Gunakan persentase viewport */
+  max-height: 700px;     /* Batas maksimal */
+  min-width: 320px;
+  min-height: 400px;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
   z-index: 1001;
+  overflow: hidden;      /* Agar konten tidak keluar */
 }
 
 .popup-header {
@@ -50,6 +55,7 @@
   padding: 20px;
   overflow-y: auto;
   background: #f5f5f5;
+  min-height: 0; /* Agar flexbox bekerja di height kecil */
 }
 
 .popup-footer {
@@ -60,6 +66,7 @@
   align-items: center;
   gap: 10px;
   border-radius: 0 0 12px 12px;
+  flex-shrink: 0;
 }
 
 .input-message {
@@ -75,12 +82,11 @@
   border-color: #00bcd4;
 }
 
-/* Chat Body - gunakan flexbox untuk alignment */
 #chatBody {
   display: flex;
   flex-direction: column;
-  gap: 4px; /* default gap antar bubble, nanti diatur lebih lanjut */
-  padding: 16px 24px 16px 24px; /* atas kanan bawah kiri */
+  gap: 4px; 
+  padding: 16px 24px 16px 24px; 
   min-height: 100px;
   box-sizing: border-box;
 }
@@ -96,31 +102,28 @@
   line-height: 1.4;
 }
 
-/* Bubble dari lawan bicara (kiri) */
 .chat-bubble.left {
   background: #e0e0e0;
   color: #333;
   align-self: flex-start;
   border-bottom-left-radius: 5px;
   margin-right: auto;
-  margin-left: 8px; /* beri jarak dari kiri */
+  margin-left: 8px; 
 }
 
-/* Bubble dari user sendiri (kanan) */
 .chat-bubble.right {
   background: #00bcd4;
   color: white;
   align-self: flex-end;
   border-bottom-right-radius: 5px;
   margin-left: auto;
-  margin-right: 8px; /* beri jarak dari kanan */
+  margin-right: 8px; 
 }
 
-/* Container untuk setiap pesan */
 .message-container {
   display: flex;
   width: 100%;
-  margin-bottom: 2px; /* default jarak antar bubble, nanti diatur lebih lanjut */
+  margin-bottom: 2px; 
 }
 
 .message-container.left {
@@ -131,13 +134,11 @@
   justify-content: flex-end;
 }
 
-/* Jarak antar bubble dari sender yang sama lebih rapat */
 .message-container.same-sender {
   margin-top: 2px;
   margin-bottom: 2px;
 }
 
-/* Jarak antar bubble beda sender lebih renggang */
 .message-container.diff-sender {
   margin-top: 16px;
   margin-bottom: 2px;
@@ -221,4 +222,20 @@
 
 .file-message a:hover {
   text-decoration: none;
+}
+
+@media (max-width: 600px) {
+  #chatPopupCustom {
+    width: 98vw;
+    height: 95vh;
+    max-width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+  .popup-header, .popup-footer {
+    padding: 10px;
+  }
+  .popup-body {
+    padding: 10px;
+  }
 }
