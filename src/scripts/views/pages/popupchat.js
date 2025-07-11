@@ -83,8 +83,8 @@ window.initPopupChat = async function () {
     }
 
     const chatPopup = document.getElementById("chatPopupCustom");
-    if (chatPopup) chatPopup.style.display = "none";
     const chatOverlay = document.getElementById("chatOverlay");
+    if (chatPopup) chatPopup.classList.remove("active");
     if (chatOverlay) chatOverlay.style.display = "none";
     const popupContainer = document.getElementById("popup-container");
     if (popupContainer) {
