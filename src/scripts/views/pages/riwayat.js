@@ -185,7 +185,6 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
                       const overlay = document.getElementById("chatOverlay");
                       if (overlay) overlay.style.display = "block";
 
-                      // Hapus script module popupchat.js yang sudah ada
                       document
                         .querySelectorAll(
                           'script[src="/src/scripts/views/pages/popupchat.js"]'
