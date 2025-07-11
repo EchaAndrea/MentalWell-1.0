@@ -445,27 +445,16 @@ async function loadMessages(conversationId) {
 }
 
 // Subscribe to real-time messages
-async function subscribeToMessages(conversationId) {
+function subscribeToMessages(conversationId) {
   console.log("Setting up real-time subscription for:", conversationId);
 
-if (chatChannel) {
+  // Unsubscribe dari channel yang ada
+  if (chatChannel) {
     console.log("Unsubscribing from existing channel");
-    await supabase.removeChannel(chatChannel);
+    chatChannel.unsubscribe();
   }
 
-  // Cek status conversation
-  const { data: convo, error } = await supabase
-    .from("conversations")
-    .select("status")
-    .eq("id", conversationId)
-    .single();
-
-  if (error || !convo || convo.status !== "active") {
-    console.warn("Conversation is not active or not found. Skipping subscription.");
-    return;
-  }
-
-  // Subscribe hanya kalau status === 'active'
+  // Create new channel with unique name
   chatChannel = supabase
     .channel(`messages-${conversationId}-${Date.now()}`)
     .on(
@@ -474,7 +463,7 @@ if (chatChannel) {
         event: "INSERT",
         schema: "public",
         table: "messages",
-        filter: `conversation_id=eq.${conversationId}`,
+        filter: `conversation_id=eq.${conversationId}, status=eq.active`,
       },
       (payload) => {
         console.log("Real-time message received:", payload);
@@ -490,6 +479,8 @@ if (chatChannel) {
           content: msg.content.substring(0, 50) + "...",
         });
 
+        // Hanya tambahkan pesan dari lawan bicara
+        // (pesan sendiri sudah ditambahkan via optimistic update)
         if (!isFromCurrentUser) {
           console.log("Adding message from other user");
           addMessageToChat(
