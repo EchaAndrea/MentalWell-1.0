@@ -84,7 +84,7 @@ async function renderArticleDetails() {
     const formattedReferences = articleData.references
       ? articleData.references.replace(/\n/g, "<br>")
       : "";
-    referensiArticel.innerHTML = `<p>Referensi : <br> ${formattedReferences}<p>`;
+    referensiArticel.innerHTML = `<p>Referensi : <br> ${formattedReferences}</p>`;
   } catch (error) {
     console.error("Error rendering article details:", error);
   }
