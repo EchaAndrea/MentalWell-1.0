@@ -6,11 +6,6 @@ const loadingIndicator = document.getElementById("loading-indicator");
 
 loadingIndicator.style.display = "block";
 
-// Pastikan dropdown memiliki nilai default
-if (statusDropdown) {
-  statusDropdown.value = "available"; // Set default ke "available"
-}
-
 // Fungsi redirect ke detail konseling (hanya chat)
 const redirectToCounselingDetail = (counselingId) => {
   // Langsung redirect ke halaman chat dengan id konseling
@@ -158,29 +153,36 @@ function fetchAvailability() {
     })
     .then((data) => {
       console.log("Availability response:", data); // Debug log
-      if (data.status === "success" && data.availability) {
-        console.log("Setting dropdown to:", data.availability); // Debug log
+      if (data.status === "success") {
+        const availability = data.availability;
+        console.log("Setting dropdown to:", availability); // Debug log
+
         // Set dropdown value berdasarkan response API
-        if (data.availability === "available") {
+        if (availability === "available") {
           statusDropdown.value = "available";
-        } else if (data.availability === "unavailable") {
+        } else if (availability === "unavailable") {
           statusDropdown.value = "unavailable";
+        } else {
+          // Jika tidak ada nilai yang valid, set ke available sebagai default
+          statusDropdown.value = "available";
         }
         console.log("Current dropdown value:", statusDropdown.value); // Debug log
       } else {
         console.warn("Invalid availability response:", data);
-        // Jika response tidak valid, biarkan default value (available)
+        // Set default ke available jika response tidak valid
+        statusDropdown.value = "available";
       }
     })
     .catch((error) => {
       console.error("Error fetching availability:", error);
-      // Jika error, biarkan default value (available)
+      // Set default ke available jika terjadi error
+      statusDropdown.value = "available";
     });
 }
 
-// Panggil setelah DOM siap
+// Panggil setelah DOM siap untuk memastikan elemen dropdown sudah siap
 document.addEventListener("DOMContentLoaded", () => {
-  // Pastikan dropdown element siap sebelum memanggil fetchAvailability
+  // Pastikan dropdown element siap sebelum memanggil fetchAvailability lagi
   if (statusDropdown) {
     fetchAvailability();
   } else {
