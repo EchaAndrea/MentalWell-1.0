@@ -6,6 +6,9 @@ const loadingIndicator = document.getElementById("loading-indicator");
 
 loadingIndicator.style.display = "block";
 
+// Flag untuk mencegah konflik saat set dropdown
+let isSettingDropdown = false;
+
 // Fungsi redirect ke detail konseling (hanya chat)
 const redirectToCounselingDetail = (counselingId) => {
   // Langsung redirect ke halaman chat dengan id konseling
@@ -14,7 +17,14 @@ const redirectToCounselingDetail = (counselingId) => {
 
 // Update status ketersediaan psikolog
 statusDropdown.addEventListener("change", () => {
+  // Skip jika sedang setting dropdown dari API
+  if (isSettingDropdown) {
+    console.log("Skipping change event - dropdown is being set by API");
+    return;
+  }
+
   const selectedValue = statusDropdown.value;
+  console.log("User manually changed dropdown to:", selectedValue);
 
   Swal.fire({
     title: "Memuat...",
@@ -136,7 +146,7 @@ function fetchCounselings() {
     });
 }
 
-// Fungsi sederhana untuk load status availability
+// Fungsi untuk load status availability
 function loadAvailabilityStatus() {
   console.log("Loading availability status...");
 
@@ -154,8 +164,16 @@ function loadAvailabilityStatus() {
 
       if (data.status === "success" && data.availability) {
         console.log("Setting dropdown to:", data.availability);
+
+        // Set flag untuk mencegah trigger change event
+        isSettingDropdown = true;
         statusDropdown.value = data.availability;
-        console.log("Dropdown value is now:", statusDropdown.value);
+
+        // Reset flag setelah selesai
+        setTimeout(() => {
+          isSettingDropdown = false;
+          console.log("Dropdown value set to:", statusDropdown.value);
+        }, 100);
       } else {
         console.error("Invalid API response:", data);
       }
@@ -165,13 +183,24 @@ function loadAvailabilityStatus() {
     });
 }
 
-// Buat function global
-window.loadAvailabilityStatus = loadAvailabilityStatus;
+// Load status saat DOM ready dan window load
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("DOM Content Loaded");
+  if (statusDropdown) {
+    setTimeout(() => {
+      loadAvailabilityStatus();
+    }, 500);
+  }
+});
 
-// Load status saat halaman siap
-if (statusDropdown) {
-  loadAvailabilityStatus();
-}
+window.addEventListener("load", function () {
+  console.log("Window Loaded");
+  if (statusDropdown) {
+    setTimeout(() => {
+      loadAvailabilityStatus();
+    }, 1000);
+  }
+});
 fetchCounselings();
 
 function formatDate(dateString) {
