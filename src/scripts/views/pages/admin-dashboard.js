@@ -33,7 +33,7 @@ async function fetchCounselings() {
     );
     const data = await res.json();
     allCounselings = data.counselings || [];
-    allCounselings.sort((a, b) => a.id - b.id);
+    allCounselings.sort((a, b) => b.id - a.id); // Descending
     filteredCounselings = [...allCounselings];
     renderTable();
   } catch (err) {
