@@ -6,11 +6,6 @@ const loadingIndicator = document.getElementById("loading-indicator");
 
 loadingIndicator.style.display = "block";
 
-// Reset dropdown ke kosong dulu saat page load
-if (statusDropdown) {
-  statusDropdown.value = "";
-}
-
 // Fungsi redirect ke detail konseling (hanya chat)
 const redirectToCounselingDetail = (counselingId) => {
   // Langsung redirect ke halaman chat dengan id konseling
@@ -181,8 +176,11 @@ function setAvailabilityDropdown() {
     });
 }
 
-// Panggil langsung tanpa delay
-setAvailabilityDropdown();
+// Panggil setelah DOM ready
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("DOM Ready - calling setAvailabilityDropdown");
+  setAvailabilityDropdown();
+});
 fetchCounselings();
 
 function formatDate(dateString) {
