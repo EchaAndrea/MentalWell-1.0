@@ -92,27 +92,21 @@ function renderStatus(status) {
 
 function handleFilter() {
   const kategori = document.getElementById("filterKategori").value;
-  if (kategori === "semua") {
-    filteredCounselings = [...allCounselings];
-  } else {
-    // Filter data dan pertahankan urutan berdasarkan ID
-    filteredCounselings = allCounselings
-      .filter((c) => c.payment_status === kategori)
-      .sort((a, b) => a.id - b.id); // Urutkan berdasarkan ID ascending
-  }
+  filteredCounselings =
+    kategori === "semua"
+      ? [...allCounselings]
+      : allCounselings.filter((c) => c.payment_status === kategori);
   currentPage = 1;
   renderTable();
 }
 
 function handleSearch() {
   const keyword = document.getElementById("searchInput").value.toLowerCase();
-  filteredCounselings = allCounselings
-    .filter(
-      (c) =>
-        c.patient_name.toLowerCase().includes(keyword) ||
-        c.id.toString().includes(keyword)
-    )
-    .sort((a, b) => a.id - b.id); // Urutkan berdasarkan ID ascending
+  filteredCounselings = allCounselings.filter(
+    (c) =>
+      c.patient_name.toLowerCase().includes(keyword) ||
+      c.id.toString().includes(keyword)
+  );
   currentPage = 1;
   renderTable();
 }
