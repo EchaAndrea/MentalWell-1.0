@@ -137,6 +137,7 @@ function fetchCounselings() {
 }
 
 function fetchAvailability() {
+  console.log("Fetching availability..."); // Debug log
   fetch(
     "https://mentalwell10-api-production.up.railway.app/psychologist/availability",
     {
@@ -153,7 +154,7 @@ function fetchAvailability() {
     })
     .then((data) => {
       console.log("Availability response:", data); // Debug log
-      if (data.status === "success") {
+      if (data.status === "success" && data.hasOwnProperty("availability")) {
         const availability = data.availability;
         console.log("Setting dropdown to:", availability); // Debug log
 
@@ -163,28 +164,37 @@ function fetchAvailability() {
         } else if (availability === "unavailable") {
           statusDropdown.value = "unavailable";
         } else {
-          // Jika tidak ada nilai yang valid, set ke available sebagai default
+          console.warn("Unknown availability value:", availability);
           statusDropdown.value = "available";
         }
-        console.log("Current dropdown value:", statusDropdown.value); // Debug log
+        console.log(
+          "Current dropdown value after setting:",
+          statusDropdown.value
+        ); // Debug log
       } else {
-        console.warn("Invalid availability response:", data);
-        // Set default ke available jika response tidak valid
+        console.warn(
+          "Invalid availability response or missing availability field:",
+          data
+        );
+        // Set ke available sebagai fallback jika tidak ada data yang valid
         statusDropdown.value = "available";
       }
     })
     .catch((error) => {
       console.error("Error fetching availability:", error);
-      // Set default ke available jika terjadi error
+      // Set ke available sebagai fallback jika error
       statusDropdown.value = "available";
     });
 }
 
 // Panggil setelah DOM siap untuk memastikan elemen dropdown sudah siap
 document.addEventListener("DOMContentLoaded", () => {
-  // Pastikan dropdown element siap sebelum memanggil fetchAvailability lagi
+  // Pastikan dropdown element siap sebelum memanggil fetchAvailability
   if (statusDropdown) {
-    fetchAvailability();
+    // Tambahkan delay kecil untuk memastikan semua elemen sudah ter-render
+    setTimeout(() => {
+      fetchAvailability();
+    }, 100);
   } else {
     console.error("Status dropdown element not found!");
   }
