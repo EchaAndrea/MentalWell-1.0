@@ -41,15 +41,28 @@ async function fetchPsikologData() {
     }
     const json = await res.json();
     if (json.status === "success") {
-      psikologData = json.data.map((item) => ({
-        id: item.id,
-        nama: item.name,
-        email: item.email,
-        topik: item.topics?.map((t) => t.id) || [],
-        topikString: item.topics?.map((t) => t.name).join(", ") || "-", // Tidak ada field topics di response, jadi default "-"
-        status: item.availability === "available",
-        password: "********", // Tidak ada password dari BE
-      })).sort((a, b) => b.id - a.id);
+      psikologData = json.data
+        .map((item) => ({
+          id: item.id,
+          nama: item.name,
+          email: item.email,
+          topik: item.topics?.map((t) => t.id) || [],
+          topikString: (() => {
+            if (!item.topics || item.topics.length === 0) return "-";
+            const maxTopics = 3;
+            const displayedTopics = item.topics.slice(0, maxTopics);
+            const hasMoreTopics = item.topics.length > maxTopics;
+
+            let result = displayedTopics.map((t) => t.name).join(", ");
+            if (hasMoreTopics) {
+              result += ", ...";
+            }
+            return result;
+          })(), // Batasi tampilan topik maksimal 3 dengan ellipsis
+          status: item.availability === "available",
+          password: "********", // Tidak ada password dari BE
+        }))
+        .sort((a, b) => b.id - a.id);
       filteredData = [...psikologData];
     } else {
       psikologData = [];
@@ -68,9 +81,7 @@ function handleFilter() {
   filteredData =
     topikId === "semua"
       ? [...psikologData]
-      : psikologData.filter((item) =>
-          item.topik.includes(parseInt(topikId))
-        );
+      : psikologData.filter((item) => item.topik.includes(parseInt(topikId)));
   currentPage = 1;
   renderTable();
 }
