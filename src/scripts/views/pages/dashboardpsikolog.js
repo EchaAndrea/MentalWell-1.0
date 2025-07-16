@@ -6,12 +6,6 @@ const loadingIndicator = document.getElementById("loading-indicator");
 
 loadingIndicator.style.display = "block";
 
-// Flag untuk mencegah konflik saat set dropdown
-let isSettingDropdown = false;
-
-// Langsung load availability saat script dijalankan
-loadAvailabilityStatus();
-
 // Fungsi redirect ke detail konseling (hanya chat)
 const redirectToCounselingDetail = (counselingId) => {
   // Langsung redirect ke halaman chat dengan id konseling
@@ -19,21 +13,8 @@ const redirectToCounselingDetail = (counselingId) => {
 };
 
 // Update status ketersediaan psikolog
-statusDropdown.addEventListener("change", (event) => {
-  // Skip hanya jika sedang setting dropdown dari API DAN event tidak dari user
-  if (isSettingDropdown && !event.isTrusted) {
-    console.log("Skipping change event - dropdown is being set by API");
-    return;
-  }
-
+statusDropdown.addEventListener("change", () => {
   const selectedValue = statusDropdown.value;
-  console.log("User manually changed dropdown to:", selectedValue);
-
-  // Jika ini adalah perubahan dari API, jangan kirim ke server
-  if (isSettingDropdown) {
-    console.log("This is API setting, not sending to server");
-    return;
-  }
 
   Swal.fire({
     title: "Memuat...",
@@ -155,21 +136,8 @@ function fetchCounselings() {
     });
 }
 
-// Fungsi untuk load status availability
-function loadAvailabilityStatus() {
-  console.log("Loading availability status...");
-
-  // Jika dropdown belum ada, coba lagi setelah delay
-  if (!statusDropdown) {
-    console.log("Dropdown not found, retrying...");
-    setTimeout(() => {
-      loadAvailabilityStatus();
-    }, 100);
-    return;
-  }
-
-  console.log("Current dropdown value before API call:", statusDropdown.value);
-
+// Fungsi sederhana untuk set status dropdown
+function setAvailabilityDropdown() {
   fetch(
     "https://mentalwell10-api-production.up.railway.app/psychologist/availability",
     {
@@ -180,70 +148,40 @@ function loadAvailabilityStatus() {
   )
     .then((response) => response.json())
     .then((data) => {
-      console.log("API response:", data);
+      console.log("Availability API response:", data);
 
-      if (data.status === "success" && data.availability) {
-        console.log("API returned availability:", data.availability);
-        console.log(
-          "Current dropdown value before setting:",
-          statusDropdown.value
-        );
+      if (data.status === "success" && data.availability && statusDropdown) {
+        console.log("Current dropdown value:", statusDropdown.value);
+        console.log("API says availability should be:", data.availability);
 
-        // Set flag untuk mencegah trigger change event
-        isSettingDropdown = true;
-
-        // Force set dropdown value
+        // Langsung set tanpa flag
         statusDropdown.value = data.availability;
 
-        // Trigger visual update
-        statusDropdown.dispatchEvent(new Event("change", { bubbles: false }));
-
         console.log("Dropdown value after setting:", statusDropdown.value);
-        console.log("Dropdown selectedIndex:", statusDropdown.selectedIndex);
 
-        // Reset flag setelah selesai
-        setTimeout(() => {
-          isSettingDropdown = false;
-          console.log("Final dropdown value:", statusDropdown.value);
-
-          // Double check - jika masih salah, paksa set lagi
-          if (statusDropdown.value !== data.availability) {
-            console.warn("Dropdown value still wrong, forcing again...");
-            statusDropdown.value = data.availability;
-          }
-        }, 50);
-      } else {
-        console.error("Invalid API response:", data);
+        // Cek semua option untuk debug
+        console.log("Available options:");
+        for (let i = 0; i < statusDropdown.options.length; i++) {
+          const option = statusDropdown.options[i];
+          console.log(
+            `Option ${i}: value="${option.value}", text="${option.text}", selected=${option.selected}`
+          );
+        }
       }
     })
     .catch((error) => {
-      console.error("Error loading availability:", error);
+      console.error("Error fetching availability:", error);
     });
 }
 
-// Load status tambahan untuk memastikan
-document.addEventListener("DOMContentLoaded", function () {
-  console.log("DOM Content Loaded");
-  setTimeout(() => {
-    loadAvailabilityStatus();
-  }, 100);
-  setTimeout(() => {
-    loadAvailabilityStatus();
-  }, 500);
-  setTimeout(() => {
-    loadAvailabilityStatus();
-  }, 1000);
-});
-
-window.addEventListener("load", function () {
-  console.log("Window Loaded");
-  setTimeout(() => {
-    loadAvailabilityStatus();
-  }, 100);
-  setTimeout(() => {
-    loadAvailabilityStatus();
-  }, 500);
-});
+// Panggil function setelah halaman siap
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(setAvailabilityDropdown, 1000);
+  });
+} else {
+  setTimeout(setAvailabilityDropdown, 1000);
+}
 fetchCounselings();
 
 function formatDate(dateString) {
