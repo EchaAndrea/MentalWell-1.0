@@ -9,6 +9,9 @@ loadingIndicator.style.display = "block";
 // Flag untuk mencegah konflik saat set dropdown
 let isSettingDropdown = false;
 
+// Langsung load availability saat script dijalankan
+loadAvailabilityStatus();
+
 // Fungsi redirect ke detail konseling (hanya chat)
 const redirectToCounselingDetail = (counselingId) => {
   // Langsung redirect ke halaman chat dengan id konseling
@@ -150,6 +153,14 @@ function fetchCounselings() {
 function loadAvailabilityStatus() {
   console.log("Loading availability status...");
 
+  // Jika dropdown belum ada, coba lagi setelah delay
+  if (!statusDropdown) {
+    setTimeout(() => {
+      loadAvailabilityStatus();
+    }, 100);
+    return;
+  }
+
   fetch(
     "https://mentalwell10-api-production.up.railway.app/psychologist/availability",
     {
@@ -173,7 +184,7 @@ function loadAvailabilityStatus() {
         setTimeout(() => {
           isSettingDropdown = false;
           console.log("Dropdown value set to:", statusDropdown.value);
-        }, 100);
+        }, 50);
       } else {
         console.error("Invalid API response:", data);
       }
@@ -183,23 +194,19 @@ function loadAvailabilityStatus() {
     });
 }
 
-// Load status saat DOM ready dan window load
+// Load status tambahan untuk memastikan
 document.addEventListener("DOMContentLoaded", function () {
   console.log("DOM Content Loaded");
-  if (statusDropdown) {
-    setTimeout(() => {
-      loadAvailabilityStatus();
-    }, 500);
-  }
+  setTimeout(() => {
+    loadAvailabilityStatus();
+  }, 200);
 });
 
 window.addEventListener("load", function () {
   console.log("Window Loaded");
-  if (statusDropdown) {
-    setTimeout(() => {
-      loadAvailabilityStatus();
-    }, 1000);
-  }
+  setTimeout(() => {
+    loadAvailabilityStatus();
+  }, 300);
 });
 fetchCounselings();
 
