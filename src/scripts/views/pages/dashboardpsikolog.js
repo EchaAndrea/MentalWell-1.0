@@ -6,6 +6,11 @@ const loadingIndicator = document.getElementById("loading-indicator");
 
 loadingIndicator.style.display = "block";
 
+// Reset dropdown ke kosong dulu saat page load
+if (statusDropdown) {
+  statusDropdown.value = "";
+}
+
 // Fungsi redirect ke detail konseling (hanya chat)
 const redirectToCounselingDetail = (counselingId) => {
   // Langsung redirect ke halaman chat dengan id konseling
@@ -138,6 +143,8 @@ function fetchCounselings() {
 
 // Fungsi sederhana untuk set status dropdown
 function setAvailabilityDropdown() {
+  console.log("Calling setAvailabilityDropdown...");
+
   fetch(
     "https://mentalwell10-api-production.up.railway.app/psychologist/availability",
     {
@@ -174,14 +181,8 @@ function setAvailabilityDropdown() {
     });
 }
 
-// Panggil function setelah halaman siap
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => {
-    setTimeout(setAvailabilityDropdown, 1000);
-  });
-} else {
-  setTimeout(setAvailabilityDropdown, 1000);
-}
+// Panggil langsung tanpa delay
+setAvailabilityDropdown();
 fetchCounselings();
 
 function formatDate(dateString) {
@@ -210,7 +211,7 @@ function updateCounselingStatus(counselingId, newStatus) {
           timer: 2000,
           showConfirmButton: false,
         });
-        fetchCounselings(); // Refresh tabel
+        fetchCounselings();
       } else {
         Swal.fire({
           title: "Gagal!",
