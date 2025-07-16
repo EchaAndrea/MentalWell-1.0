@@ -94,14 +94,14 @@ function fetchCounselings() {
       loadingIndicator.style.display = "none";
       if (data.status !== "success") throw new Error(data.message);
 
-      // Set status dropdown sesuai availability (jika ada di response)
-      // (Jika ingin fetch availability, tambahkan endpoint khusus)
+      const sortedCounselings = data.counselings.sort((a, b) => {
+        // Urutkan berdasarkan ID descending 
+        return b.id - a.id;
+      });
 
       // Render tabel konseling
       tableBody.innerHTML = "";
-      data.counselings.forEach((counseling) => {
-        // Hanya tampilkan chat (jika memang hanya chat)
-        // Jika ingin filter, tambahkan if (counseling.access_type === "chat") { ... }
+      sortedCounselings.forEach((counseling) => {
         const row = tableBody.insertRow();
 
         const nameCell = row.insertCell(0);
