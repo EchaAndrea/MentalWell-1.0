@@ -6,6 +6,11 @@ const loadingIndicator = document.getElementById("loading-indicator");
 
 loadingIndicator.style.display = "block";
 
+// Pastikan dropdown memiliki nilai default
+if (statusDropdown) {
+  statusDropdown.value = "available"; // Set default ke "available"
+}
+
 // Fungsi redirect ke detail konseling (hanya chat)
 const redirectToCounselingDetail = (counselingId) => {
   // Langsung redirect ke halaman chat dengan id konseling
@@ -95,7 +100,7 @@ function fetchCounselings() {
       if (data.status !== "success") throw new Error(data.message);
 
       const sortedCounselings = data.counselings.sort((a, b) => {
-        // Urutkan berdasarkan ID descending 
+        // Urutkan berdasarkan ID descending
         return b.id - a.id;
       });
 
@@ -145,19 +150,43 @@ function fetchAvailability() {
       },
     }
   )
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
     .then((data) => {
+      console.log("Availability response:", data); // Debug log
       if (data.status === "success" && data.availability) {
-        statusDropdown.value = data.availability; // "available" atau "unavailable"
+        console.log("Setting dropdown to:", data.availability); // Debug log
+        // Set dropdown value berdasarkan response API
+        if (data.availability === "available") {
+          statusDropdown.value = "available";
+        } else if (data.availability === "unavailable") {
+          statusDropdown.value = "unavailable";
+        }
+        console.log("Current dropdown value:", statusDropdown.value); // Debug log
+      } else {
+        console.warn("Invalid availability response:", data);
+        // Jika response tidak valid, biarkan default value (available)
       }
     })
     .catch((error) => {
       console.error("Error fetching availability:", error);
+      // Jika error, biarkan default value (available)
     });
 }
 
-// Panggil sebelum fetchCounselings
-fetchAvailability();
+// Panggil setelah DOM siap
+document.addEventListener("DOMContentLoaded", () => {
+  // Pastikan dropdown element siap sebelum memanggil fetchAvailability
+  if (statusDropdown) {
+    fetchAvailability();
+  } else {
+    console.error("Status dropdown element not found!");
+  }
+});
 fetchCounselings();
 
 function formatDate(dateString) {
