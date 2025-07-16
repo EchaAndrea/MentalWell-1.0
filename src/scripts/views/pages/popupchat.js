@@ -83,9 +83,15 @@ window.initPopupChat = async function () {
     }
 
     const chatPopup = document.getElementById("chatPopupCustom");
-    if (chatPopup) chatPopup.style.display = "none";
+    if (chatPopup) {
+      chatPopup.classList.add("d-none");
+      chatPopup.classList.remove("d-flex");
+    }
     const chatOverlay = document.getElementById("chatOverlay");
-    if (chatOverlay) chatOverlay.style.display = "none";
+    if (chatOverlay) {
+      chatOverlay.classList.add("d-none");
+      chatOverlay.classList.remove("d-block");
+    }
     const popupContainer = document.getElementById("popup-container");
     if (popupContainer) {
       popupContainer.innerHTML = "";
@@ -248,33 +254,42 @@ window.initPopupChat = async function () {
       ]);
 
       if (error) {
-      console.error("Error sending message:", error);
+        console.error("Error sending message:", error);
 
-      if (
-        error.code === "42501" ||
-        error.message?.toLowerCase().includes("violates row-level security") ||
-        error.message?.toLowerCase().includes("not allowed")
-      ) {
-        alert(
-          "Sesi Anda telah berakhir sehingga pesan tidak dapat dikirim.\nSilakan mulai sesi baru atau hubungi admin jika Anda merasa ini adalah kesalahan."
-        );
+        if (
+          error.code === "42501" ||
+          error.message
+            ?.toLowerCase()
+            .includes("violates row-level security") ||
+          error.message?.toLowerCase().includes("not allowed")
+        ) {
+          alert(
+            "Sesi Anda telah berakhir sehingga pesan tidak dapat dikirim.\nSilakan mulai sesi baru atau hubungi admin jika Anda merasa ini adalah kesalahan."
+          );
+        } else {
+          alert(
+            "Maaf, terjadi kendala saat mengirim pesan. Silakan coba kembali nanti."
+          );
+        }
       } else {
-        alert("Maaf, terjadi kendala saat mengirim pesan. Silakan coba kembali nanti.");
+        console.log("Message sent successfully");
       }
-    } else {
-      console.log("Message sent successfully");
-    }
     } catch (error) {
       console.error("Error sending message:", error);
 
       const msg = error.message?.toLowerCase() || "";
 
-      if (msg.includes("violates row-level security") || msg.includes("not allowed")) {
+      if (
+        msg.includes("violates row-level security") ||
+        msg.includes("not allowed")
+      ) {
         alert(
           "Sesi Anda telah berakhir sehingga pesan tidak dapat dikirim.\nSilakan mulai sesi baru atau hubungi admin jika Anda merasa ini adalah kesalahan."
         );
       } else {
-        alert("Maaf, terjadi kendala saat mengirim pesan. Silakan coba kembali nanti.");
+        alert(
+          "Maaf, terjadi kendala saat mengirim pesan. Silakan coba kembali nanti."
+        );
       }
     }
   };
@@ -385,6 +400,16 @@ window.initPopupChat = async function () {
   // Load messages first, then subscribe
   await loadMessages(conversationId);
   subscribeToMessages(conversationId);
+
+  // Show the chat popup using Bootstrap classes
+  const chatPopup = document.getElementById("chatPopupCustom");
+  const chatOverlay = document.getElementById("chatOverlay");
+  if (chatPopup && chatOverlay) {
+    chatOverlay.classList.remove("d-none");
+    chatOverlay.classList.add("d-block");
+    chatPopup.classList.remove("d-none");
+    chatPopup.classList.add("d-flex");
+  }
 };
 
 // Load messages from database
@@ -433,7 +458,10 @@ async function loadMessages(conversationId) {
 
 // Subscribe to real-time messages
 function subscribeToMessages(conversationId) {
-  console.log("🟢 Memulai langganan real-time untuk percakapan:", conversationId);
+  console.log(
+    "🟢 Memulai langganan real-time untuk percakapan:",
+    conversationId
+  );
 
   // Unsubscribe jika sudah ada channel sebelumnya
   if (chatChannel) {
@@ -508,4 +536,3 @@ function subscribeToMessages(conversationId) {
       console.log("✅ Sesi aktif. Menunggu pesan masuk...");
     });
 }
-

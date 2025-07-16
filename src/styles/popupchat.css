@@ -9,12 +9,6 @@
 }
 
 #chatPopupCustom {
-  position: fixed !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  margin: 0 !important;
-  display: flex !important;
   width: 90vw;
   max-width: 900px;
   height: 100vh;
@@ -24,7 +18,6 @@
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  flex-direction: column;
   z-index: 1001;
   overflow: hidden;
 }
@@ -80,7 +73,7 @@
 }
 
 .input-message:focus {
-  border-color: #02BBDD;
+  border-color: #02bbdd;
 }
 
 #chatBody {
@@ -113,7 +106,7 @@
 }
 
 .chat-bubble.right {
-  background: #02BBDD;
+  background: #02bbdd;
   color: white;
   align-self: flex-end;
   border-bottom-right-radius: 5px;
@@ -173,7 +166,7 @@
 }
 
 .btn-send {
-  background: #02BBDD;
+  background: #02bbdd;
   color: white;
 }
 
@@ -182,7 +175,7 @@
 }
 
 .card-header {
-  background: #02BBDD;
+  background: #02bbdd;
   color: white;
   padding: 15px;
   border-radius: 8px 8px 0 0;
