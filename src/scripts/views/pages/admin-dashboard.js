@@ -55,12 +55,27 @@ function renderTable() {
 
   pageData.forEach((item) => {
     const tr = document.createElement("tr");
+
+    // Format topik dengan batasan 3 item
+    let topikDisplay = "-";
+    if (item.psychologist_topics && item.psychologist_topics.length > 0) {
+      const maxTopics = 3;
+      const displayedTopics = item.psychologist_topics.slice(0, maxTopics);
+      const hasMoreTopics = item.psychologist_topics.length > maxTopics;
+
+      topikDisplay = displayedTopics.map((topic) => topic.name).join(", ");
+      if (hasMoreTopics) {
+        topikDisplay += ", ...";
+      }
+    }
+
     tr.innerHTML = `
       <td><input type="checkbox"></td>
       <td>${item.id}</td>
       <td>${item.patient_name}</td>
       <td>${item.schedule_date}</td>
       <td>${item.schedule_time}</td>
+      <td>${topikDisplay}</td>
       <td>${renderStatus(item.payment_status)}</td>
       <td>
         <a href="/src/templates/admin-detaildashboard.html?id=${
