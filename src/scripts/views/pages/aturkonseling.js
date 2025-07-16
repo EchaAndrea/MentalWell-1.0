@@ -67,7 +67,6 @@ fetch(
       <p>Nama Panggilan: ${counseling.nickname || "-"}</p>
       <p>Tanggal Lahir: ${formattedBirthdate}</p>
       <p>Jenis Kelamin: ${counseling.gender || "-"}</p>
-      <p>Pekerjaan: ${counseling.occupation || "-"}</p>
     `;
     tanggalKonseling.innerHTML = `
       <p>${formattedScheduleDate}</p>

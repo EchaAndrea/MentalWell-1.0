@@ -32,7 +32,8 @@ async function fetchCounselings() {
       }
     );
     const data = await res.json();
-    allCounselings = (data.counselings || []).reverse();
+    allCounselings = data.counselings || [];
+    allCounselings.sort((a, b) => a.id - b.id);
     filteredCounselings = [...allCounselings];
     renderTable();
   } catch (err) {
@@ -91,21 +92,27 @@ function renderStatus(status) {
 
 function handleFilter() {
   const kategori = document.getElementById("filterKategori").value;
-  filteredCounselings =
-    kategori === "semua"
-      ? [...allCounselings]
-      : allCounselings.filter((c) => c.payment_status === kategori);
+  if (kategori === "semua") {
+    filteredCounselings = [...allCounselings];
+  } else {
+    // Filter data dan pertahankan urutan berdasarkan ID
+    filteredCounselings = allCounselings
+      .filter((c) => c.payment_status === kategori)
+      .sort((a, b) => a.id - b.id); // Urutkan berdasarkan ID ascending
+  }
   currentPage = 1;
   renderTable();
 }
 
 function handleSearch() {
   const keyword = document.getElementById("searchInput").value.toLowerCase();
-  filteredCounselings = allCounselings.filter(
-    (c) =>
-      c.patient_name.toLowerCase().includes(keyword) ||
-      c.id.toString().includes(keyword)
-  );
+  filteredCounselings = allCounselings
+    .filter(
+      (c) =>
+        c.patient_name.toLowerCase().includes(keyword) ||
+        c.id.toString().includes(keyword)
+    )
+    .sort((a, b) => a.id - b.id); // Urutkan berdasarkan ID ascending
   currentPage = 1;
   renderTable();
 }
