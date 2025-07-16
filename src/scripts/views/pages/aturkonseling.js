@@ -63,6 +63,7 @@ fetch(
     });
 
     biodataPasien.innerHTML = `
+      <h2>${counseling.name}</h2>
       <p>Nama Panggilan: ${counseling.nickname || "-"}</p>
       <p>Tanggal Lahir: ${formattedBirthdate}</p>
       <p>Jenis Kelamin: ${counseling.gender || "-"}</p>
