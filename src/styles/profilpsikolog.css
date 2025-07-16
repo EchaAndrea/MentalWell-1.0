@@ -131,6 +131,7 @@ main {
 .biodata-psikolog p {
   font-size: 19px;
   margin: 10px 20px 10px 0;
+  text-align: justify;
 }
 
 .data-lainnya {
