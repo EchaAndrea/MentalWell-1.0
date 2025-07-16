@@ -19,15 +19,21 @@ const redirectToCounselingDetail = (counselingId) => {
 };
 
 // Update status ketersediaan psikolog
-statusDropdown.addEventListener("change", () => {
-  // Skip jika sedang setting dropdown dari API
-  if (isSettingDropdown) {
+statusDropdown.addEventListener("change", (event) => {
+  // Skip hanya jika sedang setting dropdown dari API DAN event tidak dari user
+  if (isSettingDropdown && !event.isTrusted) {
     console.log("Skipping change event - dropdown is being set by API");
     return;
   }
 
   const selectedValue = statusDropdown.value;
   console.log("User manually changed dropdown to:", selectedValue);
+
+  // Jika ini adalah perubahan dari API, jangan kirim ke server
+  if (isSettingDropdown) {
+    console.log("This is API setting, not sending to server");
+    return;
+  }
 
   Swal.fire({
     title: "Memuat...",
@@ -155,11 +161,14 @@ function loadAvailabilityStatus() {
 
   // Jika dropdown belum ada, coba lagi setelah delay
   if (!statusDropdown) {
+    console.log("Dropdown not found, retrying...");
     setTimeout(() => {
       loadAvailabilityStatus();
     }, 100);
     return;
   }
+
+  console.log("Current dropdown value before API call:", statusDropdown.value);
 
   fetch(
     "https://mentalwell10-api-production.up.railway.app/psychologist/availability",
@@ -174,16 +183,34 @@ function loadAvailabilityStatus() {
       console.log("API response:", data);
 
       if (data.status === "success" && data.availability) {
-        console.log("Setting dropdown to:", data.availability);
+        console.log("API returned availability:", data.availability);
+        console.log(
+          "Current dropdown value before setting:",
+          statusDropdown.value
+        );
 
         // Set flag untuk mencegah trigger change event
         isSettingDropdown = true;
+
+        // Force set dropdown value
         statusDropdown.value = data.availability;
+
+        // Trigger visual update
+        statusDropdown.dispatchEvent(new Event("change", { bubbles: false }));
+
+        console.log("Dropdown value after setting:", statusDropdown.value);
+        console.log("Dropdown selectedIndex:", statusDropdown.selectedIndex);
 
         // Reset flag setelah selesai
         setTimeout(() => {
           isSettingDropdown = false;
-          console.log("Dropdown value set to:", statusDropdown.value);
+          console.log("Final dropdown value:", statusDropdown.value);
+
+          // Double check - jika masih salah, paksa set lagi
+          if (statusDropdown.value !== data.availability) {
+            console.warn("Dropdown value still wrong, forcing again...");
+            statusDropdown.value = data.availability;
+          }
         }, 50);
       } else {
         console.error("Invalid API response:", data);
@@ -199,14 +226,23 @@ document.addEventListener("DOMContentLoaded", function () {
   console.log("DOM Content Loaded");
   setTimeout(() => {
     loadAvailabilityStatus();
-  }, 200);
+  }, 100);
+  setTimeout(() => {
+    loadAvailabilityStatus();
+  }, 500);
+  setTimeout(() => {
+    loadAvailabilityStatus();
+  }, 1000);
 });
 
 window.addEventListener("load", function () {
   console.log("Window Loaded");
   setTimeout(() => {
     loadAvailabilityStatus();
-  }, 300);
+  }, 100);
+  setTimeout(() => {
+    loadAvailabilityStatus();
+  }, 500);
 });
 fetchCounselings();
 
