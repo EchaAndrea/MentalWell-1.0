@@ -34,12 +34,6 @@ async function fetchCounselings() {
     const data = await res.json();
     allCounselings = data.counselings || [];
     allCounselings.sort((a, b) => b.id - a.id); // Descending
-
-    // Debug: Log struktur data untuk melihat field topik
-    if (allCounselings.length > 0) {
-      console.log("Sample counseling data:", allCounselings[0]);
-    }
-
     filteredCounselings = [...allCounselings];
     renderTable();
   } catch (err) {
@@ -61,48 +55,12 @@ function renderTable() {
 
   pageData.forEach((item) => {
     const tr = document.createElement("tr");
-
-    // Format topik dengan batasan 3 item
-    let topikDisplay = "-";
-
-    // Coba beberapa kemungkinan struktur data topik
-    let topics = null;
-    if (item.psychologist_topics && item.psychologist_topics.length > 0) {
-      topics = item.psychologist_topics;
-    } else if (item.topics && item.topics.length > 0) {
-      topics = item.topics;
-    } else if (
-      item.psychologist &&
-      item.psychologist.topics &&
-      item.psychologist.topics.length > 0
-    ) {
-      topics = item.psychologist.topics;
-    }
-
-    if (topics && topics.length > 0) {
-      const maxTopics = 3;
-      const displayedTopics = topics.slice(0, maxTopics);
-      const hasMoreTopics = topics.length > maxTopics;
-
-      // Coba akses nama topik dengan beberapa kemungkinan struktur
-      topikDisplay = displayedTopics
-        .map((topic) => {
-          return topic.name || topic.topic_name || topic.title || topic;
-        })
-        .join(", ");
-
-      if (hasMoreTopics) {
-        topikDisplay += ", ...";
-      }
-    }
-
     tr.innerHTML = `
       <td><input type="checkbox"></td>
       <td>${item.id}</td>
       <td>${item.patient_name}</td>
       <td>${item.schedule_date}</td>
       <td>${item.schedule_time}</td>
-      <td>${topikDisplay}</td>
       <td>${renderStatus(item.payment_status)}</td>
       <td>
         <a href="/src/templates/admin-detaildashboard.html?id=${
