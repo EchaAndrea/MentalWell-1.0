@@ -130,7 +130,7 @@ main {
 
 .biodata-psikolog p {
   font-size: 19px;
-  margin: 10px 20px 10px 0;
+  margin: 10px 50px 10px 0;
   text-align: justify;
 }
 
@@ -181,7 +181,8 @@ main {
   margin-top: 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 5px;
+  column-gap: 0px;
+  row-gap: 2px;
   list-style-position: inside;
 }
 
