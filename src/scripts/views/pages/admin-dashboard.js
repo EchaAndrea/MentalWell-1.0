@@ -78,9 +78,9 @@ function renderTable() {
 function renderStatus(status) {
   switch (status) {
     case "approved":
-      return '<span class="badge bg-success">Lunas</span>';
+      return '<span class="badge bg-success">Approved</span>';
     case "waiting":
-      return '<span class="badge bg-warning text-dark">Belum Lunas</span>';
+      return '<span class="badge bg-warning text-dark">Waiting</span>';
     case "rejected":
       return '<span class="badge bg-danger">Rejected</span>';
     case "refunded":
