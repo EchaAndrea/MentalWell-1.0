@@ -27,8 +27,8 @@ document.addEventListener("DOMContentLoaded", () => {
     formData.append("title", form.judul.value.trim());
     formData.append("content", form.konten.value.trim());
     if (inputGambar.files[0]) formData.append("image", inputGambar.files[0]);
-    if (form.references && form.references.value.trim()) {
-      formData.append("references", form.references.value.trim());
+    if (form.referensi.value.trim()) {
+      formData.append("references", form.referensi.value.trim());
     }
     const kategoriDipilih = [parseInt(kategoriSelect.value)];
     formData.append("categories", JSON.stringify(kategoriDipilih));

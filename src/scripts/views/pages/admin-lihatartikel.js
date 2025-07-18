@@ -58,6 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         ? artikel.created_at.slice(0, 10)
         : "";
       kontenTextarea.value = artikel.content || "";
+      form.referensi.value = artikel.references || "";
 
       // Tampilkan nama file gambar
       if (artikel.image) {

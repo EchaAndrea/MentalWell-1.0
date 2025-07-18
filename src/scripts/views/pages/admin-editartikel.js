@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btnKembali = document.getElementById("btnKembali");
   const namaFile = document.getElementById("namaFile");
   const gambarInput = document.getElementById("gambar");
-  console.log(gambarInput); 
+  console.log(gambarInput);
   const kontenTextarea = document.getElementById("konten");
 
   // Ambil artikel_id dari URL
@@ -46,6 +46,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         ? artikel.created_at.slice(0, 10)
         : "";
       kontenTextarea.value = artikel.content || "";
+      form.referensi.value = artikel.references || "";
 
       // Tampilkan nama file gambar
       if (artikel.image) {
@@ -84,6 +85,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       formData.append("categories", form.kategori.value.trim());
     if (kontenTextarea.value.trim())
       formData.append("content", kontenTextarea.value.trim());
+    if (form.referensi.value.trim())
+      formData.append("references", form.referensi.value.trim());
     if (gambarInput && gambarInput.files[0]) {
       formData.append("image", gambarInput.files[0]);
     }
