@@ -58,7 +58,7 @@ function startTest() {
   if (!questionsGenerated) generateQuestions();
 }
 
-// Generate pertanyaan (versi radio dalam kotak)
+// Generate pertanyaan 
 function generateQuestions() {
   const form = document.getElementById("quiz-form");
   form.innerHTML = "";
@@ -125,10 +125,10 @@ function showResult() {
 
   if (ya1to20 >= 5 || ya21 >= 1 || ya22to24 >= 1 || ya25to29 >= 1) {
     result =
-      "Berdasarkan hasil tes, ditemukan beberapa indikator yang memerlukan perhatian lebih lanjut dari profesional kesehatan mental. Kami sangat menyarankan untuk berkonsultasi dengan psikolog atau psikiater untuk evaluasi dan penanganan yang tepat.";
+      "Berdasarkan hasil tes, ditemukan beberapa indikator yang memerlukan perhatian lebih lanjut dari profesional kesehatan mental.";
   } else {
     result =
-      "Hasil tes menunjukkan kondisi yang relatif baik. Namun, tetap penting untuk menjaga kesehatan mental dan tidak ragu mencari bantuan profesional jika diperlukan. Kesehatan mental sama pentingnya dengan kesehatan fisik.";
+      "Hasil tes menunjukkan kondisi yang relatif baik. Namun, tetap penting untuk menjaga kesehatan mental dan mencari bantuan profesional jika diperlukan.";
   }
 
   document.getElementById("result-text").innerText = result;
