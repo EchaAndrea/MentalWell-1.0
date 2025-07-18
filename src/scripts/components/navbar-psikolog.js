@@ -154,38 +154,14 @@ class NavBar extends HTMLElement {
                 right: 1px;
                 border-bottom-left-radius: 10px;
               }
-
-              .dropdown-content .profile-button {
-                display: flex;
-                flex-direction: row; 
-              }
     
               .dropdown-content .keluar-button {
                 display: flex;
                 flex-direction: row;
               }
-    
-              .profilLink {
-                display: flex;
-                align-items: center; /* Pusatkan elemen secara vertikal */
-                text-decoration: none; /* Hilangkan garis bawah pada tautan */
-                color: black; /* Ubah warna teks jika diinginkan */
-                padding: 12px 16px;
-              }
-
-              .profilLink img {
-                margin-right: 5px;
-              }
-              
               
               .dropdown-content a:hover {
                   color: #fff;
-              }
-
-              .dropdown-content .profile-button:hover {
-                background-color: #044B97;
-                color: #fff;
-                cursor: pointer;
               }
     
               .dropdown-content .keluar-button:hover {
@@ -223,12 +199,6 @@ class NavBar extends HTMLElement {
                             <h4 id="nicknameTag"></h4>
                             <img src="/src/public/dropdown/dropdown.png" alt="Foto User" id="dropdown-" >
                             <div class="dropdown-content">
-                              <div class="profile-button" id="profile-button">
-                                <a id="profilLink" class="profilLink" href="#">
-                                  <img src="/src/public/dropdown/man.png" width="30px" height="30px">
-                                  <span>Profil saya</span>
-                                </a>
-                              </div>
                               <div class="keluar-button" id="keluar-button">
                                 <a class="keluar" href="#">
                                   <img src="/src/public/dropdown/exit.png" width="30px" height="30px">
@@ -287,7 +257,6 @@ class NavBar extends HTMLElement {
 
     // Get userDropdown element within Shadow DOM
     const userDropdown = this.shadowRoot.getElementById("userDropdown");
-    const profilLink = this.shadowRoot.getElementById("profilLink");
 
     // Add event listeners for mouseover and mouseout within Shadow DOM
     userDropdown.addEventListener("mouseover", () => {
@@ -296,10 +265,6 @@ class NavBar extends HTMLElement {
 
     userDropdown.addEventListener("mouseout", () => {
       userDropdown.querySelector(".dropdown-content").style.display = "none";
-    });
-
-    profilLink.addEventListener("click", () => {
-      window.location.href = "/editprofilpsikolog";
     });
 
     this.shadowRoot.querySelector(".keluar").addEventListener("click", () => {

@@ -71,7 +71,6 @@ fetch(
     tanggalKonseling.innerHTML = `
       <p>${formattedScheduleDate}</p>
       <p>${counseling.schedule_time || "-"}</p>
-      <p>Chat</p>
     `;
     deskripsiKonseling.innerHTML = `
       <h3>Deskripsi Masalah</h3>
