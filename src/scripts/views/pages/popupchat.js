@@ -7,7 +7,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Global variables
 let chatChannel = null;
-let addMessageToChat; // Declare globally to avoid duplication
+let addMessageToChat;
 
 // Function to decode JWT token and get user ID
 function getUserIdFromToken() {
@@ -75,7 +75,6 @@ window.initPopupChat = async function () {
 
   // Fungsi untuk menutup chat popup
   window.closeChat = function () {
-    // Unsubscribe dari channel sebelum menutup
     if (chatChannel) {
       console.log("Unsubscribing from chat channel");
       chatChannel.unsubscribe();
@@ -102,46 +101,6 @@ window.initPopupChat = async function () {
   // Fungsi untuk generate ID unik
   function generateId() {
     return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
-  }
-
-  // Fungsi untuk upload file ke Supabase Storage
-  async function uploadFile(file) {
-    try {
-      console.log("Starting file upload for:", file.name);
-
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Date.now()}.${fileExt}`;
-      const filePath = `chat-files/${fileName}`;
-
-      console.log("Uploading to path:", filePath);
-
-      const { data, error } = await supabase.storage
-        .from("chat-files")
-        .upload(filePath, file);
-
-      if (error) {
-        console.error("Error uploading file:", error);
-        throw new Error(error.message);
-      }
-
-      console.log("File uploaded successfully:", data);
-
-      // Get public URL
-      const { data: publicURL } = supabase.storage
-        .from("chat-files")
-        .getPublicUrl(filePath);
-
-      console.log("Public URL:", publicURL.publicUrl);
-
-      return {
-        url: publicURL.publicUrl,
-        fileName: file.name,
-        fileSize: file.size,
-      };
-    } catch (error) {
-      console.error("Upload file error:", error);
-      throw error;
-    }
   }
 
   // Fungsi untuk menambahkan pesan ke chat (SINGLE DEFINITION)
@@ -186,21 +145,7 @@ window.initPopupChat = async function () {
     });
 
     // Handle different message types
-    if (type === "file" && fileUrl) {
-      msgDiv.innerHTML = `
-        <div class="file-message">
-          <span>📎</span>
-          <div>
-            <strong>${fileName || "File"}</strong><br>
-            <a href="${fileUrl}" target="_blank" style="color: inherit;">
-              Buka file
-            </a>
-          </div>
-        </div>
-      `;
-    } else {
-      msgDiv.textContent = content;
-    }
+    msgDiv.textContent = content;
 
     messageContainer.appendChild(msgDiv);
     chatBody.appendChild(messageContainer);
@@ -294,77 +239,6 @@ window.initPopupChat = async function () {
     }
   };
 
-  // Fungsi untuk mengirim file
-  window.sendFile = async function (file) {
-    console.log("sendFile called with:", file);
-
-    const conversationId = localStorage.getItem("active_conversation_id");
-    if (!conversationId) {
-      alert("conversation_id tidak ditemukan di localStorage!");
-      return;
-    }
-
-    const senderRole = localStorage.getItem("current_user_role");
-    const senderId = parseInt(localStorage.getItem("current_user_id"), 10);
-    const id = generateId();
-
-    console.log("Sending file:", {
-      conversationId,
-      senderRole,
-      senderId,
-      fileName: file.name,
-    });
-
-    // Show loading message
-    const loadingMsgDiv = addMessageToChat("📎 Mengirim file...", true, "text");
-
-    try {
-      // Upload file
-      const uploadResult = await uploadFile(file);
-
-      // Remove loading message
-      if (loadingMsgDiv) loadingMsgDiv.remove();
-
-      // Add file message to chat
-      addMessageToChat(
-        `File: ${uploadResult.fileName}`,
-        true,
-        "file",
-        uploadResult.url,
-        uploadResult.fileName
-      );
-
-      // Kirim file message ke database
-      const { error } = await supabase.from("messages").insert([
-        {
-          id: id,
-          conversation_id: conversationId,
-          sender_id: senderId,
-          sender_role: senderRole,
-          content: `File: ${uploadResult.fileName}`,
-          type: "file",
-          file_url: uploadResult.url,
-          file_name: uploadResult.fileName,
-          sent_at: new Date().toISOString(),
-          is_read: false,
-        },
-      ]);
-
-      if (error) {
-        console.error("Error saving file message:", error);
-        alert("Gagal menyimpan pesan file: " + error.message);
-      } else {
-        console.log("File message sent successfully");
-      }
-    } catch (error) {
-      console.error("Error uploading file:", error);
-      // Remove loading message and show error
-      if (loadingMsgDiv) loadingMsgDiv.remove();
-      addMessageToChat("❌ Gagal mengirim file", true, "text");
-      alert("Gagal mengirim file: " + error.message);
-    }
-  };
-
   // Event listeners
   const chatInput = document.getElementById("chatInput");
   if (chatInput) {
@@ -446,8 +320,8 @@ async function loadMessages(conversationId) {
         msg.content,
         isFromCurrentUser,
         msg.type,
-        msg.file_url,
-        msg.file_name,
+        null,
+        null,
         msg.sender_id,
         prevSenderId
       );
@@ -514,8 +388,8 @@ function subscribeToMessages(conversationId) {
             msg.content,
             isFromCurrentUser,
             msg.type,
-            msg.file_url,
-            msg.file_name,
+            null,
+            null,
             msg.sender_id,
             prevSenderId
           );
