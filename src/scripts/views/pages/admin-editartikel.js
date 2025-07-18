@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           icon: "success",
           title: "Artikel berhasil diperbarui",
         }).then(() => {
-          window.location.reload();
+          window.location.href = "/src/templates/admin-artikel.html";
         });
       } else {
         Swal.fire({
