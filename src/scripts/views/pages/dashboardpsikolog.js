@@ -107,14 +107,12 @@ function fetchCounselings() {
         const nameCell = row.insertCell(0);
         const dateCell = row.insertCell(1);
         const timeCell = row.insertCell(2);
-        const typeCell = row.insertCell(3);
-        const statusCell = row.insertCell(4);
-        const actionCell = row.insertCell(5);
+        const statusCell = row.insertCell(3);
+        const actionCell = row.insertCell(4);
 
         nameCell.textContent = counseling.patient_name;
         dateCell.textContent = formatDate(counseling.schedule_date);
         timeCell.textContent = counseling.schedule_time;
-        typeCell.textContent = "Chat";
         statusCell.textContent =
           counseling.status === "finished" ? "Selesai" : "Belum Selesai";
 
