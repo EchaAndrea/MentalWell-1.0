@@ -23,19 +23,21 @@ async function fetchArticles() {
       result.status === "success" &&
       Array.isArray(result.articles)
     ) {
-      allArticles = result.articles.map((a) => ({
-        id: a.id,
-        judul: a.title,
-        kategori: a.categories?.[0]?.name || "",
-        tanggal: a.created_at
-          ? new Date(a.created_at).toLocaleDateString("id-ID", {
-              day: "2-digit",
-              month: "long",
-              year: "numeric",
-            })
-          : "",
-        dibuatoleh: a.created_by || "Admin",
-      })).sort((a, b) => b.id - a.id);
+      allArticles = result.articles
+        .map((a) => ({
+          id: a.id,
+          judul: a.title,
+          kategori: a.categories?.[0]?.name || "",
+          tanggal: a.created_at
+            ? new Date(a.created_at).toLocaleDateString("id-ID", {
+                day: "2-digit",
+                month: "long",
+                year: "numeric",
+              })
+            : "",
+          dibuatoleh: a.created_by || "Admin",
+        }))
+        .sort((a, b) => b.id - a.id);
       filteredData = [...allArticles];
     } else {
       allArticles = [];
@@ -129,13 +131,15 @@ function renderTable() {
 }
 
 function renderPagination() {
-  const pagination = document.getElementById("pagination");
+  const pagination = document.querySelector(".pagination");
   if (!pagination) return;
 
+  // Hitung total halaman
   const totalRows = filteredData.length;
   const perPage = rowsPerPage === "all" ? totalRows : rowsPerPage;
   const totalPages = rowsPerPage === "all" ? 1 : Math.ceil(totalRows / perPage);
 
+  // Bersihkan pagination lama
   pagination.innerHTML = "";
 
   // Tombol Sebelumnya
@@ -173,12 +177,7 @@ function renderPagination() {
     el.addEventListener("click", function (e) {
       e.preventDefault();
       const page = parseInt(this.getAttribute("data-page"));
-      if (
-        !isNaN(page) &&
-        page >= 1 &&
-        page <= totalPages &&
-        page !== currentPage
-      ) {
+      if (!isNaN(page) && page >= 1 && page !== currentPage) {
         currentPage = page;
         renderTable();
       }
