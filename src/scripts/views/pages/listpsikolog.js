@@ -101,7 +101,7 @@ document.querySelectorAll(".filter-checkbox").forEach((checkbox) => {
 });
 
 function redirectToDetailPsychologist(id, mode = "") {
-  const token = sessionStorage.getItem("authToken"); // ubah dari localStorage ke sessionStorage
+  const token = sessionStorage.getItem("authToken");
   if (!token) {
     Swal.fire({
       icon: "warning",
@@ -115,19 +115,4 @@ function redirectToDetailPsychologist(id, mode = "") {
   window.location.href = `/profilpsikolog?id=${id}${
     mode ? `&mode=${mode}` : ""
   }`;
-}
-
-function redirectToPembayaran(id) {
-  window.location.href = `/jadwalkonseling-pembayaran?id=${id}&mode=chat`;
-}
-
-function redirectToRealtime(id) {
-  const allPsikolog = JSON.parse(
-    sessionStorage.getItem("all_psikolog") || "[]"
-  );
-  const selected = allPsikolog.find((p) => String(p.id) === String(id));
-  if (selected) {
-    sessionStorage.setItem("selected_psikolog", JSON.stringify(selected));
-  }
-  window.location.href = `/jadwalrealtime?id=${id}&mode=chat`;
 }
