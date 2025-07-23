@@ -104,24 +104,15 @@ document.addEventListener("DOMContentLoaded", async function () {
     waktuJadwal = {};
 
     // Jadwal mingguan (dari admin)
-    const jadwalWithDay = jadwalArr.filter((item) => item.day);
-    for (const item of jadwalWithDay) {
-      const jam = `${item.start_time?.slice(0, 5) || ""}-${
-        item.end_time?.slice(0, 5) || ""
-      }`;
-      const hari = item.day.charAt(0).toUpperCase() + item.day.slice(1); // Kapitalisasi
-      if (!waktuJadwal[hari]) waktuJadwal[hari] = [];
-      waktuJadwal[hari].push({ jam, id: item.id });
-    }
-
-    // Jadwal harian (jika ada)
-    const jadwalWithDate = jadwalArr.filter((item) => item.date);
-    for (const item of jadwalWithDate) {
-      const jam = `${item.start_time?.slice(0, 5) || ""}-${
-        item.end_time?.slice(0, 5) || ""
-      }`;
-      if (!waktuJadwal[item.date]) waktuJadwal[item.date] = [];
-      waktuJadwal[item.date].push({ jam, id: item.id });
+    for (const item of jadwalArr) {
+      if (item.day) {
+        const jam = `${item.start_time?.slice(0, 5) || ""}-${
+          item.end_time?.slice(0, 5) || ""
+        }`;
+        const hari = item.day.charAt(0).toUpperCase() + item.day.slice(1); 
+        if (!waktuJadwal[hari]) waktuJadwal[hari] = [];
+        waktuJadwal[hari].push({ jam });
+      }
     }
 
     // Generate tombol tanggal 5 hari ke depan
@@ -178,25 +169,19 @@ document.addEventListener("DOMContentLoaded", async function () {
     async function renderWaktu() {
       waktuContainer.innerHTML = "";
 
-      // 1. Cek jadwal harian (by date)
-      let waktuList = waktuJadwal[selectedTanggal] || [];
-
-      // 2. Jika tidak ada, cek jadwal mingguan (by day)
-      if (waktuList.length === 0) {
-        // Ambil hari dari tanggal (0=minggu, 1=senin,...)
-        const hariList = [
-          "Minggu",
-          "Senin",
-          "Selasa",
-          "Rabu",
-          "Kamis",
-          "Jumat",
-          "Sabtu",
-        ];
-        const dateObj = new Date(selectedTanggal);
-        const hari = hariList[dateObj.getDay()];
-        waktuList = waktuJadwal[hari] || [];
-      }
+      // Konversi tanggal ke hari untuk cek jadwal mingguan
+      const hariList = [
+        "Minggu",
+        "Senin",
+        "Selasa",
+        "Rabu",
+        "Kamis",
+        "Jumat",
+        "Sabtu",
+      ];
+      const dateObj = new Date(selectedTanggal);
+      const hari = hariList[dateObj.getDay()];
+      const waktuList = waktuJadwal[hari] || [];
 
       if (waktuList.length === 0) {
         waktuContainer.innerHTML = `<p class="text-muted">Tidak ada jadwal tersedia</p>`;
@@ -204,7 +189,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       }
 
       // Cek ketersediaan setiap slot
-      for (const { jam, id } of waktuList) {
+      for (const { jam } of waktuList) {
         const btn = document.createElement("button");
         btn.className = "btn btn-outline-primary btn-slot me-2 mb-2";
         btn.textContent = jam;
