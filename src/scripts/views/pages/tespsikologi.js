@@ -128,7 +128,7 @@ function showResult() {
       "Berdasarkan hasil tes, ditemukan beberapa indikator yang memerlukan perhatian lebih lanjut dari profesional kesehatan mental.";
   } else {
     result =
-      "Hasil tes menunjukkan kondisi yang relatif baik. Namun, tetap penting untuk menjaga kesehatan mental dan mencari bantuan profesional jika diperlukan.";
+      "Hasil tes menunjukkan kondisi yang relatif baik. Namun, tetap penting untuk menjaga kesehatan mental.";
   }
 
   document.getElementById("result-text").innerText = result;
