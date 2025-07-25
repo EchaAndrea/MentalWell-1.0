@@ -48,20 +48,6 @@ async function fetchPsychologistPrice(psikologId) {
   const token = sessionStorage.getItem("authToken");
 
   try {
-    const scheduleRes = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}/schedules`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-
-    if (scheduleRes.ok) {
-      const scheduleData = await scheduleRes.json();
-      if (scheduleData.price) {
-        return parseInt(scheduleData.price);
-      }
-    }
-
     const psychRes = await fetch(
       `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}`,
       {
@@ -116,7 +102,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   const mode = urlParams.get("mode");
   const psikologId = urlParams.get("id");
 
-  // Setup jadwal untuk mode realtime/scheduele 
+  // Setup jadwal untuk mode realtime/scheduele
   if (mode === "realtime" || mode === "schedule") {
     try {
       const jadwal = await setupRealtimeSchedule(psikologId);

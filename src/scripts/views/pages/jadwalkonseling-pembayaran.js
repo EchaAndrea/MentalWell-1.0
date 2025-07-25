@@ -2,20 +2,6 @@ async function fetchPsychologistPrice(psikologId) {
   const token = sessionStorage.getItem("authToken");
 
   try {
-    const scheduleRes = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}/schedules`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-
-    if (scheduleRes.ok) {
-      const scheduleData = await scheduleRes.json();
-      if (scheduleData.price) {
-        return parseInt(scheduleData.price);
-      }
-    }
-
     const psychRes = await fetch(
       `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}`,
       {
@@ -78,6 +64,8 @@ async function confirmPayment() {
     );
 
     const data = await res.json();
+    console.log("Regular counseling response:", data); // Debug log
+
     if (data.status === "success") {
       const counseling_id = data.newCounseling?.counseling_id;
       if (!counseling_id) {
@@ -93,9 +81,14 @@ async function confirmPayment() {
         }
       ).then((res) => res.json());
 
+      console.log("Regular counseling detail:", detail); // Debug log
       const conversation_id = detail.counseling?.conversation_id;
       if (conversation_id) {
         localStorage.setItem("last_conversation_id", conversation_id);
+        console.log(
+          "Saved conversation_id for regular counseling:",
+          conversation_id
+        ); // Debug log
       }
 
       Swal.close();
@@ -165,6 +158,8 @@ async function createRealtimeCounseling() {
     );
 
     const data = await res.json();
+    console.log("Realtime counseling response:", data); // Debug log
+
     if (data.status === "success") {
       const counseling_id = data.newCounseling?.counseling_id;
       if (!counseling_id) {
@@ -172,6 +167,37 @@ async function createRealtimeCounseling() {
       }
 
       localStorage.setItem("last_counseling_id", counseling_id);
+
+      // Untuk realtime counseling, coba ambil conversation_id dari response
+      let conversation_id =
+        data.newCounseling?.conversation_id || data.conversation_id;
+      console.log("Conversation ID from response:", conversation_id); // Debug log
+
+      // Jika tidak ada di response langsung, coba fetch detail counseling
+      if (!conversation_id) {
+        try {
+          console.log("Fetching counseling detail for ID:", counseling_id); // Debug log
+          const detail = await fetch(
+            `https://mentalwell10-api-production.up.railway.app/counseling/${counseling_id}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          ).then((res) => res.json());
+
+          console.log("Counseling detail response:", detail); // Debug log
+          conversation_id = detail.counseling?.conversation_id;
+          console.log("Conversation ID from detail:", conversation_id); // Debug log
+        } catch (error) {
+          console.error("Error fetching counseling detail:", error);
+        }
+      }
+
+      if (conversation_id) {
+        localStorage.setItem("last_conversation_id", conversation_id);
+        console.log("Saved conversation_id:", conversation_id); // Debug log
+      } else {
+        console.warn("No conversation_id found for realtime counseling"); // Debug log
+      }
 
       Swal.close();
 
