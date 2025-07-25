@@ -35,36 +35,6 @@ async function fetchPsychologistPrice(psikologId) {
   }
 }
 
-async function setupRealtimeSchedule(psikologId) {
-  const now = new Date();
-  const pad = (n) => n.toString().padStart(2, "0");
-  const tanggal = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(
-    now.getDate()
-  )}`;
-  const waktu = `${pad(now.getHours())}:${pad(now.getMinutes())}-${pad(
-    now.getHours() + 1
-  )}:${pad(now.getMinutes())}`;
-
-  let harga = 0;
-  try {
-    harga = await fetchPsychologistPrice(psikologId);
-  } catch (error) {
-    console.error("Error fetching price:", error);
-  }
-
-  const jadwal = {
-    tanggal,
-    waktu,
-    metode: "realtime",
-    psychologist_id: psikologId,
-    harga,
-    virtual_account: "123 456 789 1011",
-  };
-
-  localStorage.setItem("jadwal", JSON.stringify(jadwal));
-  return jadwal;
-}
-
 async function confirmPayment() {
   const token = sessionStorage.getItem("authToken");
   const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
@@ -234,24 +204,25 @@ document.addEventListener("DOMContentLoaded", async function () {
   const mode = urlParams.get("mode");
   const psikologId = urlParams.get("id");
 
-  // Setup jadwal untuk mode realtime/chat jika belum ada
-  if (mode === "chat" || mode === "realtime") {
-    const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
-    if (!jadwal.psychologist_id) {
-      await setupRealtimeSchedule(psikologId);
-    }
-  }
-
+  // Validasi data jadwal yang sudah ada
   const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
 
-  if (!jadwal.psychologist_id) {
+  if (!jadwal.psychologist_id || !jadwal.tanggal || !jadwal.waktu) {
     Swal.fire({
       icon: "error",
       title: "Data tidak lengkap",
       text: "Silakan ulangi proses pemesanan dari awal.",
-    }).then(() => (window.location.href = "/listpsikolog"));
+    }).then(() => {
+      if (mode === "chat" || mode === "realtime") {
+        window.location.href = `/jadwalkonseling-isidata?id=${psikologId}&mode=${mode}`;
+      } else {
+        window.location.href = `/jadwalkonseling-isidata?id=${psikologId}`;
+      }
+    });
     return;
   }
+
+  console.log("Data jadwal di pembayaran:", jadwal); // Debug log
 
   let harga = parseInt(jadwal.harga) || 0;
   if (harga === 0) {
