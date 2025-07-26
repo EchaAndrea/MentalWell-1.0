@@ -119,28 +119,16 @@ async function updatePaymentStatus(id, status, TOKEN) {
         body: JSON.stringify({ payment_status: status }),
       }
     );
-
-    console.log("Response status:", res.status);
-    console.log("Response ok:", res.ok);
-
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-
     const data = await res.json();
     console.log("API response:", data);
-
-    // Periksa berbagai kemungkinan format respons
-    if (data.status === "success" || data.success === true || res.ok) {
-      alert("Pembayaran berhasil diverifikasi!");
+    if (data.status === "success") {
+      alert("Pembayaran diverifikasi!");
       location.reload();
     } else {
-      console.log("Response data:", data);
-      alert(data.message || "Gagal verifikasi pembayaran");
+      alert("Gagal verifikasi pembayaran");
     }
   } catch (err) {
-    console.error("Error:", err);
-    alert(`Gagal verifikasi pembayaran: ${err.message}`);
+    alert("Gagal verifikasi pembayaran");
   }
 }
 
@@ -158,27 +146,17 @@ function rejectPayment(id, TOKEN) {
       body: JSON.stringify({ payment_status: "rejected", note }),
     }
   )
-    .then((res) => {
-      console.log("Response status:", res.status);
-      console.log("Response ok:", res.ok);
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      return res.json();
-    })
+    .then((res) => res.json())
     .then((data) => {
       console.log("API response:", data);
-      if (data.status === "success" || data.success === true) {
-        alert("Pembayaran berhasil ditolak!");
+      if (data.status === "success") {
+        alert("Pembayaran ditolak!");
         location.reload();
       } else {
-        alert(data.message || "Gagal menolak pembayaran");
+        alert("Gagal menolak pembayaran");
       }
     })
-    .catch((err) => {
-      console.error("Error:", err);
-      alert(`Gagal menolak pembayaran: ${err.message}`);
-    });
+    .catch(() => alert("Gagal menolak pembayaran"));
 }
 
 async function refundPayment(id, TOKEN) {
@@ -195,26 +173,16 @@ async function refundPayment(id, TOKEN) {
         body: JSON.stringify({ payment_status: "refunded" }),
       }
     );
-
-    console.log("Response status:", res.status);
-    console.log("Response ok:", res.ok);
-
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-
     const data = await res.json();
     console.log("API response:", data);
-
-    if (data.status === "success" || data.success === true || res.ok) {
+    if (data.status === "success") {
       alert("Pembayaran berhasil direfund!");
       location.reload();
     } else {
-      alert(data.message || "Gagal refund pembayaran");
+      alert("Gagal refund pembayaran");
     }
   } catch (err) {
-    console.error("Error:", err);
-    alert(`Gagal refund pembayaran: ${err.message}`);
+    alert("Gagal refund pembayaran");
   }
 }
 
