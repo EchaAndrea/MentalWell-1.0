@@ -51,8 +51,8 @@ async function populateHTMLWithData() {
       <p><strong>${patient_name}</strong></p>
       <p><strong>${patient_nickname}</strong></p>
       <p><strong>${patient_phone}</strong></p>
-      <p><strong>${convertDateFormat(counseling.schedule_date)}</strong></p>
-      <p><strong>${convertTimeFormat(counseling.schedule_time)}</strong></p>
+      <p><strong>${counseling.schedule_date || "-"}</strong></p>
+      <p><strong>${counseling.schedule_time || "-"}</strong></p>
     `;
   } catch (error) {
     console.error("Error populating HTML:", error);
@@ -72,8 +72,8 @@ async function populateHTMLWithData() {
         <p><strong>${
           userData.phone_number || userData.phone || "-"
         }</strong></p>
-        <p><strong>${convertDateFormat(jadwal.tanggal)}</strong></p>
-        <p><strong>${convertTimeFormat(jadwal.waktu)}</strong></p>
+        <p><strong>${jadwal.tanggal || "-"}</strong></p>
+        <p><strong>${jadwal.waktu || "-"}</strong></p>
       `;
     }
   }

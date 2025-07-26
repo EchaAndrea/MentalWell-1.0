@@ -108,10 +108,9 @@ document.addEventListener("DOMContentLoaded", async function () {
       const jadwal = await setupRealtimeSchedule(psikologId);
 
       const selectedDateEl = document.getElementById("selectedDate");
-      if (selectedDateEl)
-        selectedDateEl.textContent = formatTanggalIndo(jadwal.tanggal);
+      if (selectedDateEl) selectedDateEl.textContent = jadwal.tanggal;
       const selectedTimeEl = document.getElementById("selectedTime");
-      if (selectedTimeEl) selectedTimeEl.textContent = jadwal.waktu + " WIB";
+      if (selectedTimeEl) selectedTimeEl.textContent = jadwal.waktu;
     } catch (error) {
       console.error("Error setting up realtime schedule:", error);
     }
@@ -166,10 +165,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     const selectedTimeEl = document.getElementById("selectedTime");
 
     if (selectedDateEl && jadwal.tanggal) {
-      selectedDateEl.textContent = formatTanggalIndo(jadwal.tanggal);
+      selectedDateEl.textContent = jadwal.tanggal;
     }
     if (selectedTimeEl && jadwal.waktu) {
-      selectedTimeEl.textContent = jadwal.waktu + " WIB";
+      selectedTimeEl.textContent = jadwal.waktu;
     }
   } catch (error) {
     console.error("Error loading user data:", error);
