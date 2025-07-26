@@ -181,7 +181,7 @@ function redirectToRiwayat() {
   localStorage.removeItem("user_data");
 
   // Cek apakah ada conversation_id
-  const conversation_id = localStorage.getItem("last_conversation_id");
+  const conversation_id = localStorage.getItem("active_conversation_id");
 
   if (conversation_id && conversation_id !== "null") {
     // Jika ada conversation_id, langsung ke riwayat

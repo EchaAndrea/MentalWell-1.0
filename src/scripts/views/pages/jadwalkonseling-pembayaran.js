@@ -84,7 +84,7 @@ async function confirmPayment() {
       console.log("Regular counseling detail:", detail); // Debug log
       const conversation_id = detail.counseling?.conversation_id;
       if (conversation_id) {
-        localStorage.setItem("last_conversation_id", conversation_id);
+        localStorage.setItem("active_conversation_id", conversation_id);
         console.log(
           "Saved conversation_id for regular counseling:",
           conversation_id
@@ -193,7 +193,7 @@ async function createRealtimeCounseling() {
       }
 
       if (conversation_id) {
-        localStorage.setItem("last_conversation_id", conversation_id);
+        localStorage.setItem("active_conversation_id", conversation_id);
         console.log("Saved conversation_id:", conversation_id); // Debug log
       } else {
         console.warn("No conversation_id found for realtime counseling"); // Debug log
