@@ -84,7 +84,7 @@ async function fetchCounselingDetail(id, TOKEN) {
       alert("Sesi gagal, hanya bisa Tolak atau Refund.");
     }
   } catch (err) {
-    alert("Gagal memuat detail konseling");zzzz
+    alert("Gagal memuat detail konseling");
   }
 }
 
