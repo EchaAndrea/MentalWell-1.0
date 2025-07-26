@@ -29,41 +29,16 @@ async function populateHTMLWithData() {
     console.log("Counseling data:", counseling);
     console.log("UserData from localStorage:", userData);
 
-    // Gunakan data dari counseling jika ada, fallback ke localStorage
+    // Gunakan data dari counseling (backend) sebagai prioritas utama
     let patient_name = counseling.patient_name || userData.name || "-";
     let patient_nickname =
       counseling.patient_nickname || userData.nickname || userData.name || "-";
-
-    // Coba berbagai field name yang mungkin untuk phone
     let patient_phone =
       counseling.patient_phone_number ||
       counseling.patient_phone ||
-      counseling.phone_number ||
-      counseling.phone ||
       userData.phone_number ||
       userData.phone ||
       "-";
-
-    // Jika masih kosong, coba ambil dari jadwal localStorage
-    if (
-      patient_name === "-" ||
-      patient_nickname === "-" ||
-      patient_phone === "-"
-    ) {
-      const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
-      if (jadwal.user_data) {
-        patient_name =
-          patient_name === "-" ? jadwal.user_data.name || "-" : patient_name;
-        patient_nickname =
-          patient_nickname === "-"
-            ? jadwal.user_data.nickname || "-"
-            : patient_nickname;
-        patient_phone =
-          patient_phone === "-"
-            ? jadwal.user_data.phone || jadwal.user_data.phone_number || "-"
-            : patient_phone;
-      }
-    }
 
     // Debug: lihat hasil akhir
     console.log("Final data:", {
@@ -97,36 +72,53 @@ async function populateHTMLWithData() {
         <p><strong>${
           userData.phone_number || userData.phone || "-"
         }</strong></p>
-        <p><strong>${formatTanggalIndo(jadwal.tanggal) || "-"}</strong></p>
-        <p><strong>${jadwal.waktu ? jadwal.waktu + " WIB" : "-"}</strong></p>
+        <p><strong>${convertDateFormat(jadwal.tanggal)}</strong></p>
+        <p><strong>${convertTimeFormat(jadwal.waktu)}</strong></p>
       `;
     }
   }
 }
 
-function formatTanggalIndo(tanggalStr) {
-  if (!tanggalStr) return "-";
-  const bulan = [
-    "Januari",
-    "Februari",
-    "Maret",
-    "April",
-    "Mei",
-    "Juni",
-    "Juli",
-    "Agustus",
-    "September",
-    "Oktober",
-    "November",
-    "Desember",
-  ];
-  const [tahun, bulanIdx, tanggal] = tanggalStr.split("-");
-  return `${parseInt(tanggal)} ${bulan[parseInt(bulanIdx) - 1]} ${tahun}`;
-}
-
 function convertDateFormat(inputDate) {
+  if (!inputDate) return "-";
+
+  // Jika format YYYY-MM-DD (dari localStorage jadwal)
+  if (typeof inputDate === "string" && inputDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+    const bulan = [
+      "Januari",
+      "Februari",
+      "Maret",
+      "April",
+      "Mei",
+      "Juni",
+      "Juli",
+      "Agustus",
+      "September",
+      "Oktober",
+      "November",
+      "Desember",
+    ];
+    const [tahun, bulanIdx, tanggal] = inputDate.split("-");
+    const date = new Date(tahun, parseInt(bulanIdx) - 1, parseInt(tanggal));
+    const dayNames = [
+      "Minggu",
+      "Senin",
+      "Selasa",
+      "Rabu",
+      "Kamis",
+      "Jumat",
+      "Sabtu",
+    ];
+    const dayOfWeek = dayNames[date.getDay()];
+    return `${dayOfWeek}, ${parseInt(tanggal)} ${
+      bulan[parseInt(bulanIdx) - 1]
+    } ${tahun}`;
+  }
+
+  // Jika format tanggal normal dari backend
   const parsedDate = new Date(inputDate);
   if (isNaN(parsedDate.getTime())) return "Invalid date";
+
   const dayNames = [
     "Minggu",
     "Senin",
@@ -159,8 +151,23 @@ function convertDateFormat(inputDate) {
 
 function convertTimeFormat(inputTime) {
   if (!inputTime) return "-";
+
+  // Jika sudah ada "WIB" (dari localStorage jadwal)
+  if (inputTime.includes("WIB")) {
+    return inputTime;
+  }
+
+  // Jika format HH:MM-HH:MM (dari backend atau localStorage)
   const [startTime, endTime] = inputTime.split("-");
-  return `${startTime?.replace(":", ".")} - ${endTime?.replace(":", ".")} WIB`;
+  if (startTime && endTime) {
+    return `${startTime?.replace(":", ".")} - ${endTime?.replace(
+      ":",
+      "."
+    )} WIB`;
+  }
+
+  // Fallback
+  return inputTime + " WIB";
 }
 
 function redirectToIndex() {
