@@ -18,7 +18,6 @@ function getUserIdFromToken() {
     const payload = token.split(".")[1];
     const decoded = JSON.parse(atob(payload));
 
-    console.log("Decoded token:", decoded);
     return decoded.id;
   } catch (error) {
     console.error("Error decoding token:", error);
@@ -35,7 +34,7 @@ function getUserRoleFromToken() {
     const payload = token.split(".")[1];
     const decoded = JSON.parse(atob(payload));
 
-    return decoded.role; // "psychologist" atau "patient"
+    return decoded.role;
   } catch (error) {
     console.error("Error getting role from token:", error);
     return null;
@@ -44,14 +43,9 @@ function getUserRoleFromToken() {
 
 // Main popup chat initialization
 window.initPopupChat = async function () {
-  console.log("Initializing popup chat...");
-
   // Get user ID dan role dari token
   const tokenUserId = getUserIdFromToken();
   const tokenRole = getUserRoleFromToken();
-
-  console.log("Token User ID:", tokenUserId);
-  console.log("Token Role:", tokenRole);
 
   if (!tokenUserId || !tokenRole) {
     alert("Tidak dapat mengambil data user dari token. Silakan login ulang.");
@@ -76,7 +70,6 @@ window.initPopupChat = async function () {
   // Fungsi untuk menutup chat popup
   window.closeChat = function () {
     if (chatChannel) {
-      console.log("Unsubscribing from chat channel");
       chatChannel.unsubscribe();
       chatChannel = null;
     }
@@ -103,7 +96,7 @@ window.initPopupChat = async function () {
     return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
   }
 
-  // Fungsi untuk menambahkan pesan ke chat (SINGLE DEFINITION)
+  // Fungsi untuk menambahkan pesan ke chat
   addMessageToChat = function (
     content,
     isFromCurrentUser,
@@ -111,7 +104,7 @@ window.initPopupChat = async function () {
     fileUrl = null,
     fileName = null,
     senderId = null,
-    prevSenderId = null // tambahkan argumen ini
+    prevSenderId = null
   ) {
     const chatBody = document.getElementById("chatBody");
     if (!chatBody) {
@@ -136,15 +129,6 @@ window.initPopupChat = async function () {
     const msgDiv = document.createElement("div");
     msgDiv.className = `chat-bubble ${isFromCurrentUser ? "right" : "left"}`;
 
-    // Debug log
-    console.log("Adding message:", {
-      content: content.substring(0, 50) + "...",
-      isFromCurrentUser,
-      containerClass: messageContainer.className,
-      bubbleClass: msgDiv.className,
-    });
-
-    // Handle different message types
     msgDiv.textContent = content;
 
     messageContainer.appendChild(msgDiv);
@@ -170,13 +154,6 @@ window.initPopupChat = async function () {
     const senderId = parseInt(localStorage.getItem("current_user_id"), 10);
     const id = generateId();
 
-    console.log("Sending message:", {
-      conversationId,
-      senderRole,
-      senderId,
-      message,
-    });
-
     // Clear input immediately
     input.value = "";
 
@@ -201,12 +178,11 @@ window.initPopupChat = async function () {
       if (error) {
         console.error("Error sending message:", error);
 
+        const errorMsg = error.message?.toLowerCase() || "";
         if (
           error.code === "42501" ||
-          error.message
-            ?.toLowerCase()
-            .includes("violates row-level security") ||
-          error.message?.toLowerCase().includes("not allowed")
+          errorMsg.includes("violates row-level security") ||
+          errorMsg.includes("not allowed")
         ) {
           alert(
             "Sesi Anda telah berakhir sehingga pesan tidak dapat dikirim.\nSilakan mulai sesi baru atau hubungi admin jika Anda merasa ini adalah kesalahan."
@@ -216,14 +192,11 @@ window.initPopupChat = async function () {
             "Maaf, terjadi kendala saat mengirim pesan. Silakan coba kembali nanti."
           );
         }
-      } else {
-        console.log("Message sent successfully");
       }
     } catch (error) {
       console.error("Error sending message:", error);
 
       const msg = error.message?.toLowerCase() || "";
-
       if (
         msg.includes("violates row-level security") ||
         msg.includes("not allowed")
@@ -265,7 +238,6 @@ window.initPopupChat = async function () {
 
   // Load chat
   const conversationId = localStorage.getItem("active_conversation_id");
-  console.log("conversationId:", conversationId);
   if (!conversationId || conversationId === "undefined") {
     alert("conversation_id tidak ditemukan di localStorage!");
     return;
@@ -288,8 +260,6 @@ window.initPopupChat = async function () {
 
 // Load messages from database
 async function loadMessages(conversationId) {
-  console.log("Loading messages for conversation:", conversationId);
-
   const { data, error } = await supabase
     .from("messages")
     .select("*")
@@ -308,9 +278,6 @@ async function loadMessages(conversationId) {
     }
 
     const currentUserId = parseInt(localStorage.getItem("current_user_id"), 10);
-
-    console.log("Current User ID:", currentUserId);
-    console.log("Messages loaded:", data.length);
 
     let prevSenderId = null;
     data.forEach((msg, index) => {
@@ -332,14 +299,8 @@ async function loadMessages(conversationId) {
 
 // Subscribe to real-time messages
 function subscribeToMessages(conversationId) {
-  console.log(
-    "🟢 Memulai langganan real-time untuk percakapan:",
-    conversationId
-  );
-
   // Unsubscribe jika sudah ada channel sebelumnya
   if (chatChannel) {
-    console.log("ℹ️ Menghentikan langganan sebelumnya...");
     chatChannel.unsubscribe();
   }
 
@@ -371,11 +332,6 @@ function subscribeToMessages(conversationId) {
         const currentUserId = Number(localStorage.getItem("current_user_id"));
         const isFromCurrentUser = Number(msg.sender_id) === currentUserId;
 
-        console.log("💬 Pesan baru diterima:", {
-          dari: msg.sender_id,
-          isi: msg.content?.substring(0, 50) + "...",
-        });
-
         // Cari senderId sebelumnya dari chatBody
         let prevSenderId = null;
         const chatBody = document.getElementById("chatBody");
@@ -399,14 +355,8 @@ function subscribeToMessages(conversationId) {
     )
     .subscribe((status, err) => {
       if (err) {
-        console.error("🚫 Tidak dapat menampilkan pesan baru:", err);
-        console.warn(
-          "%cPercakapan tidak aktif atau akses telah selesai.",
-          "color: #b91c1c; font-style: italic;"
-        );
+        console.error("Error subscribing to messages:", err);
         return;
       }
-
-      console.log("✅ Sesi aktif. Menunggu pesan masuk...");
     });
 }
