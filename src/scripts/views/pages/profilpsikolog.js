@@ -1,8 +1,8 @@
-async function fetchArticleById(articleId) {
+async function fetchPsikologById(psikologId) {
   try {
     const token = localStorage.getItem("token");
     const response = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/psychologists/${articleId}`,
+      `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}`,
       {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       }
@@ -13,31 +13,31 @@ async function fetchArticleById(articleId) {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Error fetching article data:", error);
+    console.error("Error fetching psikolog data:", error);
     throw error;
   }
 }
 
-async function renderArticleDetails() {
+async function renderPsikologDetails() {
   try {
     const urlParams = new URLSearchParams(window.location.search);
-    const articleId = urlParams.get("id");
-    if (!articleId) return;
+    const psikologId = urlParams.get("id");
+    if (!psikologId) return;
 
-    const articleData = await fetchArticleById(articleId);
+    const psikologData = await fetchPsikologById(psikologId);
     // Jika API return {id:..., name:...}
     const psikolog =
-      articleData && articleData.id ? articleData : articleData.data || {};
+      psikologData && psikologData.id ? psikologData : psikologData.data || {};
 
     // Render foto
     const fotopsikolog = document.getElementById("psychologProfile");
     if (fotopsikolog) fotopsikolog.src = psikolog.profile_image;
 
-    // Render nama 
+    // Render nama
     const datapsikolog = document.querySelector(".data-psikolog h2");
     if (datapsikolog) datapsikolog.textContent = psikolog.name;
 
-    // Render harga 
+    // Render harga
     const hargaElem = document.getElementById("harga-psikolog");
     if (hargaElem) {
       hargaElem.innerHTML = `Rp. ${psikolog.price?.toLocaleString("id-ID")}`;
@@ -73,7 +73,9 @@ async function renderArticleDetails() {
           .map(
             (review) => `
             <div class="isi-ulasan">
-              <img src="${review.profpic || '/src/public/beranda/man.png'}" alt="Foto User" id="userReview" />
+              <img src="${
+                review.profpic || "/src/public/beranda/man.png"
+              }" alt="Foto User" id="userReview" />
               <div class="komentar-user">
                 <h3>${review.patient || "Pengguna Tanpa Nama"}</h3>
                 <p>${review.review}</p>
@@ -130,7 +132,7 @@ async function renderArticleDetails() {
       }
     }
   } catch (error) {
-    console.error("Error rendering article details:", error);
+    console.error("Error rendering psikolog details:", error);
     const btnDaftar = document.getElementById("btnDaftar");
     if (btnDaftar) btnDaftar.style.display = "none";
   }
@@ -138,7 +140,7 @@ async function renderArticleDetails() {
 
 // Satu event listener saja untuk semua interaksi
 document.addEventListener("DOMContentLoaded", function () {
-  renderArticleDetails();
+  renderPsikologDetails();
 
   const btnDaftar = document.getElementById("btnDaftar");
   const urlParams = new URLSearchParams(window.location.search);

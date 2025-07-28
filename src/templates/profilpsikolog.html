@@ -128,13 +128,13 @@
 </html>
 <script>
   function redirectToCounseling() {
-    // Get the articleId from the URL
+    // Get the psikologId from the URL
     const urlParams = new URLSearchParams(window.location.search);
-    const articleId = urlParams.get('id');
+    const psikologId = urlParams.get('id');
     const authToken = sessionStorage.getItem('authToken');
 
     if (authToken) {
-      window.location.href = `https://mentalwell-10-frontend.vercel.app/jadwalpsikolog?id=${articleId}`;
+      window.location.href = `https://mentalwell-10-frontend.vercel.app/jadwalpsikolog?id=${psikologId}`;
     } else {
       openLoginPopup();
     }

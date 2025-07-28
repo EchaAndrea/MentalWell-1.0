@@ -274,9 +274,7 @@ async function hapusYangDipilih() {
           headers: { Authorization: `Bearer ${TOKEN}` },
         }
       );
-      // Optional: bisa cek hasil res di sini
     } catch (err) {
-      // Optional: tampilkan error jika gagal hapus salah satu
     }
   }
 
