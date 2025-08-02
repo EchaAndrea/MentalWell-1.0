@@ -120,11 +120,6 @@ async function updatePaymentStatus(id, status, TOKEN) {
       }
     );
 
-    // Check if response is ok first
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-
     const data = await res.json();
     console.log("API response:", data);
     console.log("Response status:", data.status);
@@ -162,12 +157,7 @@ function rejectPayment(id, TOKEN) {
       body: JSON.stringify({ payment_status: "rejected", note }),
     }
   )
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      return res.json();
-    })
+    .then((res) => res.json())
     .then((data) => {
       console.log("API response:", data);
       console.log("Response status:", data.status);
@@ -203,11 +193,6 @@ async function refundPayment(id, TOKEN) {
         body: JSON.stringify({ payment_status: "refunded" }),
       }
     );
-
-    // Check if response is ok first
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
 
     const data = await res.json();
     console.log("API response:", data);
