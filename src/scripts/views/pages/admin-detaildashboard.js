@@ -122,24 +122,16 @@ async function updatePaymentStatus(id, status, TOKEN) {
 
     const data = await res.json();
     console.log("API response:", data);
-    console.log("Response status:", data.status);
-    console.log("Full response:", JSON.stringify(data, null, 2));
 
     // Check multiple possible success conditions
     if (data.status === "success" || data.success === true) {
       alert("Pembayaran berhasil diverifikasi!");
       location.reload();
     } else {
-      console.error("Unexpected response format:", data);
-      alert(
-        `Gagal verifikasi pembayaran: ${
-          data.message || "Response tidak sesuai format"
-        }`
-      );
+      alert("Gagal verifikasi pembayaran");
     }
   } catch (err) {
-    console.error("Error updating payment status:", err);
-    alert(`Gagal verifikasi pembayaran: ${err.message}`);
+    alert("Gagal verifikasi pembayaran");
   }
 }
 
@@ -160,22 +152,15 @@ function rejectPayment(id, TOKEN) {
     .then((res) => res.json())
     .then((data) => {
       console.log("API response:", data);
-      console.log("Response status:", data.status);
       if (data.status === "success" || data.success === true) {
         alert("Pembayaran berhasil ditolak!");
         location.reload();
       } else {
-        console.error("Unexpected response format:", data);
-        alert(
-          `Gagal menolak pembayaran: ${
-            data.message || "Response tidak sesuai format"
-          }`
-        );
+        alert("Gagal menolak pembayaran");
       }
     })
     .catch((err) => {
-      console.error("Error rejecting payment:", err);
-      alert(`Gagal menolak pembayaran: ${err.message}`);
+      alert("Gagal menolak pembayaran");
     });
 }
 
@@ -196,23 +181,15 @@ async function refundPayment(id, TOKEN) {
 
     const data = await res.json();
     console.log("API response:", data);
-    console.log("Response status:", data.status);
-    console.log("Full response:", JSON.stringify(data, null, 2));
 
     // Check multiple possible success conditions
     if (data.status === "success" || data.success === true) {
       alert("Pembayaran berhasil direfund!");
       location.reload();
     } else {
-      console.error("Unexpected response format:", data);
-      alert(
-        `Gagal refund pembayaran: ${
-          data.message || "Response tidak sesuai format"
-        }`
-      );
+      alert("Gagal refund pembayaran");
     }
   } catch (err) {
-    console.error("Error refunding payment:", err);
-    alert(`Gagal refund pembayaran: ${err.message}`);
+    alert("Gagal refund pembayaran");
   }
 }
