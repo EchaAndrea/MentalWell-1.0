@@ -131,7 +131,14 @@ async function updatePaymentStatus(id, status, TOKEN) {
     if (
       data.status === "success" ||
       data.success === true ||
-      data.success === "true"
+      data.success === "true" ||
+      data.message === "success" ||
+      data.statusCode === 200 ||
+      res.status === 200 ||
+      res.ok === true ||
+      data.error === false ||
+      data.ok === true ||
+      data.result === "success"
     ) {
       alert("Pembayaran berhasil diverifikasi!");
       location.reload();
