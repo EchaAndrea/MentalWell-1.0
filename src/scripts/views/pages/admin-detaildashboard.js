@@ -119,16 +119,32 @@ async function updatePaymentStatus(id, status, TOKEN) {
         body: JSON.stringify({ payment_status: status }),
       }
     );
+
+    // Check if response is ok first
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
     const data = await res.json();
     console.log("API response:", data);
-    if (data.status === "success") {
-      alert("Pembayaran diverifikasi!");
+    console.log("Response status:", data.status);
+    console.log("Full response:", JSON.stringify(data, null, 2));
+
+    // Check multiple possible success conditions
+    if (data.status === "success" || data.success === true) {
+      alert("Pembayaran berhasil diverifikasi!");
       location.reload();
     } else {
-      alert("Gagal verifikasi pembayaran");
+      console.error("Unexpected response format:", data);
+      alert(
+        `Gagal verifikasi pembayaran: ${
+          data.message || "Response tidak sesuai format"
+        }`
+      );
     }
   } catch (err) {
-    alert("Gagal verifikasi pembayaran");
+    console.error("Error updating payment status:", err);
+    alert(`Gagal verifikasi pembayaran: ${err.message}`);
   }
 }
 
@@ -146,17 +162,31 @@ function rejectPayment(id, TOKEN) {
       body: JSON.stringify({ payment_status: "rejected", note }),
     }
   )
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      return res.json();
+    })
     .then((data) => {
       console.log("API response:", data);
-      if (data.status === "success") {
-        alert("Pembayaran ditolak!");
+      console.log("Response status:", data.status);
+      if (data.status === "success" || data.success === true) {
+        alert("Pembayaran berhasil ditolak!");
         location.reload();
       } else {
-        alert("Gagal menolak pembayaran");
+        console.error("Unexpected response format:", data);
+        alert(
+          `Gagal menolak pembayaran: ${
+            data.message || "Response tidak sesuai format"
+          }`
+        );
       }
     })
-    .catch(() => alert("Gagal menolak pembayaran"));
+    .catch((err) => {
+      console.error("Error rejecting payment:", err);
+      alert(`Gagal menolak pembayaran: ${err.message}`);
+    });
 }
 
 async function refundPayment(id, TOKEN) {
@@ -173,41 +203,31 @@ async function refundPayment(id, TOKEN) {
         body: JSON.stringify({ payment_status: "refunded" }),
       }
     );
+
+    // Check if response is ok first
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
     const data = await res.json();
     console.log("API response:", data);
-    if (data.status === "success") {
+    console.log("Response status:", data.status);
+    console.log("Full response:", JSON.stringify(data, null, 2));
+
+    // Check multiple possible success conditions
+    if (data.status === "success" || data.success === true) {
       alert("Pembayaran berhasil direfund!");
       location.reload();
     } else {
-      alert("Gagal refund pembayaran");
+      console.error("Unexpected response format:", data);
+      alert(
+        `Gagal refund pembayaran: ${
+          data.message || "Response tidak sesuai format"
+        }`
+      );
     }
   } catch (err) {
-    alert("Gagal refund pembayaran");
-  }
-}
-
-async function updateCounselingStatus(id, status, token) {
-  try {
-    const res = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/psychologist/counseling/${id}/status`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ status }),
-      }
-    );
-    const data = await res.json();
-    console.log("API response:", data);
-    if (data.status === "success") {
-      alert("Status konseling berhasil diubah!");
-      location.reload();
-    } else {
-      alert(data.message || "Gagal mengubah status konseling");
-    }
-  } catch (err) {
-    alert("Gagal mengubah status konseling");
+    console.error("Error refunding payment:", err);
+    alert(`Gagal refund pembayaran: ${err.message}`);
   }
 }
