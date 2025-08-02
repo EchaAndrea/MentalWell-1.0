@@ -122,15 +122,26 @@ async function updatePaymentStatus(id, status, TOKEN) {
 
     const data = await res.json();
     console.log("API response:", data);
+    console.log("data.status:", data.status);
+    console.log("data.success:", data.success);
+    console.log("typeof data.status:", typeof data.status);
+    console.log("typeof data.success:", typeof data.success);
 
     // Check multiple possible success conditions
-    if (data.status === "success" || data.success === true) {
+    if (
+      data.status === "success" ||
+      data.success === true ||
+      data.success === "true"
+    ) {
       alert("Pembayaran berhasil diverifikasi!");
       location.reload();
     } else {
+      console.log("Masuk ke else - tidak sukses");
+      console.log("Full data object:", JSON.stringify(data, null, 2));
       alert("Gagal verifikasi pembayaran");
     }
   } catch (err) {
+    console.log("Masuk ke catch:", err);
     alert("Gagal verifikasi pembayaran");
   }
 }
