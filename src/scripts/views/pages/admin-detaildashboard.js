@@ -166,7 +166,6 @@ function rejectPayment(id, TOKEN) {
         data.status === "fail" &&
         data.message === "Terjadi kesalahan sever"
       ) {
-        // Server bug: mengembalikan error tapi sebenarnya berhasil
         alert("Pembayaran berhasil ditolak!");
         location.reload();
       } else {
@@ -197,7 +196,6 @@ async function refundPayment(id, TOKEN) {
     const data = await res.json();
     console.log("API response:", data);
 
-    // Check success based on API documentation format
     if (data.status === "success") {
       alert("Pembayaran berhasil direfund!");
       location.reload();
