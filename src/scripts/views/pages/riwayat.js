@@ -41,27 +41,7 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
           .replace("-", " - ")
           .replace(":", ".");
 
-        // Status mapping
-        let formattedStatus = "";
-        if (riwayat.payment_status === "refunded") {
-          formattedStatus = "Pengembalian Selesai";
-        } else if (
-          riwayat.payment_status === "approved" &&
-          riwayat.status !== "finished"
-        ) {
-          formattedStatus = "Terbayar";
-        } else if (
-          riwayat.payment_status === "rejected" ||
-          riwayat.status === "failed"
-        ) {
-          formattedStatus = "Gagal";
-        } else if (riwayat.status === "finished") {
-          formattedStatus = "Selesai";
-        } else if (riwayat.status === "waiting") {
-          formattedStatus = "Menunggu";
-        } else {
-          formattedStatus = riwayat.status;
-        }
+        const formattedStatus = riwayat.payment_status;
 
         // Button logic
         let buttonHTML = "";
