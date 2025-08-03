@@ -379,68 +379,108 @@ class NavBarLogin extends HTMLElement {
               </div>
           </nav>
         `;
-    this.connectedCallback();
   }
 
   connectedCallback() {
+    this.loadUserProfile();
+    this.setupEventListeners();
+  }
+
+  async loadUserProfile() {
     const photoUser = this.shadowRoot.getElementById("photoUser");
     const nicknameTag = this.shadowRoot.getElementById("nicknameTag");
-
     const token = sessionStorage.getItem("authToken");
 
-    fetch("https://mentalwell10-api-production.up.railway.app/profile", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Profile API response:", data);
-        const currentUser = data.data;
-        if (!currentUser) {
-          nicknameTag.innerText = "User";
-          photoUser.src = "/src/public/beranda/man.png";
-          return;
-        }
-        nicknameTag.innerText = currentUser.nickname || "User";
-        photoUser.src = currentUser.profile_image
-          ? currentUser.profile_image + "?t=" + Date.now()
-          : "/src/public/beranda/man.png";
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        // Tambahkan alert untuk memastikan error terlihat
-        alert("Gagal mengambil data profil. Silakan cek koneksi atau token.");
-      });
+    if (!token) {
+      console.warn("No auth token found");
+      nicknameTag.innerText = "User";
+      photoUser.src = "/src/public/beranda/man.png";
+      return;
+    }
 
+    try {
+      const response = await fetch(
+        "https://mentalwell10-api-production.up.railway.app/profile",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("Profile API response:", data);
+
+      const currentUser = data.data;
+      if (!currentUser) {
+        nicknameTag.innerText = "User";
+        photoUser.src = "/src/public/beranda/man.png";
+        return;
+      }
+
+      nicknameTag.innerText = currentUser.nickname || "User";
+      photoUser.src = currentUser.profile_image
+        ? currentUser.profile_image + "?t=" + Date.now()
+        : "/src/public/beranda/man.png";
+    } catch (error) {
+      console.error("Error fetching profile data:", error);
+      // Set default values instead of showing alert
+      nicknameTag.innerText = "User";
+      photoUser.src = "/src/public/beranda/man.png";
+
+      // Optional: Show a less intrusive notification
+      if (error.message.includes("401") || error.message.includes("403")) {
+        console.warn("Authentication failed, redirecting to login...");
+        // Optionally redirect to login page
+      }
+    }
+  }
+
+  setupEventListeners() {
     // Dropdown event
     const userDropdown = this.shadowRoot.getElementById("userDropdown");
     const dropdownContent = this.shadowRoot.querySelector(".dropdown-content");
-    userDropdown.addEventListener("mouseover", () => {
-      dropdownContent.style.display = "block";
-    });
-    userDropdown.addEventListener("mouseout", () => {
-      dropdownContent.style.display = "none";
-    });
+
+    if (userDropdown && dropdownContent) {
+      userDropdown.addEventListener("mouseover", () => {
+        dropdownContent.style.display = "block";
+      });
+      userDropdown.addEventListener("mouseout", () => {
+        dropdownContent.style.display = "none";
+      });
+    }
 
     // Link events
     const profilLink = this.shadowRoot.getElementById("profilLink");
     const riwayat = this.shadowRoot.getElementById("riwayat");
     const keluar = this.shadowRoot.querySelector(".keluar");
 
-    profilLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      window.location.href =
-        "https://mentalwell-10-frontend.vercel.app/editprofilpasien";
-    });
-    riwayat.addEventListener("click", (e) => {
-      e.preventDefault();
-      window.location.href = "/riwayat";
-    });
-    keluar.addEventListener("click", (e) => {
-      e.preventDefault();
-      this.logout();
-    });
+    if (profilLink) {
+      profilLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.location.href =
+          "https://mentalwell-10-frontend.vercel.app/editprofilpasien";
+      });
+    }
+
+    if (riwayat) {
+      riwayat.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.location.href = "/riwayat";
+      });
+    }
+
+    if (keluar) {
+      keluar.addEventListener("click", (e) => {
+        e.preventDefault();
+        this.logout();
+      });
+    }
   }
 
   logout() {
