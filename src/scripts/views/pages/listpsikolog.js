@@ -38,7 +38,9 @@ function renderPsikologList(data) {
       ? articleData.topics.map((topic) => topic.name).join(", ")
       : "-";
     let formattedketersediaan =
-      articleData.availability === "available" ? "Tersedia" : "Tidak Tersedia";
+      articleData.availability === "available"
+        ? "Chat Sekarang"
+        : "Jadwalkan Sesi";
     articleElement.innerHTML = `
       <img class="image-psikolog" src="${
         articleData.profile_image
@@ -52,7 +54,7 @@ function renderPsikologList(data) {
           <div class="${
             articleData.availability === "available"
               ? "jadwal-hijau"
-              : "jadwal-merah"
+              : "jadwal-abu"
           }">
             <p>${formattedketersediaan}</p>
           </div>
