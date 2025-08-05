@@ -175,41 +175,34 @@ function showResult() {
     result +=
       "Berdasarkan jawaban Anda, ditemukan beberapa indikasi yang memerlukan perhatian:<br><br>";
     indications.forEach((indication) => {
-      result += `<span class="text-warning">•</span> ${indication}<br>`;
+      result += `• ${indication}<br>`;
     });
-    result += "<br><div class='alert alert-warning mt-2'>";
-    result += "<strong>⚠️ Rekomendasi Penting:</strong><br>";
+    result += "<br><strong>Rekomendasi:</strong><br>";
     result +=
       "Hasil ini menunjukkan adanya gejala yang perlu ditangani lebih lanjut. ";
     result +=
       "Disarankan untuk segera berkonsultasi dengan psikolog atau psikiater untuk evaluasi komprehensif dan penanganan yang tepat.";
-    result += "</div>";
   } else {
     if (ya1to20 >= 1 && ya1to20 < 5) {
       result = "<strong>Hasil Tes Psikologi (SRQ-29):</strong><br><br>";
       result +=
-        "<span class='text-info'>Kondisi psikologis dalam batas normal dengan beberapa gejala ringan.</span><br><br>";
+        "Kondisi psikologis dalam batas normal dengan beberapa gejala ringan.<br><br>";
       result += `<strong>Detail:</strong> Terdapat ${ya1to20} gejala dari 20 indikator neurosis (masih di bawah cut-off point).<br><br>`;
-      result += "<div class='alert alert-info mt-2'>";
-      result += "<strong>💡 Rekomendasi:</strong><br>";
+      result += "<strong>Rekomendasi:</strong><br>";
       result += "• Tetap jaga kesehatan mental dengan pola hidup sehat<br>";
       result += "• Lakukan olahraga teratur dan manajemen stres<br>";
       result += "• Pertahankan hubungan sosial yang positif<br>";
       result += "• Jika gejala meningkat, jangan ragu untuk konsultasi";
-      result += "</div>";
     } else {
       result = "<strong>Hasil Tes Psikologi (SRQ-29):</strong><br><br>";
-      result +=
-        "<span class='text-success'>🎉 Selamat! Kondisi kesehatan mental Anda sangat baik.</span><br><br>";
+      result += "Selamat! Kondisi kesehatan mental Anda sangat baik.<br><br>";
       result +=
         "<strong>Detail:</strong> Tidak ada indikasi masalah psikologis yang signifikan.<br><br>";
-      result += "<div class='alert alert-success mt-2'>";
-      result += "<strong>✅ Rekomendasi:</strong><br>";
+      result += "<strong>Rekomendasi:</strong><br>";
       result += "• Pertahankan kondisi mental yang baik ini<br>";
       result += "• Terus jaga keseimbangan hidup dan rutinitas sehat<br>";
       result += "• Berbagi tips kesehatan mental dengan orang terdekat<br>";
       result += "• Lakukan tes berkala untuk monitoring kondisi mental";
-      result += "</div>";
     }
   }
 
