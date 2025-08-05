@@ -170,44 +170,58 @@ function showResult() {
   }
 
   // Buat hasil berdasarkan temuan
+  let resultData = {
+    type: "",
+    indications: indications,
+    score: ya1to20,
+  };
+
   if (hasProblems) {
-    result = "<strong>Hasil Tes Psikologi (SRQ-29):</strong><br><br>";
-    result +=
-      "Berdasarkan jawaban Anda, ditemukan beberapa indikasi yang memerlukan perhatian:<br><br>";
-    indications.forEach((indication) => {
-      result += `• ${indication}<br>`;
-    });
-    result += "<br><strong>Rekomendasi:</strong><br>";
-    result +=
-      "Hasil ini menunjukkan adanya gejala yang perlu ditangani lebih lanjut. ";
-    result +=
-      "Disarankan untuk segera berkonsultasi dengan psikolog atau psikiater untuk evaluasi komprehensif dan penanganan yang tepat.";
+    resultData.type = "problems";
   } else {
     if (ya1to20 >= 1 && ya1to20 < 5) {
-      result = "<strong>Hasil Tes Psikologi (SRQ-29):</strong><br><br>";
-      result +=
-        "Kondisi psikologis dalam batas normal dengan beberapa gejala ringan.<br><br>";
-      result += `<strong>Detail:</strong> Terdapat ${ya1to20} gejala dari 20 indikator neurosis (masih di bawah cut-off point).<br><br>`;
-      result += "<strong>Rekomendasi:</strong><br>";
-      result += "• Tetap jaga kesehatan mental dengan pola hidup sehat<br>";
-      result += "• Lakukan olahraga teratur dan manajemen stres<br>";
-      result += "• Pertahankan hubungan sosial yang positif<br>";
-      result += "• Jika gejala meningkat, jangan ragu untuk konsultasi";
+      resultData.type = "mild";
     } else {
-      result = "<strong>Hasil Tes Psikologi (SRQ-29):</strong><br><br>";
-      result += "Selamat! Kondisi kesehatan mental Anda sangat baik.<br><br>";
-      result +=
-        "<strong>Detail:</strong> Tidak ada indikasi masalah psikologis yang signifikan.<br><br>";
-      result += "<strong>Rekomendasi:</strong><br>";
-      result += "• Pertahankan kondisi mental yang baik ini<br>";
-      result += "• Terus jaga keseimbangan hidup dan rutinitas sehat<br>";
-      result += "• Berbagi tips kesehatan mental dengan orang terdekat<br>";
-      result += "• Lakukan tes berkala untuk monitoring kondisi mental";
+      resultData.type = "good";
     }
   }
 
-  document.getElementById("result-text").innerHTML = result;
+  displayResult(resultData);
   showPage("page3");
+}
+
+// Fungsi untuk menampilkan hasil
+function displayResult(data) {
+  const resultContainer = document.getElementById("result-text");
+
+  let html = '<div class="text-start">';
+
+  if (data.type === "problems") {
+    html += '<div class="alert alert-warning" role="alert">';
+    html += '<h6 class="fw-bold mb-2">Memerlukan Perhatian</h6>';
+    html += '<ul class="mb-0">';
+    data.indications.forEach((indication) => {
+      html += `<li class="mb-1">${indication}</li>`;
+    });
+    html += "</ul>";
+    html += "</div>";
+  } else if (data.type === "mild") {
+    html += '<div class="alert alert-info" role="alert">';
+    html += '<h6 class="fw-bold mb-2">Kondisi Normal</h6>';
+    html +=
+      '<p class="mb-0">Kondisi psikologis dalam batas normal dengan beberapa gejala ringan.</p>';
+    html += `<small class="text-muted">Skor: ${data.score}/20 gejala neurosis</small>`;
+    html += "</div>";
+  } else {
+    html += '<div class="alert alert-success" role="alert">';
+    html += '<h6 class="fw-bold mb-2">Kondisi Baik</h6>';
+    html += '<p class="mb-0">Kondisi kesehatan mental Anda sangat baik.</p>';
+    html += "</div>";
+  }
+
+  html += "</div>";
+
+  resultContainer.innerHTML = html;
 }
 
 // Tampilkan halaman awal saat pertama kali load
