@@ -128,9 +128,12 @@ async function renderPsikologDetails() {
       btnDaftar.dataset.status = psikolog.availability;
       if (psikolog.availability === "available") {
         btnDaftar.style.display = "block";
+        btnDaftar.textContent = "Chat Sekarang";
+        btnDaftar.className = "btn btn-success"; // Warna hijau
       } else {
         btnDaftar.style.display = "block";
-        btnDaftar.textContent = "Jadwalkan Konseling";
+        btnDaftar.textContent = "Jadwalkan Sesi";
+        btnDaftar.className = "btn btn-secondary"; // Warna abu
       }
     }
   } catch (error) {
@@ -152,6 +155,7 @@ document.addEventListener("DOMContentLoaded", function () {
     btnDaftar.onclick = function () {
       // Cek status available dari atribut data-status
       if (btnDaftar.dataset.status === "available") {
+        // Jika tersedia, langsung buka modal pilihan konseling
         const modalEl = document.getElementById("modalPilihKonseling");
         // Tambahkan class modal-bottom
         modalEl.classList.add("modal-bottom");

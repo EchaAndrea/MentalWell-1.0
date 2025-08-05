@@ -60,11 +60,7 @@ function renderPsikologList(data) {
             <button type="button" onclick="redirectToDetailPsychologist('${
               articleData.id
             }', '${articleData.availability === "available" ? "chat" : ""}')">
-              ${
-                articleData.availability === "available"
-                  ? "Chat Sekarang"
-                  : "Lihat Selengkapnya"
-              }
+              Lihat Selengkapnya
             </button>
           </div>
         </div>
