@@ -22,14 +22,14 @@ async function populateHTMLWithData() {
     const counseling = await fetchConfirmedCounselingData();
     const valueContainer = document.querySelector(".value");
 
-    // Ambil data user dari localStorage (yang disimpan saat isi data)
+    // Ambil data user dari localStorage
     const userData = JSON.parse(localStorage.getItem("user_data") || "{}");
 
     // Debug: lihat data yang tersedia
     console.log("Counseling data:", counseling);
     console.log("UserData from localStorage:", userData);
 
-    // Gunakan data dari counseling (backend) sebagai prioritas utama
+    // Gunakan data dari counseling 
     let patient_name = counseling.patient_name || userData.name || "-";
     let patient_nickname =
       counseling.patient_nickname || userData.nickname || userData.name || "-";
