@@ -155,9 +155,7 @@ function showResult() {
 
   if (ya22to24 >= 1) {
     hasProblems = true;
-    indications.push(
-      "Terdeteksi gejala psikotik - Memerlukan penanganan segera oleh profesional"
-    );
+    indications.push("Terdeteksi gejala psikotik");
   }
 
   if (ya25to29 >= 1) {
@@ -190,38 +188,36 @@ function showResult() {
   showPage("page3");
 }
 
-// Fungsi untuk menampilkan hasil
-function displayResult(data) {
-  const resultContainer = document.getElementById("result-text");
+// Tampilkan hasil tes
+function displayResult(resultData) {
+  const resultElement = document.getElementById("result-text");
 
-  let html = '<div class="text-start">';
+  let resultText = "";
 
-  if (data.type === "problems") {
-    html += '<div class="alert alert-warning" role="alert">';
-    html += '<h6 class="fw-bold mb-2">Memerlukan Perhatian</h6>';
-    html += '<ul class="mb-0">';
-    data.indications.forEach((indication) => {
-      html += `<li class="mb-1">${indication}</li>`;
-    });
-    html += "</ul>";
-    html += "</div>";
-  } else if (data.type === "mild") {
-    html += '<div class="alert alert-info" role="alert">';
-    html += '<h6 class="fw-bold mb-2">Kondisi Normal</h6>';
-    html +=
-      '<p class="mb-0">Kondisi psikologis dalam batas normal dengan beberapa gejala ringan.</p>';
-    html += `<small class="text-muted">Skor: ${data.score}/20 gejala neurosis</small>`;
-    html += "</div>";
-  } else {
-    html += '<div class="alert alert-success" role="alert">';
-    html += '<h6 class="fw-bold mb-2">Kondisi Baik</h6>';
-    html += '<p class="mb-0">Kondisi kesehatan mental Anda sangat baik.</p>';
-    html += "</div>";
+  if (resultData.type === "good") {
+    resultText = `Selamat ${window.userData.nama}! Berdasarkan hasil tes SRQ-29, kondisi kesehatan mental Anda saat ini tergolong baik. Skor Anda ${resultData.score}/20 menunjukkan tidak ada indikasi masalah psikologis yang signifikan.`;
+  } else if (resultData.type === "mild") {
+    resultText = `Halo ${window.userData.nama}, hasil tes menunjukkan ada beberapa gejala ringan yang perlu diperhatikan. Skor Anda ${resultData.score}/20 masih dalam batas normal namun sebaiknya tetap menjaga kesehatan mental dengan baik.`;
+  } else if (resultData.type === "problems") {
+    resultText = `Halo ${window.userData.nama}, hasil tes menunjukkan adanya beberapa indikasi yang perlu mendapat perhatian lebih:`;
+
+    if (resultData.indications.length > 0) {
+      resultText += "\n\n";
+      resultData.indications.forEach((indication, index) => {
+        resultText += `${index + 1}. ${indication}\n`;
+      });
+    }
+
+    resultText +=
+      "\n\nKami sangat menyarankan Anda untuk berkonsultasi dengan profesional kesehatan mental untuk evaluasi dan bantuan lebih lanjut.";
   }
 
-  html += "</div>";
+  // Tambahkan disclaimer medis
+  resultText +=
+    "\n\n⚠️ Penting untuk diingat: Ini merupakan penilaian mandiri dan bukan merupakan diagnosis medis maupun pengganti pemeriksaan profesional, sehingga diperlukan konsultasi dengan ahli kesehatan mental untuk evaluasi yang lebih komprehensif.";
 
-  resultContainer.innerHTML = html;
+  resultElement.textContent = resultText;
+  resultElement.style.whiteSpace = "pre-line"; // Untuk menampilkan line breaks
 }
 
 // Tampilkan halaman awal saat pertama kali load
