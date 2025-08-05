@@ -314,12 +314,12 @@ main .listpsikolog {
   .content-psikolog
   .data-psikolog
   .list-button-psikolog
-  .jadwal-merah {
+  .jadwal-abu {
   display: flex;
   justify-content: center;
   border: 1px solid black;
-  color: red;
-  background-color: #fcc8d1;
+  color: #6b7280;
+  background-color: #f3f4f6;
   border-radius: 10px;
 }
 
