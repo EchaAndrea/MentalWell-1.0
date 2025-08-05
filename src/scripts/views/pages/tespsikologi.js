@@ -199,25 +199,25 @@ function displayResult(resultData) {
   } else if (resultData.type === "mild") {
     resultText = `Halo ${window.userData.nama}, hasil tes menunjukkan ada beberapa gejala ringan yang perlu diperhatikan. Skor Anda ${resultData.score}/20 masih dalam batas normal namun sebaiknya tetap menjaga kesehatan mental dengan baik.`;
   } else if (resultData.type === "problems") {
-    resultText = `Halo ${window.userData.nama}, hasil tes menunjukkan adanya beberapa indikasi yang perlu mendapat perhatian lebih:`;
+    resultText = `Halo ${window.userData.nama}, hasil tes menunjukkan adanya beberapa indikasi yang perlu mendapat perhatian lebih:\n\n`;
 
     if (resultData.indications.length > 0) {
-      resultText += "\n\n";
       resultData.indications.forEach((indication, index) => {
-        resultText += `${index + 1}. ${indication}\n`;
+        resultText += `• ${indication}\n`;
       });
     }
 
     resultText +=
-      "\n\nKami sangat menyarankan Anda untuk berkonsultasi dengan profesional kesehatan mental untuk evaluasi dan bantuan lebih lanjut.";
+      "\nKami sangat menyarankan Anda untuk berkonsultasi dengan profesional kesehatan mental untuk evaluasi dan bantuan lebih lanjut.";
   }
 
-  // Tambahkan disclaimer medis
+  // Tambahkan disclaimer medis yang lebih jelas
   resultText +=
-    "\n\n⚠️ Penting untuk diingat: Ini merupakan penilaian mandiri dan bukan merupakan diagnosis medis maupun pengganti pemeriksaan profesional, sehingga diperlukan konsultasi dengan ahli kesehatan mental untuk evaluasi yang lebih komprehensif.";
+    "\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚠️ PENTING UNTUK DIINGAT:\nIni merupakan penilaian mandiri dan bukan merupakan diagnosis medis maupun pengganti pemeriksaan profesional, sehingga diperlukan konsultasi dengan ahli kesehatan mental untuk evaluasi yang lebih komprehensif.";
 
-  resultElement.textContent = resultText;
-  resultElement.style.whiteSpace = "pre-line"; // Untuk menampilkan line breaks
+  resultElement.innerHTML = resultText.replace(/\n/g, "<br>");
+  resultElement.style.textAlign = "left";
+  resultElement.style.lineHeight = "1.6";
 }
 
 // Tampilkan halaman awal saat pertama kali load
