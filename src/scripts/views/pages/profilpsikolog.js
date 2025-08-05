@@ -40,7 +40,9 @@ async function renderPsikologDetails() {
     // Render harga
     const hargaElem = document.getElementById("harga-psikolog");
     if (hargaElem) {
-      hargaElem.innerHTML = `Rp. ${psikolog.price?.toLocaleString("id-ID")}`;
+      hargaElem.innerHTML = `Rp. ${psikolog.price?.toLocaleString(
+        "id-ID"
+      )} / 60 menit`;
     }
 
     // Render bio
