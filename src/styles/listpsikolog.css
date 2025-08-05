@@ -135,7 +135,7 @@ main .keahlian-psikolog {
   display: flex;
   flex-direction: column;
   width: 240px;
-  height: 650px;
+  height: 500px;
   margin-top: 1rem;
   margin-left: 3em;
   /* border: 1px solid black; */

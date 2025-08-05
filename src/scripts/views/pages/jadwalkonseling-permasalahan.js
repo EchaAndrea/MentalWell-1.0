@@ -54,20 +54,11 @@ function sendCounselingData() {
     ?.value.trim();
   const hope = document.getElementById("hopeAfterTextarea")?.value.trim();
 
-  if (!description || !hope) {
-    Swal.fire({
-      icon: "warning",
-      title: "Data Tidak Lengkap",
-      text: "Mohon isi deskripsi masalah dan harapan Anda.",
-    });
-    return;
-  }
-
   localStorage.setItem(
     "counseling_problem",
     JSON.stringify({
-      problem: description,
-      hope: hope,
+      problem: description || "",
+      hope: hope || "",
     })
   );
 
