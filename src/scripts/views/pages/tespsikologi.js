@@ -188,37 +188,5 @@ function showResult() {
   showPage("page3");
 }
 
-// Tampilkan hasil tes
-function displayResult(resultData) {
-  const resultElement = document.getElementById("result-text");
-
-  let resultText = "";
-
-  if (resultData.type === "good") {
-    resultText = `Selamat ${window.userData.nama}! Berdasarkan hasil tes SRQ-29, kondisi kesehatan mental Anda saat ini tergolong baik. Skor Anda ${resultData.score}/20 menunjukkan tidak ada indikasi masalah psikologis yang signifikan.`;
-  } else if (resultData.type === "mild") {
-    resultText = `Halo ${window.userData.nama}, hasil tes menunjukkan ada beberapa gejala ringan yang perlu diperhatikan. Skor Anda ${resultData.score}/20 masih dalam batas normal namun sebaiknya tetap menjaga kesehatan mental dengan baik.`;
-  } else if (resultData.type === "problems") {
-    resultText = `Halo ${window.userData.nama}, hasil tes menunjukkan adanya beberapa indikasi yang perlu mendapat perhatian lebih:\n\n`;
-
-    if (resultData.indications.length > 0) {
-      resultData.indications.forEach((indication, index) => {
-        resultText += `• ${indication}\n`;
-      });
-    }
-
-    resultText +=
-      "\nKami sangat menyarankan Anda untuk berkonsultasi dengan profesional kesehatan mental untuk evaluasi dan bantuan lebih lanjut.";
-  }
-
-  // Tambahkan disclaimer medis yang lebih jelas
-  resultText +=
-    "\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚠️ PENTING UNTUK DIINGAT:\nIni merupakan penilaian mandiri dan bukan merupakan diagnosis medis maupun pengganti pemeriksaan profesional, sehingga diperlukan konsultasi dengan ahli kesehatan mental untuk evaluasi yang lebih komprehensif.";
-
-  resultElement.innerHTML = resultText.replace(/\n/g, "<br>");
-  resultElement.style.textAlign = "left";
-  resultElement.style.lineHeight = "1.6";
-}
-
 // Tampilkan halaman awal saat pertama kali load
 document.addEventListener("DOMContentLoaded", () => showPage("page1"));
