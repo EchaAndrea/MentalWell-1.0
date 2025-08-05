@@ -118,8 +118,8 @@ async function renderPsikologDetails() {
     if (availabilityTimes) {
       availabilityTimes.innerHTML =
         psikolog.availability === "available"
-          ? "<span class='jadwal-hijau'>Tersedia</span>"
-          : "<span class='jadwal-merah'>Tidak Tersedia</span>";
+          ? "<span class='jadwal-hijau'>Chat Sekarang</span>"
+          : "<span class='jadwal-abu'>Jadwalkan Sesi</span>";
     }
 
     // --- BUTTON DAFTAR KONSELING SESUAI STATUS ---
@@ -143,7 +143,7 @@ async function renderPsikologDetails() {
   }
 }
 
-// Satu event listener saja untuk semua interaksi
+// event listener untuk interaksi
 document.addEventListener("DOMContentLoaded", function () {
   renderPsikologDetails();
 
@@ -157,12 +157,10 @@ document.addEventListener("DOMContentLoaded", function () {
       if (btnDaftar.dataset.status === "available") {
         // Jika tersedia, langsung buka modal pilihan konseling
         const modalEl = document.getElementById("modalPilihKonseling");
-        // Tambahkan class modal-bottom
         modalEl.classList.add("modal-bottom");
         const modal = new bootstrap.Modal(modalEl);
         modal.show();
       } else {
-        // Jika tidak tersedia, langsung redirect ke jadwal psikolog
         window.location.href = `/jadwalpsikolog?id=${psikologId}`;
       }
     };
