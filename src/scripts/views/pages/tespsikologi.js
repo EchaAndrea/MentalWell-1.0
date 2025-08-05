@@ -58,7 +58,7 @@ function startTest() {
   if (!questionsGenerated) generateQuestions();
 }
 
-// Generate pertanyaan 
+// Generate pertanyaan
 function generateQuestions() {
   const form = document.getElementById("quiz-form");
   form.innerHTML = "";
@@ -114,24 +114,106 @@ function showResult() {
     return;
   }
 
-  // Hitung jawaban "Ya" berdasarkan kelompok
-  const ya1to20 = answers.slice(0, 20).filter((a) => a === "Ya").length; // No 1-20 (GME)
-  const ya21 = answers[20] === "Ya" ? 1 : 0; // No 21 (Penggunaan zat)
-  const ya22to24 = answers.slice(21, 24).filter((a) => a === "Ya").length; // No 22-24 (Psikotik)
-  const ya25to29 = answers.slice(24).filter((a) => a === "Ya").length; // No 25-29 (PTSD)
+  // Hitung jawaban "Ya" berdasarkan kelompok sesuai interpretasi SRQ-29
+  const ya1to20 = answers.slice(0, 20).filter((a) => a === "Ya").length; // No 1-20 (Gejala neurosis - cut off 5-7)
+  const ya21 = answers[20] === "Ya" ? 1 : 0; // No 21 (Penggunaan zat psikoaktif)
+  const ya22to24 = answers.slice(21, 24).filter((a) => a === "Ya").length; // No 22-24 (Gejala psikotik - 1 jawaban Ya = masalah serius)
+  const ya25to29 = answers.slice(24).filter((a) => a === "Ya").length; // No 25-29 (Gejala PTSD - 1 jawaban Ya = indikasi PTSD)
 
-  // Tentukan hasil berdasarkan aturan SRQ-29
+  // Tentukan hasil berdasarkan interpretasi SRQ-29
   let result = "";
+  let hasProblems = false;
+  let indications = [];
 
-  if (ya1to20 >= 5 || ya21 >= 1 || ya22to24 >= 1 || ya25to29 >= 1) {
-    result =
-      "Berdasarkan hasil tes, ditemukan beberapa indikator yang memerlukan perhatian lebih lanjut dari profesional kesehatan mental.";
-  } else {
-    result =
-      "Hasil tes menunjukkan kondisi yang relatif baik. Namun, tetap penting untuk menjaga kesehatan mental.";
+  // Analisis berdasarkan interpretasi SRQ-29:
+  // a. Tidak terdapat nilai cut off universal
+  // b. 5-7 jawaban YA pada no 1-20 mengindikasikan masalah psikologis
+  // c. No 21 mengindikasikan penggunaan zat psikoaktif
+  // d. 1 jawaban YA dari no 22-24 mengindikasikan masalah serius (psikotik)
+  // e. 1 jawaban YA dari no 25-29 mengindikasikan gejala PTSD
+  if (ya1to20 >= 5) {
+    hasProblems = true;
+    if (ya1to20 >= 7) {
+      indications.push(
+        "Indikasi kuat adanya masalah psikologis (gejala neurosis) - Skor: " +
+          ya1to20 +
+          "/20"
+      );
+    } else {
+      indications.push(
+        "Indikasi adanya masalah psikologis (gejala neurosis) - Skor: " +
+          ya1to20 +
+          "/20"
+      );
+    }
   }
 
-  document.getElementById("result-text").innerText = result;
+  if (ya21 >= 1) {
+    hasProblems = true;
+    indications.push("Terdeteksi penggunaan zat psikoaktif/alkohol berlebihan");
+  }
+
+  if (ya22to24 >= 1) {
+    hasProblems = true;
+    indications.push(
+      "Terdeteksi gejala psikotik - Memerlukan penanganan segera oleh profesional"
+    );
+  }
+
+  if (ya25to29 >= 1) {
+    hasProblems = true;
+    indications.push(
+      "Terdeteksi gejala PTSD (Post Traumatic Stress Disorder) - Skor: " +
+        ya25to29 +
+        "/5"
+    );
+  }
+
+  // Buat hasil berdasarkan temuan
+  if (hasProblems) {
+    result = "<strong>Hasil Tes Psikologi (SRQ-29):</strong><br><br>";
+    result +=
+      "Berdasarkan jawaban Anda, ditemukan beberapa indikasi yang memerlukan perhatian:<br><br>";
+    indications.forEach((indication) => {
+      result += `<span class="text-warning">•</span> ${indication}<br>`;
+    });
+    result += "<br><div class='alert alert-warning mt-2'>";
+    result += "<strong>⚠️ Rekomendasi Penting:</strong><br>";
+    result +=
+      "Hasil ini menunjukkan adanya gejala yang perlu ditangani lebih lanjut. ";
+    result +=
+      "Disarankan untuk segera berkonsultasi dengan psikolog atau psikiater untuk evaluasi komprehensif dan penanganan yang tepat.";
+    result += "</div>";
+  } else {
+    if (ya1to20 >= 1 && ya1to20 < 5) {
+      result = "<strong>Hasil Tes Psikologi (SRQ-29):</strong><br><br>";
+      result +=
+        "<span class='text-info'>Kondisi psikologis dalam batas normal dengan beberapa gejala ringan.</span><br><br>";
+      result += `<strong>Detail:</strong> Terdapat ${ya1to20} gejala dari 20 indikator neurosis (masih di bawah cut-off point).<br><br>`;
+      result += "<div class='alert alert-info mt-2'>";
+      result += "<strong>💡 Rekomendasi:</strong><br>";
+      result += "• Tetap jaga kesehatan mental dengan pola hidup sehat<br>";
+      result += "• Lakukan olahraga teratur dan manajemen stres<br>";
+      result += "• Pertahankan hubungan sosial yang positif<br>";
+      result += "• Jika gejala meningkat, jangan ragu untuk konsultasi";
+      result += "</div>";
+    } else {
+      result = "<strong>Hasil Tes Psikologi (SRQ-29):</strong><br><br>";
+      result +=
+        "<span class='text-success'>🎉 Selamat! Kondisi kesehatan mental Anda sangat baik.</span><br><br>";
+      result +=
+        "<strong>Detail:</strong> Tidak ada indikasi masalah psikologis yang signifikan.<br><br>";
+      result += "<div class='alert alert-success mt-2'>";
+      result += "<strong>✅ Rekomendasi:</strong><br>";
+      result += "• Pertahankan kondisi mental yang baik ini<br>";
+      result += "• Terus jaga keseimbangan hidup dan rutinitas sehat<br>";
+      result += "• Berbagi tips kesehatan mental dengan orang terdekat<br>";
+      result += "• Lakukan tes berkala untuk monitoring kondisi mental";
+      result += "</div>";
+    }
+  }
+
+  document.getElementById("result-text").innerHTML = result;
   showPage("page3");
 }
 

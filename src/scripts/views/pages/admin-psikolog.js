@@ -49,7 +49,7 @@ async function fetchPsikologData() {
           topik: item.topics?.map((t) => t.id) || [],
           topikString: (() => {
             if (!item.topics || item.topics.length === 0) return "-";
-            const maxTopics = 3;
+            const maxTopics = 2;
             const displayedTopics = item.topics.slice(0, maxTopics);
             const hasMoreTopics = item.topics.length > maxTopics;
 
@@ -58,7 +58,7 @@ async function fetchPsikologData() {
               result += ", ...";
             }
             return result;
-          })(), // Batasi tampilan topik maksimal 3 dengan ellipsis
+          })(), // Batasi tampilan topik maksimal 2 
           status: item.availability === "available",
           password: "********", // Tidak ada password dari BE
         }))
@@ -274,8 +274,7 @@ async function hapusYangDipilih() {
           headers: { Authorization: `Bearer ${TOKEN}` },
         }
       );
-    } catch (err) {
-    }
+    } catch (err) {}
   }
 
   alert("Data terpilih berhasil dihapus.");
