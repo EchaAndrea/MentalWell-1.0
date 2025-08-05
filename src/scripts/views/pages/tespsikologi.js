@@ -60,6 +60,7 @@ function startTest() {
 
 // Generate pertanyaan
 function generateQuestions() {
+  console.log("Generating questions..."); // Debug log
   const form = document.getElementById("quiz-form");
   form.innerHTML = "";
 
@@ -96,10 +97,13 @@ function generateQuestions() {
   });
 
   questionsGenerated = true;
+  console.log("Questions generated successfully!"); // Debug log
 }
 
 // Cek hasil akhir tes
 function showResult() {
+  console.log("showResult function called"); // Debug log
+
   const answers = [];
 
   for (let i = 0; i < questions.length; i++) {
@@ -108,6 +112,8 @@ function showResult() {
     );
     answers.push(selected ? selected.value : null);
   }
+
+  console.log("Answers collected:", answers); // Debug log
 
   if (answers.includes(null)) {
     Swal.fire("Perhatian!", "Mohon jawab semua pertanyaan.", "warning");
@@ -222,4 +228,15 @@ function displayResult(resultData) {
 }
 
 // Tampilkan halaman awal saat pertama kali load
-document.addEventListener("DOMContentLoaded", () => showPage("page1"));
+document.addEventListener("DOMContentLoaded", () => {
+  showPage("page1");
+
+  // Tambahkan event listener untuk tombol cek hasil
+  const cekHasilBtn = document.getElementById("cek-hasil-btn");
+  if (cekHasilBtn) {
+    cekHasilBtn.addEventListener("click", function () {
+      console.log("Button clicked!"); // Debug log
+      showResult();
+    });
+  }
+});
