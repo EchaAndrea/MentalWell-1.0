@@ -5,7 +5,7 @@ const apiUrl =
 
 loadingIndicator.style.display = "block";
 
-const token = sessionStorage.getItem("authToken"); // ubah dari localStorage ke sessionStorage
+const token = sessionStorage.getItem("authToken");
 
 fetch(apiUrl, {
   headers: token ? { Authorization: `Bearer ${token}` } : {},
@@ -27,10 +27,6 @@ fetch(apiUrl, {
   .catch((error) => {
     console.error("Error fetching data from API:", error);
     loadingIndicator.style.display = "none";
-    const errorElement = document.createElement("div");
-    errorElement.classList.add("error-message");
-    errorElement.innerText = "Terjadi kesalahan pada server.";
-    articleSection.appendChild(errorElement);
   });
 
 function renderPsikologList(data) {
@@ -38,7 +34,9 @@ function renderPsikologList(data) {
   data.forEach((articleData) => {
     const articleElement = document.createElement("div");
     articleElement.classList.add("content-psikolog");
-    let formattedExperience = articleData.experience || "-";
+    let formattedTopics = articleData.topics
+      ? articleData.topics.map((topic) => topic.name).join(", ")
+      : "-";
     let formattedketersediaan =
       articleData.availability === "available" ? "Tersedia" : "Tidak Tersedia";
     articleElement.innerHTML = `
@@ -48,7 +46,7 @@ function renderPsikologList(data) {
       <div class="data-psikolog">
         <h2>${articleData.name}</h2>
         <div class="value-psikolog">
-          <p>Pengalaman Kerja: ${formattedExperience}</p>
+          <p>Topik Keahlian: ${formattedTopics}</p>
         </div>
         <div class="list-button-psikolog">
           <div class="${
