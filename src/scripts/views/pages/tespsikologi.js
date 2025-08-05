@@ -188,5 +188,38 @@ function showResult() {
   showPage("page3");
 }
 
+// Tampilkan hasil tes
+function displayResult(resultData) {
+  const resultElement = document.getElementById("result-text");
+  const disclaimerElement = document.getElementById("medical-disclaimer");
+
+  let resultText = "";
+
+  if (resultData.type === "good") {
+    resultText = `Selamat ${window.userData.nama}! Berdasarkan hasil tes SRQ-29, kondisi kesehatan mental Anda saat ini tergolong baik. Skor Anda ${resultData.score}/20 menunjukkan tidak ada indikasi masalah psikologis yang signifikan.`;
+  } else if (resultData.type === "mild") {
+    resultText = `Halo ${window.userData.nama}, hasil tes menunjukkan ada beberapa gejala ringan yang perlu diperhatikan. Skor Anda ${resultData.score}/20 masih dalam batas normal namun sebaiknya tetap menjaga kesehatan mental dengan baik.`;
+  } else if (resultData.type === "problems") {
+    resultText = `Halo ${window.userData.nama}, hasil tes menunjukkan adanya beberapa indikasi yang perlu mendapat perhatian lebih:<br><br>`;
+
+    if (resultData.indications.length > 0) {
+      resultData.indications.forEach((indication, index) => {
+        resultText += `• ${indication}<br>`;
+      });
+    }
+
+    resultText +=
+      "<br>Kami sangat menyarankan Anda untuk berkonsultasi dengan profesional kesehatan mental untuk evaluasi dan bantuan lebih lanjut.";
+  }
+
+  // Tampilkan hasil tanpa disclaimer
+  resultElement.innerHTML = resultText;
+  resultElement.style.textAlign = "left";
+  resultElement.style.lineHeight = "1.6";
+
+  // Tampilkan disclaimer sebagai elemen terpisah
+  disclaimerElement.style.display = "block";
+}
+
 // Tampilkan halaman awal saat pertama kali load
 document.addEventListener("DOMContentLoaded", () => showPage("page1"));
