@@ -46,7 +46,7 @@ function renderPsikologList(data) {
       <div class="data-psikolog">
         <h2>${articleData.name}</h2>
         <div class="value-psikolog">
-          <p>Topik Keahlian: ${formattedTopics}</p>
+          <p>Topik: ${formattedTopics}</p>
         </div>
         <div class="list-button-psikolog">
           <div class="${
