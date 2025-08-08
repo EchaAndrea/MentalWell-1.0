@@ -61,6 +61,10 @@ document.addEventListener("DOMContentLoaded", function () {
   // Function untuk search API
   async function searchPsikolog(searchValue, topicValues = []) {
     try {
+      console.log("=== SEARCH DEBUG ===");
+      console.log("Search value:", searchValue);
+      console.log("Topic values:", topicValues);
+
       let apiUrl =
         "https://mentalwell10-api-production.up.railway.app/psychologists/list";
       let queryParams = [];
@@ -83,6 +87,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
 
+      console.log("Final API URL:", apiUrl);
+
       const headers = {
         "Content-Type": "application/json",
       };
@@ -98,10 +104,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const responseData = await response.json();
 
+      // Debug logging untuk melihat response
+      console.log("API URL:", apiUrl);
+      console.log("Search response:", responseData);
+      console.log("Response data:", responseData.data);
+
       if (response.ok && responseData.status === "success") {
         contentArticle.innerHTML = "";
 
         const results = responseData.data || [];
+        console.log("Results length:", results.length);
 
         if (results.length === 0) {
           const noDataElement = document.createElement("div");
