@@ -2,13 +2,22 @@
 async function fetchArticleById(articleId) {
   try {
     const response = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/articles/${articleId}`
+      `https://mentalwell10-api-production.up.railway.app/articles/${articleId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
     );
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
+
     const data = await response.json();
-    return data.article;
+
+    if (response.ok) {
+      return data.article;
+    } else {
+      throw new Error(data.message || "Failed to fetch article");
+    }
   } catch (error) {
     console.error("Error fetching article data:", error);
     throw error;

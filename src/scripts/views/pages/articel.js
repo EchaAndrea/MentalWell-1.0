@@ -9,37 +9,58 @@ function truncateText(text, maxLength) {
 }
 
 // Fetch articles dari API
-fetch("https://mentalwell10-api-production.up.railway.app/articles")
-  .then((response) => response.json())
-  .then((data) => {
-    loadingIndicator.style.display = "none";
+async function fetchArticles() {
+  try {
+    const response = await fetch(
+      "https://mentalwell10-api-production.up.railway.app/articles",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-    data.articles.forEach((articleData) => {
-      const articleElement = document.createElement("article");
-      const truncatedContent = truncateText(articleData.content, 160);
+    const data = await response.json();
 
-      articleElement.innerHTML = `
-        <div class="image-articel">
-          <img src="${articleData.image}" alt="articel">
-        </div>
-        <div class="isi-articel">
-          <h2>${articleData.title}</h2>
-          <div class="content"> 
-            <p>${truncatedContent}</p>
+    if (response.ok) {
+      loadingIndicator.style.display = "none";
+
+      data.articles.forEach((articleData) => {
+        const articleElement = document.createElement("article");
+        const truncatedContent = truncateText(articleData.content, 160);
+
+        articleElement.innerHTML = `
+          <div class="image-articel">
+            <img src="${articleData.image}" alt="articel">
           </div>
-          <div class="button-articel">
-            <button type="button" onclick="redirectToDetail('${articleData.id}')">Baca Selengkapnya</button>
+          <div class="isi-articel">
+            <h2>${articleData.title}</h2>
+            <div class="content"> 
+              <p>${truncatedContent}</p>
+            </div>
+            <div class="button-articel">
+              <button type="button" onclick="redirectToDetail('${articleData.id}')">Baca Selengkapnya</button>
+            </div>
           </div>
-        </div>
-      `;
+        `;
 
-      articleSection.appendChild(articleElement);
-    });
-  })
-  .catch((error) => {
+        articleSection.appendChild(articleElement);
+      });
+    } else {
+      console.error(
+        "Error fetching articles:",
+        data.message || "Failed to fetch articles"
+      );
+      loadingIndicator.style.display = "none";
+    }
+  } catch (error) {
     console.error("Error fetching articles:", error);
     loadingIndicator.style.display = "none";
-  });
+  }
+}
+
+fetchArticles();
 
 function redirectToDetail(id) {
   window.location.href = `/detailartikel?id=${id}`;
