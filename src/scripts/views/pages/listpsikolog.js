@@ -120,62 +120,6 @@ function renderPsikologList(data) {
 
 window.renderPsikologList = renderPsikologList;
 
-document.querySelectorAll(".filter-checkbox").forEach((checkbox) => {
-  checkbox.addEventListener("change", function () {
-    const allPsikolog = JSON.parse(
-      sessionStorage.getItem("all_psikolog") || "[]"
-    );
-
-    console.log("All psikolog data:", allPsikolog);
-
-    const checkedBoxes = Array.from(
-      document.querySelectorAll(".filter-checkbox:checked")
-    );
-
-    console.log(
-      "Checked boxes:",
-      checkedBoxes.map((cb) => cb.value)
-    );
-
-    // Jika tidak ada yang diceklis, tampilkan semua psikolog
-    if (checkedBoxes.length === 0) {
-      console.log("No filters selected, showing all psychologists");
-      renderPsikologList(allPsikolog);
-      return;
-    }
-
-    // Ambil nilai dari checkbox yang diceklis
-    const selectedTopicIds = checkedBoxes.map((cb) => cb.value);
-
-    // Filter psikolog berdasarkan topik
-    const filteredPsikolog = allPsikolog.filter((psikolog) => {
-      if (
-        !psikolog.topics ||
-        !Array.isArray(psikolog.topics) ||
-        psikolog.topics.length === 0
-      ) {
-        return false;
-      }
-
-      // Cek topik psikolog yang sesuai
-      const hasMatchingTopic = psikolog.topics.some((topic) =>
-        selectedTopicIds.includes(String(topic.id))
-      );
-
-      console.log(
-        `Psikolog ${psikolog.name} topics:`,
-        psikolog.topics,
-        "matches:",
-        hasMatchingTopic
-      ); // Debug log
-      return hasMatchingTopic;
-    });
-
-    console.log("Filtered psikolog:", filteredPsikolog); // Debug log
-    renderPsikologList(filteredPsikolog);
-  });
-});
-
 async function redirectToDetailPsychologist(id, mode = "") {
   try {
     const token = sessionStorage.getItem("authToken");

@@ -1,48 +1,67 @@
 document.addEventListener("DOMContentLoaded", function () {
   let searchForm = document.getElementById("searchForm");
   let searchInput = document.getElementById("search-psikolog");
-  let contentArticle = document.getElementById("container-psikolog");
+  let checkboxes = document.querySelectorAll(".filter-checkbox");
 
-  // Function untuk search by name
-  searchForm.addEventListener("submit", function (event) {
-    event.preventDefault();
-    let searchValue = searchInput.value.trim();
-
-    if (searchValue === "") {
-      // Jika search kosong, ambil data dari sessionStorage dan tampilkan semua
-      const allPsikolog = JSON.parse(
-        sessionStorage.getItem("all_psikolog") || "[]"
-      );
-      if (window.renderPsikologList) {
-        window.renderPsikologList(allPsikolog);
-      }
-      return;
-    }
-
-    // Filter berdasarkan nama dari data yang sudah ada di sessionStorage
+  // Function untuk filter dan search gabungan
+  function filterAndSearch() {
     const allPsikolog = JSON.parse(
       sessionStorage.getItem("all_psikolog") || "[]"
     );
-    const filteredByName = allPsikolog.filter(
-      (psikolog) =>
-        psikolog.name &&
-        psikolog.name.toLowerCase().includes(searchValue.toLowerCase())
-    );
+    let filteredData = [...allPsikolog];
 
-    if (window.renderPsikologList) {
-      window.renderPsikologList(filteredByName);
+    // 1. Filter berdasarkan checkbox topik terlebih dahulu
+    const checkedBoxes = Array.from(checkboxes).filter((cb) => cb.checked);
+    if (checkedBoxes.length > 0) {
+      const selectedTopicIds = checkedBoxes.map((cb) => cb.value);
+      filteredData = filteredData.filter((psikolog) => {
+        if (
+          !psikolog.topics ||
+          !Array.isArray(psikolog.topics) ||
+          psikolog.topics.length === 0
+        ) {
+          return false;
+        }
+        return psikolog.topics.some((topic) =>
+          selectedTopicIds.includes(String(topic.id))
+        );
+      });
     }
+
+    // 2. Filter berdasarkan nama jika ada input search
+    const searchValue = searchInput.value.trim();
+    if (searchValue !== "") {
+      filteredData = filteredData.filter(
+        (psikolog) =>
+          psikolog.name &&
+          psikolog.name.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    }
+
+    // 3. Render hasil filter
+    if (window.renderPsikologList) {
+      window.renderPsikologList(filteredData);
+    }
+  }
+
+  // Event listener untuk form search
+  searchForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    filterAndSearch();
   });
 
-  // Clear search when input is cleared
+  // Event listener untuk checkbox
+  checkboxes.forEach(function (checkbox) {
+    checkbox.addEventListener("change", function () {
+      filterAndSearch();
+    });
+  });
+
+  // Event listener untuk clear search
   searchInput.addEventListener("input", function () {
+    // Jika search dikosongkan, tapi masih ada checkbox yang diceklis
     if (this.value.trim() === "") {
-      const allPsikolog = JSON.parse(
-        sessionStorage.getItem("all_psikolog") || "[]"
-      );
-      if (window.renderPsikologList) {
-        window.renderPsikologList(allPsikolog);
-      }
+      filterAndSearch();
     }
   });
 });
