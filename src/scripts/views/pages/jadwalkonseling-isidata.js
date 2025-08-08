@@ -44,28 +44,8 @@ async function fetchUserProfile() {
   }
 }
 
-async function fetchPsychologistPrice(psikologId) {
-  const token = sessionStorage.getItem("authToken");
-
-  try {
-    const psychRes = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}`,
-      {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      }
-    );
-
-    if (psychRes.ok) {
-      const psychData = await psychRes.json();
-      return parseInt(psychData.price || psychData.data?.price || 0);
-    }
-
-    return 0;
-  } catch (error) {
-    console.error("Error fetching psychologist price:", error);
-    return 0;
-  }
-}
+// Import fetchPsychologistPrice dari file pembayaran jika diperlukan
+// atau buat fungsi utility terpisah untuk menghindari duplikasi
 
 async function setupRealtimeSchedule(psikologId) {
   const now = new Date();
@@ -79,7 +59,18 @@ async function setupRealtimeSchedule(psikologId) {
 
   let harga = 0;
   try {
-    harga = await fetchPsychologistPrice(psikologId);
+    const token = sessionStorage.getItem("authToken");
+    const psychRes = await fetch(
+      `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}`,
+      {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      }
+    );
+
+    if (psychRes.ok) {
+      const psychData = await psychRes.json();
+      harga = parseInt(psychData.price || psychData.data?.price || 0);
+    }
   } catch (error) {
     console.error("Error fetching price:", error);
   }

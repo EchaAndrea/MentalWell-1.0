@@ -1,26 +1,3 @@
-async function fetchPsychologistPrice(psikologId) {
-  const token = sessionStorage.getItem("authToken");
-
-  try {
-    const psychRes = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}`,
-      {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      }
-    );
-
-    if (psychRes.ok) {
-      const psychData = await psychRes.json();
-      return parseInt(psychData.price || psychData.data?.price || 0);
-    }
-
-    return 0;
-  } catch (error) {
-    console.error("Error fetching psychologist price:", error);
-    return 0;
-  }
-}
-
 document.addEventListener("DOMContentLoaded", async function () {
   const urlParams = new URLSearchParams(window.location.search);
   const mode = urlParams.get("mode");
