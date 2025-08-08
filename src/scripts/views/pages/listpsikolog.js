@@ -2,30 +2,41 @@ const articleSection = document.getElementById("container-psikolog");
 const loadingIndicator = document.getElementById("loading-indicator");
 
 (async () => {
-  const apiUrl =
-    "https://mentalwell10-api-production.up.railway.app/psychologists/list";
   loadingIndicator.style.display = "block";
   const token = sessionStorage.getItem("authToken");
 
   try {
-    const response = await fetch(apiUrl, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    });
+    const response = await fetch(
+      "https://mentalwell10-api-production.up.railway.app/psychologists/list",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+      }
+    );
+
     const data = await response.json();
 
-    loadingIndicator.style.display = "none";
-    if (data.status === "success") {
+    if (response.ok && data.status === "success") {
+      loadingIndicator.style.display = "none";
       renderPsikologList(data.data);
       sessionStorage.setItem("all_psikolog", JSON.stringify(data.data || []));
     } else {
+      loadingIndicator.style.display = "none";
       const errorElement = document.createElement("div");
       errorElement.classList.add("error-message");
-      errorElement.innerText = "Gagal memuat data psikolog.";
+      errorElement.innerText = data.message || "Gagal memuat data psikolog.";
       articleSection.appendChild(errorElement);
     }
   } catch (error) {
     console.error("Error fetching data from API:", error);
     loadingIndicator.style.display = "none";
+    const errorElement = document.createElement("div");
+    errorElement.classList.add("error-message");
+    errorElement.innerText = "Terjadi kesalahan. Silahkan coba lagi.";
+    articleSection.appendChild(errorElement);
   }
 })();
 
