@@ -118,6 +118,8 @@ function renderPsikologList(data) {
   });
 }
 
+window.renderPsikologList = renderPsikologList;
+
 document.querySelectorAll(".filter-checkbox").forEach((checkbox) => {
   checkbox.addEventListener("change", function () {
     const allPsikolog = JSON.parse(
