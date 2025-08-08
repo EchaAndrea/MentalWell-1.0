@@ -4,14 +4,25 @@ document.addEventListener("DOMContentLoaded", function () {
   let searchForm = document.getElementById("searchForm");
   let searchInput = document.getElementById("search-psikolog");
 
-  let token = localStorage.getItem("token");
+  let token = sessionStorage.getItem("authToken");
 
   // Function untuk render psikolog cards
   function renderPsikologCard(articleData) {
     const articleElement = document.createElement("div");
     articleElement.classList.add("content-psikolog");
 
-    let formattedExperience = articleData.experience || "-";
+    // Format topics - pastikan menggunakan field yang benar
+    let formattedTopics = "-";
+    if (
+      articleData.topics &&
+      Array.isArray(articleData.topics) &&
+      articleData.topics.length > 0
+    ) {
+      formattedTopics = articleData.topics
+        .map((topic) => topic.name)
+        .join(", ");
+    }
+
     let formattedketersediaan =
       articleData.availability === "available"
         ? "Chat Sekarang"
@@ -19,12 +30,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     articleElement.innerHTML = `
       <img class="image-psikolog" src="${
-        articleData.profile_image
-      }" alt="man" />
+        articleData.profile_image || "default-profile.png"
+      }" alt="Foto Psikolog" />
       <div class="data-psikolog">
-        <h2>${articleData.name}</h2>  
+        <h2>${articleData.name || "Nama tidak tersedia"}</h2>  
         <div class="value-psikolog">
-          <p>Pengalaman Kerja ${formattedExperience}</p>
+          <p>Topik: ${formattedTopics}</p>
         </div>
         <div class="list-button-psikolog">
           <div class="${
@@ -37,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
           <div class="button-psikolog">
             <button type="button" onclick="redirectToDetailPsychologist('${
               articleData.id
-            }')">
+            }', '${articleData.availability === "available" ? "chat" : ""}')">
               Lihat Selengkapnya
             </button>
           </div>
@@ -48,60 +59,130 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Function untuk search API
-  function searchPsikolog(searchValue, topicValues = []) {
-    let backendURL =
-      "https://mentalwell10-api-production.up.railway.app/psychologists/search";
-    let queryParams = [];
+  async function searchPsikolog(searchValue, topicValues = []) {
+    try {
+      let apiUrl =
+        "https://mentalwell10-api-production.up.railway.app/psychologists/list";
+      let queryParams = [];
 
-    if (topicValues.length > 0) {
-      queryParams.push(`topics=${encodeURIComponent(topicValues.join(","))}`);
-    }
+      // Jika ada filter nama atau topik, gunakan endpoint search
+      if (searchValue !== "" || topicValues.length > 0) {
+        apiUrl =
+          "https://mentalwell10-api-production.up.railway.app/psychologists/search";
 
-    if (searchValue !== "") {
-      queryParams.push(`name=${encodeURIComponent(searchValue)}`);
-    }
-
-    let queryString = queryParams.join("&");
-    let fullURL = queryString
-      ? `${backendURL}?${queryString}`
-      : "https://mentalwell10-api-production.up.railway.app/psychologists/list";
-
-    fetch(fullURL, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+        if (topicValues.length > 0) {
+          queryParams.push(`topics=${topicValues.join(",")}`);
         }
-        return response.json();
-      })
-      .then((data) => {
+
+        if (searchValue !== "") {
+          queryParams.push(`name=${encodeURIComponent(searchValue)}`);
+        }
+
+        if (queryParams.length > 0) {
+          apiUrl = `${apiUrl}?${queryParams.join("&")}`;
+        }
+      }
+
+      const headers = {
+        "Content-Type": "application/json",
+      };
+
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      const response = await fetch(apiUrl, {
+        method: "GET",
+        headers: headers,
+      });
+
+      const responseData = await response.json();
+
+      if (response.ok && responseData.status === "success") {
         contentArticle.innerHTML = "";
-        // Handle berbeda response format
-        const results = data.result?.result || data.data || [];
+
+        const results = responseData.data || [];
+
+        if (results.length === 0) {
+          const noDataElement = document.createElement("div");
+          noDataElement.classList.add("no-data-message");
+          noDataElement.innerText =
+            "Tidak ada psikolog yang sesuai dengan pencarian.";
+          contentArticle.appendChild(noDataElement);
+          return;
+        }
+
         results.forEach((articleData) => {
           contentArticle.appendChild(renderPsikologCard(articleData));
         });
-      })
-      .catch((error) => {
-        console.error("Error fetching results:", error);
+      } else {
+        contentArticle.innerHTML = "";
+        Swal.fire({
+          title: "Gagal!",
+          text: responseData.message || "Gagal mencari data psikolog.",
+          icon: "error",
+          showConfirmButton: true,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+      contentArticle.innerHTML = "";
+      Swal.fire({
+        title: "Gagal!",
+        text: "Terjadi kesalahan saat mencari psikolog. Silahkan coba lagi.",
+        icon: "error",
+        showConfirmButton: true,
       });
+    }
+  }
+
+  // Function untuk fetch semua psikolog
+  async function fetchAllPsikolog() {
+    try {
+      const headers = {
+        "Content-Type": "application/json",
+      };
+
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      const response = await fetch(
+        "https://mentalwell10-api-production.up.railway.app/psychologists/list",
+        {
+          method: "GET",
+          headers: headers,
+        }
+      );
+
+      const responseData = await response.json();
+
+      if (response.ok && responseData.status === "success") {
+        sessionStorage.setItem(
+          "all_psikolog",
+          JSON.stringify(responseData.data || [])
+        );
+
+        contentArticle.innerHTML = "";
+        responseData.data.forEach((articleData) => {
+          contentArticle.appendChild(renderPsikologCard(articleData));
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching all psychologists:", error);
+    }
   }
 
   // Event listeners
   checkboxes.forEach(function (checkbox) {
-    checkbox.addEventListener("click", function () {
+    checkbox.addEventListener("change", function () {
       let checkedValues = Array.from(checkboxes)
         .filter((chk) => chk.checked)
         .map((chk) => chk.value);
 
       let searchValue = searchInput.value.trim();
 
-      if (checkedValues.length > 0 || searchValue !== "") {
-        searchPsikolog(searchValue, checkedValues);
-      } else {
-        contentArticle.innerHTML = "";
-      }
+      searchPsikolog(searchValue, checkedValues);
     });
   });
 
