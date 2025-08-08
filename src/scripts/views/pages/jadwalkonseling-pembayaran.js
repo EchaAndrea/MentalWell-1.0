@@ -21,7 +21,6 @@ async function fetchPsychologistPrice(psikologId) {
   }
 }
 
-// Helper functions untuk menghindari duplikasi
 function getPaymentData() {
   const token = sessionStorage.getItem("authToken");
   const jadwal = JSON.parse(localStorage.getItem("jadwal") || "{}");
@@ -160,6 +159,7 @@ async function confirmPayment() {
     return;
   }
 
+  // Untuk regular payment - membutuhkan date & time
   const formData = createFormData(problemData, buktiBayar, true, jadwal);
   showLoadingDialog();
 
@@ -189,6 +189,7 @@ async function createRealtimeCounseling() {
     return;
   }
 
+  // Untuk realtime counseling - tidak membutuhkan date & time
   const formData = createFormData(problemData, buktiBayar, false);
   showLoadingDialog();
 

@@ -44,9 +44,6 @@ async function fetchUserProfile() {
   }
 }
 
-// Import fetchPsychologistPrice dari file pembayaran jika diperlukan
-// atau buat fungsi utility terpisah untuk menghindari duplikasi
-
 async function setupRealtimeSchedule(psikologId) {
   const now = new Date();
   const pad = (n) => n.toString().padStart(2, "0");
@@ -131,13 +128,13 @@ document.addEventListener("DOMContentLoaded", async function () {
       const userDataToSave = {
         name: userProfile.name,
         nickname: userProfile.nickname || userProfile.name,
-        phone_number: userProfile.phone_number || userProfile.phone, // Coba kedua field
-        phone: userProfile.phone || userProfile.phone_number, // Tambahkan fallback
+        phone_number: userProfile.phone_number || userProfile.phone, 
+        phone: userProfile.phone || userProfile.phone_number, 
         birth_date: userProfile.birth_date,
         gender: userProfile.gender,
       };
 
-      console.log("Saving user data:", userDataToSave); // Debug
+      console.log("Saving user data:", userDataToSave); 
       localStorage.setItem("user_data", JSON.stringify(userDataToSave));
     }
 
