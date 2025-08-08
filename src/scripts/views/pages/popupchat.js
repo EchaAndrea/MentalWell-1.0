@@ -8,6 +8,40 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 // Global variables
 let chatChannel = null;
 
+// Setup auth untuk Supabase
+function setupSupabaseAuth() {
+  const token = sessionStorage.getItem("authToken");
+  if (token) {
+    try {
+      // Create new supabase client with auth
+      const authHeaders = {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Prefer: "return=representation",
+      };
+
+      // Update global headers
+      if (supabase.rest) {
+        Object.assign(supabase.rest.headers, authHeaders);
+      }
+
+      // For realtime connection
+      if (supabase.realtime) {
+        supabase.realtime.accessToken = token;
+      }
+
+      console.log(
+        "Auth setup completed with token:",
+        token.substring(0, 20) + "..."
+      );
+    } catch (error) {
+      console.error("Auth setup error:", error);
+    }
+  } else {
+    console.warn("No auth token found");
+  }
+}
+
 // Helper functions
 function getUserData() {
   const token = sessionStorage.getItem("authToken");
@@ -31,6 +65,9 @@ function showError(message) {
 
 // Main chat functions
 window.initPopupChat = async function () {
+  // Setup auth terlebih dahulu
+  setupSupabaseAuth();
+
   const userData = getUserData();
   if (!userData) {
     showError("Tidak dapat mengambil data user. Silakan login ulang.");
@@ -87,6 +124,9 @@ function setupEventListeners() {
     input.value = "";
     addMessageToChat(message, true, id);
 
+    // Setup auth sebelum insert
+    setupSupabaseAuth();
+
     try {
       const { error } = await supabase.from("messages").insert([
         {
@@ -102,12 +142,46 @@ function setupEventListeners() {
       ]);
 
       if (error) {
+        console.error("Send message error:", error);
+
+        // Jika error 401, coba dengan fetch langsung
+        if (error.code === "401" || error.message?.includes("JWT")) {
+          console.log("Trying direct send...");
+          await sendMessageWithFetch({
+            id,
+            conversation_id: conversationId,
+            sender_id: senderId,
+            sender_role: senderRole,
+            content: message,
+            type: "text",
+            sent_at: new Date().toISOString(),
+            is_read: false,
+          });
+          return;
+        }
+
         document.querySelector(`[data-message-id="${id}"]`)?.remove();
         showError("Gagal mengirim pesan. Coba lagi.");
       }
     } catch (error) {
-      document.querySelector(`[data-message-id="${id}"]`)?.remove();
-      showError("Terjadi kesalahan. Coba lagi.");
+      console.error("Send message catch:", error);
+
+      // Fallback ke direct API
+      try {
+        await sendMessageWithFetch({
+          id,
+          conversation_id: conversationId,
+          sender_id: senderId,
+          sender_role: senderRole,
+          content: message,
+          type: "text",
+          sent_at: new Date().toISOString(),
+          is_read: false,
+        });
+      } catch (fallbackError) {
+        document.querySelector(`[data-message-id="${id}"]`)?.remove();
+        showError("Terjadi kesalahan. Coba lagi.");
+      }
     }
   };
 
@@ -152,26 +226,116 @@ function addMessageToChat(content, isFromCurrentUser, messageId = null) {
 }
 
 async function loadMessages(conversationId) {
-  const { data, error } = await supabase
-    .from("messages")
-    .select("*")
-    .eq("conversation_id", conversationId)
-    .order("sent_at", { ascending: true });
+  // Setup auth sebelum query
+  setupSupabaseAuth();
 
-  if (error || !data) return;
+  try {
+    const { data, error } = await supabase
+      .from("messages")
+      .select("*")
+      .eq("conversation_id", conversationId)
+      .order("sent_at", { ascending: true });
 
-  const chatBody = document.getElementById("chatBody");
-  if (chatBody) chatBody.innerHTML = "";
+    if (error) {
+      console.error("Error loading messages:", error);
 
-  const currentUserId = parseInt(localStorage.getItem("current_user_id"));
-  data.forEach((msg) => {
-    const isFromCurrentUser = Number(msg.sender_id) === currentUserId;
-    addMessageToChat(msg.content, isFromCurrentUser, msg.id);
+      // Jika error 401, coba dengan fetch langsung
+      if (error.code === "401" || error.message?.includes("JWT")) {
+        console.log("Trying direct API call...");
+        return await loadMessagesWithFetch(conversationId);
+      }
+      return;
+    }
+
+    if (!data) return;
+
+    const chatBody = document.getElementById("chatBody");
+    if (chatBody) chatBody.innerHTML = "";
+
+    const currentUserId = parseInt(localStorage.getItem("current_user_id"));
+    data.forEach((msg) => {
+      const isFromCurrentUser = Number(msg.sender_id) === currentUserId;
+      addMessageToChat(msg.content, isFromCurrentUser, msg.id);
+    });
+  } catch (error) {
+    console.error("Load messages error:", error);
+    await loadMessagesWithFetch(conversationId);
+  }
+}
+
+// Fallback dengan fetch langsung
+async function loadMessagesWithFetch(conversationId) {
+  const token = sessionStorage.getItem("authToken");
+  if (!token) {
+    showError("Token tidak ditemukan. Silakan login ulang.");
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/messages?conversation_id=eq.${conversationId}&order=sent_at.asc`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          apikey: supabaseKey,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    const chatBody = document.getElementById("chatBody");
+    if (chatBody) chatBody.innerHTML = "";
+
+    const currentUserId = parseInt(localStorage.getItem("current_user_id"));
+    data.forEach((msg) => {
+      const isFromCurrentUser = Number(msg.sender_id) === currentUserId;
+      addMessageToChat(msg.content, isFromCurrentUser, msg.id);
+    });
+
+    console.log("Messages loaded with direct fetch");
+  } catch (error) {
+    console.error("Direct fetch error:", error);
+    showError("Gagal memuat pesan. Silakan refresh halaman.");
+  }
+}
+
+// Send message dengan fetch langsung
+async function sendMessageWithFetch(messageData) {
+  const token = sessionStorage.getItem("authToken");
+  if (!token) {
+    throw new Error("No auth token");
+  }
+
+  const response = await fetch(`${supabaseUrl}/rest/v1/messages`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      apikey: supabaseKey,
+      "Content-Type": "application/json",
+      Prefer: "return=representation",
+    },
+    body: JSON.stringify(messageData),
   });
+
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  }
+
+  console.log("Message sent with direct fetch");
 }
 
 function subscribeToMessages(conversationId) {
   if (chatChannel) chatChannel.unsubscribe();
+
+  // Setup auth untuk realtime
+  setupSupabaseAuth();
 
   chatChannel = supabase
     .channel(`messages-${conversationId}-${Date.now()}`)
@@ -195,7 +359,16 @@ function subscribeToMessages(conversationId) {
         }
       }
     )
-    .subscribe();
+    .subscribe((status, err) => {
+      if (err) {
+        console.error("Subscription error:", err);
+        if (err.message?.includes("JWT") || err.message?.includes("401")) {
+          showError("Koneksi terputus. Silakan refresh halaman.");
+        }
+      } else {
+        console.log("Subscription status:", status);
+      }
+    });
 }
 
 function showChatPopup() {
