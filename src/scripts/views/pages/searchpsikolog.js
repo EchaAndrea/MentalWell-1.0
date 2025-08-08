@@ -1,3 +1,5 @@
+// File ini sudah tidak digunakan, semua fungsi search dan filter dipindah ke listpsikolog.js
+/*
 document.addEventListener("DOMContentLoaded", function () {
   let checkboxes = document.querySelectorAll(".filter-checkbox");
   let contentArticle = document.getElementById("container-psikolog");
@@ -92,10 +94,20 @@ document.addEventListener("DOMContentLoaded", function () {
   searchForm.addEventListener("submit", function (event) {
     event.preventDefault();
     let searchValue = searchInput.value.trim();
-    let checkedValues = Array.from(checkboxes)
-      .filter((chk) => chk.checked)
-      .map((chk) => chk.value);
-
-    searchPsikolog(searchValue, checkedValues);
+    
+    // Hanya search berdasarkan nama, checkbox dihandle oleh listpsikolog.js
+    if (searchValue !== "") {
+      searchPsikolog(searchValue, []);
+    } else {
+      // Jika search kosong, kembali ke data original
+      const allPsikolog = JSON.parse(
+        sessionStorage.getItem("all_psikolog") || "[]"
+      );
+      contentArticle.innerHTML = "";
+      allPsikolog.forEach((articleData) => {
+        contentArticle.appendChild(renderPsikologCard(articleData));
+      });
+    }
   });
 });
+*/

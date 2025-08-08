@@ -74,27 +74,54 @@ function renderPsikologList(data) {
 
 document.querySelectorAll(".filter-checkbox").forEach((checkbox) => {
   checkbox.addEventListener("change", function () {
-    const allPsikolog = JSON.parse(
-      sessionStorage.getItem("all_psikolog") || "[]"
-    );
-    const checked = Array.from(
-      document.querySelectorAll(".filter-checkbox:checked")
-    );
-    if (checked.length === 0) {
-      renderPsikologList(allPsikolog);
-      return;
-    }
+    applyFilters();
+  });
+});
+
+// Tambahkan event listener untuk search form
+const searchForm = document.getElementById("searchForm");
+const searchInput = document.getElementById("search-psikolog");
+
+if (searchForm) {
+  searchForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    applyFilters();
+  });
+}
+
+function applyFilters() {
+  const allPsikolog = JSON.parse(
+    sessionStorage.getItem("all_psikolog") || "[]"
+  );
+
+  const checked = Array.from(
+    document.querySelectorAll(".filter-checkbox:checked")
+  );
+  const searchValue = searchInput ? searchInput.value.trim().toLowerCase() : "";
+
+  let filtered = allPsikolog;
+
+  // Filter berdasarkan checkbox topics
+  if (checked.length > 0) {
     const selectedValues = checked.map((cb) => cb.value);
-    const filtered = allPsikolog.filter(
+    filtered = filtered.filter(
       (psikolog) =>
         psikolog.topics &&
         psikolog.topics.some((topic) =>
           selectedValues.includes(String(topic.id))
         )
     );
-    renderPsikologList(filtered);
-  });
-});
+  }
+
+  // Filter berdasarkan nama (search text)
+  if (searchValue !== "") {
+    filtered = filtered.filter((psikolog) =>
+      psikolog.name.toLowerCase().includes(searchValue)
+    );
+  }
+
+  renderPsikologList(filtered);
+}
 
 function redirectToDetailPsychologist(id, mode = "") {
   const token = sessionStorage.getItem("authToken");
