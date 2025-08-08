@@ -11,7 +11,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const articleElement = document.createElement("div");
     articleElement.classList.add("content-psikolog");
 
-    let formattedExperience = articleData.experience || "-";
+    let formattedTopics = articleData.topics
+      ? articleData.topics.map((topic) => topic.name).join(", ")
+      : "-";
     let formattedketersediaan =
       articleData.availability === "available"
         ? "Chat Sekarang"
@@ -24,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
       <div class="data-psikolog">
         <h2>${articleData.name}</h2>  
         <div class="value-psikolog">
-          <p>Pengalaman Kerja ${formattedExperience}</p>
+          <p>Topik: ${formattedTopics}</p>
         </div>
         <div class="list-button-psikolog">
           <div class="${
@@ -48,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Function untuk search API
-  function searchPsikolog(searchValue, topicValues = []) {
+  async function searchPsikolog(searchValue, topicValues = []) {
     let backendURL =
       "https://mentalwell10-api-production.up.railway.app/psychologists/search";
     let queryParams = [];
@@ -66,26 +68,25 @@ document.addEventListener("DOMContentLoaded", function () {
       ? `${backendURL}?${queryString}`
       : "https://mentalwell10-api-production.up.railway.app/psychologists/list";
 
-    fetch(fullURL, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        contentArticle.innerHTML = "";
-        // Handle berbeda response format
-        const results = data.result?.result || data.data || [];
-        results.forEach((articleData) => {
-          contentArticle.appendChild(renderPsikologCard(articleData));
-        });
-      })
-      .catch((error) => {
-        console.error("Error fetching results:", error);
+    try {
+      const response = await fetch(fullURL, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      contentArticle.innerHTML = "";
+      // Handle berbeda response format
+      const results = data.result?.result || data.data || [];
+      results.forEach((articleData) => {
+        contentArticle.appendChild(renderPsikologCard(articleData));
+      });
+    } catch (error) {
+      console.error("Error fetching results:", error);
+    }
   }
 
   // Event listeners
