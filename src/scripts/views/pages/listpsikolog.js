@@ -34,9 +34,20 @@ function renderPsikologList(data) {
   data.forEach((articleData) => {
     const articleElement = document.createElement("div");
     articleElement.classList.add("content-psikolog");
-    let formattedTopics = articleData.topics
-      ? articleData.topics.map((topic) => topic.name).join(", ")
-      : "-";
+
+    // Format topics dengan batasan 4 topik
+    let formattedTopics = "-";
+    if (articleData.topics && articleData.topics.length > 0) {
+      const topicNames = articleData.topics.map((topic) => topic.name);
+      if (topicNames.length <= 4) {
+        formattedTopics = topicNames.join(", ");
+      } else {
+        const firstFour = topicNames.slice(0, 4);
+        const remaining = topicNames.length - 4;
+        formattedTopics = firstFour.join(", ") + `, +${remaining} lainnya`;
+      }
+    }
+
     let formattedketersediaan =
       articleData.availability === "available"
         ? "Chat Sekarang"
@@ -101,25 +112,60 @@ function applyFilters() {
 
   let filtered = allPsikolog;
 
+  // Debug logging
+  console.log("Total psikolog:", allPsikolog.length);
+  console.log("Checked checkboxes:", checked.length);
+  console.log("Search value:", searchValue);
+
   // Filter berdasarkan checkbox topics
   if (checked.length > 0) {
     const selectedValues = checked.map((cb) => cb.value);
-    filtered = filtered.filter(
-      (psikolog) =>
+    console.log("Selected topic IDs:", selectedValues);
+
+    filtered = filtered.filter((psikolog) => {
+      if (!psikolog.topics || psikolog.topics.length === 0) {
+        return false;
+      }
+
+      const hasMatchingTopic = psikolog.topics.some((topic) =>
+        selectedValues.includes(String(topic.id))
+      );
+
+      if (hasMatchingTopic) {
+        console.log(
+          "Psikolog matched:",
+          psikolog.name,
+          "topics:",
+          psikolog.topics.map((t) => t.name)
+        );
+      }
+
+      return hasMatchingTopic;
+    });
+
+    console.log("After topic filter:", filtered.length);
+  }
+
+  // Filter berdasarkan nama dan topik (search text)
+  if (searchValue !== "") {
+    filtered = filtered.filter((psikolog) => {
+      // Search di nama
+      const nameMatch = psikolog.name.toLowerCase().includes(searchValue);
+
+      // Search di topik
+      const topicMatch =
         psikolog.topics &&
         psikolog.topics.some((topic) =>
-          selectedValues.includes(String(topic.id))
-        )
-    );
+          topic.name.toLowerCase().includes(searchValue)
+        );
+
+      return nameMatch || topicMatch;
+    });
+
+    console.log("After search filter:", filtered.length);
   }
 
-  // Filter berdasarkan nama (search text)
-  if (searchValue !== "") {
-    filtered = filtered.filter((psikolog) =>
-      psikolog.name.toLowerCase().includes(searchValue)
-    );
-  }
-
+  console.log("Final filtered results:", filtered.length);
   renderPsikologList(filtered);
 }
 
