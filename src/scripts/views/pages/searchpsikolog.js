@@ -89,23 +89,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Event listeners
-  checkboxes.forEach(function (checkbox) {
-    checkbox.addEventListener("click", function () {
-      let checkedValues = Array.from(checkboxes)
-        .filter((chk) => chk.checked)
-        .map((chk) => chk.value);
-
-      let searchValue = searchInput.value.trim();
-
-      if (checkedValues.length > 0 || searchValue !== "") {
-        searchPsikolog(searchValue, checkedValues);
-      } else {
-        contentArticle.innerHTML = "";
-      }
-    });
-  });
-
   searchForm.addEventListener("submit", function (event) {
     event.preventDefault();
     let searchValue = searchInput.value.trim();
