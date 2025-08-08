@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let searchForm = document.getElementById("searchForm");
   let searchInput = document.getElementById("search-psikolog");
 
-  let token = localStorage.getItem("token");
+  let token = sessionStorage.getItem("authToken");
 
   // Function untuk render psikolog cards
   function renderPsikologCard(articleData) {
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
           <div class="button-psikolog">
             <button type="button" onclick="redirectToDetailPsychologist('${
               articleData.id
-            }')">
+            }', '${articleData.availability === "available" ? "chat" : ""}')">
               Lihat Selengkapnya
             </button>
           </div>
