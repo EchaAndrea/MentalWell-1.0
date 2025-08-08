@@ -1,6 +1,5 @@
 const articleSection = document.getElementById("content-articel");
 const loadingIndicator = document.getElementById("loading-indicator");
-const apiUrl = "https://mentalwell10-api-production.up.railway.app/articles";
 
 loadingIndicator.style.display = "block";
 
@@ -9,37 +8,36 @@ function truncateText(text, maxLength) {
   return text.slice(0, maxLength) + "...";
 }
 
-fetch(apiUrl)
+// Fetch articles dari API
+fetch("https://mentalwell10-api-production.up.railway.app/articles")
   .then((response) => response.json())
   .then((data) => {
     loadingIndicator.style.display = "none";
 
-    (data.articles || []).forEach((articleData) => {
+    data.articles.forEach((articleData) => {
       const articleElement = document.createElement("article");
-
-      // Batasi isi artikel yang tampil, misal 160 karakter
       const truncatedContent = truncateText(articleData.content, 160);
 
       articleElement.innerHTML = `
-                    <div class="image-articel">
-                    <img src="${articleData.image}" alt="articel">
-                    </div>
-                    <div class="isi-articel">
-                        <h2>${articleData.title}</h2>
-                        <div class="content"> 
-                          <p id="contentParagraph">${truncatedContent}</p>
-                        </div>
-                        <div class="button-articel">
-                          <button type="button" onclick="redirectToDetail('${articleData.id}')"> Baca Selengkapnya</button>
-                        </div>
-                    </div>
-                `;
+        <div class="image-articel">
+          <img src="${articleData.image}" alt="articel">
+        </div>
+        <div class="isi-articel">
+          <h2>${articleData.title}</h2>
+          <div class="content"> 
+            <p>${truncatedContent}</p>
+          </div>
+          <div class="button-articel">
+            <button type="button" onclick="redirectToDetail('${articleData.id}')">Baca Selengkapnya</button>
+          </div>
+        </div>
+      `;
 
       articleSection.appendChild(articleElement);
     });
   })
   .catch((error) => {
-    console.error("Error fetching data from API:", error);
+    console.error("Error fetching articles:", error);
     loadingIndicator.style.display = "none";
   });
 
