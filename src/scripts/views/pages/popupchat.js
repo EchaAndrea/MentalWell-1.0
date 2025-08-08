@@ -7,130 +7,164 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Global variables
 let chatChannel = null;
+let addMessageToChat;
 
-// Setup auth untuk Supabase
-function setupSupabaseAuth() {
-  const token = sessionStorage.getItem("authToken");
-  if (token) {
-    try {
-      // Create new supabase client with auth
-      const authHeaders = {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-        Prefer: "return=representation",
-      };
-
-      // Update global headers
-      if (supabase.rest) {
-        Object.assign(supabase.rest.headers, authHeaders);
-      }
-
-      // For realtime connection
-      if (supabase.realtime) {
-        supabase.realtime.accessToken = token;
-      }
-
-      console.log(
-        "Auth setup completed with token:",
-        token.substring(0, 20) + "..."
-      );
-    } catch (error) {
-      console.error("Auth setup error:", error);
-    }
-  } else {
-    console.warn("No auth token found");
-  }
-}
-
-// Helper functions
-function getUserData() {
-  const token = sessionStorage.getItem("authToken");
-  if (!token) return null;
-
+// Function to decode JWT token and get user ID
+function getUserIdFromToken() {
   try {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    return { id: payload.id, role: payload.role };
-  } catch {
+    const token = sessionStorage.getItem("authToken");
+    if (!token) return null;
+
+    const payload = token.split(".")[1];
+    const decoded = JSON.parse(atob(payload));
+
+    return decoded.id;
+  } catch (error) {
+    console.error("Error decoding token:", error);
     return null;
   }
 }
 
-function generateId() {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+// Function to get current user role from token
+function getUserRoleFromToken() {
+  try {
+    const token = sessionStorage.getItem("authToken");
+    if (!token) return null;
+
+    const payload = token.split(".")[1];
+    const decoded = JSON.parse(atob(payload));
+
+    return decoded.role;
+  } catch (error) {
+    console.error("Error getting role from token:", error);
+    return null;
+  }
 }
 
-function showError(message) {
-  alert(message);
-}
-
-// Main chat functions
+// Main popup chat initialization
 window.initPopupChat = async function () {
-  // Setup auth terlebih dahulu
-  setupSupabaseAuth();
+  // Get user ID dan role dari token
+  const tokenUserId = getUserIdFromToken();
+  const tokenRole = getUserRoleFromToken();
 
-  const userData = getUserData();
-  if (!userData) {
-    showError("Tidak dapat mengambil data user. Silakan login ulang.");
+  if (!tokenUserId || !tokenRole) {
+    alert("Tidak dapat mengambil data user dari token. Silakan login ulang.");
     return;
   }
 
-  localStorage.setItem("current_user_id", userData.id);
-  localStorage.setItem("current_user_role", userData.role);
+  // Store current user ID dan role
+  localStorage.setItem("current_user_id", tokenUserId);
+  localStorage.setItem("current_user_role", tokenRole);
 
-  // Set nama di header
+  // Set nama psikolog/pasien
   const activeRole = localStorage.getItem("active_role");
-  const nama =
-    activeRole === "psikolog"
-      ? localStorage.getItem("active_patient_name") || "Pasien"
-      : localStorage.getItem("active_psychologist_name") || "Psikolog";
-
+  let nama = "Nama";
+  if (activeRole === "psikolog") {
+    nama = localStorage.getItem("active_patient_name") || "Pasien";
+  } else {
+    nama = localStorage.getItem("active_psychologist_name") || "Psikolog";
+  }
   const namaPsikolog = document.getElementById("namaPsikolog");
   if (namaPsikolog) namaPsikolog.textContent = nama;
 
-  // Setup event listeners
-  setupEventListeners();
+  // Fungsi untuk menutup chat popup
+  window.closeChat = function () {
+    if (chatChannel) {
+      chatChannel.unsubscribe();
+      chatChannel = null;
+    }
 
-  // Load dan subscribe
-  const conversationId = localStorage.getItem("active_conversation_id");
-  if (!conversationId) {
-    showError("conversation_id tidak ditemukan!");
-    return;
-  }
-
-  await loadMessages(conversationId);
-  subscribeToMessages(conversationId);
-  showChatPopup();
-};
-
-function setupEventListeners() {
-  // Close chat
-  window.closeChat = () => {
-    if (chatChannel) chatChannel.unsubscribe();
-    document.getElementById("chatPopupCustom")?.classList.add("d-none");
-    document.getElementById("chatOverlay")?.classList.add("d-none");
+    const chatPopup = document.getElementById("chatPopupCustom");
+    if (chatPopup) {
+      chatPopup.classList.add("d-none");
+      chatPopup.classList.remove("d-flex");
+    }
+    const chatOverlay = document.getElementById("chatOverlay");
+    if (chatOverlay) {
+      chatOverlay.classList.add("d-none");
+      chatOverlay.classList.remove("d-block");
+    }
+    const popupContainer = document.getElementById("popup-container");
+    if (popupContainer) {
+      popupContainer.innerHTML = "";
+      popupContainer.style.display = "none";
+    }
   };
 
-  // Send message
-  window.sendMessage = async () => {
+  // Fungsi untuk generate ID unik
+  function generateId() {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+  }
+
+  // Fungsi untuk menambahkan pesan ke chat
+  addMessageToChat = function (
+    content,
+    isFromCurrentUser,
+    type = "text",
+    fileUrl = null,
+    fileName = null,
+    senderId = null,
+    prevSenderId = null
+  ) {
+    const chatBody = document.getElementById("chatBody");
+    if (!chatBody) {
+      console.error("Chat body not found");
+      return null;
+    }
+
+    const messageContainer = document.createElement("div");
+    messageContainer.className = `message-container ${
+      isFromCurrentUser ? "right" : "left"
+    }`;
+
+    // Tambahkan class same-sender atau diff-sender
+    if (prevSenderId !== null && senderId !== null) {
+      if (prevSenderId === senderId) {
+        messageContainer.classList.add("same-sender");
+      } else {
+        messageContainer.classList.add("diff-sender");
+      }
+    }
+
+    const msgDiv = document.createElement("div");
+    msgDiv.className = `chat-bubble ${isFromCurrentUser ? "right" : "left"}`;
+
+    msgDiv.textContent = content;
+
+    messageContainer.appendChild(msgDiv);
+    chatBody.appendChild(messageContainer);
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    return messageContainer;
+  };
+
+  // Fungsi untuk mengirim pesan text
+  window.sendMessage = async function () {
     const input = document.getElementById("chatInput");
     const message = input.value.trim();
     if (!message) return;
 
     const conversationId = localStorage.getItem("active_conversation_id");
-    const senderId = parseInt(localStorage.getItem("current_user_id"));
+    if (!conversationId) {
+      alert("conversation_id tidak ditemukan di localStorage!");
+      return;
+    }
+
     const senderRole = localStorage.getItem("current_user_role");
+    const senderId = parseInt(localStorage.getItem("current_user_id"), 10);
     const id = generateId();
 
+    // Clear input immediately
     input.value = "";
-    addMessageToChat(message, true, id);
 
-    // Setup auth sebelum insert
-    setupSupabaseAuth();
+    // Tambahkan pesan ke chat body langsung (optimistic update)
+    addMessageToChat(message, true, "text");
 
+    // Kirim ke database
     try {
       const { error } = await supabase.from("messages").insert([
         {
-          id,
+          id: id,
           conversation_id: conversationId,
           sender_id: senderId,
           sender_role: senderRole,
@@ -142,201 +176,135 @@ function setupEventListeners() {
       ]);
 
       if (error) {
-        console.error("Send message error:", error);
+        console.error("Error sending message:", error);
 
-        // Jika error 401, coba dengan fetch langsung
-        if (error.code === "401" || error.message?.includes("JWT")) {
-          console.log("Trying direct send...");
-          await sendMessageWithFetch({
-            id,
-            conversation_id: conversationId,
-            sender_id: senderId,
-            sender_role: senderRole,
-            content: message,
-            type: "text",
-            sent_at: new Date().toISOString(),
-            is_read: false,
-          });
-          return;
+        const errorMsg = error.message?.toLowerCase() || "";
+        if (
+          error.code === "42501" ||
+          errorMsg.includes("violates row-level security") ||
+          errorMsg.includes("not allowed")
+        ) {
+          alert(
+            "Sesi Anda telah berakhir sehingga pesan tidak dapat dikirim.\nSilakan mulai sesi baru atau hubungi admin jika Anda merasa ini adalah kesalahan."
+          );
+        } else {
+          alert(
+            "Maaf, terjadi kendala saat mengirim pesan. Silakan coba kembali nanti."
+          );
         }
-
-        document.querySelector(`[data-message-id="${id}"]`)?.remove();
-        showError("Gagal mengirim pesan. Coba lagi.");
       }
     } catch (error) {
-      console.error("Send message catch:", error);
+      console.error("Error sending message:", error);
 
-      // Fallback ke direct API
-      try {
-        await sendMessageWithFetch({
-          id,
-          conversation_id: conversationId,
-          sender_id: senderId,
-          sender_role: senderRole,
-          content: message,
-          type: "text",
-          sent_at: new Date().toISOString(),
-          is_read: false,
-        });
-      } catch (fallbackError) {
-        document.querySelector(`[data-message-id="${id}"]`)?.remove();
-        showError("Terjadi kesalahan. Coba lagi.");
+      const msg = error.message?.toLowerCase() || "";
+      if (
+        msg.includes("violates row-level security") ||
+        msg.includes("not allowed")
+      ) {
+        alert(
+          "Sesi Anda telah berakhir sehingga pesan tidak dapat dikirim.\nSilakan mulai sesi baru atau hubungi admin jika Anda merasa ini adalah kesalahan."
+        );
+      } else {
+        alert(
+          "Maaf, terjadi kendala saat mengirim pesan. Silakan coba kembali nanti."
+        );
       }
     }
   };
 
-  // Event bindings
-  document.getElementById("chatInput")?.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
+  // Event listeners
+  const chatInput = document.getElementById("chatInput");
+  if (chatInput) {
+    chatInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        window.sendMessage();
+      }
+    });
+  }
+
+  const sendBtn = document.getElementById("sendBtn");
+  if (sendBtn) {
+    sendBtn.addEventListener("click", function (e) {
       e.preventDefault();
       window.sendMessage();
-    }
-  });
+    });
+  }
 
-  document
-    .getElementById("sendBtn")
-    ?.addEventListener("click", window.sendMessage);
-  document
-    .querySelector(".btn-close-popup")
-    ?.addEventListener("click", window.closeChat);
-}
+  const closeBtn = document.querySelector(".btn-close-popup");
+  if (closeBtn) {
+    closeBtn.addEventListener("click", window.closeChat);
+  }
 
-function addMessageToChat(content, isFromCurrentUser, messageId = null) {
-  const chatBody = document.getElementById("chatBody");
-  if (!chatBody) return;
-
-  // Cek duplikasi
-  if (messageId && chatBody.querySelector(`[data-message-id="${messageId}"]`)) {
+  // Load chat
+  const conversationId = localStorage.getItem("active_conversation_id");
+  if (!conversationId || conversationId === "undefined") {
+    alert("conversation_id tidak ditemukan di localStorage!");
     return;
   }
 
-  const messageDiv = document.createElement("div");
-  messageDiv.className = `message-container ${
-    isFromCurrentUser ? "right" : "left"
-  }`;
-  if (messageId) messageDiv.setAttribute("data-message-id", messageId);
+  // Load messages first, then subscribe
+  await loadMessages(conversationId);
+  subscribeToMessages(conversationId);
 
-  const bubble = document.createElement("div");
-  bubble.className = `chat-bubble ${isFromCurrentUser ? "right" : "left"}`;
-  bubble.textContent = content;
+  // Show the chat popup using Bootstrap classes
+  const chatPopup = document.getElementById("chatPopupCustom");
+  const chatOverlay = document.getElementById("chatOverlay");
+  if (chatPopup && chatOverlay) {
+    chatOverlay.classList.remove("d-none");
+    chatOverlay.classList.add("d-block");
+    chatPopup.classList.remove("d-none");
+    chatPopup.classList.add("d-flex");
+  }
+};
 
-  messageDiv.appendChild(bubble);
-  chatBody.appendChild(messageDiv);
-  chatBody.scrollTop = chatBody.scrollHeight;
-}
-
+// Load messages from database
 async function loadMessages(conversationId) {
-  // Setup auth sebelum query
-  setupSupabaseAuth();
+  const { data, error } = await supabase
+    .from("messages")
+    .select("*")
+    .eq("conversation_id", conversationId)
+    .order("sent_at", { ascending: true });
 
-  try {
-    const { data, error } = await supabase
-      .from("messages")
-      .select("*")
-      .eq("conversation_id", conversationId)
-      .order("sent_at", { ascending: true });
-
-    if (error) {
-      console.error("Error loading messages:", error);
-
-      // Jika error 401, coba dengan fetch langsung
-      if (error.code === "401" || error.message?.includes("JWT")) {
-        console.log("Trying direct API call...");
-        return await loadMessagesWithFetch(conversationId);
-      }
-      return;
-    }
-
-    if (!data) return;
-
-    const chatBody = document.getElementById("chatBody");
-    if (chatBody) chatBody.innerHTML = "";
-
-    const currentUserId = parseInt(localStorage.getItem("current_user_id"));
-    data.forEach((msg) => {
-      const isFromCurrentUser = Number(msg.sender_id) === currentUserId;
-      addMessageToChat(msg.content, isFromCurrentUser, msg.id);
-    });
-  } catch (error) {
-    console.error("Load messages error:", error);
-    await loadMessagesWithFetch(conversationId);
-  }
-}
-
-// Fallback dengan fetch langsung
-async function loadMessagesWithFetch(conversationId) {
-  const token = sessionStorage.getItem("authToken");
-  if (!token) {
-    showError("Token tidak ditemukan. Silakan login ulang.");
+  if (error) {
+    console.error("Error loading messages:", error);
     return;
   }
 
-  try {
-    const response = await fetch(
-      `${supabaseUrl}/rest/v1/messages?conversation_id=eq.${conversationId}&order=sent_at.asc`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          apikey: supabaseKey,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  if (data) {
+    const chatBody = document.getElementById("chatBody");
+    if (chatBody) {
+      chatBody.innerHTML = "";
     }
 
-    const data = await response.json();
+    const currentUserId = parseInt(localStorage.getItem("current_user_id"), 10);
 
-    const chatBody = document.getElementById("chatBody");
-    if (chatBody) chatBody.innerHTML = "";
-
-    const currentUserId = parseInt(localStorage.getItem("current_user_id"));
-    data.forEach((msg) => {
+    let prevSenderId = null;
+    data.forEach((msg, index) => {
       const isFromCurrentUser = Number(msg.sender_id) === currentUserId;
-      addMessageToChat(msg.content, isFromCurrentUser, msg.id);
+
+      addMessageToChat(
+        msg.content,
+        isFromCurrentUser,
+        msg.type,
+        null,
+        null,
+        msg.sender_id,
+        prevSenderId
+      );
+      prevSenderId = msg.sender_id;
     });
-
-    console.log("Messages loaded with direct fetch");
-  } catch (error) {
-    console.error("Direct fetch error:", error);
-    showError("Gagal memuat pesan. Silakan refresh halaman.");
   }
 }
 
-// Send message dengan fetch langsung
-async function sendMessageWithFetch(messageData) {
-  const token = sessionStorage.getItem("authToken");
-  if (!token) {
-    throw new Error("No auth token");
-  }
-
-  const response = await fetch(`${supabaseUrl}/rest/v1/messages`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      apikey: supabaseKey,
-      "Content-Type": "application/json",
-      Prefer: "return=representation",
-    },
-    body: JSON.stringify(messageData),
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-  }
-
-  console.log("Message sent with direct fetch");
-}
-
+// Subscribe to real-time messages
 function subscribeToMessages(conversationId) {
-  if (chatChannel) chatChannel.unsubscribe();
+  // Unsubscribe jika sudah ada channel sebelumnya
+  if (chatChannel) {
+    chatChannel.unsubscribe();
+  }
 
-  // Setup auth untuk realtime
-  setupSupabaseAuth();
-
+  // Buat channel baru
   chatChannel = supabase
     .channel(`messages-${conversationId}-${Date.now()}`)
     .on(
@@ -348,36 +316,47 @@ function subscribeToMessages(conversationId) {
         filter: `conversation_id=eq.${conversationId}`,
       },
       (payload) => {
-        if (!payload?.new) return;
+        if (!payload || !payload.new) {
+          console.warn(
+            "%c📴 Sesi ini telah berakhir. Anda tidak dapat menerima pesan baru.",
+            "color: #d97706; font-weight: bold;"
+          );
+          console.info(
+            "%cSilakan mulai sesi baru jika ingin melanjutkan percakapan.",
+            "color: #6b7280;"
+          );
+          return;
+        }
 
         const msg = payload.new;
-        const currentUserId = parseInt(localStorage.getItem("current_user_id"));
+        const currentUserId = Number(localStorage.getItem("current_user_id"));
         const isFromCurrentUser = Number(msg.sender_id) === currentUserId;
 
+        // Cari senderId sebelumnya dari chatBody
+        let prevSenderId = null;
+        const chatBody = document.getElementById("chatBody");
+        if (chatBody && chatBody.lastChild) {
+          prevSenderId = chatBody.lastChild.getAttribute("data-sender-id");
+        }
+
         if (!isFromCurrentUser) {
-          addMessageToChat(msg.content, false, msg.id);
+          const msgDiv = addMessageToChat(
+            msg.content,
+            isFromCurrentUser,
+            msg.type,
+            null,
+            null,
+            msg.sender_id,
+            prevSenderId
+          );
+          if (msgDiv) msgDiv.setAttribute("data-sender-id", msg.sender_id);
         }
       }
     )
     .subscribe((status, err) => {
       if (err) {
-        console.error("Subscription error:", err);
-        if (err.message?.includes("JWT") || err.message?.includes("401")) {
-          showError("Koneksi terputus. Silakan refresh halaman.");
-        }
-      } else {
-        console.log("Subscription status:", status);
+        console.error("Error subscribing to messages:", err);
+        return;
       }
     });
-}
-
-function showChatPopup() {
-  const chatPopup = document.getElementById("chatPopupCustom");
-  const chatOverlay = document.getElementById("chatOverlay");
-
-  if (chatPopup && chatOverlay) {
-    chatOverlay.classList.remove("d-none");
-    chatPopup.classList.remove("d-none");
-    chatPopup.classList.add("d-flex");
-  }
 }
