@@ -1,5 +1,31 @@
 document.addEventListener("DOMContentLoaded", async function () {
-  const token = sessionStorage.getItem("authToken");
+  // Constants
+  const HARI_LIST = [
+    "Minggu",
+    "Senin",
+    "Selasa",
+    "Rabu",
+    "Kamis",
+    "Jumat",
+    "Sabtu",
+  ];
+  const HARI_LIST_ORDER = [
+    "Senin",
+    "Selasa",
+    "Rabu",
+    "Kamis",
+    "Jumat",
+    "Sabtu",
+    "Minggu",
+  ];
+
+  // Helper function to get token
+  function getAuthToken() {
+    return sessionStorage.getItem("authToken");
+  }
+
+  // Check token availability
+  const token = getAuthToken();
   if (!token) {
     alert("Token tidak ditemukan. Silakan login terlebih dahulu.");
     console.log("Token: null");
@@ -29,48 +55,80 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   // Fetch data psikolog
   async function fetchPsikolog(psikologId) {
-    const token = sessionStorage.getItem("authToken");
+    const token = getAuthToken();
     if (!token) {
       throw new Error("Anda belum login. Silakan login terlebih dahulu.");
     }
-    const res = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
+
+    try {
+      const response = await fetch(
+        `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        throw new Error(responseData.message || "Gagal fetch data psikolog");
       }
-    );
-    if (!res.ok) throw new Error("Gagal fetch data psikolog");
-    return await res.json();
+
+      return responseData;
+    } catch (error) {
+      console.error("Fetch psikolog error:", error);
+      throw error;
+    }
   }
 
   // Fetch jadwal psikolog
   async function fetchJadwal(psikologId) {
-    const token = sessionStorage.getItem("authToken");
-    const res = await fetch(
-      `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}/schedules`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    const data = await res.json();
-    console.log("Jadwal response:", data);
-    if (res.status === 401) {
-      alert("Sesi Anda telah habis. Silakan login ulang.");
-      sessionStorage.removeItem("authToken");
-      window.location.href = "/#/login";
-      throw new Error("Unauthorized");
+    const token = getAuthToken();
+
+    try {
+      const response = await fetch(
+        `https://mentalwell10-api-production.up.railway.app/psychologists/${psikologId}/schedules`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const responseData = await response.json();
+      console.log("Jadwal response:", responseData);
+
+      if (response.status === 401) {
+        alert("Sesi Anda telah habis. Silakan login ulang.");
+        sessionStorage.removeItem("authToken");
+        window.location.href = "/#/login";
+        throw new Error("Unauthorized");
+      }
+
+      if (!response.ok) {
+        throw new Error(responseData.message || "Gagal fetch jadwal");
+      }
+
+      return responseData.result;
+    } catch (error) {
+      console.error("Fetch jadwal error:", error);
+      throw error;
     }
-    if (!res.ok) throw new Error(data.message || "Gagal fetch jadwal");
-    return data.result;
   }
 
   try {
     const psikologId = getPsikologId();
     selectedPsikolog = await fetchPsikolog(psikologId);
-    // Setelah fetchJadwal
     const jadwalData = await fetchJadwal(psikologId);
-    // jadwalData = { name, price, schedules }
 
     selectedPsikolog = {
-      ...selectedPsikolog, // dari fetchPsikolog
+      ...selectedPsikolog,
       price: jadwalData.price,
     };
 
@@ -116,21 +174,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     // Generate tombol tanggal per minggu
-    const hariList = [
-      "Senin",
-      "Selasa",
-      "Rabu",
-      "Kamis",
-      "Jumat",
-      "Sabtu",
-      "Minggu",
-    ];
-
     const today = new Date();
     const currentDay = today.getDay();
-    const daysFromMonday = currentDay === 0 ? 6 : currentDay - 1; 
+    const daysFromMonday = currentDay === 0 ? 6 : currentDay - 1;
     const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - daysFromMonday); 
+    startOfWeek.setDate(today.getDate() - daysFromMonday);
 
     // Generate 7 hari
     for (let i = 0; i < 7; i++) {
@@ -138,7 +186,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       date.setDate(startOfWeek.getDate() + i);
       const tglStr = date.toISOString().split("T")[0];
       const tglDisplay = date.getDate();
-      const hariIni = hariList[i]; 
+      const hariIni = HARI_LIST_ORDER[i];
 
       const btn = document.createElement("button");
       btn.className = "btn btn-outline-secondary tanggal-item";
@@ -188,17 +236,8 @@ document.addEventListener("DOMContentLoaded", async function () {
       waktuContainer.innerHTML = "";
 
       // Konversi tanggal ke hari untuk cek jadwal mingguan
-      const hariList = [
-        "Minggu",
-        "Senin",
-        "Selasa",
-        "Rabu",
-        "Kamis",
-        "Jumat",
-        "Sabtu",
-      ];
       const dateObj = new Date(selectedTanggal);
-      const hari = hariList[dateObj.getDay()];
+      const hari = HARI_LIST[dateObj.getDay()];
       const waktuList = waktuJadwal[hari] || [];
 
       if (waktuList.length === 0) {
@@ -215,19 +254,28 @@ document.addEventListener("DOMContentLoaded", async function () {
         // Cek ketersediaan via API
         let booked = true;
         try {
-          const availRes = await fetch(
+          const response = await fetch(
             `https://mentalwell10-api-production.up.railway.app/psychologists/${getPsikologId()}/schedules/availability?date=${selectedTanggal}&time=${encodeURIComponent(
               jam
             )}`,
             {
+              method: "GET",
               headers: {
-                Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${getAuthToken()}`,
               },
             }
           );
-          const availData = await availRes.json();
-          booked = !availData.result?.is_available;
-        } catch (e) {
+
+          const responseData = await response.json();
+
+          if (response.ok) {
+            booked = !responseData.result?.is_available;
+          } else {
+            booked = true; // anggap booked jika response tidak ok
+          }
+        } catch (error) {
+          console.error("Check availability error:", error);
           booked = true; // anggap booked jika error
         }
 
