@@ -109,23 +109,54 @@ document.addEventListener("DOMContentLoaded", async function () {
         const jam = `${item.start_time?.slice(0, 5) || ""}-${
           item.end_time?.slice(0, 5) || ""
         }`;
-        const hari = item.day.charAt(0).toUpperCase() + item.day.slice(1); 
+        const hari = item.day.charAt(0).toUpperCase() + item.day.slice(1);
         if (!waktuJadwal[hari]) waktuJadwal[hari] = [];
         waktuJadwal[hari].push({ jam });
       }
     }
 
-    // Generate tombol tanggal 5 hari ke depan
-    for (let i = 0; i < 5; i++) {
+    // Generate tombol tanggal berdasarkan jadwal yang tersedia
+    const hariList = [
+      "Minggu",
+      "Senin",
+      "Selasa",
+      "Rabu",
+      "Kamis",
+      "Jumat",
+      "Sabtu",
+    ];
+
+    // Ambil hari-hari yang ada jadwal
+    const hariTersedia = Object.keys(waktuJadwal);
+    const tanggalTersedia = [];
+
+    // Cari tanggal-tanggal dalam 14 hari ke depan yang sesuai dengan jadwal
+    for (let i = 0; i < 14; i++) {
       const date = new Date();
       date.setDate(date.getDate() + i);
-      const tglStr = date.toISOString().split("T")[0]; // yyyy-mm-dd
-      const tglDisplay = date.getDate();
+      const hariIni = hariList[date.getDay()];
+
+      if (hariTersedia.includes(hariIni)) {
+        const tglStr = date.toISOString().split("T")[0]; // yyyy-mm-dd
+        const tglDisplay = date.getDate();
+
+        tanggalTersedia.push({
+          tglStr,
+          tglDisplay,
+          hari: hariIni,
+        });
+      }
+    }
+
+    // Tampilkan maksimal 7 tanggal yang ada jadwal
+    const maxTampil = Math.min(7, tanggalTersedia.length);
+    for (let i = 0; i < maxTampil; i++) {
+      const { tglStr, tglDisplay, hari } = tanggalTersedia[i];
 
       const btn = document.createElement("button");
       btn.className = "btn btn-outline-secondary tanggal-item";
-      btn.textContent = tglDisplay;
-      btn.title = tglStr;
+      btn.innerHTML = `${tglDisplay}<br><small>${hari}</small>`;
+      btn.title = `${tglStr} (${hari})`;
       btn.addEventListener("click", () => selectTanggal(tglStr, btn));
       tanggalContainer.appendChild(btn);
     }
@@ -147,6 +178,24 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     function selectTanggal(tglStr, btnClicked) {
+      // Validasi apakah tanggal yang dipilih memiliki jadwal
+      const hariList = [
+        "Minggu",
+        "Senin",
+        "Selasa",
+        "Rabu",
+        "Kamis",
+        "Jumat",
+        "Sabtu",
+      ];
+      const dateObj = new Date(tglStr);
+      const hari = hariList[dateObj.getDay()];
+
+      if (!waktuJadwal[hari] || waktuJadwal[hari].length === 0) {
+        alert(`Tidak ada jadwal tersedia untuk hari ${hari} (${tglStr})`);
+        return;
+      }
+
       selectedTanggal = tglStr;
       selectedWaktu = null;
       jadwalkanContainer.classList.remove("show", "d-none");

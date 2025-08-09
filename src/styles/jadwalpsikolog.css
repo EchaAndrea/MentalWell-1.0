@@ -8,8 +8,8 @@ body {
 
 main {
   flex: 1;
-  padding-top: 90px; 
-  padding-bottom: 2rem; 
+  padding-top: 90px;
+  padding-bottom: 2rem;
 }
 
 h5.page-title {
@@ -30,6 +30,14 @@ h5.page-title {
   background-color: #f8f9fa;
   color: #000;
   transition: all 0.2s;
+  min-width: 70px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.tanggal-item small {
+  font-size: 0.7rem;
+  opacity: 0.8;
 }
 
 .tanggal-item:hover,
