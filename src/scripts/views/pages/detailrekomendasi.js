@@ -66,10 +66,10 @@ async function renderPsikologDetails() {
         )
         .join("");
       userReviewsContainer.innerHTML = userReviews;
-      ulasanPengguna.style.display = "block"; // Tampilkan kontainer jika ada ulasan pengguna
+      ulasanPengguna.style.display = "block"; 
     } else {
       userReviewsContainer.innerHTML = "<p>Tidak ada ulasan pengguna.</p>";
-      ulasanPengguna.style.display = "none"; // Sembunyikan kontainer jika tidak ada ulasan pengguna
+      ulasanPengguna.style.display = "none"; 
     }
   } catch (error) {
     console.error("Error rendering psikolog details:", error);

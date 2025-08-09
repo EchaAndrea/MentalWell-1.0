@@ -52,7 +52,6 @@ function createFormData(
   jadwal = null
 ) {
   const formData = new FormData();
-  formData.append("occupation", "Mahasiswa");
   formData.append("problem_description", problemData.problem || "");
   formData.append("hope_after", problemData.hope || "");
 
