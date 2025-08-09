@@ -93,10 +93,8 @@ function redirectToRiwayat() {
   const conversation_id = localStorage.getItem("active_conversation_id");
 
   if (conversation_id && conversation_id !== "null") {
-    // Jika ada conversation_id, langsung ke riwayat
     window.location.href = "/riwayat";
   } else {
-    // Jika belum ada conversation_id, beri pesan
     Swal.fire({
       icon: "info",
       title: "Menunggu Persetujuan",

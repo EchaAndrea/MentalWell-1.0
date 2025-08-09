@@ -113,7 +113,7 @@ async function renderPsikologDetails() {
 
     scroll2();
 
-    // Render ketersediaan (availability)
+    // Render ketersediaan
     const availabilityTimes = document.getElementById("availabilityTimes");
     if (availabilityTimes) {
       availabilityTimes.innerHTML =
@@ -122,18 +122,17 @@ async function renderPsikologDetails() {
           : "<span class='jadwal-abu'>Jadwalkan Sesi</span>";
     }
 
-    // --- BUTTON DAFTAR KONSELING SESUAI STATUS ---
     const btnDaftar = document.getElementById("btnDaftar");
     if (btnDaftar) {
       btnDaftar.dataset.status = psikolog.availability;
       if (psikolog.availability === "available") {
         btnDaftar.style.display = "block";
         btnDaftar.textContent = "Chat Sekarang";
-        btnDaftar.className = "btn btn-success"; // Warna hijau
+        btnDaftar.className = "btn btn-success"; 
       } else {
         btnDaftar.style.display = "block";
         btnDaftar.textContent = "Jadwalkan Sesi";
-        btnDaftar.className = "btn btn-secondary"; // Warna abu
+        btnDaftar.className = "btn btn-secondary"; 
       }
     }
   } catch (error) {
@@ -153,9 +152,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (btnDaftar) {
     btnDaftar.onclick = function () {
-      // Cek status available dari atribut data-status
+      // Cek status available dari data-status
       if (btnDaftar.dataset.status === "available") {
-        // Jika tersedia, langsung buka modal pilihan konseling
+        // Jika tersedia, membuka modal pilihan konseling
         const modalEl = document.getElementById("modalPilihKonseling");
         modalEl.classList.add("modal-bottom");
         const modal = new bootstrap.Modal(modalEl);
