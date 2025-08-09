@@ -158,7 +158,7 @@ async function confirmPayment() {
     return;
   }
 
-  // Untuk regular payment - membutuhkan date & time
+  // Untuk schedule payment - membutuhkan date & time
   const formData = createFormData(problemData, buktiBayar, true, jadwal);
   showLoadingDialog();
 
