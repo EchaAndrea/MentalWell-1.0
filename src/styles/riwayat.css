@@ -27,7 +27,7 @@ h2 {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 128px 30px 30px 30px;
+  margin: 150px 30px 40px 30px;
 }
 
 .content-riwayat {
@@ -213,8 +213,8 @@ footer {
 .btn-konseling.disabled {
   background: #e0e0e0;
   color: #aaa;
-  cursor: default; 
-  pointer-events: none; 
+  cursor: default;
+  pointer-events: none;
 }
 
 .btn-konseling:disabled:hover,
@@ -222,4 +222,3 @@ footer {
   background: #e0e0e0;
   color: #aaa;
 }
-

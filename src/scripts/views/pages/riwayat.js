@@ -90,8 +90,7 @@ fetch("https://mentalwell10-api-production.up.railway.app/counselings", {
               <p>
                 ${riwayat.psychologist_name}<br />
                 ${formattedScheduleDate}<br />
-                ${formattedScheduleTime} WIB<br />
-                Via Chat
+                ${formattedScheduleTime} WIB
               </p>
             </div>
             <div class="status-button">
