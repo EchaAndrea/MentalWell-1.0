@@ -29,7 +29,7 @@ async function populateHTMLWithData() {
     console.log("Counseling data:", counseling);
     console.log("UserData from localStorage:", userData);
 
-    // Gunakan data dari counseling 
+    // Gunakan data dari counseling
     let patient_name = counseling.patient_name || userData.name || "-";
     let patient_nickname =
       counseling.patient_nickname || userData.nickname || userData.name || "-";
@@ -151,23 +151,7 @@ function convertDateFormat(inputDate) {
 
 function convertTimeFormat(inputTime) {
   if (!inputTime) return "-";
-
-  // Jika sudah ada "WIB" (dari localStorage jadwal)
-  if (inputTime.includes("WIB")) {
-    return inputTime;
-  }
-
-  // Jika format HH:MM-HH:MM (dari backend atau localStorage)
-  const [startTime, endTime] = inputTime.split("-");
-  if (startTime && endTime) {
-    return `${startTime?.replace(":", ".")} - ${endTime?.replace(
-      ":",
-      "."
-    )} WIB`;
-  }
-
-  // Fallback
-  return inputTime + " WIB";
+  return inputTime;
 }
 
 function redirectToIndex() {
