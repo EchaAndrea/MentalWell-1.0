@@ -115,23 +115,30 @@ document.addEventListener("DOMContentLoaded", async function () {
       }
     }
 
-    // Generate tombol tanggal 7 hari ke depan dengan label hari
+    // Generate tombol tanggal per minggu
     const hariList = [
-      "Minggu",
       "Senin",
       "Selasa",
       "Rabu",
       "Kamis",
       "Jumat",
       "Sabtu",
+      "Minggu",
     ];
 
+    const today = new Date();
+    const currentDay = today.getDay();
+    const daysFromMonday = currentDay === 0 ? 6 : currentDay - 1; 
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - daysFromMonday); 
+
+    // Generate 7 hari
     for (let i = 0; i < 7; i++) {
-      const date = new Date();
-      date.setDate(date.getDate() + i);
-      const tglStr = date.toISOString().split("T")[0]; 
+      const date = new Date(startOfWeek);
+      date.setDate(startOfWeek.getDate() + i);
+      const tglStr = date.toISOString().split("T")[0];
       const tglDisplay = date.getDate();
-      const hariIni = hariList[date.getDay()];
+      const hariIni = hariList[i]; 
 
       const btn = document.createElement("button");
       btn.className = "btn btn-outline-secondary tanggal-item";
@@ -141,7 +148,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       tanggalContainer.appendChild(btn);
     }
 
-    // Klik icon kalender untuk buka date picker
+    // Kalender
     btnCalendar.addEventListener("click", () => {
       if (tanggalPicker.showPicker) {
         tanggalPicker.showPicker();
