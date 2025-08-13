@@ -735,15 +735,6 @@ footer {
   }
 }
 
-.logos-2 {
-  /* overflow: hidden; */
-  white-space: nowrap;
-  margin: 1rem 6rem 0.5rem 6rem; 
-  position: relative;
-  display: flex;
-  overflow-x: hidden;
-}
-
 .logos-2:hover .logo-slide-2 {
   animation-play-state: paused;
 }
