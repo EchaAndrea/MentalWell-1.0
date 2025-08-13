@@ -46,27 +46,17 @@ function redirectToDetailPsychologist(id) {
 }
 
 const logosContainer2 = document.querySelector(".logos-2");
-const originalLogosContainer2 = document.querySelector(".logos-2");
-const clone2 = originalLogosContainer2.cloneNode(true);
-originalLogosContainer2.parentNode.insertBefore(
-  clone2,
-  originalLogosContainer2.nextSibling
-);
-
 let scrollAmount2 = 0;
-const scrollSpeed2 = 2;
+const scrollSpeed2 = 1.5; 
 
 function scroll2() {
   scrollAmount2 += scrollSpeed2;
-  originalLogosContainer2.scrollLeft = scrollAmount2;
 
-  if (
-    scrollAmount2 >=
-    originalLogosContainer2.scrollWidth - originalLogosContainer2.clientWidth
-  ) {
+  if (scrollAmount2 >= logosContainer2.scrollWidth - logosContainer2.clientWidth) {
     scrollAmount2 = 0;
   }
 
+  logosContainer2.scrollLeft = scrollAmount2;
   requestAnimationFrame(scroll2);
 }
 
