@@ -503,7 +503,7 @@ section rekomendasi
 }
 
 .rekomendasi .content {
-  margin-bottom: 2rem;
+  margin-bottom: 0rem;
   display: flex;
   justify-content: center;
 }
