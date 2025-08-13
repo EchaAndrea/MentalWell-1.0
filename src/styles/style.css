@@ -498,7 +498,8 @@ section rekomendasi
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-top: 1rem;
+  margin-top: 3rem;
+  margin-bottom: 0rem;
 }
 
 .rekomendasi .content {
