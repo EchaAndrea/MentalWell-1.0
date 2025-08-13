@@ -748,7 +748,6 @@ footer {
   overflow-x: hidden;
 }
 
-.logos-2::before,
 .logos-2::after {
   position: absolute;
   top: 0;

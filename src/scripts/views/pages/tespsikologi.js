@@ -120,23 +120,17 @@ function showResult() {
     return;
   }
 
-  // Hitung jawaban "Ya" berdasarkan kelompok sesuai interpretasi SRQ-29
+  // Hitung jawaban "Ya" berdasarkan instrumen SRQ-29
   const ya1to20 = answers.slice(0, 20).filter((a) => a === "Ya").length; // No 1-20 (Gejala neurosis - cut off 5-7)
   const ya21 = answers[20] === "Ya" ? 1 : 0; // No 21 (Penggunaan zat psikoaktif)
   const ya22to24 = answers.slice(21, 24).filter((a) => a === "Ya").length; // No 22-24 (Gejala psikotik - 1 jawaban Ya = masalah serius)
   const ya25to29 = answers.slice(24).filter((a) => a === "Ya").length; // No 25-29 (Gejala PTSD - 1 jawaban Ya = indikasi PTSD)
 
-  // Tentukan hasil berdasarkan interpretasi SRQ-29
+  // Tentukan hasil instrumen SRQ-29
   let result = "";
   let hasProblems = false;
   let indications = [];
 
-  // Analisis berdasarkan interpretasi SRQ-29:
-  // a. Tidak terdapat nilai cut off universal
-  // b. 5-7 jawaban YA pada no 1-20 mengindikasikan masalah psikologis
-  // c. No 21 mengindikasikan penggunaan zat psikoaktif
-  // d. 1 jawaban YA dari no 22-24 mengindikasikan masalah serius (psikotik)
-  // e. 1 jawaban YA dari no 25-29 mengindikasikan gejala PTSD
   if (ya1to20 >= 5) {
     hasProblems = true;
     if (ya1to20 >= 7) {
@@ -153,17 +147,14 @@ function showResult() {
       );
     }
   }
-
   if (ya21 >= 1) {
     hasProblems = true;
     indications.push("Terdeteksi penggunaan zat psikoaktif/alkohol berlebihan");
   }
-
   if (ya22to24 >= 1) {
     hasProblems = true;
     indications.push("Terdeteksi gejala psikotik");
   }
-
   if (ya25to29 >= 1) {
     hasProblems = true;
     indications.push(
