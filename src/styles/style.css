@@ -735,6 +735,14 @@ footer {
   }
 }
 
+.logos-2 {
+  white-space: nowrap;
+  margin: 1rem 6rem 0.5rem 6rem; 
+  position: relative;
+  display: flex;
+  overflow-x: hidden;
+}
+
 .logos-2:hover .logo-slide-2 {
   animation-play-state: paused;
 }
@@ -742,13 +750,11 @@ footer {
 .logo-slide-2 {
   display: inline-block;
   animation: 15s slide infinite linear;
-  /* margin-bottom: 2rem; */
   flex-shrink: 0;
   margin-bottom: 1rem;
 }
 
 .logo-slide-2 div {
-  /* height: 100rem; */
   margin: 2rem 0rem;
 }
 
