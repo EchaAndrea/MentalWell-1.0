@@ -744,15 +744,6 @@ footer {
   overflow-x: hidden;
 }
 
-.logos-2::after {
-  position: absolute;
-  top: 0;
-  width: 250px;
-  height: 100%;
-  content: "";
-  /* z-index: 1; */
-}
-
 .logos-2:hover .logo-slide-2 {
   animation-play-state: paused;
 }
