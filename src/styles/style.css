@@ -742,7 +742,7 @@ footer {
 
 .logos-2 {
   white-space: nowrap;
-  margin: 1rem 6rem 0rem;
+  margin: 0 6rem;
   position: relative;
   display: flex;
   overflow-x: hidden;
