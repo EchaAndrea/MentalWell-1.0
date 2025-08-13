@@ -93,6 +93,7 @@ Jumbotron
   margin-left: 5rem;
 }
 
+
 /*
 login 
 */
@@ -313,6 +314,7 @@ daftar
   color: #ffffff;
 }
 
+
 /*
 Content
 */
@@ -349,8 +351,8 @@ main {
 .container-konsultasi {
   margin-top: 2rem;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: column; 
+  align-items: center; 
   justify-content: center;
   gap: 2rem;
   width: 100%;
@@ -496,11 +498,11 @@ section rekomendasi
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-top: 1rem;
+  margin-top: 3rem;
 }
 
 .rekomendasi .content {
-  margin-bottom: 0.5rem;
+  margin-bottom: 2rem;
   display: flex;
   justify-content: center;
 }
@@ -635,6 +637,8 @@ footer {
   text-align: center;
 }
 
+
+
 /* responsive */
 /* mobile */
 @media screen and (max-width: 577px) {
@@ -736,11 +740,22 @@ footer {
 }
 
 .logos-2 {
+  /* overflow: hidden; */
   white-space: nowrap;
-  margin: 0 6rem 0.5rem 0; 
+  margin: 1rem 6rem 0rem;
   position: relative;
   display: flex;
   overflow-x: hidden;
+}
+
+.logos-2::before,
+.logos-2::after {
+  position: absolute;
+  top: 0;
+  width: 250px;
+  height: 100%;
+  content: '';
+  /* z-index: 1; */
 }
 
 .logos-2:hover .logo-slide-2 {
@@ -750,18 +765,18 @@ footer {
 .logo-slide-2 {
   display: inline-block;
   animation: 15s slide infinite linear;
+  /* margin-bottom: 2rem; */
   flex-shrink: 0;
   margin-bottom: 1rem;
 }
 
 .logo-slide-2 div {
+  /* height: 100rem; */
   margin: 2rem 0rem;
 }
 
 /* tablet */
-@media screen and (min-width: 578px) {
-}
+@media screen and (min-width: 578px) {}
 
 /* desktop*/
-@media screen and (max-width: 1200px) {
-}
+@media screen and (max-width: 1200px) {}
