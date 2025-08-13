@@ -741,7 +741,6 @@ footer {
 }
 
 .logos-2 {
-  /* overflow: hidden; */
   white-space: nowrap;
   margin: 1rem 6rem 0rem;
   position: relative;
@@ -756,7 +755,6 @@ footer {
   width: 250px;
   height: 100%;
   content: '';
-  /* z-index: 1; */
 }
 
 .logos-2:hover .logo-slide-2 {
@@ -766,13 +764,11 @@ footer {
 .logo-slide-2 {
   display: inline-block;
   animation: 15s slide infinite linear;
-  /* margin-bottom: 2rem; */
   flex-shrink: 0;
   margin-bottom: 1rem;
 }
 
 .logo-slide-2 div {
-  /* height: 100rem; */
   margin: 2rem 0rem;
 }
 
